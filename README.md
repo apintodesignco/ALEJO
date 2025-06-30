@@ -258,9 +258,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Sponsorship and Support
 
-ALEJO is being released as a free and accessible tool to help people first and foremost. However, development and maintenance require resources. If you would like to sponsor this project or help with funding, please reach out to Alejandro Pinto at al.pintoemail@gmail.com.
+ALEJO is being released as a free and accessible tool to help people first and foremost. However, development and maintenance require resources. If you would like to sponsor this project or help with funding, you can contribute directly via Cash App: **$apintodesignco** or reach out to Alejandro Pinto at al.pintoemail@gmail.com.
 
 Your support helps ensure that ALEJO remains available to those who need it, especially people with disabilities who can benefit from its capabilities. Any contributions beyond what's needed for development are reinvested into making ALEJO better or given back to the community.
+
+Thank you! Your contribution, no matter the size, is greatly appreciated and will be used to help people who really need it even further.
 
 We believe in helping each other first and foremost - that's why ALEJO is free and accessible to all.
 

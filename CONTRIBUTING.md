@@ -42,6 +42,16 @@ ALEJO is designed as a distributed intelligence system that can learn and evolve
 
 Please review our [Code of Conduct](CODE_OF_CONDUCT.md) to understand the expectations for all participants in the ALEJO community.
 
+## Sponsorship and Support
+
+ALEJO is being released as a free and accessible tool to help people first and foremost. However, development and maintenance require resources. If you would like to sponsor this project or help with funding, you can contribute directly via Cash App: **$apintodesignco** or reach out to Alejandro Pinto at al.pintoemail@gmail.com.
+
+Your support helps ensure that ALEJO remains available to those who need it, especially people with disabilities who can benefit from its capabilities. Any contributions beyond what's needed for development are reinvested into making ALEJO better or given back to the community.
+
+Thank you! Your contribution, no matter the size, is greatly appreciated and will be used to help people who really need it even further.
+
+We believe in helping each other first and foremost - that's why ALEJO is free and accessible to all.
+
 ## License
 
 By contributing to ALEJO, you agree that your contributions will be licensed under the project's [license](LICENSE.md).
