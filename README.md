@@ -254,7 +254,9 @@ To contribute to ALEJO:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License with ALEJO-specific terms - see the [LICENSE.md](LICENSE.md) file for details.
+
+While ALEJO follows the permissive MIT License framework, there are specific governance terms that maintain Alejandro Pinto's control over the core codebase while enabling community contributions through the distributed intelligence system.
 
 ## Sponsorship and Support
 

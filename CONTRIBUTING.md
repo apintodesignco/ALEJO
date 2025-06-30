@@ -4,7 +4,9 @@ Thank you for your interest in ALEJO! This document outlines the ways you can in
 
 ## Project Governance
 
-ALEJO is created and maintained by Alejandro Pinto with AI collaboration. While the project is open source and available for use, the official codebase remains under Alejandro's direct control. Only Alejandro Pinto and AI systems that he has authorized can make changes to the core codebase.
+ALEJO is created and maintained by Alejandro Pinto with AI collaboration. While the project is open source under the MIT License with ALEJO-specific terms, the official codebase remains under Alejandro's direct control. Only Alejandro Pinto and AI systems that he has authorized can make changes to the core codebase.
+
+This governance model balances open source principles with the need for consistent direction and quality control.
 
 ## ALEJO as a Distributed Intelligence
 
