@@ -1,0 +1,160 @@
+name: ALEJO CI/CD - Local Only
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate:
+    name: Local Validation and Testing
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-asyncio pytest-cov black flake8 isort mypy locust memory_profiler psutil pytest-playwright
+        
+    - name: Check code formatting
+      run: |
+        black --check alejo tests
+        isort --check-only alejo tests
+        
+    - name: Run linters
+      run: |
+        flake8 alejo tests
+        mypy alejo
+        
+    - name: Run unit tests
+      run: |
+        pytest -q
+        
+    - name: Run integration tests
+      run: |
+        pytest -q tests/cognitive/multimodal/test_brain_integration.py
+        pytest -q tests/emotional_intelligence/test_integration.py
+        pytest -q tests/ethical/test_integration.py
+        pytest -q tests/core/test_brain_extensions.py
+        pytest -q tests/llm_client/test_integration.py
+        pytest -q tests/llm_client/test_local_provider.py
+        
+    - name: Run performance tests
+      run: |
+        pytest -q tests/utils/test_memory_optimization.py
+        pytest -q tests/utils/test_performance.py
+        
+    - name: Install Playwright browsers
+      run: |
+        python -m playwright install --with-deps chromium
+        
+    - name: Run E2E UI tests
+      run: |
+        pytest -q tests/e2e/test_ui_e2e.py
+        
+    - name: Run performance benchmarks
+      run: |
+        python scripts/benchmark_performance.py --output benchmark_results.json
+        
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v3
+      with:
+        name: benchmark-results
+        path: benchmark_results.json
+        
+    - name: Generate coverage report
+      run: |
+        pytest --cov=alejo --cov-report=xml
+        
+    - name: Upload coverage report
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+
+    - name: Run smoke test
+      run: python scripts/smoke_test.py -q
+      env:
+        REDIS_URL: redis://localhost:6379
+
+    - name: Run tests
+      env:
+        REDIS_URL: redis://localhost:6379
+      run: |
+        # First run proactive dialogue tests to verify this critical functionality
+        pytest tests/brain/test_proactive_dialogue.py tests/emotional_intelligence/test_proactive_dialogue.py -v
+        
+        # Then run all tests with coverage
+        pytest tests/ --cov=alejo --cov-report=xml
+        
+    - name: Check coverage threshold
+      run: |
+        coverage report --fail-under=80
+
+    # ---------- Front-end build/lint/test ----------
+    - name: Set up Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install front-end dependencies
+      run: npm ci
+
+    - name: Run front-end lint
+      run: npm run lint
+
+    - name: Run front-end tests
+      run: npm run test -- --coverage
+
+    - name: Build front-end assets
+      run: npm run build
+        
+    - name: Upload coverage
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        
+    - name: Performance check
+      run: |
+        locust -f tests/performance/locustfile.py --headless -u 10 -r 2 --run-time 1m --host http://localhost:8000
+    
+    - name: Generate Software Bill of Materials (SBOM)
+      run: |
+        pip install cyclonedx-bom
+        cyclonedx-py -o alejo-sbom.xml
+        
+    - name: Upload SBOM
+      uses: actions/upload-artifact@v3
+      with:
+        name: alejo-sbom
+        path: alejo-sbom.xml
+        
+    - name: Check for local-only functionality
+      run: |
+        echo "Verifying no external API dependencies..."
+        ! grep -r "OPENAI_API_KEY" --include="*.py" --include="*.yml" alejo/ || (echo "ERROR: Found OpenAI API references" && exit 1)
+        ! grep -r "HUGGINGFACE_API_TOKEN" --include="*.py" --include="*.yml" alejo/ || (echo "ERROR: Found HuggingFace API references" && exit 1)
+        echo "Local-only validation complete"

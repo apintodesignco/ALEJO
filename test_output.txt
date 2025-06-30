@@ -1,0 +1,52 @@
+Exit code: 1
+STDOUT:
+============================= test session starts =============================
+platform win32 -- Python 3.9.13, pytest-7.4.4, pluggy-1.6.0 -- C:\Users\magic\AppData\Local\Programs\Python\Python39\python.exe
+cachedir: .pytest_cache
+Using --randomly-seed=1800858667
+rootdir: C:\Users\magic\CascadeProjects\ALEJO
+configfile: pytest.ini
+plugins: anyio-3.7.1, Faker-37.3.0, langsmith-0.3.45, asyncio-0.23.5, cov-4.1.0, mock-3.14.1, randomly-3.16.0, timeout-2.2.0, xdist-3.5.0
+asyncio: mode=strict
+collecting ... collected 1 item
+
+tests/test_gaze_tracking.py::test_gaze_tracking_basic FAILED             [100%]
+
+================================== FAILURES ===================================
+__________________________ test_gaze_tracking_basic ___________________________
+
+MockGazeTracker = <MagicMock name='GazeTracker' id='1944171286688'>
+event_bus = <async_generator object event_bus at 0x000001C4A9A331F0>
+
+    @pytest.mark.asyncio
+    @patch('alejo.vision.gaze_tracker.GazeTracker')
+    async def test_gaze_tracking_basic(MockGazeTracker, event_bus):
+        """Test that gaze tracking events flow through the event bus correctly"""
+        # 1. Arrange
+        mock_tracker = MagicMock()
+        MockGazeTracker.return_value = mock_tracker
+    
+        # Create a controller with gaze tracking enabled
+        ui_controller = UIController(event_bus, gaze_tracking_enabled=True)
+    
+        # Set up event collection
+        received_events = []
+    
+        async def collect_events(event):
+            received_events.append(event)
+    
+        # Subscribe to GAZE events
+>       event_bus.subscribe(EventType.GAZE, collect_events)
+E       AttributeError: 'async_generator' object has no attribute 'subscribe'
+
+tests\test_gaze_tracking.py:38: AttributeError
+---------------------------- Captured stderr call -----------------------------
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+=========================== short test summary info ===========================
+FAILED tests/test_gaze_tracking.py::test_gaze_tracking_basic - AttributeError...
+============================= 1 failed in 23.67s ==============================
+
+STDERR:
+C:\Users\magic\AppData\Local\Programs\Python\Python39\lib\site-packages\requests\__init__.py:109: RequestsDependencyWarning: urllib3 (2.4.0) or chardet (None)/charset_normalizer (2.1.1) doesn't match a supported version!
+  warnings.warn(
+

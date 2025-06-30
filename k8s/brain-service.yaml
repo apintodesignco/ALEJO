@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: brain-service
+  namespace: alejo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: brain-service
+  template:
+    metadata:
+      labels:
+        app: brain-service
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: brain-service
+        image: ${DOCKERHUB_USERNAME}/alejo-brain:latest
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: alejo-config
+        - secretRef:
+            name: alejo-secrets
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        volumeMounts:
+        - name: brain-data
+          mountPath: /app/data
+      volumes:
+      - name: brain-data
+        persistentVolumeClaim:
+          claimName: brain-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: brain-service
+  namespace: alejo
+spec:
+  selector:
+    app: brain-service
+  ports:
+  - port: 8000
+    targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: brain-pvc
+  namespace: alejo
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: brain-service-hpa
+  namespace: alejo
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: brain-service
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80

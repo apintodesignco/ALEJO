@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: alejo
+  labels:
+    name: alejo
+    environment: production

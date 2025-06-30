@@ -1,0 +1,203 @@
+#!/usr/bin/env python3
+"""
+ALEJO Browser Test CLI
+Command-line interface for ALEJO browser testing
+"""
+
+import os
+import sys
+import argparse
+import logging
+from pathlib import Path
+
+# Add parent directory to path to allow importing alejo package
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+# Import ALEJO modules
+from alejo.testing.browser_detection import BrowserDetector
+from alejo.testing.browser_testing import BrowserCompatibilityTester, BrowserTestRunner
+from alejo.testing.secure_browser_testing import SecureBrowserTesting
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler("alejo_browser_test.log")
+    ]
+)
+logger = logging.getLogger("alejo.cli.browser_test")
+
+def parse_arguments():
+    """Parse command-line arguments"""
+    parser = argparse.ArgumentParser(description="ALEJO Browser Testing CLI")
+    
+    # Main commands
+    subparsers = parser.add_subparsers(dest="command", help="Command to execute")
+    
+    # Detect browsers command
+    detect_parser = subparsers.add_parser("detect", help="Detect installed browsers")
+    
+    # Test URL command
+    test_parser = subparsers.add_parser("test", help="Test a URL with browsers")
+    test_parser.add_argument("url", help="URL to test")
+    test_parser.add_argument("--browsers", nargs="+", help="Browsers to test with (e.g., chrome firefox)")
+    test_parser.add_argument("--name", help="Name for this test run")
+    test_parser.add_argument("--headless", action="store_true", help="Run browsers in headless mode")
+    test_parser.add_argument("--timeout", type=int, default=30, help="Timeout in seconds")
+    
+    # Comprehensive test command
+    comprehensive_parser = subparsers.add_parser("comprehensive", help="Run comprehensive tests")
+    comprehensive_parser.add_argument("urls", nargs="+", help="URLs to test")
+    comprehensive_parser.add_argument("--browsers", nargs="+", help="Browsers to test with (e.g., chrome firefox)")
+    comprehensive_parser.add_argument("--headless", action="store_true", help="Run browsers in headless mode")
+    comprehensive_parser.add_argument("--timeout", type=int, default=30, help="Timeout in seconds")
+    
+    # List results command
+    list_parser = subparsers.add_parser("list", help="List test results")
+    list_parser.add_argument("--dir", help="Results directory")
+    
+    # Show results command
+    show_parser = subparsers.add_parser("show", help="Show test results")
+    show_parser.add_argument("test_name", help="Name of the test run")
+    show_parser.add_argument("--dir", help="Results directory")
+    
+    return parser.parse_args()
+
+def detect_browsers():
+    """Detect installed browsers"""
+    print("\n=== Detecting Installed Browsers ===\n")
+    
+    detector = BrowserDetector()
+    detector.detect_browsers()
+    detector.print_browser_info()
+
+def test_url(args):
+    """Test a URL with browsers"""
+    print(f"\n=== Testing URL: {args.url} ===\n")
+    
+    # Create configuration
+    config = {
+        "headless": args.headless,
+        "timeout": args.timeout,
+    }
+    
+    if args.name:
+        print(f"Test name: {args.name}")
+    
+    # Create tester
+    tester = BrowserCompatibilityTester(config)
+    
+    # Run test
+    results = tester.run_tests(args.url, args.browsers, args.name)
+    
+    # Print summary
+    test_name = args.name or results.get("test_name")
+    tester.print_test_summary(test_name)
+
+def run_comprehensive_tests(args):
+    """Run comprehensive tests"""
+    print(f"\n=== Running Comprehensive Tests on {len(args.urls)} URLs ===\n")
+    
+    # Create configuration
+    config = {
+        "headless": args.headless,
+        "timeout": args.timeout,
+    }
+    
+    # Create test runner
+    runner = BrowserTestRunner(config)
+    
+    # Run tests
+    results = runner.run_comprehensive_tests(args.urls, args.browsers)
+    
+    # Print summary
+    runner.print_test_summary(results)
+
+def list_results(args):
+    """List test results"""
+    print("\n=== Available Test Results ===\n")
+    
+    # Create configuration
+    config = {}
+    if args.dir:
+        config["results_dir"] = args.dir
+    
+    # Create tester
+    tester = BrowserCompatibilityTester(config)
+    
+    # List results
+    results_dir = Path(config.get("results_dir", "test_results"))
+    if not results_dir.exists():
+        print(f"Results directory not found: {results_dir}")
+        return
+    
+    # Find all test directories
+    test_dirs = [d for d in results_dir.iterdir() if d.is_dir()]
+    
+    if not test_dirs:
+        print("No test results found")
+        return
+    
+    # Print test directories
+    print(f"Found {len(test_dirs)} test results:\n")
+    for test_dir in sorted(test_dirs, key=lambda d: d.stat().st_mtime, reverse=True):
+        results_file = test_dir / "results.json"
+        comprehensive_file = test_dir / "comprehensive_results.json"
+        
+        if results_file.exists():
+            print(f"- {test_dir.name} (Single URL Test)")
+        elif comprehensive_file.exists():
+            print(f"- {test_dir.name} (Comprehensive Test)")
+        else:
+            print(f"- {test_dir.name}")
+
+def show_results(args):
+    """Show test results"""
+    print(f"\n=== Test Results: {args.test_name} ===\n")
+    
+    # Create configuration
+    config = {}
+    if args.dir:
+        config["results_dir"] = args.dir
+    
+    # Create tester
+    tester = BrowserCompatibilityTester(config)
+    
+    # Show results
+    summary = tester.get_test_summary(args.test_name)
+    
+    if "error" in summary:
+        print(f"Error: {summary['error']}")
+        return
+    
+    # Print summary
+    tester.print_test_summary(args.test_name)
+
+def main():
+    """Main function"""
+    args = parse_arguments()
+    
+    try:
+        if args.command == "detect":
+            detect_browsers()
+        elif args.command == "test":
+            test_url(args)
+        elif args.command == "comprehensive":
+            run_comprehensive_tests(args)
+        elif args.command == "list":
+            list_results(args)
+        elif args.command == "show":
+            show_results(args)
+        else:
+            print("Please specify a command. Use --help for more information.")
+            return 1
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        return 1
+    
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())

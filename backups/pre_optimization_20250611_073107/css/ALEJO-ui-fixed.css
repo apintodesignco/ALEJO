@@ -1,0 +1,401 @@
+/* ALEJO Holographic UI CSS
+ * Advanced holographic interface styling for ALEJO AI Assistant
+ */
+
+/* Holographic container and base styles */
+.holographic-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+    perspective: 1000px;
+    overflow: hidden;
+}
+
+.holographic-container.interactive {
+    pointer-events: auto;
+}
+
+/* Holographic elements */
+.hologram {
+    position: absolute;
+    transform-style: preserve-3d;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0.8;
+    pointer-events: auto;
+    filter: drop-shadow(0 0 10px var(--primary-color));
+}
+
+.hologram-ring {
+    position: absolute;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    box-shadow: 0 0 20px var(--primary-color), inset 0 0 20px var(--primary-color);
+    opacity: 0.5;
+    animation: rotate 10s linear infinite;
+}
+
+.hologram-ring:nth-child(odd) {
+    animation-direction: reverse;
+}
+
+.hologram-text {
+    color: var(--primary-color);
+    font-family: 'Rajdhani', sans-serif;
+    text-shadow: 0 0 10px var(--primary-color);
+    letter-spacing: 2px;
+    opacity: 0.9;
+    white-space: nowrap;
+}
+
+.hologram-panel {
+    background-color: rgba(52, 152, 219, 0.1);
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    box-shadow: 0 0 15px var(--primary-color);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    padding: 15px;
+    color: var(--text-color);
+}
+
+.hologram-button {
+    background-color: rgba(52, 152, 219, 0.2);
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    color: var(--primary-color);
+    padding: 8px 15px;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    text-shadow: 0 0 5px var(--primary-color);
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+}
+
+.hologram-button:hover {
+    background-color: rgba(52, 152, 219, 0.4);
+    box-shadow: 0 0 15px var(--primary-color);
+}
+
+/* Holographic UI components */
+.holo-circle {
+    width: 200px;
+    height: 200px;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    position: absolute;
+    opacity: 0.5;
+    box-shadow: 0 0 20px var(--primary-color), inset 0 0 20px var(--primary-color);
+    animation: pulse 2s infinite alternate;
+}
+
+.holo-hexagon {
+    position: absolute;
+    width: 100px;
+    height: 57.74px; /* height = width * sin(60°) */
+    background-color: transparent;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 20px var(--primary-color);
+    opacity: 0.5;
+    clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
+}
+
+.holo-grid {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(to right, rgba(52, 152, 219, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(52, 152, 219, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.holo-radar {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    opacity: 0.5;
+    overflow: hidden;
+}
+
+.holo-radar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        var(--primary-color) 20deg,
+        transparent 40deg,
+        transparent 360deg
+    );
+    animation: radar-sweep 4s linear infinite;
+}
+
+.holo-data-stream {
+    position: absolute;
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--primary-color);
+    opacity: 0.7;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 300px;
+    animation: data-stream 10s linear infinite;
+}
+
+/* Core interface elements */
+.holo-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+}
+
+.holo-core-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle at center,
+        var(--primary-color) 0%,
+        transparent 70%
+    );
+    opacity: 0.7;
+    animation: core-pulse 3s ease-in-out infinite alternate;
+}
+
+.holo-core-rings {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.holo-core-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid var(--primary-color);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.5;
+}
+
+.holo-core-ring:nth-child(1) {
+    width: 200px;
+    height: 200px;
+    animation: rotate 10s linear infinite;
+}
+
+.holo-core-ring:nth-child(2) {
+    width: 250px;
+    height: 250px;
+    animation: rotate 15s linear infinite reverse;
+}
+
+.holo-core-ring:nth-child(3) {
+    width: 300px;
+    height: 300px;
+    animation: rotate 20s linear infinite;
+}
+
+/* Voice visualization */
+.holo-voice-viz {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    height: 60px;
+}
+
+.holo-voice-bar {
+    width: 4px;
+    height: 20px;
+    background-color: var(--primary-color);
+    margin: 0 2px;
+    border-radius: 2px;
+    opacity: 0.7;
+}
+
+/* Animations */
+@keyframes rotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes pulse {
+    from { opacity: 0.3; transform: scale(0.95); }
+    to { opacity: 0.6; transform: scale(1.05); }
+}
+
+@keyframes core-pulse {
+    0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); }
+    50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+    100% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); }
+}
+
+@keyframes radar-sweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes data-stream {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .holo-core {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .holo-core-inner {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .holo-core-ring:nth-child(1) {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .holo-core-ring:nth-child(2) {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .holo-core-ring:nth-child(3) {
+        width: 250px;
+        height: 250px;
+    }
+}
+
+/* Font imports for holographic UI */
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+/* Holographic UI JavaScript hooks */
+[data-holo-element] {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+[data-holo-element].visible {
+    opacity: 1;
+}
+
+/* Special effects */
+.holo-glow {
+    filter: drop-shadow(0 0 10px var(--primary-color));
+}
+
+.holo-flicker {
+    animation: flicker 2s linear infinite;
+}
+
+@keyframes flicker {
+    0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+        opacity: 0.99;
+    }
+    20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+        opacity: 0.4;
+    }
+}
+
+/* Holographic notifications */
+.holo-notification {
+    position: absolute;
+    top: 100px;
+    right: 50px;
+    background-color: rgba(52, 152, 219, 0.2);
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    padding: 15px;
+    width: 300px;
+    color: var(--text-color);
+    box-shadow: 0 0 15px var(--primary-color);
+    transform: translateX(400px);
+    opacity: 0;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    z-index: 100;
+}
+
+.holo-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* Holographic loading indicator */
+.holo-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+}
+
+.holo-loading-circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px solid transparent;
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: holo-spin 1s linear infinite;
+}
+
+.holo-loading-circle:nth-child(2) {
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+    animation-duration: 0.8s;
+    animation-direction: reverse;
+}
+
+.holo-loading-circle:nth-child(3) {
+    width: 60%;
+    height: 60%;
+    top: 20%;
+    left: 20%;
+    animation-duration: 0.6s;
+}
+
+@keyframes holo-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

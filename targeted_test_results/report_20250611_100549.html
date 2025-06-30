@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEJO Targeted Browser Tests Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #0066cc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .summary {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .success {
+            color: #28a745;
+        }
+        .failure {
+            color: #dc3545;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .test-details {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ALEJO Targeted Browser Tests Report</h1>
+        <p>Generated on 2025-06-11 10:05:49</p>
+        
+        <div class="summary">
+            <h2>Summary</h2>
+            <p>Total Tests: 8</p>
+            <p class="success">Passed Tests: 3</p>
+            <p class="failure">Failed Tests: 5</p>
+            <p>Pass Rate: 37.5%</p>
+        </div>
+        
+        <h2>Test Results</h2>
+        <table>
+            <tr>
+                <th>Test Name</th>
+                <th>Status</th>
+                <th>Details</th>
+            </tr>
+
+            <tr>
+                <td>selenium_import</td>
+                <td class="success">Success</td>
+                <td>Version: 4.33.0</td>
+            </tr>
+            <tr>
+                <td>webdriver_manager_import</td>
+                <td class="success">Success</td>
+                <td>Version: 4.0.2</td>
+            </tr>
+            <tr>
+                <td>browser_detection</td>
+                <td class="success">Success</td>
+                <td>Browsers: chrome: Google Chrome, edge: Microsoft Edge</td>
+            </tr>
+            <tr>
+                <td>webdriver_initialization_chrome</td>
+                <td class="failure">Failure</td>
+                <td>Error: WebDriver initialization returned None</td>
+            </tr>
+            <tr>
+                <td>selenium_test_method_chrome</td>
+                <td class="failure">Failure</td>
+                <td>Error: Failed to initialize WebDriver</td>
+            </tr>
+            <tr>
+                <td>webdriver_initialization_edge</td>
+                <td class="failure">Failure</td>
+                <td>Error: WebDriver initialization returned None</td>
+            </tr>
+            <tr>
+                <td>selenium_test_method_edge</td>
+                <td class="failure">Failure</td>
+                <td>Error: Failed to initialize WebDriver</td>
+            </tr>
+            <tr>
+                <td>cleanup_webdrivers</td>
+                <td class="failure">Failure</td>
+                <td>Error: No WebDriver instances created</td>
+            </tr>
+        </table>
+        
+        <h2>Test Details</h2>
+
+        <div class="test-details">
+            <h3>selenium_import</h3>
+            <p class="success">Status: Success</p>
+
+            <p>Version: 4.33.0</p>
+
+        </div>
+
+        <div class="test-details">
+            <h3>webdriver_manager_import</h3>
+            <p class="success">Status: Success</p>
+
+            <p>Version: 4.0.2</p>
+
+        </div>
+
+        <div class="test-details">
+            <h3>browser_detection</h3>
+            <p class="success">Status: Success</p>
+
+            <h4>Detected Browsers</h4>
+            <ul>
+
+                <li>chrome: Google Chrome</li>
+
+                <li>edge: Microsoft Edge</li>
+
+            </ul>
+
+        </div>
+
+        <div class="test-details">
+            <h3>webdriver_initialization_chrome</h3>
+            <p class="failure">Status: Failure</p>
+
+            <p class="failure">Error: WebDriver initialization returned None</p>
+
+        </div>
+
+        <div class="test-details">
+            <h3>selenium_test_method_chrome</h3>
+            <p class="failure">Status: Failure</p>
+
+            <p class="failure">Error: Failed to initialize WebDriver</p>
+
+        </div>
+
+        <div class="test-details">
+            <h3>webdriver_initialization_edge</h3>
+            <p class="failure">Status: Failure</p>
+
+            <p class="failure">Error: WebDriver initialization returned None</p>
+
+        </div>
+
+        <div class="test-details">
+            <h3>selenium_test_method_edge</h3>
+            <p class="failure">Status: Failure</p>
+
+            <p class="failure">Error: Failed to initialize WebDriver</p>
+
+        </div>
+
+        <div class="test-details">
+            <h3>cleanup_webdrivers</h3>
+            <p class="failure">Status: Failure</p>
+
+            <p class="failure">Error: No WebDriver instances created</p>
+
+        </div>
+
+    </div>
+</body>
+</html>

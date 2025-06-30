@@ -1,0 +1,38 @@
+{
+  "timestamp": "20250611_101046",
+  "checks": {
+    "Dependencies": {
+      "success": true,
+      "duration": 0.0005106925964355469
+    },
+    "SELENIUM_AVAILABLE flag": {
+      "success": true,
+      "duration": 0.0
+    },
+    "WebDriver initialization": {
+      "success": false,
+      "duration": 2.1628613471984863
+    },
+    "_run_selenium_test method": {
+      "success": false,
+      "duration": 1.9247467517852783
+    },
+    "_cleanup_webdrivers method": {
+      "success": false,
+      "duration": 1.8948893547058105
+    },
+    "run_browser_tests method": {
+      "success": false,
+      "duration": 4.032287836074829
+    }
+  },
+  "issues": [
+    "WebDriver initialization failed for Google Chrome",
+    "WebDriver initialization failed for Microsoft Edge",
+    "Failed to initialize WebDriver for Google Chrome",
+    "Failed to initialize WebDriver for Microsoft Edge",
+    "No WebDriver instances created for _cleanup_webdrivers test",
+    "Error checking run_browser_tests method: name 'server_process' is not defined"
+  ],
+  "fixes": []
+}

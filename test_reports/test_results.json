@@ -1,0 +1,49 @@
+{
+  "timestamp": "2025-06-11 16:53:20",
+  "browsers_tested": [
+    {
+      "id": "chrome",
+      "name": "Google Chrome",
+      "version": "100.0.4896.127"
+    }
+  ],
+  "test_results": {
+    "chrome": {
+      "Test 1": {
+        "passed": true,
+        "timestamp": "2025-06-11 16:53:20",
+        "elements_found": {
+          "body": true,
+          "h1": true,
+          "p": true
+        },
+        "css_properties_supported": {
+          "display": true,
+          "color": true
+        }
+      },
+      "Test 2": {
+        "passed": false,
+        "timestamp": "2025-06-11 16:53:20",
+        "elements_found": {
+          "body": true,
+          "unknown": false
+        },
+        "css_properties_supported": {
+          "display": true,
+          "unknown": false
+        },
+        "errors": [
+          "Element not found: unknown"
+        ]
+      }
+    }
+  },
+  "summary": {
+    "total_tests": 2,
+    "passed": 1,
+    "failed": 1,
+    "skipped": 0,
+    "pass_rate": "50.0%"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "session_id": "20250627_183845",
+  "timestamp": "2025-06-27T18:38:45.128011",
+  "summary": {
+    "total_services": 1,
+    "passed_services": 0,
+    "total_tests": 0,
+    "success_rate": 0.0
+  },
+  "service_results": {
+    "memory": {
+      "success": false,
+      "error": "No healthy endpoint found for memory",
+      "metrics": {}
+    }
+  },
+  "errors": []
+}

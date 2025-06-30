@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7.0-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  brain:
+    build:
+      context: .
+      dockerfile: Dockerfile.brain
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - ALEJO_LOCAL_INFERENCE=1
+      - ALEJO_LLM_MODEL_TIER=standard
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - .:/app
+      - emotional_data:/app/data/emotional
+    depends_on:
+      redis:
+        condition: service_healthy
+      emotional_intelligence:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  emotional_intelligence:
+    build:
+      context: .
+      dockerfile: Dockerfile.emotional
+    ports:
+      - "8001:8001"
+    environment:
+      - PYTHONPATH=/app
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - .:/app
+      - emotional_data:/app/data/emotional
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    command: ["python", "-m", "alejo.services.emotional_intelligence_service"]
+
+  memory_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      - PYTHONPATH=/app
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - .:/app
+      - memory_data:/app/data/memory
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: ["python", "-m", "alejo.services.memory_service"]
+
+  command_processor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8003:8003"
+    environment:
+      - PYTHONPATH=/app
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - .:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: ["python", "-m", "alejo.services.command_processor_service"]
+
+volumes:
+  redis_data:
+  emotional_data:
+  memory_data:

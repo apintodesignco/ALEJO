@@ -1,0 +1,152 @@
+name: ALEJO Nightly Security & Stress Tests
+
+on:
+  schedule:
+    # Run at 2:00 AM UTC every day
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  security-scan:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install bandit safety
+          
+      - name: Run Bandit security scanner
+        run: |
+          bandit -r alejo -f json -o bandit-results.json
+          
+      - name: Check for vulnerable dependencies
+        run: |
+          safety check -r requirements.txt --json > safety-results.json
+          
+      - name: Upload security scan results
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-scan-results
+          path: |
+            bandit-results.json
+            safety-results.json
+            
+      - name: Run SAST with CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: python, javascript
+          
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        
+  stress-test:
+    name: Stress Testing
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio pytest-cov locust memory_profiler psutil
+          
+      - name: Start ALEJO in background
+        run: |
+          python -m alejo.server --headless &
+          sleep 10  # Wait for server to start
+        env:
+          REDIS_URL: redis://localhost:6379
+          ALEJO_LOCAL_INFERENCE: 1
+          ALEJO_ALLOW_EXTERNAL_API: 0
+          
+      - name: Run extended stress test
+        run: |
+          locust -f tests/performance/locustfile.py --headless -u 50 -r 10 --run-time 10m --host http://localhost:8000
+          
+      - name: Run memory leak detection
+        run: |
+          python scripts/memory_leak_test.py --duration 300 --output memory-profile.json
+          
+      - name: Upload stress test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: stress-test-results
+          path: |
+            memory-profile.json
+            locust_stats.csv
+            
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pip-audit cyclonedx-bom
+          
+      - name: Audit Python dependencies
+        run: |
+          pip-audit -r requirements.txt -o json -f audit-results.json || true
+          
+      - name: Generate comprehensive SBOM
+        run: |
+          # Python dependencies
+          cyclonedx-py -o python-sbom.xml
+          
+          # Node.js dependencies
+          npm install -g @cyclonedx/cyclonedx-npm
+          cyclonedx-npm --output-file node-sbom.xml
+          
+          # Merge SBOMs (simplified representation)
+          echo "<?xml version=\"1.0\"?><bom xmlns=\"http://cyclonedx.org/schema/bom/1.4\"><components>" > complete-sbom.xml
+          grep -A 1000 "<component" python-sbom.xml | grep -v "</bom>" >> complete-sbom.xml
+          grep -A 1000 "<component" node-sbom.xml | grep -v "</bom>" | grep -v "<?xml" >> complete-sbom.xml
+          echo "</components></bom>" >> complete-sbom.xml
+          
+      - name: Upload audit results
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-audit-results
+          path: |
+            audit-results.json
+            python-sbom.xml
+            node-sbom.xml
+            complete-sbom.xml

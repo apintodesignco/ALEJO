@@ -1,0 +1,521 @@
+/* 
+ * ALEJO Gesture Arpeggiator - Main Stylesheet
+ * 
+ * A modern, responsive UI for the gesture-controlled arpeggiator
+ * with audio-reactive visualizations
+ */
+
+:root {
+  /* Color palette */
+  --primary-color: #3a86ff;
+  --primary-dark: #2667cc;
+  --primary-light: #5a9dff;
+  --secondary-color: #ff006e;
+  --secondary-dark: #cc0058;
+  --secondary-light: #ff3389;
+  --tertiary-color: #8338ec;
+  --accent-color: #ffbe0b;
+  
+  /* Neutral colors */
+  --background-dark: #121212;
+  --background-medium: #1e1e1e;
+  --background-light: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --text-disabled: #6c6c6c;
+  --border-color: #3d3d3d;
+  
+  /* Functional colors */
+  --success-color: #06d6a0;
+  --warning-color: #ffd166;
+  --error-color: #ef476f;
+  --info-color: #118ab2;
+  
+  /* Dimensions */
+  --header-height: 60px;
+  --footer-height: 40px;
+  --panel-gap: 16px;
+  --border-radius: 8px;
+  --control-height: 36px;
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background-color: var(--background-dark);
+}
+
+/* App container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Header */
+.app-header {
+  height: var(--header-height);
+  background-color: var(--background-medium);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.logo h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--tertiary-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+}
+
+/* Main content */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--panel-gap);
+  display: flex;
+  flex-direction: column;
+  gap: var(--panel-gap);
+}
+
+/* Panels container */
+.panels-container {
+  display: flex;
+  gap: var(--panel-gap);
+  height: calc(50% - var(--panel-gap) / 2);
+  min-height: 250px;
+}
+
+/* Panel */
+.panel {
+  flex: 1;
+  background-color: var(--background-medium);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel h2 {
+  padding: 12px 16px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  background-color: var(--background-light);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Camera panel */
+.camera-panel .video-container {
+  position: relative;
+  flex: 1;
+  background-color: #000;
+  overflow: hidden;
+}
+
+.camera-panel video,
+.camera-panel canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gesture-indicator {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 8px 12px;
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+}
+
+/* Visualizer panel */
+.visualizer-panel #visualizerContainer {
+  flex: 1;
+  background-color: #000;
+  overflow: hidden;
+}
+
+.visualizer-controls {
+  display: flex;
+  padding: 12px;
+  gap: 16px;
+  background-color: var(--background-light);
+  border-top: 1px solid var(--border-color);
+}
+
+/* Arpeggiator panel */
+.arpeggiator-panel .piano-roll {
+  flex: 1;
+  background-color: var(--background-dark);
+  position: relative;
+  overflow: hidden;
+}
+
+.arpeggiator-controls {
+  display: flex;
+  padding: 12px;
+  gap: 16px;
+  background-color: var(--background-light);
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+/* Drums panel */
+.drums-panel .drum-grid {
+  flex: 1;
+  background-color: var(--background-dark);
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: repeat(16, 1fr);
+  gap: 2px;
+  padding: 12px;
+}
+
+.drum-grid-cell {
+  background-color: var(--background-light);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.drum-grid-cell.active {
+  background-color: var(--primary-color);
+}
+
+.drum-grid-cell.current {
+  border: 2px solid var(--accent-color);
+}
+
+.drum-controls {
+  display: flex;
+  padding: 12px;
+  gap: 16px;
+  background-color: var(--background-light);
+  border-top: 1px solid var(--border-color);
+}
+
+/* Footer */
+.app-footer {
+  height: var(--footer-height);
+  background-color: var(--background-medium);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.status-indicators {
+  display: flex;
+  gap: 16px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-value {
+  font-weight: 500;
+}
+
+.status-value.connected {
+  color: var(--success-color);
+}
+
+.status-value.disconnected {
+  color: var(--error-color);
+}
+
+/* Controls */
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.control-group label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+select, input[type="range"] {
+  height: var(--control-height);
+  background-color: var(--background-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  padding: 0 8px;
+}
+
+select {
+  min-width: 120px;
+  cursor: pointer;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: var(--background-dark);
+  border-radius: 3px;
+  outline: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Buttons */
+.btn {
+  height: var(--control-height);
+  padding: 0 16px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn.primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn.primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn.secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.btn.secondary:hover {
+  background-color: var(--secondary-dark);
+}
+
+.btn.tertiary {
+  background-color: var(--tertiary-color);
+  color: white;
+}
+
+.btn.tertiary:hover {
+  background-color: var(--tertiary-color);
+  filter: brightness(0.9);
+}
+
+.btn:disabled {
+  background-color: var(--background-light);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 100;
+  overflow: auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: var(--background-medium);
+  border-radius: var(--border-radius);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.modal h2 {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 1.2rem;
+}
+
+.close-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.close-button:hover {
+  color: var(--text-primary);
+}
+
+.settings-section {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settings-section h3 {
+  margin-bottom: 12px;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.settings-section .control-group {
+  margin-bottom: 12px;
+}
+
+.modal-footer {
+  padding: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.gesture-mapping-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .panels-container {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .panel {
+    height: 300px;
+  }
+  
+  .app-content {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .control-group {
+    min-width: 100px;
+  }
+}
+
+/* Animation keyframes */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
+.pulsing {
+  animation: pulse 1s infinite;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+/* Piano roll styling */
+.piano-key {
+  position: absolute;
+  height: 20px;
+  background-color: var(--background-light);
+  border-radius: 2px;
+  transition: background-color 0.1s;
+}
+
+.piano-key.active {
+  background-color: var(--primary-color);
+}
+
+.piano-key.current {
+  border: 2px solid var(--accent-color);
+}
+
+/* Beat marker */
+.beat-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--accent-color);
+  z-index: 10;
+  pointer-events: none;
+}

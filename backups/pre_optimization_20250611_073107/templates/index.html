@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEJO - Advanced AI Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ALEJO-ui-fixed.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body class="theme-dark">
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-text">ALEJO</span>
+                <span class="logo-subtitle">Advanced Language and Execution Jarvis Operator</span>
+            </div>
+            <div class="system-status">
+                <div class="status-item">
+                    <span class="status-label">CPU</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="cpu-usage"></div>
+                    </div>
+                    <span class="status-value" id="cpu-value">0%</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Memory</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="memory-usage"></div>
+                    </div>
+                    <span class="status-value" id="memory-value">0%</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Disk</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="disk-usage"></div>
+                    </div>
+                    <span class="status-value" id="disk-value">0%</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="menu-section">
+                    <h3>Menu</h3>
+                    <ul class="menu-items">
+                        <li class="active"><a href="#" data-view="chat">Chat</a></li>
+                        <li><a href="#" data-view="vision">Vision</a></li>
+                        <li><a href="#" data-view="voice">Voice</a></li>
+                        <li><a href="#" data-view="settings">Settings</a></li>
+                    </ul>
+                </div>
+                <div class="system-info">
+                    <h3>System Info</h3>
+                    <div class="info-item">
+                        <span class="info-label">Status:</span>
+                        <span class="info-value online">Online</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Uptime:</span>
+                        <span class="info-value" id="uptime-value">00:00:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="view active" id="chat-view">
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message system">
+                                <div class="message-content">
+                                    <p>Welcome to ALEJO! How can I assist you today?</p>
+                                </div>
+                                <div class="message-time">Now</div>
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" id="message-input" placeholder="Type your message here...">
+                            <button id="send-button">Send</button>
+                            <button id="voice-input-button" title="Voice Input">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view" id="vision-view">
+                    <div class="vision-container">
+                        <div class="vision-controls">
+                            <button id="take-screenshot">Take Screenshot</button>
+                            <button id="analyze-image">Analyze Image</button>
+                            <button id="upload-image">Upload Image</button>
+                        </div>
+                        <div class="vision-display">
+                            <img id="vision-image" src="" alt="No image available">
+                        </div>
+                        <div class="vision-results">
+                            <h3>Analysis Results</h3>
+                            <div id="vision-analysis"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view" id="voice-view">
+                    <div class="voice-container">
+                        <div class="voice-status">
+                            <div class="status-indicator" id="voice-status-indicator"></div>
+                            <div class="status-text" id="voice-status-text">Voice recognition ready</div>
+                        </div>
+                        <div class="voice-controls">
+                            <button id="start-listening">Start Listening</button>
+                            <button id="stop-listening">Stop Listening</button>
+                        </div>
+                        <div class="voice-transcript">
+                            <h3>Transcript</h3>
+                            <div id="voice-transcript-text"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view" id="settings-view">
+                    <div class="settings-container">
+                        <h2>Settings</h2>
+                        <div class="settings-group">
+                            <h3>Interface</h3>
+                            <div class="setting-item">
+                                <label for="theme-select">Theme</label>
+                                <select id="theme-select">
+                                    <option value="dark">Dark</option>
+                                    <option value="light">Light</option>
+                                    <option value="blue">Blue</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label for="enable-3d">Enable 3D Interface</label>
+                                <input type="checkbox" id="enable-3d" checked>
+                            </div>
+                        </div>
+                        <div class="settings-group">
+                            <h3>Voice</h3>
+                            <div class="setting-item">
+                                <label for="enable-voice">Enable Voice</label>
+                                <input type="checkbox" id="enable-voice" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label for="voice-volume">Voice Volume</label>
+                                <input type="range" id="voice-volume" min="0" max="100" value="80">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="holographic-container" id="holographic-container">
+            <!-- 3D holographic interface will be rendered here -->
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vision.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/voice.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/holographic.js') }}"></script>
+</body>
+</html>

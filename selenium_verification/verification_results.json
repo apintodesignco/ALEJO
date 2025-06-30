@@ -1,0 +1,45 @@
+{
+  "timestamp": "2025-06-11 15:55:08",
+  "success": true,
+  "steps": [
+    {
+      "step": "Initialize WebDriver",
+      "status": "Success",
+      "details": "WebDriver initialized successfully"
+    },
+    {
+      "step": "Navigate to example.com",
+      "status": "Success",
+      "details": {
+        "page_title": "Example Domain",
+        "page_url": "https://www.example.com/"
+      }
+    },
+    {
+      "step": "Check for elements",
+      "status": "Success",
+      "details": {
+        "h1": true,
+        "h1_text": "Example Domain",
+        "h1_visible": true,
+        "p": true,
+        "p_text": "This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.",
+        "p_visible": true,
+        "a": true,
+        "a_text": "More information...",
+        "a_visible": true
+      }
+    },
+    {
+      "step": "Get user agent",
+      "status": "Success",
+      "details": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/137.0.0.0 Safari/537.36"
+    },
+    {
+      "step": "Take screenshot",
+      "status": "Success",
+      "details": "C:\\Users\\magic\\CascadeProjects\\ALEJO\\selenium_verification\\screenshot.png"
+    }
+  ],
+  "errors": []
+}

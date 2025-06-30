@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: monitoring
+data:
+  alejo-overview.json: |
+    {
+      "dashboard": {
+        "title": "ALEJO Overview",
+        "panels": [
+          {
+            "title": "Service Health",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "up{namespace='alejo'}"
+              }
+            ]
+          },
+          {
+            "title": "Response Times",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(http_request_duration_seconds_sum{namespace='alejo'}[5m])"
+              }
+            ]
+          },
+          {
+            "title": "Error Rates",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(http_requests_total{status=~'5..'}[5m])"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  emotional-metrics.json: |
+    {
+      "dashboard": {
+        "title": "Emotional Intelligence Metrics",
+        "panels": [
+          {
+            "title": "Sentiment Analysis Accuracy",
+            "type": "gauge",
+            "targets": [
+              {
+                "expr": "sentiment_analysis_accuracy"
+              }
+            ]
+          },
+          {
+            "title": "Emotional Response Times",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(emotional_response_duration_seconds_sum[5m])"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  brain-metrics.json: |
+    {
+      "dashboard": {
+        "title": "Brain Service Metrics",
+        "panels": [
+          {
+            "title": "Memory Usage",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "process_resident_memory_bytes{service='brain-service'}"
+              }
+            ]
+          },
+          {
+            "title": "Command Processing Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(command_processed_total[5m])"
+              }
+            ]
+          }
+        ]
+      }
+    }

@@ -1,0 +1,21 @@
+# ALEJO Security Hardening - Phase 1 Requirements
+
+# Core dependencies
+cryptography>=41.0.0
+pyotp>=2.8.0
+qrcode>=7.4.2
+pillow>=10.0.0
+requests>=2.31.0
+
+# Browser testing dependencies
+selenium>=4.33.0
+webdriver-manager>=4.0.2
+
+# Vision dependencies
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# Optional dependencies
+# Uncomment if needed for your environment
+# flask>=2.3.0
+# flask-socketio>=5.3.0

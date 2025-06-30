@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEJO Gesture Arpeggiator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/postprocessing/UnrealBloomPass.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">
+                <h1>ALEJO Gesture Arpeggiator</h1>
+            </div>
+            <div class="controls">
+                <button id="startButton" class="btn primary">Start</button>
+                <button id="stopButton" class="btn secondary" disabled>Stop</button>
+                <button id="settingsButton" class="btn tertiary">Settings</button>
+            </div>
+        </header>
+
+        <main class="app-content">
+            <div class="panels-container">
+                <div class="panel camera-panel">
+                    <h2>Hand Tracking</h2>
+                    <div class="video-container">
+                        <video id="inputVideo" playsinline></video>
+                        <canvas id="handCanvas"></canvas>
+                        <div class="gesture-indicator">
+                            <span id="leftHandGesture">Left: None</span>
+                            <span id="rightHandGesture">Right: None</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel visualizer-panel">
+                    <h2>Visualizer</h2>
+                    <div id="visualizerContainer"></div>
+                    <div class="visualizer-controls">
+                        <div class="control-group">
+                            <label for="visualizerMode">Mode:</label>
+                            <select id="visualizerMode">
+                                <option value="particles">Particles</option>
+                                <option value="waveform">Waveform</option>
+                                <option value="spectrum">Spectrum</option>
+                                <option value="geometric">Geometric</option>
+                                <option value="fluid">Fluid</option>
+                                <option value="neural">Neural</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="colorScheme">Color Scheme:</label>
+                            <select id="colorScheme">
+                                <option value="rainbow">Rainbow</option>
+                                <option value="monochrome">Monochrome</option>
+                                <option value="complementary">Complementary</option>
+                                <option value="analogous">Analogous</option>
+                                <option value="triadic">Triadic</option>
+                                <option value="reactive">Reactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panels-container">
+                <div class="panel arpeggiator-panel">
+                    <h2>Arpeggiator</h2>
+                    <div class="piano-roll" id="pianoRoll"></div>
+                    <div class="arpeggiator-controls">
+                        <div class="control-group">
+                            <label for="rootNote">Root Note:</label>
+                            <select id="rootNote"></select>
+                        </div>
+                        <div class="control-group">
+                            <label for="scale">Scale:</label>
+                            <select id="scale">
+                                <option value="major">Major</option>
+                                <option value="minor">Minor</option>
+                                <option value="pentatonic">Pentatonic</option>
+                                <option value="blues">Blues</option>
+                                <option value="chromatic">Chromatic</option>
+                                <option value="dorian">Dorian</option>
+                                <option value="phrygian">Phrygian</option>
+                                <option value="lydian">Lydian</option>
+                                <option value="mixolydian">Mixolydian</option>
+                                <option value="locrian">Locrian</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="arpeggioPattern">Pattern:</label>
+                            <select id="arpeggioPattern">
+                                <option value="up">Up</option>
+                                <option value="down">Down</option>
+                                <option value="updown">Up-Down</option>
+                                <option value="downup">Down-Up</option>
+                                <option value="random">Random</option>
+                                <option value="converge">Converge</option>
+                                <option value="diverge">Diverge</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="bpmSlider">BPM: <span id="bpmValue">120</span></label>
+                            <input type="range" id="bpmSlider" min="60" max="180" value="120">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel drums-panel">
+                    <h2>Drum Machine</h2>
+                    <div class="drum-grid" id="drumGrid"></div>
+                    <div class="drum-controls">
+                        <div class="control-group">
+                            <label for="drumPattern">Pattern:</label>
+                            <select id="drumPattern"></select>
+                        </div>
+                        <div class="control-group">
+                            <label for="drumVolume">Volume:</label>
+                            <input type="range" id="drumVolume" min="0" max="1" step="0.01" value="0.8">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div id="settingsModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>Settings</h2>
+                
+                <div class="settings-section">
+                    <h3>Audio</h3>
+                    <div class="control-group">
+                        <label for="masterVolume">Master Volume:</label>
+                        <input type="range" id="masterVolume" min="0" max="1" step="0.01" value="0.8">
+                    </div>
+                    <div class="control-group">
+                        <label for="arpeggioVolume">Arpeggio Volume:</label>
+                        <input type="range" id="arpeggioVolume" min="0" max="1" step="0.01" value="0.8">
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Visualizer</h3>
+                    <div class="control-group">
+                        <label for="visualizerIntensity">Intensity:</label>
+                        <input type="range" id="visualizerIntensity" min="0" max="1" step="0.01" value="0.8">
+                    </div>
+                    <div class="control-group">
+                        <label for="visualizerComplexity">Complexity:</label>
+                        <input type="range" id="visualizerComplexity" min="0" max="1" step="0.01" value="0.6">
+                    </div>
+                    <div class="control-group">
+                        <label for="visualizerSpeed">Speed:</label>
+                        <input type="range" id="visualizerSpeed" min="0" max="1" step="0.01" value="0.5">
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Hand Tracking</h3>
+                    <div class="control-group">
+                        <label for="handTrackingConfidence">Detection Confidence:</label>
+                        <input type="range" id="handTrackingConfidence" min="0.5" max="0.9" step="0.05" value="0.7">
+                    </div>
+                    <div class="control-group">
+                        <label for="maxHands">Maximum Hands:</label>
+                        <select id="maxHands">
+                            <option value="1">1</option>
+                            <option value="2" selected>2</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Gesture Mapping</h3>
+                    <div class="gesture-mapping-container" id="gestureMappingContainer">
+                        <!-- Gesture mappings will be dynamically generated -->
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button id="saveSettingsButton" class="btn primary">Save Settings</button>
+                    <button id="resetSettingsButton" class="btn secondary">Reset to Default</button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="app-footer">
+            <div class="status-indicators">
+                <div class="status-item">
+                    <span class="status-label">Connection:</span>
+                    <span id="connectionStatus" class="status-value">Disconnected</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">FPS:</span>
+                    <span id="fpsCounter" class="status-value">0</span>
+                </div>
+            </div>
+            <div class="app-info">
+                <span>ALEJO Neuromorphic AI System</span>
+                <span>© 2025 ALEJO Project</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/websocket.js"></script>
+    <script src="/static/js/hand-tracking.js"></script>
+    <script src="/static/js/audio-engine.js"></script>
+    <script src="/static/js/visualizer.js"></script>
+    <script src="/static/js/ui-controller.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{
+  "selenium_import": {
+    "success": true,
+    "version": "4.33.0"
+  },
+  "webdriver_manager_import": {
+    "success": true,
+    "version": "4.0.2"
+  },
+  "browser_detection": {
+    "success": true,
+    "browsers": {
+      "chrome": "Google Chrome",
+      "edge": "Microsoft Edge"
+    }
+  },
+  "webdriver_initialization_chrome": {
+    "success": false,
+    "error": "WebDriver initialization returned None"
+  },
+  "selenium_test_method_chrome": {
+    "success": false,
+    "error": "Failed to initialize WebDriver"
+  },
+  "webdriver_initialization_edge": {
+    "success": false,
+    "error": "WebDriver initialization returned None"
+  },
+  "selenium_test_method_edge": {
+    "success": false,
+    "error": "Failed to initialize WebDriver"
+  },
+  "cleanup_webdrivers": {
+    "success": false,
+    "error": "No WebDriver instances created"
+  }
+}

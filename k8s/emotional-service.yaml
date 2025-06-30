@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emotional-service
+  namespace: alejo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: emotional-service
+  template:
+    metadata:
+      labels:
+        app: emotional-service
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: emotional-service
+        image: ${DOCKERHUB_USERNAME}/alejo-emotional:latest
+        ports:
+        - containerPort: 8001
+        envFrom:
+        - configMapRef:
+            name: alejo-config
+        - secretRef:
+            name: alejo-secrets
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        volumeMounts:
+        - name: emotional-data
+          mountPath: /app/data
+      volumes:
+      - name: emotional-data
+        persistentVolumeClaim:
+          claimName: emotional-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: emotional-service
+  namespace: alejo
+spec:
+  selector:
+    app: emotional-service
+  ports:
+  - port: 8001
+    targetPort: 8001
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: emotional-pvc
+  namespace: alejo
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: emotional-service-hpa
+  namespace: alejo
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: emotional-service
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80

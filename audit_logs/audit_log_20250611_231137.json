@@ -1,0 +1,12 @@
+[
+  {
+    "timestamp": "2025-06-11T23:11:37.066399",
+    "event_type": "log_initialized",
+    "username": "system",
+    "details": {
+      "log_file": "audit_logs\\audit_log_20250611_231137.json"
+    },
+    "previous_hash": null,
+    "hash": "686b1cc128e87049e4b5e90035cc36a7d18d0ffda9534f612e95edc3e8d67eee"
+  }
+]

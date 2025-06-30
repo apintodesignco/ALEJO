@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEJO Selenium Integration Check Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #0066cc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .summary {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .success {
+            color: #28a745;
+        }
+        .failure {
+            color: #dc3545;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .check-details {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        .issues-list {
+            background-color: #fff0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .fixes-list {
+            background-color: #f0fff0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ALEJO Selenium Integration Check Report</h1>
+        <p>Generated on 2025-06-11 10:10:46</p>
+        
+        <div class="summary">
+            <h2>Summary</h2>
+            <p>Total Checks: 6</p>
+            <p class="success">Passed Checks: 2</p>
+            <p class="failure">Failed Checks: 4</p>
+            <p>Pass Rate: 33.3%</p>
+        </div>
+        
+        <h2>Check Results</h2>
+        <table>
+            <tr>
+                <th>Check Name</th>
+                <th>Status</th>
+                <th>Duration (s)</th>
+            </tr>
+
+            <tr>
+                <td>Dependencies</td>
+                <td class="success">Success</td>
+                <td>0.00</td>
+            </tr>
+            <tr>
+                <td>SELENIUM_AVAILABLE flag</td>
+                <td class="success">Success</td>
+                <td>0.00</td>
+            </tr>
+            <tr>
+                <td>WebDriver initialization</td>
+                <td class="failure">Failure</td>
+                <td>2.16</td>
+            </tr>
+            <tr>
+                <td>_run_selenium_test method</td>
+                <td class="failure">Failure</td>
+                <td>1.92</td>
+            </tr>
+            <tr>
+                <td>_cleanup_webdrivers method</td>
+                <td class="failure">Failure</td>
+                <td>1.89</td>
+            </tr>
+            <tr>
+                <td>run_browser_tests method</td>
+                <td class="failure">Failure</td>
+                <td>4.03</td>
+            </tr>
+        </table>
+        
+        <h2>Check Details</h2>
+
+        <div class="check-details">
+            <h3>Dependencies</h3>
+            <p class="success">Status: Success</p>
+            <p>Duration: 0.00 seconds</p>
+        </div>
+
+        <div class="check-details">
+            <h3>SELENIUM_AVAILABLE flag</h3>
+            <p class="success">Status: Success</p>
+            <p>Duration: 0.00 seconds</p>
+        </div>
+
+        <div class="check-details">
+            <h3>WebDriver initialization</h3>
+            <p class="failure">Status: Failure</p>
+            <p>Duration: 2.16 seconds</p>
+        </div>
+
+        <div class="check-details">
+            <h3>_run_selenium_test method</h3>
+            <p class="failure">Status: Failure</p>
+            <p>Duration: 1.92 seconds</p>
+        </div>
+
+        <div class="check-details">
+            <h3>_cleanup_webdrivers method</h3>
+            <p class="failure">Status: Failure</p>
+            <p>Duration: 1.89 seconds</p>
+        </div>
+
+        <div class="check-details">
+            <h3>run_browser_tests method</h3>
+            <p class="failure">Status: Failure</p>
+            <p>Duration: 4.03 seconds</p>
+        </div>
+
+        <h2 class="failure">Issues Found</h2>
+        <div class="issues-list">
+            <ul>
+
+                <li>WebDriver initialization failed for Google Chrome</li>
+
+                <li>WebDriver initialization failed for Microsoft Edge</li>
+
+                <li>Failed to initialize WebDriver for Google Chrome</li>
+
+                <li>Failed to initialize WebDriver for Microsoft Edge</li>
+
+                <li>No WebDriver instances created for _cleanup_webdrivers test</li>
+
+                <li>Error checking run_browser_tests method: name 'server_process' is not defined</li>
+
+            </ul>
+        </div>
+
+    </div>
+</body>
+</html>

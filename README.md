@@ -1,0 +1,269 @@
+# ALEJO - Advanced Language and Execution Jarvis Operator
+
+Created by Alejandro Pinto with AI collaboration
+
+ALEJO is a powerful, self-contained, offline-capable AI system designed to be accessible, adaptable, and exceptionally helpful. This open source project is made available to benefit as many people as possible while maintaining its integrity and vision.
+
+## About ALEJO
+
+ALEJO combines cutting-edge AI capabilities with a commitment to accessibility and user autonomy. It's designed to work entirely offline with local models, ensuring your data remains private and secure.
+
+## Distributed Intelligence
+
+ALEJO is designed as a distributed intelligence system that can learn and evolve through collective usage. With user opt-in, ALEJO instances across the world can contribute anonymized learning data to improve the collective intelligence of the system. This creates a form of "superconsciousness" that grows smarter through the combined experiences of millions of users, while maintaining individual privacy and control.
+
+Key aspects of this distributed intelligence:
+
+* **Federated Learning**: ALEJO learns locally on your device, then shares only anonymized insights
+* **Collective Evolution**: The system becomes more helpful through aggregated experiences
+* **Privacy-Preserving**: All learning is opt-in and respects user privacy
+* **Guided Growth**: Core evolution is overseen by Alejandro Pinto and authorized AI systems
+
+## Customization
+
+ALEJO can be customized by users for their own personal use cases and test scenarios. You are encouraged to adapt ALEJO to your specific needs while respecting the license terms that protect the main codebase.
+
+## Offline Installer
+
+To create an offline installer, run:
+
+
+```python
+python installer.py
+```
+
+This will package the entire project into a zip file for offline installation. - Advanced Language and Execution Jarvis Operator
+
+ALEJO is a modern AI assistant that combines the power of natural language processing, voice interaction, and a web-based interface to provide a seamless user experience. ALEJO is the evolution of the Jarvis system, maintaining all of its functionality while adding new features and improvements.
+
+## Features
+
+### Built-in Accessibility
+Alejo delivers every response twice: on-screen text and synthesized voice. If voice is enabled but a microphone or speakers are missing, Alejo falls back gracefully and still renders text.
+
+On startup with `--voice` Alejo enumerates available input/output devices (when `sounddevice` or `pyaudio` present) and lets the user pick. A default is selected after 10 s of no answer, ensuring blind users aren’t blocked.
+
+- **Natural Language Processing**: Understand and respond to user commands in natural language
+- **Web Interface**: Modern, responsive web interface with real-time updates
+- **Voice Interaction**: Speech recognition and text-to-speech capabilities
+- **System Monitoring**: Real-time monitoring of CPU, memory, and disk usage
+- **Vision Analysis**: Screenshot and image analysis capabilities
+- **Holographic UI**: Optional 3D interface for a futuristic experience
+
+## System Requirements
+
+- Python 3.8 or higher
+- Modern web browser (Chrome, Firefox, Edge, Safari)
+- Windows, macOS, or Linux operating system
+- Microphone (for voice interaction)
+- Speakers (for voice responses)
+
+## Installation
+
+1. Clone the repository or download the source code
+2. Configure your environment variables (see [Environment Setup](#environment-setup-guide))
+3. Run the PowerShell launcher script:
+
+
+```powershell
+.\Start-ALEJO.ps1
+```
+
+This script will:
+
+- Create a virtual environment if it doesn't exist
+- Install all required dependencies
+- Start the ALEJO web interface
+
+### Using the run_alejo.py Script (Recommended)
+
+For the most reliable experience with the full holographic UI:
+
+```bash
+python run_alejo.py
+```
+
+This script will:
+
+- Initialize all ALEJO components properly
+- Start the web interface with the holographic UI enabled
+- Open your default browser automatically
+- Provide detailed logging for troubleshooting
+
+## Quick smoke test
+After cloning and installing dependencies you can verify an end-to-end baseline (no camera/voice/UI) with:
+```bash
+python scripts/smoke_test.py
+```
+Expect ✔ when all core modules are healthy.
+
+---
+
+## Manual Installation
+
+If you prefer to install manually:
+
+1. Create a virtual environment:
+
+```bash
+python -m venv venv
+```
+
+2. Activate the virtual environment:
+   - Windows: `..\venv\Scripts\activate`
+   - macOS/Linux: `source venv/bin/activate`
+
+3. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+4. Run ALEJO:
+
+```bash
+python alejo.py --web
+```
+
+## Command Line Options
+
+The `alejo.py` script accepts the following command line options:
+
+- `--web`: Start the web interface (default: off)
+- `--voice`: Enable voice interface (default: off)
+- `--port PORT`: Web interface port (default: 5000)
+- `--host HOST`: Web interface host (default: 0.0.0.0)
+- `--debug`: Enable debug mode (default: off)
+
+## Web Interface
+
+The web interface is accessible at `http://localhost:5000` by default. It provides:
+
+- Chat interface for text-based interaction
+- Vision interface for image analysis
+- Voice interface for speech recognition
+- Settings for customizing the experience
+
+## Error Handling System
+
+ALEJO includes a robust error handling system with automatic recovery strategies, performance monitoring, and comprehensive logging.
+
+### Key Features
+
+- **Automatic Recovery**: Built-in strategies for common error types
+  - Connection errors with exponential backoff
+  - Memory management and garbage collection
+  - Permission and file access recovery
+  - API rate limit handling
+  - Network and service recovery
+
+- **Performance Monitoring**
+  - Recovery time tracking
+  - Success rate calculation
+  - Error frequency monitoring
+  - Resource usage analytics
+  - Real-time performance reporting
+
+- **Production Logging**
+  - Rotating file handlers
+  - JSON-formatted logs for analytics
+  - Configurable alert thresholds
+  - Error statistics and trends
+  - Component health monitoring
+
+### Usage
+
+```python
+from alejo.utils.error_handling import handle_errors
+from alejo.utils.metrics import get_metrics
+from alejo.utils.monitoring import get_monitor
+
+# Decorate functions for automatic error handling
+@handle_errors(component='my_component', category='file_operation')
+def process_file(path):
+    # Your code here
+    pass
+
+# Track performance metrics
+metrics = get_metrics()
+metrics.record_recovery_time('my_component', 'file_recovery', 1.5)
+
+# Monitor errors in production
+monitor = get_monitor()
+monitor.log_error({
+    'component': 'my_component',
+    'category': 'critical',
+    'message': 'File access denied'
+})
+```
+
+### Configuration
+
+Error handling can be configured in `config.yaml`:
+
+```yaml
+error_handling:
+  alert_thresholds:
+    critical: 1
+    system: 3
+    operational: 5
+  log_dir: logs
+  test_mode: false
+```
+
+For more details, see the [Error Handling Documentation](alejo/utils/README.md).
+
+## Directory Structure
+
+```
+ALEJO/
+├── alejo.py                # Main entry point
+├── requirements.txt        # Python dependencies
+├── Start-ALEJO.ps1         # PowerShell launcher script
+├── core/                   # Core modules
+│   ├── __init__.py
+│   ├── brain/              # AI processing
+│   │   ├── __init__.py
+│   │   └── alejo_brain.py
+│   ├── voice/              # Voice processing
+│   │   ├── __init__.py
+│   │   └── voice_service.py
+│   ├── web/                # Web interface
+│   │   ├── __init__.py
+│   │   ├── static/         # Static assets
+│   │   │   ├── css/
+│   │   │   ├── js/
+│   │   │   └── images/
+│   │   ├── templates/      # HTML templates
+│   │   └── web_interface/  # Web server
+│   │       └── __init__.py
+│   └── utils/              # Utility functions
+│       └── __init__.py
+├── data/                   # Data storage
+└── logs/                   # Log files
+```
+
+## Development
+
+To contribute to ALEJO:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Sponsorship and Support
+
+ALEJO is being released as a free and accessible tool to help people first and foremost. However, development and maintenance require resources. If you would like to sponsor this project or help with funding, please reach out to Alejandro Pinto at al.pintoemail@gmail.com.
+
+Your support helps ensure that ALEJO remains available to those who need it, especially people with disabilities who can benefit from its capabilities. Any contributions beyond what's needed for development are reinvested into making ALEJO better or given back to the community.
+
+We believe in helping each other first and foremost - that's why ALEJO is free and accessible to all.
+
+## Acknowledgments
+
+ALEJO is the evolution of the Jarvis system, maintaining all of its functionality while adding new features and improvements.

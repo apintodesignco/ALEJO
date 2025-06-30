@@ -1,0 +1,66 @@
+# Error Handling Configuration
+
+# Alert thresholds for different error categories
+alert_thresholds:
+  critical: 1      # Alert on first critical error
+  system: 3        # Alert after 3 system errors
+  operational: 5   # Alert after 5 operational errors
+  recoverable: 10  # Alert after 10 recoverable errors
+
+# Recovery strategy settings
+recovery_strategies:
+  connection:
+    max_retries: 3
+    backoff_base: 2
+    backoff_max: 30
+    jitter: true
+  memory:
+    gc_threshold: 80  # Percentage of memory usage to trigger GC
+    cache_clear_size: 50  # MB of cache to clear
+  timeout:
+    initial: 5
+    max: 30
+    multiplier: 2
+  permission:
+    elevation_timeout: 300  # Seconds before permission elevation expires
+  network:
+    pool_reset_interval: 60  # Seconds between connection pool resets
+  llm_service:
+    key_rotation_interval: 3600  # Seconds between API key rotations
+
+# Logging configuration
+logging:
+  log_dir: logs
+  max_file_size: 10485760  # 10MB
+  backup_count: 5
+  json_format: true
+  log_level: INFO
+
+# Monitoring settings
+monitoring:
+  enabled: true
+  stats_interval: 300  # Seconds between stats collection
+  health_check_interval: 60  # Seconds between health checks
+  metrics_retention: 604800  # 7 days in seconds
+
+# Performance metrics
+metrics:
+  enabled: true
+  sample_rate: 1.0  # Percentage of operations to sample
+  aggregation_interval: 3600  # Seconds between metric aggregation
+
+# Component health thresholds
+component_health:
+  command_processor: 5
+  voice_recognition: 3
+  llm_service: 3
+  web_interface: 5
+  file_operations: 10
+  network: 5
+  default: 5
+
+# Test mode settings
+test_mode:
+  enabled: false
+  disable_health_degradation: true
+  mock_external_services: true

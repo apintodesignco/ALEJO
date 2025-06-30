@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selenium Verification Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #0066cc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .summary {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .success {
+            color: green;
+        }
+        .failed {
+            color: red;
+        }
+        .running {
+            color: orange;
+        }
+        .step {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .error {
+            color: red;
+            background-color: #ffeeee;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Selenium Verification Report</h1>
+        
+        <div class="summary">
+            <h2>Summary</h2>
+            <p><strong>Timestamp:</strong> 2025-06-11 15:55:08</p>
+            <p><strong>Overall Status:</strong> <span class="success">Success</span></p>
+        </div>
+        
+        <h2>Steps</h2>
+        
+        <div class="step">
+            <h3 class="success">Initialize WebDriver - Success</h3>
+            <p>WebDriver initialized successfully</p>
+            
+        </div>
+        
+        <div class="step">
+            <h3 class="success">Navigate to example.com - Success</h3>
+            <ul><li><strong>page_title:</strong> Example Domain</li><li><strong>page_url:</strong> https://www.example.com/</li></ul>
+            
+        </div>
+        
+        <div class="step">
+            <h3 class="success">Check for elements - Success</h3>
+            <ul><li><strong>h1:</strong> True</li><li><strong>h1_text:</strong> Example Domain</li><li><strong>h1_visible:</strong> True</li><li><strong>p:</strong> True</li><li><strong>p_text:</strong> This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.</li><li><strong>p_visible:</strong> True</li><li><strong>a:</strong> True</li><li><strong>a_text:</strong> More information...</li><li><strong>a_visible:</strong> True</li></ul>
+            
+        </div>
+        
+        <div class="step">
+            <h3 class="success">Get user agent - Success</h3>
+            <p>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/137.0.0.0 Safari/537.36</p>
+            
+        </div>
+        
+        <div class="step">
+            <h3 class="success">Take screenshot - Success</h3>
+            <p>C:\Users\magic\CascadeProjects\ALEJO\selenium_verification\screenshot.png</p>
+            
+        </div>
+        
+        
+        
+        
+        <h2>Screenshot</h2><img src="screenshot.png" alt="Screenshot" style="max-width: 100%;">
+    </div>
+</body>
+</html>

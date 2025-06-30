@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alejo-ingress
+  namespace: alejo
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+spec:
+  tls:
+  - hosts:
+    - api.alejo.ai
+    secretName: alejo-tls
+  rules:
+  - host: api.alejo.ai
+    http:
+      paths:
+      - path: /brain
+        pathType: Prefix
+        backend:
+          service:
+            name: brain-service
+            port:
+              number: 8000
+      - path: /emotional
+        pathType: Prefix
+        backend:
+          service:
+            name: emotional-service
+            port:
+              number: 8001

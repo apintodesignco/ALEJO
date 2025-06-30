@@ -1,0 +1,24 @@
+Windows Registry Editor Version 5.00
+
+; ALEJO Voice Command Registry Settings
+; This adds voice commands to Windows Speech Recognition to start ALEJO
+
+[HKEY_CURRENT_USER\Software\Microsoft\Speech\Preferences\AppShortcuts\ALEJO]
+"Path"="C:\\Users\\magic\\CascadeProjects\\ALEJO\\Start_ALEJO.bat"
+"ShellExecute"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Microsoft\Speech\Preferences\AppShortcuts\ALEJO\WakeUpALEJO]
+"Command"="Wake up ALEJO"
+"Confidence"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Microsoft\Speech\Preferences\AppShortcuts\ALEJO\HeyALEJO]
+"Command"="Hey ALEJO"
+"Confidence"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Microsoft\Speech\Preferences\AppShortcuts\ALEJO\StartALEJO]
+"Command"="Start ALEJO"
+"Confidence"=dword:00000001
+
+[HKEY_CURRENT_USER\Software\Microsoft\Speech\Preferences\AppShortcuts\ALEJO\HelloALEJO]
+"Command"="Hello ALEJO"
+"Confidence"=dword:00000001

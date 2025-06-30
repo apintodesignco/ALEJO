@@ -1,0 +1,54 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: alejo-gateway
+  namespace: alejo
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "api.alejo.ai"
+    tls:
+      httpsRedirect: true
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    hosts:
+    - "api.alejo.ai"
+    tls:
+      mode: SIMPLE
+      credentialName: alejo-tls
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: alejo-vs
+  namespace: alejo
+spec:
+  hosts:
+  - "api.alejo.ai"
+  gateways:
+  - alejo-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /brain
+    route:
+    - destination:
+        host: brain-service
+        port:
+          number: 8000
+  - match:
+    - uri:
+        prefix: /emotional
+    route:
+    - destination:
+        host: emotional-service
+        port:
+          number: 8001

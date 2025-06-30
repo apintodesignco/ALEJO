@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alejo-config
+  namespace: alejo
+data:
+  REDIS_URL: "redis://redis-service:6379/0"
+  PYTHONPATH: "/app"
+  SERVICE_MODE: "production"
+  LOG_LEVEL: "INFO"
+  METRICS_ENABLED: "true"
+  BRAIN_SERVICE_URL: "http://brain-service:8000"
+  EMOTIONAL_SERVICE_URL: "http://emotional-service:8001"

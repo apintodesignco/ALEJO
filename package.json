@@ -1,0 +1,29 @@
+{
+  "name": "alejo-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Frontend client for ALEJO Gesture Arpeggiator and other UI modules.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --open",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint --ext .js --max-warnings 0 alejo/interaction/gesture_arpeggiator/static/js",
+    "format": "prettier -w alejo/interaction/gesture_arpeggiator/static/js",
+    "test": "vitest run",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "@vitejs/plugin-legacy": "^5.1.0",
+    "eslint": "^8.55.0",
+    "eslint-plugin-import": "^2.29.0",
+    "prettier": "^3.3.1",
+    "vitest": "^1.5.0",
+    "jsdom": "^24.0.0",
+    "three": "^0.159.0",
+    "tone": "^14.8.40",
+    "@mediapipe/hands": "^0.5.1675460977",
+    "@playwright/test": "^1.44.0"
+  }
+}

@@ -1,0 +1,86 @@
+# =================================================================
+# ALEJO AI - Core Application Dependencies
+# =================================================================
+# Requires pip >= 25.1.1
+# To upgrade pip: python -m pip install --upgrade pip
+# =================================================================
+
+# --- Core Dependencies ---
+redis==5.0.1
+SQLAlchemy==2.0.27
+aiohttp==3.9.3  # Required for LLM clients
+asyncio==3.4.3
+fastapi==0.109.2
+uvicorn==0.27.1
+python-dotenv==1.0.0
+
+# --- Testing ---
+pytest==7.4.4
+pytest-cov==4.1.0
+pytest-xdist==3.5.0
+pytest-timeout==2.2.0
+pytest-asyncio==0.23.5
+coverage==7.4.1
+
+# --- Monitoring ---
+prometheus-client==0.19.0
+psutil==5.9.8
+pyinstrument==4.6.1
+
+# --- AI & ML ---
+llama-cpp-python==0.2.47
+openai==1.12.0              # For OpenAI LLM client
+ollama==0.1.5               # For local LLM integration
+transformers==4.38.2        # For emotion analysis and transformers
+torch==2.1.0                # PyTorch for transformers
+textblob==0.17.1            # For sentiment analysis
+numpy==1.26.4
+sentencepiece==0.2.0        # For RoBERTa tokenization
+tensorflow==2.15.0          # For additional model support
+tensorflow-datasets==4.9.2  # For data loading with transformers
+scikit-learn==1.4.0         # For ML utilities
+spacy==3.7.4                # For NLP tasks
+gensim==4.3.2               # For word embeddings
+
+# --- Multimodal Processing ---
+librosa==0.10.1             # Audio processing
+opencv-python==4.8.1.78      # Image processing
+Pillow==10.2.0              # Image handling
+soundfile==0.12.1           # Audio file handling
+torchaudio==2.1.0           # PyTorch audio support
+sounddevice==0.4.6          # Audio recording
+mediapipe==0.10.9           # For hand and face landmarks
+pyautogui==0.9.54             # For UI automation
+# dlib==19.24.2               # Face detection and landmarks
+# face-recognition==1.3.0     # Face recognition and analysis
+
+# --- Web Framework & Server ---
+Flask==2.2.2
+Flask-SocketIO==5.3.6
+Werkzeug==2.2.2             # Pinned for Flask 2.2.2 compatibility
+eventlet==0.33.0
+python-engineio==4.3.4
+python-socketio==5.7.2
+dnspython==1.16.0           # Pinned for eventlet compatibility
+frozenlist==1.3.0
+requests==2.28.1
+
+# --- Voice & Speech Processing ---
+pyttsx3==2.90
+SpeechRecognition==3.8.1
+PyAudio==0.2.14
+webrtcvad-wheels==2.0.11.post1
+pvporcupine==1.9.5
+
+# --- UI and Vision ---
+pystray==0.19.0             # For system tray icon
+PySide6==6.4.3
+mss==6.1.0
+pyautogui==0.9.54
+
+# --- Security & Authentication ---
+cryptography
+PyJWT
+passlib
+pyotp
+qrcode
