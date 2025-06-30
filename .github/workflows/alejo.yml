@@ -11,8 +11,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  validate:
-    name: Local Validation and Testing
+  backend-validation:
+    name: Backend Validation
     runs-on: ubuntu-latest
     services:
       redis:
@@ -37,13 +37,13 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest pytest-asyncio pytest-cov black flake8 isort mypy locust memory_profiler psutil pytest-playwright
+        pip install pytest pytest-asyncio pytest-cov black flake8 isort mypy locust memory_profiler psutil
         
     - name: Check code formatting
       run: |
         black --check alejo tests
         isort --check-only alejo tests
-        
+    
     - name: Run linters
       run: |
         flake8 alejo tests
@@ -51,29 +51,184 @@ jobs:
         
     - name: Run unit tests
       run: |
-        pytest -q
+        python -m pytest tests/unit/ -v
         
+    - name: Generate coverage report
+      run: |
+        pytest --cov=alejo --cov-report=xml
+        
+    - name: Upload coverage report
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+        
+    - name: Check coverage threshold
+      run: |
+        coverage report --fail-under=80
+        
+  integration-testing:
+    name: Integration Testing
+    runs-on: ubuntu-latest
+    needs: backend-validation
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-asyncio pytest-cov
+    
     - name: Run integration tests
+      env:
+        REDIS_URL: redis://localhost:6379
       run: |
-        pytest -q tests/cognitive/multimodal/test_brain_integration.py
-        pytest -q tests/emotional_intelligence/test_integration.py
-        pytest -q tests/ethical/test_integration.py
-        pytest -q tests/core/test_brain_extensions.py
-        pytest -q tests/llm_client/test_integration.py
-        pytest -q tests/llm_client/test_local_provider.py
+        # Run critical integration tests
+        python -m pytest tests/integration/ -vv
+        python -m pytest tests/cognitive/multimodal/test_brain_integration.py -v
+        python -m pytest tests/emotional_intelligence/test_integration.py -v
+        python -m pytest tests/ethical/test_integration.py -v
+        python -m pytest tests/core/test_brain_extensions.py -v
+        python -m pytest tests/llm_client/test_integration.py -v
+        python -m pytest tests/llm_client/test_local_provider.py -v
         
-    - name: Run performance tests
+        # Run proactive dialogue tests to verify this critical functionality
+        python -m pytest tests/brain/test_proactive_dialogue.py tests/emotional_intelligence/test_proactive_dialogue.py -v
+
+  frontend-validation:
+    name: Frontend Validation
+    runs-on: ubuntu-latest
+    needs: backend-validation
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: '**/package-lock.json'
+        
+    - name: Install frontend dependencies
       run: |
-        pytest -q tests/utils/test_memory_optimization.py
-        pytest -q tests/utils/test_performance.py
+        cd alejo/static
+        npm ci
+        
+    - name: Lint frontend code
+      run: |
+        cd alejo/static
+        npm run lint
+        
+    - name: Test frontend code
+      run: |
+        cd alejo/static
+        npm test -- --coverage
+        
+    - name: Build frontend assets
+      run: |
+        cd alejo/static
+        npm run build
+        
+    - name: Upload frontend build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: frontend-build
+        path: alejo/static/dist
+        
+  e2e-testing:
+    name: End-to-End Testing
+    runs-on: ubuntu-latest
+    needs: [integration-testing, frontend-validation]
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-asyncio pytest-playwright
         
     - name: Install Playwright browsers
       run: |
         python -m playwright install --with-deps chromium
         
+    - name: Download frontend build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: frontend-build
+        path: alejo/static/dist
+        
     - name: Run E2E UI tests
       run: |
-        pytest -q tests/e2e/test_ui_e2e.py
+        python -m pytest tests/e2e/test_ui_e2e.py -v
+        
+  performance-testing:
+    name: Performance Testing
+    runs-on: ubuntu-latest
+    needs: backend-validation
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-asyncio memory_profiler psutil locust
+        
+    - name: Run performance tests
+      run: |
+        python -m pytest tests/utils/test_memory_optimization.py -v
+        python -m pytest tests/utils/test_performance.py -v
         
     - name: Run performance benchmarks
       run: |
@@ -85,65 +240,38 @@ jobs:
         name: benchmark-results
         path: benchmark_results.json
         
-    - name: Generate coverage report
-      run: |
-        pytest --cov=alejo --cov-report=xml
-        
-    - name: Upload coverage report
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage.xml
-        fail_ci_if_error: false
-
-    - name: Run smoke test
-      run: python scripts/smoke_test.py -q
-      env:
-        REDIS_URL: redis://localhost:6379
-
-    - name: Run tests
-      env:
-        REDIS_URL: redis://localhost:6379
-      run: |
-        # First run proactive dialogue tests to verify this critical functionality
-        pytest tests/brain/test_proactive_dialogue.py tests/emotional_intelligence/test_proactive_dialogue.py -v
-        
-        # Then run all tests with coverage
-        pytest tests/ --cov=alejo --cov-report=xml
-        
-    - name: Check coverage threshold
-      run: |
-        coverage report --fail-under=80
-
-    # ---------- Front-end build/lint/test ----------
-    - name: Set up Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
-
-    - name: Install front-end dependencies
-      run: npm ci
-
-    - name: Run front-end lint
-      run: npm run lint
-
-    - name: Run front-end tests
-      run: npm run test -- --coverage
-
-    - name: Build front-end assets
-      run: npm run build
-        
-    - name: Upload coverage
-      uses: codecov/codecov-action@v4
-      with:
-        file: ./coverage.xml
-        
-    - name: Performance check
+    - name: Run load testing
       run: |
         locust -f tests/performance/locustfile.py --headless -u 10 -r 2 --run-time 1m --host http://localhost:8000
+        
+  security-compliance:
+    name: Security and Compliance
+    runs-on: ubuntu-latest
+    needs: backend-validation
     
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install cyclonedx-bom bandit safety
+        
+    - name: Run security scan
+      run: |
+        bandit -r alejo -f json -o security-report.json
+        
+    - name: Check for dependency vulnerabilities
+      run: |
+        safety check -r requirements.txt
+        
     - name: Generate Software Bill of Materials (SBOM)
       run: |
-        pip install cyclonedx-bom
         cyclonedx-py -o alejo-sbom.xml
         
     - name: Upload SBOM
@@ -158,3 +286,107 @@ jobs:
         ! grep -r "OPENAI_API_KEY" --include="*.py" --include="*.yml" alejo/ || (echo "ERROR: Found OpenAI API references" && exit 1)
         ! grep -r "HUGGINGFACE_API_TOKEN" --include="*.py" --include="*.yml" alejo/ || (echo "ERROR: Found HuggingFace API references" && exit 1)
         echo "Local-only validation complete"
+        
+  collective-learning:
+    name: Collective Learning Processing
+    runs-on: ubuntu-latest
+    needs: [security-compliance]
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-asyncio aiosqlite
+        
+    - name: Process collective insights
+      run: python scripts/process_insights.py --output-dir ./artifacts/insights
+      env:
+        REDIS_URL: redis://localhost:6379
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Generate improvement proposals
+      run: python scripts/generate_improvements.py --input-file ./artifacts/insights/processed_insights.json --output-dir ./artifacts/improvements
+      env:
+        REDIS_URL: redis://localhost:6379
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Apply approved improvements
+      if: github.event_name == 'workflow_dispatch'
+      run: python scripts/apply_improvements.py --input-file ./artifacts/improvements/improvement_proposals.json --dry-run
+      env:
+        REDIS_URL: redis://localhost:6379
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Run validation tests on improvements
+      run: python -m pytest tests/collective/test_improvements.py -v
+        
+    - name: Upload processed insights
+      uses: actions/upload-artifact@v3
+      with:
+        name: collective-insights
+        path: ./artifacts/insights
+        retention-days: 30
+        
+    - name: Upload improvement proposals
+      uses: actions/upload-artifact@v3
+      with:
+        name: improvement-proposals
+        path: ./artifacts/improvements
+        retention-days: 30
+  
+  smoke-test:
+    name: Smoke Test
+    runs-on: ubuntu-latest
+    needs: [backend-validation, frontend-validation]
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Download frontend build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: frontend-build
+        path: alejo/static/dist
+        
+    - name: Run smoke test
+      run: python scripts/smoke_test.py -v
+      env:
+        REDIS_URL: redis://localhost:6379

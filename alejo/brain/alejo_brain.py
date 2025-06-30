@@ -173,13 +173,26 @@ class ALEJOBrain(BrainStreamingMixin):
                 await self._setup_multimodal()
                 logger.info("Multimodal components initialized")
             
+            # Load plugins
+            await self._load_plugins()
+            logger.info("Plugins loaded")
+            
             self.initialized = True
-            logger.info("ALEJO Brain initialization complete")
+            logger.info("ALEJO Brain# Initialization complete")
+            
+        # Register ALEJOBrain with ServiceRegistry for health monitoring
+        try:
+            from alejo.service_registry import ServiceRegistry
+            self.service_registry = ServiceRegistry(event_bus=getattr(self, 'event_bus', None))
+            import asyncio
+            asyncio.create_task(self.service_registry.register_service('ALEJOBrain'))
+        except Exception as e:
+            logger.error(f"Failed to register ALEJOBrain with ServiceRegistry: {e}")
             
             # Emit initialization event
             await self.event_bus.emit("brain.initialized", {
                 "timestamp": datetime.now().isoformat(),
-                "components": ["emotional_memory", "vision", "multimodal"]
+                "components": ["emotional_memory", "vision", "multimodal", "plugins"]
             })
             
         except Exception as e:
@@ -940,6 +953,40 @@ class ALEJOBrain(BrainStreamingMixin):
         except Exception as e:
             logger.error(f"Failed to initialize multimodal components: {e}", exc_info=True)
             self.multimodal_integration = None
+            
+    async def _load_plugins(self):
+        """Load and register all available plugins
+        
+        Dynamically discovers plugins from the plugins directory and registers them
+        with the SkillPluginRegistry.
+        """
+        try:
+            from alejo.skill_plugin_registry import SkillPluginRegistry
+            from alejo.plugin_loader import PluginLoader
+            
+            # Initialize plugin registry if not already done
+            if not hasattr(self, 'plugin_registry'):
+                self.plugin_registry = SkillPluginRegistry()
+                
+            # Create plugin loader and discover plugins
+            plugin_dirs = self.config.get("plugin_dirs", None)
+            loader = PluginLoader(plugin_dirs)
+            
+            # Register discovered plugins
+            count = loader.register_with_registry(self.plugin_registry)
+            logger.info(f"Loaded {count} plugins into ALEJOBrain")
+            
+            # Emit event for plugin loading
+            await self.event_bus.emit("brain.plugins_loaded", {
+                "timestamp": datetime.now().isoformat(),
+                "count": count,
+                "plugin_names": self.plugin_registry.list_plugins()
+            })
+            
+            return count
+        except Exception as e:
+            logger.error(f"Failed to load plugins: {str(e)}")
+            return 0
             
     async def _process_multimodal_result(self, event_data: Dict[str, Any]):
         """Process multimodal result events"""

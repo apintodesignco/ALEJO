@@ -50,6 +50,33 @@ On startup with `--voice` Alejo enumerates available input/output devices (when 
 - **Vision Analysis**: Screenshot and image analysis capabilities
 - **Holographic UI**: Optional 3D interface for a futuristic experience
 
+## System Architecture
+
+## Installation Instructions
+
+To install ALEJO, simply run the installer script:
+
+```
+python installer.py
+```
+
+The installer will request administrator privileges and will prompt for full access to your camera and microphone. After granting permission, it will automatically download the latest ALEJO installer package from GitHub releases and install it via pip. Once installed, launch ALEJO microservices using:
+
+```
+python run_services.py
+```
+
+For further details, consult the documentation below.
+
+
+ALEJO’s core infrastructure has been enhanced as follows:
+
+- **EventBus**: A central asynchronous messaging system using Redis Pub/Sub for reliable inter-service communication.
+- **HealthMonitor**: Continuously monitors registered services, auto-deregistering those that are unresponsive to ensure system stability.
+- **ServiceRegistry**: Manages service registration and health updates, providing a single source of truth for service status.
+- **Observability**: A new module that exposes system metrics and health data via an HTTP endpoint (using FastAPI) for real‐time monitoring.
+- **Brain Integration**: ALEJOBrain (and other microservices) now automatically register themselves with the ServiceRegistry and publish events via the EventBus for coordinated, dynamic service orchestration.
+
 ## System Requirements
 
 - Python 3.8 or higher

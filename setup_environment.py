@@ -19,6 +19,9 @@ def run_command(command, cwd=None):
 
 def setup_environment():
     logger.info("Setting up ALEJO project environment...")
+    if 'ALEJO_ENV' not in os.environ:
+        os.environ['ALEJO_ENV'] = 'development'
+        logger.info("ALEJO_ENV set to development")
     project_root = os.path.abspath(os.path.dirname(__file__))
     
     # Step 1: Create or activate virtual environment

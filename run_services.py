@@ -6,6 +6,7 @@ import psutil
 import logging
 import signal
 import argparse
+import asyncio
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -110,6 +111,57 @@ def signal_handler(sig, frame):
         except subprocess.TimeoutExpired:
             proc.kill()
     sys.exit(0)
+
+async def main():
+    # Initialize core components
+    from alejo.core.event_bus import EventBus
+    from alejo.health_monitor import HealthMonitor
+    from alejo.service_registry import ServiceRegistry
+
+    event_bus = EventBus()
+    await event_bus.start()
+
+    health_monitor = HealthMonitor(event_bus=event_bus, check_interval=30)
+    service_registry = ServiceRegistry(event_bus=event_bus)
+
+    # Example service registration
+    await service_registry.register_service('ExampleService')
+
+    # Start health monitoring
+    health_monitor_task = asyncio.create_task(health_monitor.monitor())
+
+    # Setup signal handlers for graceful shutdown
+    loop = asyncio.get_running_loop()
+    shutdown_event = asyncio.Event()
+
+    def shutdown_handler():
+        logging.info("Shutdown signal received")
+        shutdown_event.set()
+
+    loop.add_signal_handler(signal.SIGINT, shutdown_handler)
+    loop.add_signal_handler(signal.SIGTERM, shutdown_handler)
+
+    logging.info("Services are running. Press Ctrl+C to exit.")
+    await shutdown_event.wait()
+
+    # Clean up tasks and stop all services
+    health_monitor.stop()
+    health_monitor_task.cancel()
+    try:
+        await health_monitor_task
+    except asyncio.CancelledError:
+        pass
+
+    await event_bus.stop()
+
+async def run_proactive_prompts():
+    from alejo.proactive_prompts import ProactivePrompts
+    import asyncio
+    prompts = ProactivePrompts()
+    while True:
+        prompt = prompts.get_prompt()
+        print(f"Proactive prompt: {prompt}")
+        await asyncio.sleep(60)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run ALEJO Microservices')

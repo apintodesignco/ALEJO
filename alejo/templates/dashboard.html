@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ALEJO Dashboard - System monitoring and metrics">
+    <title>{{ data.title }}</title>
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --text-color: #333;
+        --background-color: #f8f9fa;
+        --border-color: #ddd;
+        --focus-color: #2980b9;
+      }
+      
+      body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        margin: 0; 
+        padding: 0;
+        color: var(--text-color);
+        background-color: var(--background-color);
+        line-height: 1.5;
+      }
+      
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      
+      header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      
+      h1 { 
+        margin: 0;
+        font-size: 1.8rem;
+      }
+      
+      h2 {
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--secondary-color);
+        padding-bottom: 0.5rem;
+        margin-top: 2rem;
+      }
+      
+      .services-list { 
+        margin: 1em 0; 
+        padding-left: 2em; 
+        list-style-type: circle;
+      }
+      
+      .services-list li { 
+        margin: 0.5em 0; 
+        padding: 0.5em;
+        transition: background-color 0.2s;
+      }
+      
+      .services-list li:hover,
+      .services-list li:focus {
+        background-color: rgba(52, 152, 219, 0.1);
+        border-radius: 4px;
+      }
+      
+      .metrics-table { 
+        width: 100%; 
+        border-collapse: collapse; 
+        margin-top: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+      
+      .metrics-table th, 
+      .metrics-table td { 
+        padding: 12px 16px; 
+        border: 1px solid var(--border-color); 
+        text-align: left; 
+      }
+      
+      .metrics-table th { 
+        background-color: var(--secondary-color); 
+        color: white;
+        font-weight: 500;
+      }
+      
+      .metrics-table tr:nth-child(even) {
+        background-color: rgba(0,0,0,0.02);
+      }
+      
+      .dashboard-section { 
+        margin: 2em 0;
+        padding: 1em;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+      
+      .empty-state {
+        padding: 2em;
+        text-align: center;
+        color: #666;
+        border: 1px dashed var(--border-color);
+        border-radius: 8px;
+      }
+      
+      footer {
+        margin-top: 3rem;
+        padding: 1rem;
+        background-color: var(--primary-color);
+        color: white;
+        text-align: center;
+        font-size: 0.9rem;
+      }
+      
+      /* Accessibility improvements */
+      a:focus, button:focus, [tabindex]:focus {
+        outline: 3px solid var(--focus-color);
+        outline-offset: 2px;
+      }
+      
+      /* Gesture support */
+      .gesture-enabled {
+        position: relative;
+      }
+      
+      .gesture-enabled::after {
+        content: "👋";
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        font-size: 1rem;
+        opacity: 0.7;
+      }
+      
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+          animation: none !important;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .metrics-table {
+          width: 100%;
+          overflow-x: auto;
+          display: block;
+        }
+        
+        .dashboard-section {
+          padding: 0.75em;
+        }
+      }
+      
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        :root {
+          --primary-color: #000;
+          --secondary-color: #00f;
+          --text-color: #000;
+          --background-color: #fff;
+          --border-color: #000;
+        }
+        
+        .metrics-table th {
+          background-color: #000;
+          color: #fff;
+        }
+      }
+      
+      /* Visually hidden elements for screen readers */
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+    </style>
+    <!-- Add gesture recognition support -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Register elements that support gesture interaction
+        const gestureElements = document.querySelectorAll('.gesture-enabled');
+        
+        // Notify ALEJO about gesture-enabled elements
+        if (window.ALEJO && window.ALEJO.registerGestureElements) {
+          window.ALEJO.registerGestureElements(gestureElements);
+        }
+        
+        // Add keyboard navigation for accessibility
+        const focusableElements = document.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+        
+        focusableElements.forEach(element => {
+          element.addEventListener('keydown', function(e) {
+            // Handle Enter or Space key
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              element.click();
+            }
+          });
+        });
+      });
+    </script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 id="dashboard-title">{{ data.title }}</h1>
+            <nav aria-label="Main navigation" class="gesture-enabled" data-gesture-action="navigation">
+                <div role="tablist" class="visually-hidden">
+                    <button role="tab" aria-selected="true">Dashboard</button>
+                    <button role="tab" aria-selected="false">Settings</button>
+                    <button role="tab" aria-selected="false">Help</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="container">
+        <section class="dashboard-section gesture-enabled" aria-labelledby="services-heading" data-gesture-action="expand">
+            <h2 id="services-heading">Registered Services</h2>
+            {% if data.services %}
+            <ul class="services-list" role="list">
+                {% for service in data.services %}
+                <li>{{ service }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="empty-state" role="status">
+                <p>No services registered.</p>
+                <p>Services will appear here once they are registered with the system.</p>
+            </div>
+            {% endif %}
+        </section>
+        
+        <section class="dashboard-section gesture-enabled" aria-labelledby="metrics-heading" data-gesture-action="sort">
+            <h2 id="metrics-heading">Event Metrics</h2>
+            {% if data.metrics %}
+            <div class="table-responsive">
+                <table class="metrics-table" aria-describedby="metrics-heading">
+                    <thead>
+                        <tr>
+                            <th scope="col">Metric</th>
+                            <th scope="col">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, value in data.metrics.items() %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state" role="status">
+                <p>No metrics available.</p>
+                <p>Metrics will appear here once the system begins processing events.</p>
+            </div>
+            {% endif %}
+        </section>
+        
+        <section class="dashboard-section" aria-labelledby="system-status-heading">
+            <h2 id="system-status-heading">System Status</h2>
+            <div class="status-indicators">
+                <div class="status-item" role="status">
+                    <span class="status-label">System Health:</span>
+                    <span class="status-value">{{ data.status.health|default('Good') }}</span>
+                </div>
+                <div class="status-item" role="status">
+                    <span class="status-label">Last Updated:</span>
+                    <span class="status-value">{{ data.status.last_updated|default('Now') }}</span>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; {{ data.year|default(2025) }} ALEJO AI System. All rights reserved.</p>
+            <p>Version {{ data.version|default('1.0.0') }}</p>
+        </div>
+    </footer>
+    
+    <!-- Accessibility features -->
+    <div class="visually-hidden" aria-live="polite" id="gesture-announcer">
+        <!-- Will be populated with gesture feedback -->
+    </div>
+</body>
+</html>

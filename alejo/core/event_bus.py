@@ -42,6 +42,15 @@ class EventType(Enum):
     COMMAND_EXECUTED = "command_executed"
     BRAIN_SHUTDOWN = "brain_shutdown"
     
+    # Collective learning events
+    COLLECTIVE_INSIGHT = "collective_insight"
+    LEARNING_UPDATE = "learning_update"
+    USER_CONSENT_REQUIRED = "user_consent_required"
+    USER_CONSENT_UPDATED = "user_consent_updated"
+    IMPROVEMENT_AVAILABLE = "improvement_available"
+    IMPROVEMENT_APPLIED = "improvement_applied"
+    SYSTEM_READY = "system_ready"
+    
     @property
     def priority(self) -> int:
         """Get default priority for event type"""
@@ -54,9 +63,16 @@ class EventType(Enum):
             EventType.GAZE: 6,
             EventType.VISION: 7,
             EventType.MEMORY: 7,
+            EventType.USER_CONSENT_REQUIRED: 7,
+            EventType.USER_CONSENT_UPDATED: 7,
             EventType.ADAPTATION_UPDATED: 8,
             EventType.COMMAND_EXECUTED: 9,
-            EventType.BRAIN_SHUTDOWN: 10  # Lowest priority
+            EventType.SYSTEM_READY: 9,
+            EventType.COLLECTIVE_INSIGHT: 10,
+            EventType.LEARNING_UPDATE: 10,
+            EventType.IMPROVEMENT_AVAILABLE: 10,
+            EventType.IMPROVEMENT_APPLIED: 10,
+            EventType.BRAIN_SHUTDOWN: 11  # Lowest priority
         }
         return priorities.get(self, 5)  # Default medium priority
 
@@ -390,117 +406,67 @@ class EventBus:
             self.subscribers[key].remove(callback)
             logger.debug(f"Removed subscriber for event type {key}")
         
-async def _process_priority_queue(self):
-    """Process events from priority queue"""
-    while self.running:
-        try:
-            # Get highest priority event
-            priority, event = await self._priority_queue.get()
-            
-            # Attempt to publish
-            success = await self._publish_to_redis(event)
-            
-            # Mark task as done
-            self._priority_queue.task_done()
-            
-            if not success and event.retry_count < event.max_retries:
-                # Will be handled by retry queue
-                continue
-                    
-        except asyncio.CancelledError:
-            break
-        except Exception as e:
-            logger.error(f"Error processing priority queue: {e}")
-            await asyncio.sleep(1)  # Prevent tight error loop
-                
-@asynccontextmanager
-async def _get_redis_client(self):
-    """Get a Redis client from the pool with error handling"""
-    # Ensure Redis is initialized
-    await self._init_redis()
-        
-    # Get client
-    aioredis = get_redis_asyncio()
-    if aioredis is None:
-        logger.error("Redis module could not be imported")
-        raise EventBusError("Redis module could not be imported")
-            
-    client = None
-    try:
-        client = aioredis.Redis(connection_pool=self._redis_pool)
-        yield client
-    except Exception as e:
-        logger.error(f"Failed to get Redis client: {e}")
-        if self._redis_pool:
-            await self._redis_pool.disconnect()
-            self._redis_pool = None
-        raise EventBusError(f"Failed to get Redis client: {e}") from e
-    finally:
-        # Clean up resources
-        if client:
-            try:
-                await client.close()
-            except Exception as e:
-                logger.warning(f"Error closing Redis client: {e}")
-            await asyncio.sleep(1)  # Prevent tight error loop
-                
-async def _message_listener(self):
-    """Listen for messages on subscribed channels"""
-    if not self._pubsub:
-        logger.error("Cannot listen for messages: Redis pubsub not initialized")
-        self.running = False
-        return
-            
-    try:
-        # Subscribe to all channels
-        for event_type in EventType:
-            self._pubsub.subscribe(event_type.value)
-        
-        # Process messages
+    async def _process_priority_queue(self):
+        """Process events from priority queue"""
         while self.running:
-            message = self._pubsub.get_message(timeout=1)
-            if message:
-                await self._handle_message(message)
-                    
-    except Exception as e:
-        logger.error(f"Error in message listener: {e}")
-        self.running = False
+            try:
+                # Get highest priority event
+                priority, event = await self._priority_queue.get()
                 
-async def _handle_message(self, message: dict):
-    """Handle incoming messages from Redis"""
-    try:
-        if message.get('type') != 'message':
-            return
-
-        message_data = message.get("data")
-        if isinstance(message_data, bytes):
-            message_data = message_data.decode('utf-8')
-
-        data = json.loads(message_data)
-        event_type_str = data.get("type")
-
-        event = Event(
-            type=EventType(event_type_str),
-            data=data.get("payload", {}),
-            timestamp=datetime.fromisoformat(data["timestamp"]) if data.get("timestamp") else datetime.now(),
-            source=data.get("source", "unknown"),
-            correlation_id=data.get("correlation_id"),
-            priority=data.get("priority")
-        )
-        
-        key = event.type.value
-        if key in self.subscribers:
-            for callback in self.subscribers[key]:
+                # Attempt to publish
+                success = await self._publish_to_redis(event)
+                
+                # Mark task as done
+                self._priority_queue.task_done()
+                
+                if not success and event.retry_count < event.max_retries:
+                    # Will be handled by retry queue
+                    continue
+                        
+            except asyncio.CancelledError:
+                break
+            except Exception as e:
+                logger.error(f"Error processing priority queue: {e}")
+                await asyncio.sleep(1)  # Prevent tight error loop
+                
+    @asynccontextmanager
+    async def _get_redis_client(self):
+        """Get a Redis client from the pool with error handling"""
+        # Ensure Redis is initialized
+        await self._init_redis()
+            
+        # Get client
+        aioredis = get_redis_asyncio()
+        if aioredis is None:
+            logger.error("Redis module could not be imported")
+            raise EventBusError("Redis module could not be imported")
+                
+        client = None
+        try:
+            client = aioredis.Redis(connection_pool=self._redis_pool)
+            yield client
+        except Exception as e:
+            logger.error(f"Failed to get Redis client: {e}")
+            if self._redis_pool:
+                await self._redis_pool.disconnect()
+                self._redis_pool = None
+            raise EventBusError(f"Failed to get Redis client: {e}") from e
+        finally:
+            # Clean up resources
+            if client:
                 try:
-                    if asyncio.iscoroutinefunction(callback):
-                        await callback(event)
-                    else:
-                        await self._event_loop.run_in_executor(None, callback, event)
+                    await client.close()
                 except Exception as e:
-                    logger.error(f"Error in event handler for {key}: {e}", exc_info=True)
+                    logger.warning(f"Error closing Redis client: {e}")
+                await asyncio.sleep(1)  # Prevent tight error loop
+                
+    async def _message_listener(self):
+        """Listen for messages on subscribed channels"""
+        if not self._pubsub:
+            logger.error("Cannot listen for messages: Redis pubsub not initialized")
             self.running = False
             return
-            
+                
         try:
             # Subscribe to all channels
             for event_type in EventType:
@@ -511,7 +477,7 @@ async def _handle_message(self, message: dict):
                 message = self._pubsub.get_message(timeout=1)
                 if message:
                     await self._handle_message(message)
-                    
+                        
         except Exception as e:
             logger.error(f"Error in message listener: {e}")
             self.running = False
@@ -531,7 +497,7 @@ async def _handle_message(self, message: dict):
 
             event = Event(
                 type=EventType(event_type_str),
-                data=data.get("payload", {}),
+                payload=data.get("payload", {}),
                 timestamp=datetime.fromisoformat(data["timestamp"]) if data.get("timestamp") else datetime.now(),
                 source=data.get("source", "unknown"),
                 correlation_id=data.get("correlation_id"),
@@ -548,11 +514,11 @@ async def _handle_message(self, message: dict):
                             await self._event_loop.run_in_executor(None, callback, event)
                     except Exception as e:
                         logger.error(f"Error in event handler for {key}: {e}", exc_info=True)
-
         except json.JSONDecodeError as e:
             logger.error(f"Failed to decode message data: {message.get('data')}, error: {e}")
         except Exception as e:
             logger.error(f"Error handling message: {e}", exc_info=True)
+
 
     async def emit_command(self, command: str, params: dict, source: str):
         """Emit a command event"""
