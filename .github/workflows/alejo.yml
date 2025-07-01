@@ -53,6 +53,10 @@ jobs:
       run: |
         python -m pytest tests/unit/ -v
         
+    - name: Test gesture system
+      run: |
+        python -m pytest tests/unit/interaction/test_gesture*.py -v
+        
     - name: Generate coverage report
       run: |
         pytest --cov=alejo --cov-report=xml
@@ -67,10 +71,48 @@ jobs:
       run: |
         coverage report --fail-under=80
         
+  gesture-websocket-testing:
+    name: Gesture WebSocket Testing
+    runs-on: ubuntu-latest
+    needs: [backend-validation]
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-asyncio websockets
+        
+    - name: Run WebSocket handler tests
+      run: |
+        python -m pytest tests/integration/test_gesture_websocket.py -v
+      env:
+        ALEJO_GESTURE_ENABLED: "true"
+        ALEJO_WEBSOCKET_PORT: "8765"
+        ALEJO_ACCESSIBILITY_LEVEL: "enhanced"
+        ALEJO_LOCAL_INFERENCE: "1"
+        
   integration-testing:
     name: Integration Testing
     runs-on: ubuntu-latest
-    needs: backend-validation
+    needs: [backend-validation, gesture-websocket-testing]
     services:
       redis:
         image: redis
@@ -137,6 +179,11 @@ jobs:
         cd alejo/static
         npm run lint
         
+    - name: Test gesture interface components
+      run: |
+        cd alejo/static
+        npm test -- --testPathPattern=gesture
+        
     - name: Test frontend code
       run: |
         cd alejo/static
@@ -180,7 +227,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest pytest-asyncio pytest-playwright
+        pip install pytest pytest-asyncio pytest-playwright websockets
         
     - name: Install Playwright browsers
       run: |
@@ -195,6 +242,15 @@ jobs:
     - name: Run E2E UI tests
       run: |
         python -m pytest tests/e2e/test_ui_e2e.py -v
+        
+    - name: Run Gesture System E2E tests
+      run: |
+        python -m pytest tests/e2e/test_gesture_interface.py -v
+      env:
+        ALEJO_GESTURE_ENABLED: "true"
+        ALEJO_WEBSOCKET_PORT: "8765"
+        ALEJO_ACCESSIBILITY_LEVEL: "enhanced"
+        ALEJO_LOCAL_INFERENCE: "1"
         
   performance-testing:
     name: Performance Testing

@@ -96,6 +96,32 @@ services:
         condition: service_healthy
     command: ["python", "-m", "alejo.services.command_processor_service"]
 
+  gesture_websocket:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8765:8765"
+    environment:
+      - PYTHONPATH=/app
+      - REDIS_URL=redis://redis:6379/0
+      - ALEJO_WEBSOCKET_PORT=8765
+      - ALEJO_GESTURE_ENABLED=true
+    volumes:
+      - .:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+      brain:
+        condition: service_healthy
+    command: ["python", "-m", "alejo.handlers.gesture_websocket_handler"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8765/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
 volumes:
   redis_data:
   emotional_data:

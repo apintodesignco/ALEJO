@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEJO - Gesture-Enabled Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        /* Core accessibility and gesture styles */
+        .gesture-area {
+            position: relative;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .gesture-feedback {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gesture-feedback.active {
+            opacity: 1;
+        }
+        
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        .settings-panel {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .accessibility-toggle {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .accessibility-toggle label {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header role="banner">
+        <nav role="navigation" aria-label="Main navigation">
+            <div class="container">
+                <h1>ALEJO</h1>
+                <ul class="nav-links">
+                    <li><a href="#dashboard" aria-current="page">Dashboard</a></li>
+                    <li><a href="#controls">Controls</a></li>
+                    <li><a href="#settings">Settings</a></li>
+                    <li><a href="#help">Help</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        <div class="container">
+            <section id="gesture-system" aria-labelledby="gesture-heading">
+                <h2 id="gesture-heading">Gesture Control System</h2>
+                
+                <div class="settings-panel" role="region" aria-labelledby="settings-heading">
+                    <h3 id="settings-heading">Gesture Settings</h3>
+                    
+                    <div class="accessibility-toggle">
+                        <input type="checkbox" id="accessibility-enabled" checked>
+                        <label for="accessibility-enabled">Enable accessibility features</label>
+                    </div>
+                    
+                    <div class="accessibility-toggle">
+                        <input type="checkbox" id="announcements-enabled" checked>
+                        <label for="announcements-enabled">Enable gesture announcements</label>
+                    </div>
+                    
+                    <div class="connection-status">
+                        <span>Connection status: </span>
+                        <span id="connection-indicator" aria-live="polite">Disconnected</span>
+                    </div>
+                </div>
+                
+                <div class="gesture-area" id="primary-gesture-area" tabindex="0" 
+                     role="application" aria-label="Primary gesture detection area">
+                    <p>Use gestures in this area to interact with ALEJO</p>
+                    <div class="gesture-feedback" id="gesture-feedback" aria-hidden="true">Swipe detected</div>
+                </div>
+                
+                <div id="gesture-accessibility-announcer" role="status" aria-live="polite" class="visually-hidden"></div>
+                
+                <div class="gesture-log" aria-label="Gesture event log">
+                    <h3>Gesture Log</h3>
+                    <div id="gesture-log-content" class="log-content"></div>
+                </div>
+            </section>
+            
+            <section id="gesture-controls" aria-labelledby="controls-heading">
+                <h2 id="controls-heading">Gesture Controls Guide</h2>
+                <div class="controls-grid">
+                    <div class="control-item">
+                        <h4>Swipe Left/Right</h4>
+                        <p>Navigate between items</p>
+                    </div>
+                    <div class="control-item">
+                        <h4>Tap</h4>
+                        <p>Select or activate</p>
+                    </div>
+                    <div class="control-item">
+                        <h4>Hold</h4>
+                        <p>Open context menu</p>
+                    </div>
+                    <div class="control-item">
+                        <h4>Pinch</h4>
+                        <p>Zoom in/out</p>
+                    </div>
+                    <div class="control-item">
+                        <h4>Rotate</h4>
+                        <p>Adjust values or rotate content</p>
+                    </div>
+                    <div class="control-item">
+                        <h4>Wave</h4>
+                        <p>Activate voice command mode</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer role="contentinfo">
+        <div class="container">
+            <p>&copy; 2025 ALEJO. All rights reserved.</p>
+            <p>Version 1.0.0 - Local inference with no external dependencies</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/gesture-accessibility-core.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/gesture-accessibility-enhanced.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/gesture-controller.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize the gesture controller
+            const gestureController = new ALEJO.GestureController({
+                webSocketUrl: 'ws://' + window.location.hostname + ':8765',
+                enableLogging: true,
+                accessibilityEnabled: true
+            });
+            
+            // Update UI connection status
+            function updateConnectionStatus(connected) {
+                const indicator = document.getElementById('connection-indicator');
+                if (connected) {
+                    indicator.textContent = 'Connected';
+                    indicator.classList.add('connected');
+                } else {
+                    indicator.textContent = 'Disconnected';
+                    indicator.classList.remove('connected');
+                }
+            }
+            
+            // Handle accessibility toggle
+            document.getElementById('accessibility-enabled').addEventListener('change', (e) => {
+                const enabled = e.target.checked;
+                if (gestureController.accessibility) {
+                    gestureController.accessibility.setEnabled(enabled);
+                    
+                    if (enabled) {
+                        gestureController.accessibility.announce('Accessibility features enabled');
+                    }
+                }
+            });
+            
+            // Handle announcements toggle
+            document.getElementById('announcements-enabled').addEventListener('change', (e) => {
+                const enabled = e.target.checked;
+                if (gestureController.accessibility) {
+                    gestureController.accessibility.setAnnouncementsEnabled(enabled);
+                }
+            });
+            
+            // Set up gesture detection for demonstration
+            const gestureArea = document.getElementById('primary-gesture-area');
+            const gestureFeedback = document.getElementById('gesture-feedback');
+            const gestureLog = document.getElementById('gesture-log-content');
+            
+            // Simple gesture detection simulation for development purposes
+            gestureArea.addEventListener('click', (e) => {
+                simulateGesture('tap', { x: e.offsetX, y: e.offsetY });
+            });
+            
+            gestureArea.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                simulateGesture('hold', { x: e.offsetX, y: e.offsetY });
+            });
+            
+            let startX, startY;
+            gestureArea.addEventListener('mousedown', (e) => {
+                startX = e.offsetX;
+                startY = e.offsetY;
+            });
+            
+            gestureArea.addEventListener('mouseup', (e) => {
+                const deltaX = e.offsetX - startX;
+                const deltaY = e.offsetY - startY;
+                
+                if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY)) {
+                    simulateGesture('swipe', { 
+                        direction: deltaX > 0 ? 'right' : 'left',
+                        distance: Math.abs(deltaX)
+                    });
+                } else if (Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) {
+                    simulateGesture('swipe', { 
+                        direction: deltaY > 0 ? 'down' : 'up',
+                        distance: Math.abs(deltaY)
+                    });
+                }
+            });
+            
+            // Function to simulate gesture detection
+            function simulateGesture(type, details) {
+                // Show visual feedback
+                gestureFeedback.textContent = `${type} detected`;
+                gestureFeedback.classList.add('active');
+                
+                // Log the gesture
+                const logItem = document.createElement('div');
+                logItem.classList.add('log-item');
+                logItem.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${type} gesture detected`;
+                gestureLog.prepend(logItem);
+                
+                // Send to controller
+                gestureController.handleGestureDetection(type, details, gestureArea);
+                
+                // Hide feedback after delay
+                setTimeout(() => {
+                    gestureFeedback.classList.remove('active');
+                }, 2000);
+            }
+            
+            // Keyboard accessibility for gesture area
+            gestureArea.addEventListener('keydown', (e) => {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        simulateGesture('swipe', { direction: 'left', distance: 100 });
+                        break;
+                    case 'ArrowRight':
+                        simulateGesture('swipe', { direction: 'right', distance: 100 });
+                        break;
+                    case 'ArrowUp':
+                        simulateGesture('swipe', { direction: 'up', distance: 100 });
+                        break;
+                    case 'ArrowDown':
+                        simulateGesture('swipe', { direction: 'down', distance: 100 });
+                        break;
+                    case 'Enter':
+                        simulateGesture('tap', { x: 100, y: 100 });
+                        break;
+                    case ' ':
+                        simulateGesture('hold', { x: 100, y: 100 });
+                        break;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
