@@ -18,6 +18,7 @@ from alejo.core.self_improvement import SelfImprovementEngine, get_self_improvem
 from alejo.core.brain import Brain
 from alejo.utils.events import EventBus
 from alejo.utils.benchmarking import PerformanceBenchmark
+import secrets  # More secure for cryptographic purposes
 
 # Test fixtures
 @pytest.fixture

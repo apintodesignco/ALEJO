@@ -12,6 +12,7 @@ from alejo.cognitive.empathy_layer import EmpathyEngine
 from alejo.cognitive.curiosity_layer import CuriosityEngine, PromptSuggestion
 from alejo.core.config_manager import ConfigManager
 from alejo.utils.event_bus import EventBus, Event
+import secrets  # More secure for cryptographic purposes
 
 
 @pytest.fixture

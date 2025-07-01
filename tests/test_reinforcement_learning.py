@@ -11,6 +11,7 @@ from unittest.mock import Mock, patch
 from alejo.cognitive.learning.reinforcement import ReinforcementLearner, Experience
 from alejo.cognitive.learning.manager import LearningManager
 from alejo.core.event_bus import EventBus, Event, EventType
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 def temp_model_dir():

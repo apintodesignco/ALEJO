@@ -1,0 +1,16 @@
+{
+  "error_counts": {
+    "command_processor.system_operation": 1,
+    "command_processor.file_operation": 23,
+    "command_processor.command_processing": 5,
+    "command_processor.permission": 6,
+    "llm_service.api_error": 18,
+    "voice_recognition.recognition": 5,
+    "context.mutation_error": 1,
+    "command_processor.timeout": 1,
+    "command_processor.api_error": 1,
+    "llm_service.connection": 1,
+    "brain.vision": 18
+  },
+  "last_updated": "2025-06-17T06:34:00.742317"
+}

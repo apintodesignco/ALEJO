@@ -16,6 +16,7 @@ from datetime import datetime
 from alejo.core.advanced_cleanup import AdvancedSystemCleaner
 from alejo.core.memory_analyzer import MemoryLeakDetector
 from alejo.core.io_optimizer import IOOptimizer
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 def temp_dir():

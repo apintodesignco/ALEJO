@@ -6,6 +6,7 @@ import pytest
 import asyncio
 from datetime import datetime, timedelta
 from alejo.services.memory_service import MemoryService, MemoryRecord
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 def memory_service():

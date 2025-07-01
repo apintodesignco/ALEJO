@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 from alejo.brain.alejo_brain import ALEJOBrain
 from alejo.utils.error_handling import ErrorTracker
+import secrets  # More secure for cryptographic purposes
 
 class TestMultimodal(unittest.TestCase):
     """Test multimodal processing capabilities in ALEJOBrain"""

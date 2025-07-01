@@ -1,0 +1,39 @@
+{
+  "js_issues": {
+    "passed": true,
+    "issues": 0,
+    "details": []
+  },
+  "localStorage_issues": {
+    "passed": true,
+    "issues": 0,
+    "details": []
+  },
+  "setTimeout_issues": {
+    "passed": true,
+    "issues": 0,
+    "details": []
+  },
+  "random_issues": {
+    "passed": true,
+    "issues": 0,
+    "details": []
+  },
+  "eval_issues": {
+    "passed": true,
+    "issues": 0,
+    "details": []
+  },
+  "sql_injection": {
+    "passed": false,
+    "issues": 0,
+    "details": []
+  },
+  "overall": {
+    "passed": false,
+    "issues": 0,
+    "security_scan_results": {
+      "error": "Security scan failed: usage: focused_security_scan.py [-h] --path PATH [--output OUTPUT]\nfocused_security_scan.py: error: unrecognized arguments: --exclude backups\n"
+    }
+  }
+}

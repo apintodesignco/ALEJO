@@ -1,0 +1,2960 @@
+================================================================================
+ALEJO Bug Detector Report
+================================================================================
+Files analyzed: 227
+Lines of code analyzed: 61467
+Total issues found: 982
+  High severity: 14
+  Medium severity: 196
+  Low severity: 721
+  Info: 51
+================================================================================
+
+
+File: alejo\analysis\code_analyzer.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 67
+    Syntax error: expected an indented block (<unknown>, line 67)
+
+File: alejo\brain\alejo_brain.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 184
+    Syntax error: invalid syntax (<unknown>, line 184)
+
+File: alejo\emotional_intelligence\adaptive_processor.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 18
+    Syntax error: expected an indented block (<unknown>, line 18)
+
+File: alejo\handlers\gesture_websocket_handler.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 153
+    Syntax error: invalid syntax (<unknown>, line 153)
+
+File: alejo\llm_client\local_client.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 27
+    Syntax error: expected an indented block (<unknown>, line 27)
+
+File: alejo\services\brain_service.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 28
+    Syntax error: expected an indented block (<unknown>, line 28)
+
+File: alejo\testing\browser_testing\compatibility.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 437
+    Syntax error: expected an indented block (<unknown>, line 437)
+
+File: alejo\testing\browser_testing\test_runner.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 313
+    Syntax error: expected an indented block (<unknown>, line 313)
+
+File: alejo\training\face_trainer.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 479
+    Syntax error: expected an indented block (<unknown>, line 479)
+
+File: alejo\training\train_alejo.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 64
+    Syntax error: expected an indented block (<unknown>, line 64)
+
+File: alejo\ui\components\emotional_insights.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 17
+    Syntax error: expected an indented block (<unknown>, line 17)
+
+File: alejo\ui\controller.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 61
+    Syntax error: expected an indented block (<unknown>, line 61)
+
+File: alejo\ui\main_interface.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 17
+    Syntax error: expected an indented block (<unknown>, line 17)
+
+File: alejo\voice\device_utils.py
+--------------------------------------------------------------------------------
+[!!!] SyntaxError line 26
+    Syntax error: expected an indented block (<unknown>, line 26)
+
+File: alejo\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 8
+    Magic method used outside of definition
+[!!] MagicMethod line 9
+    Magic method used outside of definition
+
+File: alejo\__main__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 19
+    Magic method used outside of definition
+[!!] MagicMethod line 233
+    Magic method used outside of definition
+
+File: alejo\analysis\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 7
+    Magic method used outside of definition
+
+File: alejo\analysis\code_analyzer.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 18
+    Magic method used outside of definition
+[!!] MagicMethod line 133
+    Magic method used outside of definition
+
+File: alejo\audio_processing.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 5
+    Magic method used outside of definition
+
+File: alejo\brain\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 6
+    Magic method used outside of definition
+
+File: alejo\brain\alejo_brain.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 34
+    Magic method used outside of definition
+[!!] MagicMethod line 63
+    Magic method used outside of definition
+
+File: alejo\brain\integration.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 21
+    Magic method used outside of definition
+
+File: alejo\brain\neuromorphic\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 14
+    Magic method used outside of definition
+
+File: alejo\brain\neuromorphic\neural_models.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 14
+    Magic method used outside of definition
+
+File: alejo\brain\neuromorphic\synapse_models.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+
+File: alejo\brain\streaming.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 11
+    Magic method used outside of definition
+
+File: alejo\cognitive\adaptive_interaction.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 21
+    Magic method used outside of definition
+
+File: alejo\cognitive\curiosity_layer.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+[!!] MagicMethod line 85
+    Magic method used outside of definition
+
+File: alejo\cognitive\empathy_layer.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+[!!] MagicMethod line 70
+    Magic method used outside of definition
+
+File: alejo\cognitive\learning\manager.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 14
+    Magic method used outside of definition
+
+File: alejo\cognitive\learning\reinforcement.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 12
+    Magic method used outside of definition
+
+File: alejo\cognitive\memory\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 7
+    Magic method used outside of definition
+
+File: alejo\cognitive\memory\episodic_memory.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 11
+    Magic method used outside of definition
+
+File: alejo\cognitive\memory\models.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 19
+    Magic method used outside of definition
+
+File: alejo\cognitive\memory\optimizer.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 11
+    Magic method used outside of definition
+
+File: alejo\cognitive\memory\semantic_memory.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 10
+    Magic method used outside of definition
+
+File: alejo\cognitive\memory\working_memory.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 13
+    Magic method used outside of definition
+
+File: alejo\cognitive\multimodal\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 7
+    Magic method used outside of definition
+
+File: alejo\cognitive\proactive_cognition.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 25
+    Magic method used outside of definition
+[!!] MagicMethod line 376
+    Magic method used outside of definition
+
+File: alejo\cognitive\retrieval\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 7
+    Magic method used outside of definition
+
+File: alejo\cognitive\retrieval\cag_system.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 18
+    Magic method used outside of definition
+
+File: alejo\cognitive\retrieval\cloud_cache.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+
+File: alejo\cognitive\retrieval\hybrid_retrieval.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 21
+    Magic method used outside of definition
+
+File: alejo\cognitive\retrieval\integration.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+
+File: alejo\cognitive\retrieval\rag_system.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 22
+    Magic method used outside of definition
+
+File: alejo\collective\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 11
+    Magic method used outside of definition
+
+File: alejo\collective\data_manager.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 258
+    Magic method used outside of definition
+[!!] MagicMethod line 325
+    Magic method used outside of definition
+
+File: alejo\commands\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 70
+    Magic method used outside of definition
+
+File: alejo\config\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 12
+    Magic method used outside of definition
+
+File: alejo\core\advanced_cleanup.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 19
+    Magic method used outside of definition
+
+File: alejo\core\circuit_breaker.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 12
+    Magic method used outside of definition
+
+File: alejo\core\cleanup.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 12
+    Magic method used outside of definition
+
+File: alejo\core\code_correction.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 12
+    Magic method used outside of definition
+
+File: alejo\core\code_healing.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+
+File: alejo\core\error_learning.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+[!!] MagicMethod line 242
+    Magic method used outside of definition
+
+File: alejo\core\event_bus.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 17
+    Magic method used outside of definition
+
+File: alejo\core\health_monitor.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 30
+    Magic method used outside of definition
+[!!] MagicMethod line 154
+    Magic method used outside of definition
+
+File: alejo\core\io_optimizer.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 13
+    Magic method used outside of definition
+
+File: alejo\core\memory_analyzer.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 13
+    Magic method used outside of definition
+
+File: alejo\core\memory_event_bus.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 8
+    Magic method used outside of definition
+
+File: alejo\core\monitoring.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+
+File: alejo\core\process_manager.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 13
+    Magic method used outside of definition
+
+File: alejo\core\resource_manager.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+
+File: alejo\core\self_evolution\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 10
+    Magic method used outside of definition
+
+File: alejo\core\self_evolution\error_correction.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 17
+    Magic method used outside of definition
+[!!] MagicMethod line 363
+    Magic method used outside of definition
+[!!] MagicMethod line 394
+    Magic method used outside of definition
+
+File: alejo\core\self_evolution\evolution_manager.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 23
+    Magic method used outside of definition
+[!!] MagicMethod line 418
+    Magic method used outside of definition
+[!!] MagicMethod line 457
+    Magic method used outside of definition
+
+File: alejo\core\self_evolution\formal_verification.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 20
+    Magic method used outside of definition
+
+File: alejo\core\self_evolution\godel_verification.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+
+File: alejo\core\self_healing.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 17
+    Magic method used outside of definition
+
+File: alejo\core\service_mesh.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+[!!] BareExcept line 586
+    Bare except clause found. Specify exception types explicitly.
+
+File: alejo\core\service_registry.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 12
+    Magic method used outside of definition
+
+File: alejo\core\startup.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 21
+    Magic method used outside of definition
+
+File: alejo\core\state_manager.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 11
+    Magic method used outside of definition
+
+File: alejo\dashboard.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 8
+    Magic method used outside of definition
+[!!] MagicMethod line 20
+    Magic method used outside of definition
+
+File: alejo\database\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 11
+    Magic method used outside of definition
+
+File: alejo\database\manager.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 14
+    Magic method used outside of definition
+
+File: alejo\database\memory_store.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 12
+    Magic method used outside of definition
+
+File: alejo\database_manager.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 4
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 23
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\advanced_features.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\comfort_response.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 21
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\emotional_memory.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 19
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\ethics.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+[!!] MagicMethod line 337
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\ethics_backup.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\memory.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\models\contextual_understanding.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 19
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\models\emotion_recognition.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 17
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\models\empathy_modeling.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\models\multimodal_emotion.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 25
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\models\personality_modeling.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 12
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\multimodal_emotion_fusion.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 17
+    Magic method used outside of definition
+
+File: alejo\emotional_intelligence\processor.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 24
+    Magic method used outside of definition
+
+File: alejo\empathy_engine.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 3
+    Magic method used outside of definition
+
+File: alejo\ethical\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 12
+    Magic method used outside of definition
+
+File: alejo\handlers\gesture_websocket_handler.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 67
+    Magic method used outside of definition
+[!!] MagicMethod line 141
+    Magic method used outside of definition
+[!!] MagicMethod line 277
+    Magic method used outside of definition
+
+File: alejo\health_monitor.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 5
+    Magic method used outside of definition
+
+File: alejo\interaction\gesture_arpeggiator\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 11
+    Magic method used outside of definition
+
+File: alejo\interaction\gesture_arpeggiator\audio_engine.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 13
+    Magic method used outside of definition
+
+File: alejo\interaction\gesture_arpeggiator\controller.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 14
+    Magic method used outside of definition
+
+File: alejo\interaction\gesture_arpeggiator\emotional_integration.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+
+File: alejo\interaction\gesture_arpeggiator\hand_tracking.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 21
+    Magic method used outside of definition
+
+File: alejo\interaction\gesture_arpeggiator\service.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 13
+    Magic method used outside of definition
+
+File: alejo\interaction\gesture_arpeggiator\visualizer.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+
+File: alejo\language\language_detection.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 21
+    Magic method used outside of definition
+[!!] MagicMethod line 67
+    Magic method used outside of definition
+
+File: alejo\learning\reinforcement\voice_trainer.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 18
+    Magic method used outside of definition
+
+File: alejo\learning\self_improvement.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 17
+    Magic method used outside of definition
+
+File: alejo\llm_client\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 7
+    Magic method used outside of definition
+
+File: alejo\llm_client\auto_model_manager.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+
+File: alejo\llm_client\base.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+
+File: alejo\llm_client\factory.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 21
+    Magic method used outside of definition
+
+File: alejo\llm_client\integration.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 25
+    Magic method used outside of definition
+
+File: alejo\llm_client\local_client.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 35
+    Magic method used outside of definition
+
+File: alejo\llm_client\local_provider.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 31
+    Magic method used outside of definition
+
+File: alejo\llm_client\model_manager.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 14
+    Magic method used outside of definition
+
+File: alejo\llm_client\ollama_client.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 18
+    Magic method used outside of definition
+
+File: alejo\llm_client\openai_client.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 18
+    Magic method used outside of definition
+
+File: alejo\llm_client\vlm_client.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 27
+    Magic method used outside of definition
+
+File: alejo\llm_heuristics.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 3
+    Magic method used outside of definition
+
+File: alejo\llm_training\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 9
+    Magic method used outside of definition
+
+File: alejo\llm_training\dataset_builder.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 17
+    Magic method used outside of definition
+
+File: alejo\llm_training\fine_tuner.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 23
+    Magic method used outside of definition
+
+File: alejo\multimodal\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 10
+    Magic method used outside of definition
+
+File: alejo\multimodal\fusion.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 17
+    Magic method used outside of definition
+
+File: alejo\multimodal\integration.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+
+File: alejo\multimodal\multimodal_processor.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 53
+    Magic method used outside of definition
+
+File: alejo\multimodal\processor.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 21
+    Magic method used outside of definition
+
+File: alejo\observability.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 8
+    Magic method used outside of definition
+[!!] MagicMethod line 32
+    Magic method used outside of definition
+[!!] MagicMethod line 39
+    Magic method used outside of definition
+[!!] MagicMethod line 51
+    Magic method used outside of definition
+
+File: alejo\plugin_loader.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+[!!] MagicMethod line 79
+    Magic method used outside of definition
+[!!] MagicMethod line 87
+    Magic method used outside of definition
+[!!] MagicMethod line 150
+    Magic method used outside of definition
+
+File: alejo\plugins\emotional_response_generator.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 21
+    Magic method used outside of definition
+
+File: alejo\plugins\sentiment_analyzer.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 18
+    Magic method used outside of definition
+
+File: alejo\plugins\text_summarizer.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 18
+    Magic method used outside of definition
+
+File: alejo\proactive_prompts.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 3
+    Magic method used outside of definition
+
+File: alejo\robotics\capabilities.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 24
+    Magic method used outside of definition
+
+File: alejo\robotics\gateway.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+
+File: alejo\security\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 7
+    Magic method used outside of definition
+
+File: alejo\service_registry.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 5
+    Magic method used outside of definition
+
+File: alejo\services\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 11
+    Magic method used outside of definition
+
+File: alejo\services\brain_service.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 48
+    Magic method used outside of definition
+[!!] MagicMethod line 337
+    Magic method used outside of definition
+
+File: alejo\services\command_processor.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 14
+    Magic method used outside of definition
+
+File: alejo\services\communication.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 20
+    Magic method used outside of definition
+
+File: alejo\services\emotional_intelligence_service.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 18
+    Magic method used outside of definition
+[!!] MagicMethod line 383
+    Magic method used outside of definition
+
+File: alejo\services\memory_service.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 17
+    Magic method used outside of definition
+[!!] MagicMethod line 22
+    Magic method used outside of definition
+
+File: alejo\services\resource_service.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 13
+    Magic method used outside of definition
+
+File: alejo\services\self_improvement_service.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 18
+    Magic method used outside of definition
+
+File: alejo\services\user_preferences.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 14
+    Magic method used outside of definition
+
+File: alejo\skill_plugin_registry.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 3
+    Magic method used outside of definition
+
+File: alejo\stubs\emotional_intelligence_stub.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 4
+    Magic method used outside of definition
+
+File: alejo\testing\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 7
+    Magic method used outside of definition
+
+File: alejo\testing\browser_detection\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 7
+    Magic method used outside of definition
+
+File: alejo\testing\browser_testing\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 7
+    Magic method used outside of definition
+
+File: alejo\training\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 7
+    Magic method used outside of definition
+
+File: alejo\training\face_trainer.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+
+File: alejo\training\train_alejo.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 11
+    Magic method used outside of definition
+[!!] MagicMethod line 67
+    Magic method used outside of definition
+
+File: alejo\training\voice_trainer.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 14
+    Magic method used outside of definition
+
+File: alejo\ui\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 10
+    Magic method used outside of definition
+
+File: alejo\ui\controller.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 6
+    Magic method used outside of definition
+
+File: alejo\ui\gesture_arpeggiator.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+[!!] MagicMethod line 305
+    Magic method used outside of definition
+
+File: alejo\ui\gesture_integration.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 14
+    Magic method used outside of definition
+[!!] MagicMethod line 351
+    Magic method used outside of definition
+
+File: alejo\ui\main_interface.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 535
+    Magic method used outside of definition
+
+File: alejo\ui\pyside_ui.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 148
+    Magic method used outside of definition
+
+File: alejo\ui\startup_sequence.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 19
+    Magic method used outside of definition
+[!!] MagicMethod line 22
+    Magic method used outside of definition
+[!!] MagicMethod line 378
+    Magic method used outside of definition
+
+File: alejo\ui\system_tray.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 5
+    Magic method used outside of definition
+
+File: alejo\vision\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 8
+    Magic method used outside of definition
+
+File: alejo\vision\advanced_face_recognition.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+
+File: alejo\vision\gaze_tracker.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 103
+    Magic method used outside of definition
+
+File: alejo\vision\optimized_stream.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 20
+    Magic method used outside of definition
+
+File: alejo\vision\scene_description.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+
+File: alejo\vision\stream_manager.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 15
+    Magic method used outside of definition
+
+File: alejo\voice\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 12
+    Magic method used outside of definition
+
+File: alejo\voice\advanced_voice_analysis.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 16
+    Magic method used outside of definition
+
+File: alejo\voice\device_utils.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 12
+    Magic method used outside of definition
+
+File: alejo\voice\voice_input.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 3
+    Magic method used outside of definition
+
+File: alejo\web\__init__.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 10
+    Magic method used outside of definition
+[!!] MagicMethod line 266
+    Magic method used outside of definition
+
+File: alejo\websockets\gesture_socket.py
+--------------------------------------------------------------------------------
+[!!] MagicMethod line 19
+    Magic method used outside of definition
+[!!] MagicMethod line 299
+    Magic method used outside of definition
+
+File: alejo\__main__.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 121
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 132
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 141
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 149
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 169
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 173
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 183
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 194
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 206
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 212
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 223
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 228
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\analysis\code_analyzer.py
+--------------------------------------------------------------------------------
+[!] DebugPrint line 51
+    Debug print statement found
+[!] DebugPrint line 64
+    Debug print statement found
+[!] DebugPrint line 66
+    Debug print statement found
+[!] DebugPrint line 255
+    Debug print statement found
+[!] DebugPrint line 258
+    Debug print statement found
+[!] DebugPrint line 265
+    Debug print statement found
+[!] DebugPrint line 271
+    Debug print statement found
+[!] DebugPrint line 280
+    Debug print statement found
+
+File: alejo\audio_processing.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 39
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 57
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 76
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 85
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\brain\neuromorphic\synapse_models.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 14
+    Unused import: SpikeType
+
+File: alejo\brain\streaming.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 131
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\adaptive_interaction.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 112
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 150
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 192
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 237
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\emotional\processor.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 10
+    Unused import: EmotionalMemoryItem
+
+File: alejo\cognitive\learning\advanced_features.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 6
+    Unused import: secrets
+[!] BroadExcept line 251
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\learning\manager.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 96
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\learning\reinforcement.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 6
+    Unused import: secrets
+[!] BroadExcept line 100
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 109
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\learning_orchestrator.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 19
+    Unused import: InteractionPattern
+[!] BroadExcept line 137
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 183
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 211
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\memory\episodic_memory.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 77
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 107
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 143
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 204
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 246
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 297
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 335
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 393
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 449
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 476
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 514
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 537
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\memory\models.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 10
+    Unused import: Episode
+[!] UnusedImport line 10
+    Unused import: Concept
+[!] UnusedImport line 10
+    Unused import: Relationship
+[!] UnusedImport line 10
+    Unused import: WorkingMemoryItem
+[!] UnusedImport line 10
+    Unused import: EmotionalState
+
+File: alejo\cognitive\memory\semantic_memory.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 76
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 121
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 158
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 229
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\memory\working_memory.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 100
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\multimodal\integration.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 132
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 186
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\multimodal\processor.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 11
+    Unused import: Event
+[!] BroadExcept line 94
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 135
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 171
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 220
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 359
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\retrieval\cag_system.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 79
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 98
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 113
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 156
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 159
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 341
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 397
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 460
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\retrieval\cloud_cache.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 103
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 114
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 132
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 152
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 225
+    Sleep call may affect performance
+[!] BroadExcept line 230
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 232
+    Sleep call may affect performance
+[!] BroadExcept line 251
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 278
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 306
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 317
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 328
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 351
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\retrieval\hybrid_retrieval.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 17
+    Unused import: RetrievalResult
+[!] BroadExcept line 140
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 246
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\retrieval\integration.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 93
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 102
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 200
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 232
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 253
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 263
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 275
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 303
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 318
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 341
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 366
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\cognitive\retrieval\rag_system.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 85
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 107
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 119
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 153
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 156
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 164
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 193
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 238
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 262
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 271
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 340
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 397
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\collective\collective_learner.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 107
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 210
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 234
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 250
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\collective\consent_manager.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 55
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 106
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 129
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\collective\data_manager.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 110
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 170
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 200
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 239
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 301
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 359
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 387
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 466
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 504
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 559
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 591
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 622
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 654
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 681
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\collective\improvement_engine.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 138
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 184
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 192
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 228
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 256
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 338
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 887
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 978
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 1028
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 1062
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 1116
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\collective\privacy_controller.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 90
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\commands\__init__.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 181
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 195
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 335
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 514
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 538
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 559
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 603
+    Sleep call may affect performance
+[!] BroadExcept line 634
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 657
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 680
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 723
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 742
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 780
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 795
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 821
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 853
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 894
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 904
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 915
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 934
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 967
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 994
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 1028
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 1062
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\config\__init__.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 80
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 117
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\advanced_cleanup.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 168
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 342
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 373
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 397
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 418
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 487
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\brain_extensions.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 117
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 159
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 177
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 194
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 213
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 234
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 270
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\circuit_breaker.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 77
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\cleanup.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 49
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 74
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 92
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 122
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 135
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\code_correction.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 88
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 187
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 210
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 233
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 259
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 314
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\code_healing.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 75
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 117
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 198
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 229
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 271
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 314
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 329
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\error_learning.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 156
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 168
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 214
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 231
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\event_bus.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 209
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 230
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 269
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 313
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 355
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 367
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 382
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 427
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 447
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 458
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 480
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 514
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 518
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\health_monitor.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 83
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 112
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 131
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\memory_event_bus.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 58
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 64
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\monitoring.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 112
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 139
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\process_manager.py
+--------------------------------------------------------------------------------
+[!] Sleep line 88
+    Sleep call may affect performance
+[!] BroadExcept line 90
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 92
+    Sleep call may affect performance
+
+File: alejo\core\resource_manager.py
+--------------------------------------------------------------------------------
+[!] Sleep line 133
+    Sleep call may affect performance
+[!] BroadExcept line 135
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 137
+    Sleep call may affect performance
+[!] BroadExcept line 148
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 296
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\self_evolution\error_correction.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 388
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 415
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\self_evolution\evolution_manager.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 20
+    Unused import: ResourceType
+[!] Sleep line 211
+    Sleep call may affect performance
+[!] BroadExcept line 212
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 214
+    Sleep call may affect performance
+[!] BroadExcept line 295
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 352
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 450
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 493
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\self_evolution\formal_verification.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 11
+    Unused import: secrets
+
+File: alejo\core\self_evolution\godel_verification.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 13
+    Unused import: EvolutionPriority
+
+File: alejo\core\self_healing.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 95
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 169
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 221
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 254
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 272
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 285
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\self_improvement.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 303
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 333
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 400
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 454
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 493
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 604
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\service_mesh.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 87
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 224
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 276
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 309
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 342
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 372
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 405
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 438
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 465
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 539
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 549
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 639
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\service_registry.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 140
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 164
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\startup.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 99
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 121
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\core\state_manager.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 139
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\database\memory_store.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 44
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 130
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 149
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 166
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 194
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 213
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 244
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\emotional_intelligence\__init__.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 11
+    Unused import: EmotionalState
+[!] UnusedImport line 11
+    Unused import: InteractionStyle
+[!] UnusedImport line 11
+    Unused import: PersonalityTrait
+[!] UnusedImport line 11
+    Unused import: AdaptiveEmotionalProcessor
+[!] UnusedImport line 17
+    Unused import: EmotionalCore
+[!] UnusedImport line 17
+    Unused import: EmotionalDimension
+[!] UnusedImport line 17
+    Unused import: EmotionalMemory
+
+File: alejo\emotional_intelligence\advanced_features.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 809
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\emotional_intelligence\comfort_response.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 94
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 262
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 280
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 295
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\emotional_intelligence\emotional_memory.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 119
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 171
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 208
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 240
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 260
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 279
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 302
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 324
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 349
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 362
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 413
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 467
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 493
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 513
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 529
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\emotional_intelligence\ethical_integration.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 16
+    Unused import: EthicalPrinciple
+[!] UnusedImport line 16
+    Unused import: EmotionalRiskLevel
+[!] UnusedImport line 16
+    Unused import: EmotionalRisk
+[!] BroadExcept line 110
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\emotional_intelligence\ethics.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 190
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 225
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 451
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 525
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 594
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 603
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 704
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 808
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 968
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 1003
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\emotional_intelligence\integration.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 17
+    Unused import: EthicalDecision
+[!] UnusedImport line 21
+    Unused import: EthicalEvaluationError
+[!] BroadExcept line 106
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 318
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 416
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\emotional_intelligence\models\contextual_understanding.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 134
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 160
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 183
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 205
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 238
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\emotional_intelligence\models\emotion_recognition.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 7
+    Unused import: RobertaModel
+[!] BroadExcept line 89
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\emotional_intelligence\models\empathy_modeling.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 78
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 156
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 254
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 286
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 309
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 358
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 385
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 400
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\emotional_intelligence\models\multimodal_emotion.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 85
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 147
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 163
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 230
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 409
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\emotional_intelligence\models\personality_modeling.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 227
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 267
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\emotional_intelligence\processor.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 214
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 223
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 365
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 415
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 584
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\ethical\integration.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 17
+    Unused import: EthicalDecision
+[!] BroadExcept line 86
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 189
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\handlers\gesture_websocket_handler.py
+--------------------------------------------------------------------------------
+[!] DebugPrint line 74
+    Debug print statement found
+[!] DebugPrint line 148
+    Debug print statement found
+[!] DebugPrint line 221
+    Debug print statement found
+[!] DebugPrint line 223
+    Debug print statement found
+[!] DebugPrint line 265
+    Debug print statement found
+[!] DebugPrint line 272
+    Debug print statement found
+[!] DebugPrint line 283
+    Debug print statement found
+
+File: alejo\interaction\gesture_arpeggiator\controller.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 116
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 186
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\interaction\gesture_arpeggiator\hand_tracking.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 98
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\interaction\gesture_arpeggiator\visualizer.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 9
+    Unused import: secrets
+
+File: alejo\learning\interactive_learner.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 101
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 176
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 223
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 247
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 290
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 311
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\learning\reinforcement\voice_trainer.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 16
+    Unused import: LLMResponse
+[!] BroadExcept line 84
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 117
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\learning\self_improvement.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 154
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 233
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\llm_client\auto_model_manager.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 13
+    Unused import: MODEL_TIERS
+[!] UnusedImport line 13
+    Unused import: VLM_MODEL_TIERS
+[!] BroadExcept line 48
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 68
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 168
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\llm_client\base.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 114
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\llm_client\integration.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 21
+    Unused import: ConfigurationError
+[!] BroadExcept line 88
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 128
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\llm_client\local_provider.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 25
+    Unused import: LLMError
+[!] UnusedImport line 27
+    Unused import: ModelTier
+[!] UnusedImport line 27
+    Unused import: VLM_MODEL_TIERS
+[!] BroadExcept line 126
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 137
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 139
+    Sleep call may affect performance
+[!] BroadExcept line 270
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 327
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 367
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 399
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 461
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\llm_client\lora_manager.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 104
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 163
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 209
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 267
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 383
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 440
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\llm_client\openai_client.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 128
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 163
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 189
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\llm_client\vlm_client.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 116
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 124
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 184
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 236
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 281
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 312
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 343
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\llm_heuristics.py
+--------------------------------------------------------------------------------
+[!] Sleep line 15
+    Sleep call may affect performance
+
+File: alejo\llm_training\fine_tuner.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 13
+    Unused import: AutoModelForCausalLM
+[!] UnusedImport line 13
+    Unused import: AutoTokenizer
+[!] UnusedImport line 13
+    Unused import: TrainingArguments
+[!] UnusedImport line 13
+    Unused import: Trainer
+[!] UnusedImport line 13
+    Unused import: DataCollatorForLanguageModeling
+[!] BroadExcept line 111
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 177
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 186
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 426
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\multimodal\fusion.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 160
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\multimodal\integration.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 14
+    Unused import: ProcessingResult
+[!] UnusedImport line 14
+    Unused import: ModalityType
+[!] BroadExcept line 87
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 97
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 126
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 160
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 177
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\multimodal\multimodal_processor.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 25
+    Unused import: ModelError
+[!] BroadExcept line 181
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 201
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 246
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 269
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 385
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 489
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 540
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 567
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 607
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\multimodal\processor.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 36
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 82
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 117
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\plugin_loader.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 60
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 210
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 270
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 313
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 324
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 380
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\plugins\emotional_response_generator.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 183
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 194
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\robotics\capabilities.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 13
+    Unused import: secrets
+
+File: alejo\robotics\gateway.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 52
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\security\audit_logging.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 147
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 209
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 233
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 286
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 338
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\security\encryption.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 12
+    Unused import: padding
+[!] BroadExcept line 103
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 124
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 157
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 193
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\security\sso_integration.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 202
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 388
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\services\command_processor.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 112
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 161
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\services\emotional_intelligence_service.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 103
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 125
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 145
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 222
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 246
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 258
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 274
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 340
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 353
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 372
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\services\memory_service.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 78
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 103
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 131
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 181
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 240
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 315
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 340
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 359
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 375
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\services\resource_service.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 143
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 164
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 182
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\services\self_improvement_service.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 11
+    Unused import: ImprovementMetrics
+[!] BroadExcept line 85
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\services\user_preferences.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 64
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 83
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\testing\browser_detection\detector.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 147
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 217
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 255
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] DebugPrint line 365
+    Debug print statement found
+[!] DebugPrint line 367
+    Debug print statement found
+[!] DebugPrint line 371
+    Debug print statement found
+[!] DebugPrint line 372
+    Debug print statement found
+[!] DebugPrint line 373
+    Debug print statement found
+[!] DebugPrint line 374
+    Debug print statement found
+[!] DebugPrint line 375
+    Debug print statement found
+
+File: alejo\testing\browser_testing\compatibility.py
+--------------------------------------------------------------------------------
+[!] DebugPrint line 424
+    Debug print statement found
+[!] DebugPrint line 427
+    Debug print statement found
+[!] DebugPrint line 428
+    Debug print statement found
+[!] DebugPrint line 429
+    Debug print statement found
+[!] DebugPrint line 430
+    Debug print statement found
+[!] DebugPrint line 431
+    Debug print statement found
+[!] DebugPrint line 432
+    Debug print statement found
+[!] DebugPrint line 433
+    Debug print statement found
+[!] DebugPrint line 435
+    Debug print statement found
+[!] DebugPrint line 436
+    Debug print statement found
+[!] DebugPrint line 440
+    Debug print statement found
+[!] DebugPrint line 442
+    Debug print statement found
+
+File: alejo\testing\browser_testing\test_runner.py
+--------------------------------------------------------------------------------
+[!] DebugPrint line 310
+    Debug print statement found
+[!] DebugPrint line 312
+    Debug print statement found
+[!] DebugPrint line 314
+    Debug print statement found
+[!] DebugPrint line 318
+    Debug print statement found
+[!] DebugPrint line 319
+    Debug print statement found
+[!] DebugPrint line 320
+    Debug print statement found
+[!] DebugPrint line 321
+    Debug print statement found
+[!] DebugPrint line 322
+    Debug print statement found
+[!] DebugPrint line 323
+    Debug print statement found
+[!] DebugPrint line 326
+    Debug print statement found
+[!] DebugPrint line 329
+    Debug print statement found
+[!] DebugPrint line 333
+    Debug print statement found
+[!] DebugPrint line 334
+    Debug print statement found
+[!] DebugPrint line 335
+    Debug print statement found
+[!] DebugPrint line 336
+    Debug print statement found
+[!] DebugPrint line 337
+    Debug print statement found
+[!] DebugPrint line 340
+    Debug print statement found
+[!] DebugPrint line 343
+    Debug print statement found
+[!] DebugPrint line 344
+    Debug print statement found
+[!] DebugPrint line 348
+    Debug print statement found
+[!] DebugPrint line 349
+    Debug print statement found
+[!] DebugPrint line 350
+    Debug print statement found
+[!] DebugPrint line 352
+    Debug print statement found
+[!] DebugPrint line 355
+    Debug print statement found
+[!] DebugPrint line 359
+    Debug print statement found
+[!] DebugPrint line 361
+    Debug print statement found
+[!] DebugPrint line 366
+    Debug print statement found
+[!] DebugPrint line 368
+    Debug print statement found
+[!] DebugPrint line 369
+    Debug print statement found
+
+File: alejo\testing\secure_browser_testing.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 103
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 165
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 226
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 284
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 350
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\testing\secure_browser_testing_adapter.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 62
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 192
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\training\face_trainer.py
+--------------------------------------------------------------------------------
+[!] Sleep line 122
+    Sleep call may affect performance
+[!] DebugPrint line 456
+    Debug print statement found
+[!] DebugPrint line 457
+    Debug print statement found
+[!] DebugPrint line 458
+    Debug print statement found
+[!] DebugPrint line 465
+    Debug print statement found
+[!] Sleep line 466
+    Sleep call may affect performance
+[!] DebugPrint line 470
+    Debug print statement found
+[!] DebugPrint line 475
+    Debug print statement found
+[!] DebugPrint line 477
+    Debug print statement found
+[!] DebugPrint line 478
+    Debug print statement found
+[!] DebugPrint line 483
+    Debug print statement found
+[!] DebugPrint line 488
+    Debug print statement found
+[!] DebugPrint line 489
+    Debug print statement found
+[!] DebugPrint line 490
+    Debug print statement found
+[!] DebugPrint line 492
+    Debug print statement found
+[!] DebugPrint line 494
+    Debug print statement found
+[!] DebugPrint line 496
+    Debug print statement found
+
+File: alejo\training\train_alejo.py
+--------------------------------------------------------------------------------
+[!] DebugPrint line 23
+    Debug print statement found
+[!] DebugPrint line 24
+    Debug print statement found
+[!] DebugPrint line 25
+    Debug print statement found
+[!] DebugPrint line 32
+    Debug print statement found
+[!] DebugPrint line 33
+    Debug print statement found
+[!] DebugPrint line 34
+    Debug print statement found
+[!] DebugPrint line 35
+    Debug print statement found
+[!] DebugPrint line 60
+    Debug print statement found
+[!] DebugPrint line 61
+    Debug print statement found
+[!] DebugPrint line 63
+    Debug print statement found
+[!] DebugPrint line 66
+    Debug print statement found
+
+File: alejo\training\voice_trainer.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 36
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 142
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\ui\__init__.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 42
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 66
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\ui\components\multimodal_interface.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 236
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 277
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 313
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 367
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\ui\controller.py
+--------------------------------------------------------------------------------
+[!] DebugPrint line 61
+    Debug print statement found
+
+File: alejo\ui\gesture_integration.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 10
+    Unused import: GestureType
+[!] UnusedImport line 10
+    Unused import: GestureEvent
+[!] BroadExcept line 94
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\ui\main_interface.py
+--------------------------------------------------------------------------------
+[!] Sleep line 475
+    Sleep call may affect performance
+[!] Sleep line 530
+    Sleep call may affect performance
+
+File: alejo\ui\pyside_ui.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 4
+    Unused import: QLinearGradient
+
+File: alejo\ui\startup_sequence.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 14
+    Unused import: QLabel
+[!] UnusedImport line 16
+    Unused import: QSize
+[!] DebugPrint line 383
+    Debug print statement found
+
+File: alejo\utils\api_utils.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 9
+    Unused import: random
+[!] Sleep line 93
+    Sleep call may affect performance
+[!] Sleep line 176
+    Sleep call may affect performance
+
+File: alejo\utils\benchmarking.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 348
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\utils\error_handling.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 234
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 348
+    Sleep call may affect performance
+[!] BroadExcept line 366
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 409
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 450
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 489
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 533
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 560
+    Sleep call may affect performance
+[!] BroadExcept line 578
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 622
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 649
+    Sleep call may affect performance
+[!] BroadExcept line 664
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 691
+    Sleep call may affect performance
+[!] BroadExcept line 704
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 744
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 753
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 802
+    Sleep call may affect performance
+[!] BroadExcept line 833
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\utils\memory_optimization.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 81
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 83
+    Sleep call may affect performance
+[!] BroadExcept line 276
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\vision\__init__.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 90
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 105
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 116
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 136
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 156
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 164
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 195
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] UnusedImport line 200
+    Unused import: time
+[!] DebugPrint line 204
+    Debug print statement found
+[!] DebugPrint line 206
+    Debug print statement found
+[!] BroadExcept line 266
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 285
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 321
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 339
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 379
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\vision\advanced_face_recognition.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 72
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 124
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 265
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\vision\emotion_detector.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 66
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 171
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\vision\gaze_tracker.py
+--------------------------------------------------------------------------------
+[!] DebugPrint line 46
+    Debug print statement found
+[!] DebugPrint line 80
+    Debug print statement found
+
+File: alejo\vision\gesture_recognition.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 11
+    Unused import: GestureExample
+[!] BroadExcept line 107
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 235
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 272
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\vision\gesture_trainer.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 125
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 202
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 252
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\vision\optimized_stream.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 17
+    Unused import: Event
+[!] UnusedImport line 17
+    Unused import: EventType
+[!] BroadExcept line 132
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 154
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 170
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 206
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] Sleep line 208
+    Sleep call may affect performance
+[!] BroadExcept line 250
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 277
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\vision\processor.py
+--------------------------------------------------------------------------------
+[!] UnusedImport line 17
+    Unused import: LLMServiceError
+[!] UnusedImport line 19
+    Unused import: SceneContext
+[!] UnusedImport line 22
+    Unused import: FaceEmotion
+[!] UnusedImport line 23
+    Unused import: Hand
+[!] UnusedImport line 25
+    Unused import: EnvironmentalContext
+[!] BroadExcept line 147
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 172
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 178
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 236
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 361
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 456
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 463
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 535
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\vision\scene_analyzer.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 58
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 119
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\vision\scene_context.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 93
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 157
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\vision\scene_description.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 104
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 137
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\vision\stream_manager.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 93
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 114
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\vision\video_stream.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 99
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 207
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 246
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\vision\yolo_detector.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 55
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 104
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\voice\__init__.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 78
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 98
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 127
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 139
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 165
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 227
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 254
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 280
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 313
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 345
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 369
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\voice\advanced_voice_analysis.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 68
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\voice\device_utils.py
+--------------------------------------------------------------------------------
+[!] DebugPrint line 82
+    Debug print statement found
+[!] DebugPrint line 85
+    Debug print statement found
+
+File: alejo\voice\voice_input.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 14
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 24
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 59
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\voice\voice_output.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 83
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 107
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 143
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\web\__init__.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 221
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 285
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\websockets\gesture_socket.py
+--------------------------------------------------------------------------------
+[!] BroadExcept line 80
+    Broad exception handler (Exception). Consider catching specific exceptions.
+[!] BroadExcept line 262
+    Broad exception handler (Exception). Consider catching specific exceptions.
+
+File: alejo\brain\alejo_brain.py
+--------------------------------------------------------------------------------
+[i] Todo line 605
+    TODO or FIXME comment found
+
+File: alejo\brain\neuromorphic\darwin_godel_machine.py
+--------------------------------------------------------------------------------
+[i] Todo line 49
+    TODO or FIXME comment found
+[i] Todo line 54
+    TODO or FIXME comment found
+[i] Todo line 80
+    TODO or FIXME comment found
+[i] Todo line 87
+    TODO or FIXME comment found
+[i] Todo line 114
+    TODO or FIXME comment found
+[i] Todo line 119
+    TODO or FIXME comment found
+
+File: alejo\cognitive\adaptive_interaction.py
+--------------------------------------------------------------------------------
+[i] Todo line 243
+    TODO or FIXME comment found
+[i] Todo line 248
+    TODO or FIXME comment found
+[i] Todo line 256
+    TODO or FIXME comment found
+[i] Todo line 261
+    TODO or FIXME comment found
+[i] Todo line 269
+    TODO or FIXME comment found
+[i] Todo line 277
+    TODO or FIXME comment found
+[i] Todo line 285
+    TODO or FIXME comment found
+[i] Todo line 293
+    TODO or FIXME comment found
+[i] Todo line 301
+    TODO or FIXME comment found
+[i] Todo line 306
+    TODO or FIXME comment found
+[i] Todo line 314
+    TODO or FIXME comment found
+[i] Todo line 322
+    TODO or FIXME comment found
+
+File: alejo\core\self_evolution\godel_verification.py
+--------------------------------------------------------------------------------
+[i] Todo line 103
+    TODO or FIXME comment found
+[i] Todo line 108
+    TODO or FIXME comment found
+[i] Todo line 113
+    TODO or FIXME comment found
+
+File: alejo\core\service_mesh.py
+--------------------------------------------------------------------------------
+[i] Todo line 692
+    TODO or FIXME comment found
+
+File: alejo\emotional_intelligence\adaptive_processor.py
+--------------------------------------------------------------------------------
+[i] Todo line 337
+    TODO or FIXME comment found
+[i] Todo line 359
+    TODO or FIXME comment found
+
+File: alejo\empathy_engine.py
+--------------------------------------------------------------------------------
+[i] Todo line 14
+    TODO or FIXME comment found
+
+File: alejo\multimodal\fusion.py
+--------------------------------------------------------------------------------
+[i] Todo line 209
+    TODO or FIXME comment found
+
+File: alejo\multimodal\multimodal_processor.py
+--------------------------------------------------------------------------------
+[i] Todo line 591
+    TODO or FIXME comment found
+
+File: alejo\robotics\capabilities.py
+--------------------------------------------------------------------------------
+[i] Todo line 98
+    TODO or FIXME comment found
+[i] Todo line 106
+    TODO or FIXME comment found
+[i] Todo line 114
+    TODO or FIXME comment found
+[i] Todo line 122
+    TODO or FIXME comment found
+[i] Todo line 136
+    TODO or FIXME comment found
+[i] Todo line 302
+    TODO or FIXME comment found
+
+File: alejo\robotics\gateway.py
+--------------------------------------------------------------------------------
+[i] Todo line 67
+    TODO or FIXME comment found
+[i] Todo line 107
+    TODO or FIXME comment found
+
+File: alejo\vision\gesture_recognition.py
+--------------------------------------------------------------------------------
+[i] Todo line 218
+    TODO or FIXME comment found
+[i] Todo line 278
+    TODO or FIXME comment found
+[i] Todo line 283
+    TODO or FIXME comment found
+
+File: alejo\vision\scene_description.py
+--------------------------------------------------------------------------------
+[i] Todo line 143
+    TODO or FIXME comment found
+[i] Todo line 152
+    TODO or FIXME comment found
+[i] Todo line 160
+    TODO or FIXME comment found
+[i] Todo line 165
+    TODO or FIXME comment found
+[i] Todo line 170
+    TODO or FIXME comment found
+[i] Todo line 178
+    TODO or FIXME comment found
+[i] Todo line 188
+    TODO or FIXME comment found
+[i] Todo line 193
+    TODO or FIXME comment found
+[i] Todo line 228
+    TODO or FIXME comment found
+[i] Todo line 238
+    TODO or FIXME comment found
+
+File: alejo\voice\__init__.py
+--------------------------------------------------------------------------------
+[i] Todo line 75
+    TODO or FIXME comment found
+[i] Todo line 137
+    TODO or FIXME comment found

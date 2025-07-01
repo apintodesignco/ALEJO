@@ -11,6 +11,7 @@ from unittest.mock import patch, MagicMock, AsyncMock
 from alejo.core.config_manager import ConfigManager
 from alejo.collective.improvement_engine import ImprovementEngine
 from alejo.collective.data_manager import CollectiveDataManager
+import secrets  # More secure for cryptographic purposes
 
 
 @pytest.fixture

@@ -9,6 +9,7 @@ import json
 
 from alejo.core.event_bus import EventBus, Event, EventType
 from alejo.core.service_mesh import ServiceMesh, ServiceHealth, CircuitBreaker
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def event_bus():

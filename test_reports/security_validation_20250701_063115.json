@@ -1,0 +1,53 @@
+{
+  "js_issues": {
+    "passed": true,
+    "issues": 0,
+    "details": []
+  },
+  "localStorage_issues": {
+    "passed": false,
+    "issues": 2,
+    "details": [
+      {
+        "file": "backups\\pre_optimization_20250611_073107\\js\\chat.js",
+        "issue": "Unprotected localStorage with sensitive data"
+      },
+      {
+        "file": "backups\\pre_optimization_20250611_073107\\js\\main.js",
+        "issue": "Unprotected localStorage with sensitive data"
+      }
+    ]
+  },
+  "setTimeout_issues": {
+    "passed": true,
+    "issues": 0,
+    "details": []
+  },
+  "random_issues": {
+    "passed": true,
+    "issues": 0,
+    "details": []
+  },
+  "eval_issues": {
+    "passed": false,
+    "issues": 1,
+    "details": [
+      {
+        "file": "validate_security.py",
+        "issue": "Unsafe eval() usage"
+      }
+    ]
+  },
+  "sql_injection": {
+    "passed": false,
+    "issues": 0,
+    "details": []
+  },
+  "overall": {
+    "passed": false,
+    "issues": 3,
+    "security_scan_results": {
+      "error": "Security scan failed: "
+    }
+  }
+}

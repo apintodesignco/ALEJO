@@ -16,6 +16,7 @@ from alejo.emotional_intelligence.models.multimodal_emotion import MultimodalEmo
 from alejo.emotional_intelligence.ethics import EthicalFramework
 from alejo.services.emotional_intelligence_service import EmotionalIntelligenceService
 from alejo.core.event_bus import EventBus
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 def mock_event_bus():

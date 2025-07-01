@@ -13,6 +13,7 @@ from alejo.core.brain import ALEJOBrain, ProcessingContext
 from alejo.core.events import Event, EventType
 from alejo.utils.error_handling import ErrorTracker
 from alejo.utils.exceptions import CommandError, APIError
+import secrets  # More secure for cryptographic purposes
 
 class TestALEJOBrainIntegration:
     """Integration tests for ALEJOBrain with all components."""

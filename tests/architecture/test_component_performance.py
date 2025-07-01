@@ -17,6 +17,7 @@ from alejo.vision.processor import VisionProcessor
 from alejo.emotional_intelligence.processor import EmotionalProcessor
 from alejo.core.event_bus import EventBus
 from alejo.utils.performance import PerformanceMonitor
+import secrets  # More secure for cryptographic purposes
 
 logger = logging.getLogger(__name__)
 

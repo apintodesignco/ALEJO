@@ -1,3 +1,19 @@
+
+// Secure random number generation
+const getSecureRandom = () => {
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    return array[0] / (0xffffffff + 1);
+  } else if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return array[0] / (0xffffffff + 1);
+  } else {
+    console.warn('Crypto API not available, falling back to getSecureRandom()');
+    return getSecureRandom();
+  }
+};
 /**
  * ALEJO Holographic UI - JavaScript Implementation
  * Advanced 3D holographic interface for ALEJO AI Assistant
@@ -88,11 +104,11 @@ function setupPostProcessing() {
     
     // Occasionally trigger glitch effect
     setInterval(() => {
-        if (Math.random() > 0.7) {
+        if (getSecureRandom() > 0.7) {
             glitchPass.enabled = true;
             setTimeout(() => {
                 glitchPass.enabled = false;
-            }, 200 + Math.random() * 400);
+            }, 200 + getSecureRandom() * 400);
         }
     }, 5000);
 }
@@ -165,9 +181,9 @@ function createHolographicElements() {
     
     for (let i = 0; i < particleCount * 3; i += 3) {
         // Create particles in a spherical distribution
-        const radius = 2 + Math.random() * 2;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.random() * Math.PI;
+        const radius = 2 + getSecureRandom() * 2;
+        const theta = getSecureRandom() * Math.PI * 2;
+        const phi = getSecureRandom() * Math.PI;
         
         posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
         posArray[i + 1] = radius * Math.sin(phi) * Math.sin(theta);
@@ -198,9 +214,9 @@ function createHolographicElements() {
         const points = [];
         const segments = 10;
         for (let j = 0; j < segments; j++) {
-            const x = (Math.random() - 0.5) * 5;
-            const y = (Math.random() - 0.5) * 5;
-            const z = (Math.random() - 0.5) * 5;
+            const x = (getSecureRandom() - 0.5) * 5;
+            const y = (getSecureRandom() - 0.5) * 5;
+            const z = (getSecureRandom() - 0.5) * 5;
             points.push(new THREE.Vector3(x, y, z));
         }
         
@@ -219,9 +235,9 @@ function createHolographicElements() {
                 x: p.x,
                 y: p.y,
                 z: p.z,
-                vx: (Math.random() - 0.5) * 0.01,
-                vy: (Math.random() - 0.5) * 0.01,
-                vz: (Math.random() - 0.5) * 0.01
+                vx: (getSecureRandom() - 0.5) * 0.01,
+                vy: (getSecureRandom() - 0.5) * 0.01,
+                vz: (getSecureRandom() - 0.5) * 0.01
             })),
             animation: (mesh, time, data) => {
                 const positions = mesh.geometry.attributes.position.array;
@@ -294,10 +310,10 @@ function animateVoiceBars() {
         
         bars.forEach(bar => {
             if (isActive) {
-                const height = 10 + Math.random() * 40;
+                const height = 10 + getSecureRandom() * 40;
                 bar.style.height = `${height}px`;
             } else {
-                const height = 5 + Math.random() * 10;
+                const height = 5 + getSecureRandom() * 10;
                 bar.style.height = `${height}px`;
             }
         });

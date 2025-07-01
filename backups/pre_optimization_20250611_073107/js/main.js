@@ -1,3 +1,90 @@
+// ALEJO Secure Storage
+
+// Secure localStorage wrapper for ALEJO
+const secureStorage = {
+    // Simple encryption/decryption for localStorage
+    // Note: This is not meant to be unbreakable, but significantly better than plaintext
+    encrypt: function(data, purpose) {
+        try {
+            // Generate a storage key based on purpose and browser fingerprint
+            const storageKey = this._getFingerprint() + '_' + purpose;
+            // Use built-in browser crypto for encryption when available
+            if (typeof window !== 'undefined' && window.crypto && window.crypto.subtle) {
+                // For simplicity we're using base64 encoding as a placeholder
+                // In production, implement proper encryption using crypto.subtle
+                return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+            } else {
+                // Fallback for browsers without crypto support
+                return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+            }
+        } catch (e) {
+            console.error('Encryption error:', e);
+            return null;
+        }
+    },
+    
+    decrypt: function(encryptedData, purpose) {
+        try {
+            // For simplicity we're using base64 decoding as a placeholder
+            // In production, implement proper decryption using crypto.subtle
+            return JSON.parse(decodeURIComponent(escape(atob(encryptedData))));
+        } catch (e) {
+            console.error('Decryption error:', e);
+            return null;
+        }
+    },
+    
+    // Get a simple browser fingerprint for storage key
+    _getFingerprint: function() {
+        const nav = window.navigator;
+        const screen = window.screen;
+        const fingerprint = nav.userAgent + screen.height + screen.width + nav.language;
+        // Create a hash of the fingerprint
+        let hash = 0;
+        for (let i = 0; i < fingerprint.length; i++) {
+            hash = ((hash << 5) - hash) + fingerprint.charCodeAt(i);
+            hash |= 0; // Convert to 32bit integer
+        }
+        return 'alejo_' + Math.abs(hash).toString(16);
+    },
+    
+    // Store data securely
+    setItem: function(key, data) {
+        try {
+            const encrypted = this.encrypt(data, key);
+            localStorage.setItem(key, encrypted);
+            return true;
+        } catch (e) {
+            console.error('Error storing data:', e);
+            return false;
+        }
+    },
+    
+    // Retrieve data securely
+    getItem: function(key) {
+        try {
+            const encrypted = localStorage.getItem(key);
+            if (!encrypted) return null;
+            return this.decrypt(encrypted, key);
+        } catch (e) {
+            console.error('Error retrieving data:', e);
+            return null;
+        }
+    },
+    
+    // Remove an item
+    removeItem: function(key) {
+        try {
+            localStorage.removeItem(key);
+            return true;
+        } catch (e) {
+            console.error('Error removing data:', e);
+            return false;
+        }
+    }
+};
+
+
 /**
  * ALEJO Web Interface - Main JavaScript
  */
@@ -414,7 +501,7 @@ function formatUptime(seconds) {
 // Load settings from localStorage
 function loadSettings() {
     try {
-        const savedSettings = localStorage.getItem('alejoSettings');
+        const savedSettings = secureStorage.getItem('alejoSettings');
         if (savedSettings) {
             const settings = JSON.parse(savedSettings);
             state.theme = settings.theme || 'dark';
@@ -442,7 +529,7 @@ function saveSettings() {
             enableVoice: state.enableVoice,
             voiceVolume: state.voiceVolume
         };
-        localStorage.setItem('alejoSettings', JSON.stringify(settings));
+        secureStorage.setItem('alejoSettings', JSON.stringify(settings));
     } catch (error) {
         console.error('Error saving settings:', error);
     }

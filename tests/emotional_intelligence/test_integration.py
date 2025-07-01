@@ -20,6 +20,7 @@ from alejo.emotional_intelligence.ethics import EthicalFramework, EthicalDecisio
 from alejo.emotional_intelligence.memory import EmotionalMemory
 from alejo.core.event_bus import EventBus
 from alejo.database.memory_store import MemoryStore
+import secrets  # More secure for cryptographic purposes
 
 # Mock classes
 class MockBrain:

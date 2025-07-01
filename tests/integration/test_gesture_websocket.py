@@ -10,6 +10,7 @@ import pytest
 import time
 import websockets
 from unittest.mock import AsyncMock, MagicMock, patch
+import secrets  # More secure for cryptographic purposes
 
 # Import the event bus for integration testing
 try:

@@ -9,6 +9,7 @@ import os
 import pytest
 import unittest.mock as mock
 from unittest.mock import AsyncMock, MagicMock, patch
+import secrets  # More secure for cryptographic purposes
 
 # Import the gesture WebSocket handler module
 try:

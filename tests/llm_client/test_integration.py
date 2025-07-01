@@ -17,6 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from alejo.llm_client.integration import LLMIntegration
 from alejo.llm_client.base import LLMResponse, ModelCapability
 from alejo.utils.exceptions import ModelError
+import secrets  # More secure for cryptographic purposes
 
 # Mock classes
 class MockBrain:

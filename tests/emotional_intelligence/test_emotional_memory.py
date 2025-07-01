@@ -16,6 +16,7 @@ from alejo.emotional_intelligence.emotional_memory import EmotionalMemory
 from alejo.emotional_intelligence.memory import EmotionalMemoryService
 from alejo.utils.events import EventBus
 from alejo.utils.exceptions import EmotionalMemoryError
+import secrets  # More secure for cryptographic purposes
 
 
 class TestEmotionalMemory:

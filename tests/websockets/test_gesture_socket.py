@@ -13,6 +13,7 @@ from websockets.server import WebSocketServerProtocol
 from alejo.websockets.gesture_socket import GestureWebSocketHandler, create_gesture_websocket_handler
 from alejo.events.event_bus import EventBus
 from alejo.config.config_manager import ConfigManager
+import secrets  # More secure for cryptographic purposes
 
 
 class MockWebSocket:

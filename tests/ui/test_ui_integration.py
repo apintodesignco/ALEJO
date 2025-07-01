@@ -26,6 +26,7 @@ from alejo.ui.main_interface import AlejoUI
 from alejo.core.brain import Brain
 from alejo.core.event_bus import EventBus
 from alejo.core.memory_store import MemoryStore
+import secrets  # More secure for cryptographic purposes
 
 # Fixtures
 @pytest.fixture

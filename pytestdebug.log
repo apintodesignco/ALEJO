@@ -1,0 +1,706 @@
+versions pytest-7.4.4, python-3.9.13.final.0
+cwd=C:\Users\magic\CascadeProjects\ALEJO
+args=('tests/test_basic.py', '-vv', '--debug', '--tb=short', '--log-cli-level=DEBUG')
+
+  pytest_cmdline_main [hook]
+      config: <_pytest.config.Config object at 0x0000026C39501FA0>
+    pytest_plugin_registered [hook]
+        plugin: <Session ALEJO exitstatus='<UNSET>' testsfailed=0 testscollected=0>
+        manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+    finish pytest_plugin_registered --> [] [hook]
+    pytest_configure [hook]
+        config: <_pytest.config.Config object at 0x0000026C39501FA0>
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.cacheprovider.LFPlugin object at 0x0000026C20EF77C0>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.cacheprovider.NFPlugin object at 0x0000026C20EF78E0>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <class '_pytest.legacypath.LegacyTmpdirPlugin'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.config.Config object at 0x0000026C39501FA0>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.mark' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\mark\\__init__.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.main' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\main.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.runner' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\runner.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.fixtures' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\fixtures.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.helpconfig' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\helpconfig.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.python' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\python.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.terminal' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\terminal.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.debugging' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\debugging.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.unittest' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\unittest.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.capture' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\capture.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.skipping' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\skipping.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.legacypath' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\legacypath.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.tmpdir' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\tmpdir.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.monkeypatch' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\monkeypatch.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.recwarn' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\recwarn.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.pastebin' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\pastebin.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.nose' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\nose.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.assertion' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\assertion\\__init__.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.junitxml' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\junitxml.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.doctest' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\doctest.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.cacheprovider' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\cacheprovider.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.freeze_support' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\freeze_support.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.setuponly' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\setuponly.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.setupplan' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\setupplan.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.stepwise' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\stepwise.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.warnings' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\warnings.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.logging' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\logging.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.reports' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\reports.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.python_path' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\python_path.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.unraisableexception' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\unraisableexception.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.threadexception' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\threadexception.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.faulthandler' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\faulthandler.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'anyio.pytest_plugin' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\anyio\\pytest_plugin.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'pytest_asyncio.plugin' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\pytest_asyncio\\plugin.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'pytest_cov.plugin' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\pytest_cov\\plugin.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'pytest_timeout' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\pytest_timeout.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'xdist.plugin' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\xdist\\plugin.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'xdist.looponfail' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\xdist\\looponfail.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <CaptureManager _method='fd' _global_capturing=<MultiCapture out=<FDCapture 1 oldfd=8 _state='suspended' tmpfile=<_io.TextIOWrapper name='<tempfile._TemporaryFileWrapper object at 0x0000026C3A3124C0>' mode='r+' encoding='utf-8'>> err=<FDCapture 2 oldfd=10 _state='suspended' tmpfile=<_io.TextIOWrapper name='<tempfile._TemporaryFileWrapper object at 0x0000026C39D84AC0>' mode='r+' encoding='utf-8'>> in_=<FDCapture 0 oldfd=6 _state='started' tmpfile=<_io.TextIOWrapper name='nul' mode='r' encoding='utf-8'>> _state='suspended' _in_suspended=False> _capture_fixture=None>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'tests.conftest' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\conftest.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <Session ALEJO exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.cacheprovider.LFPlugin object at 0x0000026C20EF77C0>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.cacheprovider.NFPlugin object at 0x0000026C20EF78E0>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <class '_pytest.legacypath.LegacyTmpdirPlugin'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.terminal.TerminalReporter object at 0x0000026C20EF7B80>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.logging.LoggingPlugin object at 0x0000026C20EF7D60>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+    finish pytest_configure --> [] [hook]
+    pytest_sessionstart [hook]
+        session: <Session ALEJO exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.config.Config object at 0x0000026C39501FA0>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.mark' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\mark\\__init__.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.main' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\main.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.runner' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\runner.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.fixtures' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\fixtures.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.helpconfig' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\helpconfig.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.python' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\python.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.terminal' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\terminal.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.debugging' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\debugging.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.unittest' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\unittest.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.capture' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\capture.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.skipping' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\skipping.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.legacypath' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\legacypath.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.tmpdir' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\tmpdir.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.monkeypatch' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\monkeypatch.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.recwarn' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\recwarn.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.pastebin' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\pastebin.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.nose' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\nose.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.assertion' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\assertion\\__init__.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.junitxml' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\junitxml.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.doctest' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\doctest.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.cacheprovider' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\cacheprovider.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.freeze_support' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\freeze_support.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.setuponly' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\setuponly.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.setupplan' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\setupplan.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.stepwise' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\stepwise.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.warnings' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\warnings.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.logging' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\logging.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.reports' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\reports.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.python_path' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\python_path.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.unraisableexception' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\unraisableexception.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.threadexception' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\threadexception.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module '_pytest.faulthandler' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\faulthandler.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'anyio.pytest_plugin' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\anyio\\pytest_plugin.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'pytest_asyncio.plugin' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\pytest_asyncio\\plugin.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'pytest_cov.plugin' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\pytest_cov\\plugin.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'pytest_timeout' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\pytest_timeout.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'xdist.plugin' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\xdist\\plugin.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'xdist.looponfail' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\xdist\\looponfail.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <CaptureManager _method='fd' _global_capturing=<MultiCapture out=<FDCapture 1 oldfd=8 _state='suspended' tmpfile=<_io.TextIOWrapper name='<tempfile._TemporaryFileWrapper object at 0x0000026C3A3124C0>' mode='r+' encoding='utf-8'>> err=<FDCapture 2 oldfd=10 _state='suspended' tmpfile=<_io.TextIOWrapper name='<tempfile._TemporaryFileWrapper object at 0x0000026C39D84AC0>' mode='r+' encoding='utf-8'>> in_=<FDCapture 0 oldfd=6 _state='started' tmpfile=<_io.TextIOWrapper name='nul' mode='r' encoding='utf-8'>> _state='suspended' _in_suspended=False> _capture_fixture=None>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <module 'tests.conftest' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\conftest.py'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <Session ALEJO exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.cacheprovider.LFPlugin object at 0x0000026C20EF77C0>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.cacheprovider.NFPlugin object at 0x0000026C20EF78E0>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <class '_pytest.legacypath.LegacyTmpdirPlugin'>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.terminal.TerminalReporter object at 0x0000026C20EF7B80>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.logging.LoggingPlugin object at 0x0000026C20EF7D60>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_plugin_registered [hook]
+          plugin: <_pytest.fixtures.FixtureManager object at 0x0000026C20EF7670>
+          manager: <_pytest.config.PytestPluginManager object at 0x0000026C39DA8B50>
+      finish pytest_plugin_registered --> [] [hook]
+      pytest_report_header [hook]
+          config: <_pytest.config.Config object at 0x0000026C39501FA0>
+          start_path: C:\Users\magic\CascadeProjects\ALEJO
+          startdir: C:\Users\magic\CascadeProjects\ALEJO
+      finish pytest_report_header --> [['asyncio: mode=strict'], ['rootdir: C:\\Users\\magic\\CascadeProjects\\ALEJO', 'configfile: pytest.ini', 'plugins: anyio-3.7.1, asyncio-0.23.5, cov-4.1.0, timeout-2.2.0, xdist-3.5.0'], 'cachedir: .pytest_cache', ['using: pytest-7.4.4', 'setuptools registered plugins:', '  anyio-3.7.1 at C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\anyio\\pytest_plugin.py', '  pytest-asyncio-0.23.5 at C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\pytest_asyncio\\plugin.py', '  pytest-cov-4.1.0 at C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\pytest_cov\\plugin.py', '  pytest-timeout-2.2.0 at C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\pytest_timeout.py', '  pytest-xdist-3.5.0 at C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\xdist\\plugin.py', '  pytest-xdist-3.5.0 at C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\xdist\\looponfail.py']] [hook]
+    finish pytest_sessionstart --> [] [hook]
+    pytest_collection [hook]
+        session: <Session ALEJO exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+    perform_collect <Session ALEJO exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0> ['tests/test_basic.py'] [collection]
+        pytest_collectstart [hook]
+            collector: <Session ALEJO exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+        finish pytest_collectstart --> [] [hook]
+        pytest_make_collect_report [hook]
+            collector: <Session ALEJO exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+        processing argument (WindowsPath('C:/Users/magic/CascadeProjects/ALEJO/tests/test_basic.py'), []) [collection]
+            pytest_ignore_collect [hook]
+                config: <_pytest.config.Config object at 0x0000026C39501FA0>
+                collection_path: C:\Users\magic\CascadeProjects\ALEJO\tests\__init__.py
+                path: C:\Users\magic\CascadeProjects\ALEJO\tests\__init__.py
+            finish pytest_ignore_collect --> None [hook]
+            pytest_collect_file [hook]
+                parent: <Session ALEJO exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+                file_path: C:\Users\magic\CascadeProjects\ALEJO\tests\__init__.py
+                path: C:\Users\magic\CascadeProjects\ALEJO\tests\__init__.py
+              pytest_pycollect_makemodule [hook]
+                  parent: <Session ALEJO exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+                  module_path: C:\Users\magic\CascadeProjects\ALEJO\tests\__init__.py
+                  path: C:\Users\magic\CascadeProjects\ALEJO\tests\__init__.py
+              finish pytest_pycollect_makemodule --> <Package tests> [hook]
+            finish pytest_collect_file --> [<Package tests>] [hook]
+            pytest_collect_file [hook]
+                parent: <Package tests>
+                file_path: C:\Users\magic\CascadeProjects\ALEJO\tests\test_basic.py
+                path: C:\Users\magic\CascadeProjects\ALEJO\tests\test_basic.py
+              pytest_pycollect_makemodule [hook]
+                  parent: <Package tests>
+                  module_path: C:\Users\magic\CascadeProjects\ALEJO\tests\test_basic.py
+                  path: C:\Users\magic\CascadeProjects\ALEJO\tests\test_basic.py
+              finish pytest_pycollect_makemodule --> <Module test_basic.py> [hook]
+            finish pytest_collect_file --> [<Module test_basic.py>] [hook]
+          matchnodes [<Module test_basic.py>] [] [collection]
+            matchnodes finished ->  1 nodes [collection]
+        finish pytest_make_collect_report --> <CollectReport '' lenresult=1 outcome='passed'> [hook]
+        pytest_collectreport [hook]
+            report: <CollectReport '' lenresult=1 outcome='passed'>
+        finish pytest_collectreport --> [] [hook]
+    genitems <Module test_basic.py> [collection]
+      pytest_collectstart [hook]
+          collector: <Module test_basic.py>
+      finish pytest_collectstart --> [] [hook]
+      pytest_make_collect_report [hook]
+          collector: <Module test_basic.py>
+      find_module called for: tests.test_basic [assertion]
+      matched test file (was specified on cmdline): 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\test_basic.py' [assertion]
+      found cached rewritten pyc for C:\Users\magic\CascadeProjects\ALEJO\tests\test_basic.py [assertion]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module test_basic.py>
+            name: @py_builtins
+            obj: <module 'builtins' (built-in)>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module test_basic.py>
+            name: @pytest_ar
+            obj: <module '_pytest.assertion.rewrite' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\_pytest\\assertion\\rewrite.py'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module test_basic.py>
+            name: pytest
+            obj: <module 'pytest' from 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\pytest\\__init__.py'>
+        finish pytest_pycollect_makeitem --> None [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module test_basic.py>
+            name: test_simple
+            obj: <function test_simple at 0x0000026C20F2A430>
+          pytest_generate_tests [hook]
+              metafunc: <_pytest.python.Metafunc object at 0x0000026C20F2B430>
+          finish pytest_generate_tests --> [] [hook]
+        finish pytest_pycollect_makeitem --> [<Function test_simple>] [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module test_basic.py>
+            name: test_async_simple
+            obj: <function test_async_simple at 0x0000026C20F2A550>
+          pytest_generate_tests [hook]
+              metafunc: <_pytest.python.Metafunc object at 0x0000026C20F2B430>
+          finish pytest_generate_tests --> [] [hook]
+        finish pytest_pycollect_makeitem --> [<Coroutine test_async_simple>] [hook]
+        pytest_pycollect_makeitem [hook]
+            collector: <Module test_basic.py>
+            name: __pytest_asyncio_scoped_event_loop
+            obj: <function pytest_collectstart.<locals>.scoped_event_loop at 0x0000026C20F05F70>
+        finish pytest_pycollect_makeitem --> None [hook]
+      finish pytest_make_collect_report --> <CollectReport 'tests/test_basic.py' lenresult=2 outcome='passed'> [hook]
+    genitems <Function test_simple> [collection]
+      pytest_itemcollected [hook]
+          item: <Function test_simple>
+      finish pytest_itemcollected --> [] [hook]
+    genitems <Coroutine test_async_simple> [collection]
+      pytest_itemcollected [hook]
+          item: <Coroutine test_async_simple>
+      finish pytest_itemcollected --> [] [hook]
+      pytest_collectreport [hook]
+          report: <CollectReport 'tests/test_basic.py' lenresult=2 outcome='passed'>
+      finish pytest_collectreport --> [] [hook]
+      pytest_collection_modifyitems [hook]
+          session: <Session ALEJO exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+          config: <_pytest.config.Config object at 0x0000026C39501FA0>
+          items: [<Function test_simple>, <Coroutine test_async_simple>]
+      finish pytest_collection_modifyitems --> [] [hook]
+      pytest_collection_finish [hook]
+          session: <Session ALEJO exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=0>
+        pytest_report_collectionfinish [hook]
+            config: <_pytest.config.Config object at 0x0000026C39501FA0>
+            items: [<Function test_simple>, <Coroutine test_async_simple>]
+            start_path: C:\Users\magic\CascadeProjects\ALEJO
+            startdir: C:\Users\magic\CascadeProjects\ALEJO
+        finish pytest_report_collectionfinish --> [] [hook]
+      finish pytest_collection_finish --> [] [hook]
+    finish pytest_collection --> None [hook]
+    pytest_runtestloop [hook]
+        session: <Session ALEJO exitstatus=<ExitCode.OK: 0> testsfailed=0 testscollected=2>
+      pytest_runtest_protocol [hook]
+          item: <Function test_simple>
+          nextitem: <Coroutine test_async_simple>
+        pytest_runtest_logstart [hook]
+            nodeid: tests/test_basic.py::test_simple
+            location: ('tests\\test_basic.py', 3, 'test_simple')
+        finish pytest_runtest_logstart --> [] [hook]
+        pytest_runtest_setup [hook]
+            item: <Function test_simple>
+          pytest_fixture_setup [hook]
+              fixturedef: <FixtureDef argname='event_loop_policy' scope='session' baseid=''>
+              request: <SubRequest 'event_loop_policy' for <Function test_simple>>
+          finish pytest_fixture_setup --> <asyncio.windows_events.WindowsProactorEventLoopPolicy object at 0x0000026C20F2BD00> [hook]
+          pytest_fixture_setup [hook]
+              fixturedef: <FixtureDef argname='cleanup_test_files' scope='function' baseid='tests'>
+              request: <SubRequest 'cleanup_test_files' for <Function test_simple>>
+          finish pytest_fixture_setup --> None [hook]
+        finish pytest_runtest_setup --> [] [hook]
+        pytest_runtest_makereport [hook]
+            item: <Function test_simple>
+            call: <CallInfo when='setup' result: []>
+        finish pytest_runtest_makereport --> <TestReport 'tests/test_basic.py::test_simple' when='setup' outcome='passed'> [hook]
+        pytest_runtest_logreport [hook]
+            report: <TestReport 'tests/test_basic.py::test_simple' when='setup' outcome='passed'>
+          pytest_report_teststatus [hook]
+              report: <TestReport 'tests/test_basic.py::test_simple' when='setup' outcome='passed'>
+              config: <_pytest.config.Config object at 0x0000026C39501FA0>
+          finish pytest_report_teststatus --> ('', '', '') [hook]
+        finish pytest_runtest_logreport --> [] [hook]
+        pytest_runtest_call [hook]
+            item: <Function test_simple>
+          pytest_pyfunc_call [hook]
+              pyfuncitem: <Function test_simple>
+          finish pytest_pyfunc_call --> True [hook]
+        finish pytest_runtest_call --> [] [hook]
+        pytest_runtest_makereport [hook]
+            item: <Function test_simple>
+            call: <CallInfo when='call' result: []>
+        finish pytest_runtest_makereport --> <TestReport 'tests/test_basic.py::test_simple' when='call' outcome='passed'> [hook]
+        pytest_runtest_logreport [hook]
+            report: <TestReport 'tests/test_basic.py::test_simple' when='call' outcome='passed'>
+          pytest_report_teststatus [hook]
+              report: <TestReport 'tests/test_basic.py::test_simple' when='call' outcome='passed'>
+              config: <_pytest.config.Config object at 0x0000026C39501FA0>
+          finish pytest_report_teststatus --> ('passed', '.', 'PASSED') [hook]
+        finish pytest_runtest_logreport --> [] [hook]
+        pytest_runtest_teardown [hook]
+            item: <Function test_simple>
+            nextitem: <Coroutine test_async_simple>
+          pytest_fixture_post_finalizer [hook]
+              fixturedef: <FixtureDef argname='cleanup_test_files' scope='function' baseid='tests'>
+              request: <SubRequest 'cleanup_test_files' for <Function test_simple>>
+          finish pytest_fixture_post_finalizer --> [] [hook]
+        finish pytest_runtest_teardown --> [] [hook]
+        pytest_runtest_makereport [hook]
+            item: <Function test_simple>
+            call: <CallInfo when='teardown' result: []>
+        finish pytest_runtest_makereport --> <TestReport 'tests/test_basic.py::test_simple' when='teardown' outcome='passed'> [hook]
+        pytest_runtest_logreport [hook]
+            report: <TestReport 'tests/test_basic.py::test_simple' when='teardown' outcome='passed'>
+          pytest_report_teststatus [hook]
+              report: <TestReport 'tests/test_basic.py::test_simple' when='teardown' outcome='passed'>
+              config: <_pytest.config.Config object at 0x0000026C39501FA0>
+          finish pytest_report_teststatus --> ('', '', '') [hook]
+        finish pytest_runtest_logreport --> [] [hook]
+        pytest_runtest_logfinish [hook]
+            nodeid: tests/test_basic.py::test_simple
+            location: ('tests\\test_basic.py', 3, 'test_simple')
+        finish pytest_runtest_logfinish --> [] [hook]
+      finish pytest_runtest_protocol --> True [hook]
+      pytest_runtest_protocol [hook]
+          item: <Coroutine test_async_simple>
+          nextitem: None
+        pytest_runtest_logstart [hook]
+            nodeid: tests/test_basic.py::test_async_simple
+            location: ('tests\\test_basic.py', 7, 'test_async_simple')
+        finish pytest_runtest_logstart --> [] [hook]
+        pytest_runtest_setup [hook]
+            item: <Coroutine test_async_simple>
+          pytest_fixture_setup [hook]
+              fixturedef: <FixtureDef argname='cleanup_test_files' scope='function' baseid='tests'>
+              request: <SubRequest 'cleanup_test_files' for <Coroutine test_async_simple>>
+          finish pytest_fixture_setup --> None [hook]
+          pytest_fixture_setup [hook]
+              fixturedef: <FixtureDef argname='event_loop' scope='session' baseid='tests'>
+              request: <SubRequest 'event_loop' for <Coroutine test_async_simple>>
+          finish pytest_fixture_setup --> <ProactorEventLoop running=False closed=False debug=False> [hook]
+        finish pytest_runtest_setup --> [] [hook]
+        pytest_runtest_makereport [hook]
+            item: <Coroutine test_async_simple>
+            call: <CallInfo when='setup' result: []>
+        finish pytest_runtest_makereport --> <TestReport 'tests/test_basic.py::test_async_simple' when='setup' outcome='passed'> [hook]
+        pytest_runtest_logreport [hook]
+            report: <TestReport 'tests/test_basic.py::test_async_simple' when='setup' outcome='passed'>
+          pytest_report_teststatus [hook]
+              report: <TestReport 'tests/test_basic.py::test_async_simple' when='setup' outcome='passed'>
+              config: <_pytest.config.Config object at 0x0000026C39501FA0>
+          finish pytest_report_teststatus --> ('', '', '') [hook]
+        finish pytest_runtest_logreport --> [] [hook]
+        pytest_runtest_call [hook]
+            item: <Coroutine test_async_simple>
+          pytest_pyfunc_call [hook]
+              pyfuncitem: <Coroutine test_async_simple>
+          finish pytest_pyfunc_call --> True [hook]
+        finish pytest_runtest_call --> [] [hook]
+        pytest_runtest_makereport [hook]
+            item: <Coroutine test_async_simple>
+            call: <CallInfo when='call' result: []>
+        finish pytest_runtest_makereport --> <TestReport 'tests/test_basic.py::test_async_simple' when='call' outcome='passed'> [hook]
+        pytest_runtest_logreport [hook]
+            report: <TestReport 'tests/test_basic.py::test_async_simple' when='call' outcome='passed'>
+          pytest_report_teststatus [hook]
+              report: <TestReport 'tests/test_basic.py::test_async_simple' when='call' outcome='passed'>
+              config: <_pytest.config.Config object at 0x0000026C39501FA0>
+          finish pytest_report_teststatus --> ('passed', '.', 'PASSED') [hook]
+        finish pytest_runtest_logreport --> [] [hook]
+        pytest_runtest_teardown [hook]
+            item: <Coroutine test_async_simple>
+            nextitem: None
+          pytest_fixture_post_finalizer [hook]
+              fixturedef: <FixtureDef argname='cleanup_test_files' scope='function' baseid='tests'>
+              request: <SubRequest 'cleanup_test_files' for <Coroutine test_async_simple>>
+          finish pytest_fixture_post_finalizer --> [] [hook]
+          pytest_fixture_post_finalizer [hook]
+              fixturedef: <FixtureDef argname='event_loop' scope='session' baseid='tests'>
+              request: <SubRequest 'event_loop' for <Coroutine test_async_simple>>
+          finish pytest_fixture_post_finalizer --> [] [hook]
+          pytest_fixture_post_finalizer [hook]
+              fixturedef: <FixtureDef argname='event_loop_policy' scope='session' baseid=''>
+              request: <SubRequest 'event_loop_policy' for <Coroutine test_async_simple>>
+          finish pytest_fixture_post_finalizer --> [] [hook]
+          pytest_fixture_post_finalizer [hook]
+              fixturedef: <FixtureDef argname='event_loop_policy' scope='session' baseid=''>
+              request: <SubRequest 'event_loop_policy' for <Function test_simple>>
+          finish pytest_fixture_post_finalizer --> [] [hook]
+        finish pytest_runtest_teardown --> [] [hook]
+        pytest_runtest_makereport [hook]
+            item: <Coroutine test_async_simple>
+            call: <CallInfo when='teardown' result: []>
+        finish pytest_runtest_makereport --> <TestReport 'tests/test_basic.py::test_async_simple' when='teardown' outcome='passed'> [hook]
+        pytest_runtest_logreport [hook]
+            report: <TestReport 'tests/test_basic.py::test_async_simple' when='teardown' outcome='passed'>
+          pytest_report_teststatus [hook]
+              report: <TestReport 'tests/test_basic.py::test_async_simple' when='teardown' outcome='passed'>
+              config: <_pytest.config.Config object at 0x0000026C39501FA0>
+          finish pytest_report_teststatus --> ('', '', '') [hook]
+        finish pytest_runtest_logreport --> [] [hook]
+        pytest_runtest_logfinish [hook]
+            nodeid: tests/test_basic.py::test_async_simple
+            location: ('tests\\test_basic.py', 7, 'test_async_simple')
+        finish pytest_runtest_logfinish --> [] [hook]
+        pytest_warning_recorded [hook]
+            warning_message: {message : DeprecationWarning('The event_loop fixture provided by pytest-asyncio has been redefined in\nC:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\conftest.py:21\nReplacing the event_loop fixture with a custom implementation is deprecated\nand will lead to errors in the future.\nIf you want to request an asyncio event loop with a scope other than function\nscope, use the "scope" argument to the asyncio mark when marking the tests.\nIf you want to return different types of event loops, use the event_loop_policy\nfixture.\n'), category : 'DeprecationWarning', filename : 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\.venv\\lib\\site-packages\\pytest_asyncio\\plugin.py', lineno : 769, line : None}
+            nodeid: tests/test_basic.py::test_async_simple
+            when: runtest
+            location: None
+        finish pytest_warning_recorded --> [] [hook]
+      finish pytest_runtest_protocol --> True [hook]
+    finish pytest_runtestloop --> True [hook]
+    pytest_sessionfinish [hook]
+        session: <Session ALEJO exitstatus=0 testsfailed=0 testscollected=2>
+        exitstatus: 0
+      pytest_terminal_summary [hook]
+          terminalreporter: <_pytest.terminal.TerminalReporter object at 0x0000026C20EF7B80>
+          exitstatus: 0
+          config: <_pytest.config.Config object at 0x0000026C39501FA0>
+      finish pytest_terminal_summary --> [] [hook]
+    finish pytest_sessionfinish --> [] [hook]
+    pytest_unconfigure [hook]
+        config: <_pytest.config.Config object at 0x0000026C39501FA0>
+    finish pytest_unconfigure --> [] [hook]

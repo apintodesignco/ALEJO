@@ -10,6 +10,7 @@ import os
 from alejo.core.code_healing import CodeHealingSystem, CodeMetrics, RefactoringProposal
 from alejo.core.event_bus import EventBus
 from alejo.services.llm_service import LLMService
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 def test_code():

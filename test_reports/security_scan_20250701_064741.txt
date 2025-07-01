@@ -1,0 +1,3072 @@
+================================================================================
+ALEJO Security Scan Report
+================================================================================
+Files analyzed: 281
+Lines of code analyzed: 53933
+Total vulnerabilities found: 603
+  Critical: 0
+  High: 416
+  Medium: 27
+  Low: 160
+  Info: 0
+================================================================================
+
+File: focused_security_scan.py
+--------------------------------------------------------------------------------
+[HIGH] DynamicCodeExecution line 63
+    Use of eval() can lead to code injection
+    Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[MEDIUM] SafeEvalAlternative line 58
+    Using ast.literal_eval (safe alternative to eval)
+    Code: 'Using ast.literal_eval (safe alternative to eval)',
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+
+File: security_validation.log
+--------------------------------------------------------------------------------
+[HIGH] DynamicCodeExecution line 9
+    Use of eval() can lead to code injection
+    Code: 2025-07-01 06:31:15,004 - __main__ - INFO - Validating eval() usage...
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 24
+    Use of eval() can lead to code injection
+    Code: 2025-07-01 06:33:28,710 - __main__ - INFO - Validating eval() usage...
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 38
+    Use of eval() can lead to code injection
+    Code: 2025-07-01 06:39:37,465 - __main__ - INFO - Validating eval() usage...
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 55
+    Use of eval() can lead to code injection
+    Code: 2025-07-01 06:43:35,401 - __main__ - INFO - Validating eval() usage...
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+
+File: test_reports\final_security_scan_results.txt
+--------------------------------------------------------------------------------
+[HIGH] DynamicCodeExecution line 17
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 18
+    Use of eval() can lead to code injection
+    Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 30
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 31
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 35
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 36
+    Use of eval() can lead to code injection
+    Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[LOW] PseudoRandom line 3186
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 3191
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 3196
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 3201
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 3206
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 3724
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 3729
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 3734
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6818
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6823
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+
+File: test_reports\security_scan_20250701_063114.txt
+--------------------------------------------------------------------------------
+[HIGH] DynamicCodeExecution line 17
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 18
+    Use of eval() can lead to code injection
+    Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 35
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 36
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 40
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 41
+    Use of eval() can lead to code injection
+    Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 45
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 46
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 50
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 51
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 55
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 56
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 60
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 61
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6453
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6454
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6458
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6459
+    Use of eval() can lead to code injection
+    Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 9636
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 9637
+    Use of eval() can lead to code injection
+    Code: Code: """Validate that eval() is not used insecurely"""
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 9641
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 9642
+    Use of eval() can lead to code injection
+    Code: Code: logger.info("Validating eval() usage...")
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 9646
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 9647
+    Use of eval() can lead to code injection
+    Code: Code: # Look for eval() usage
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 9651
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 9652
+    Use of eval() can lead to code injection
+    Code: Code: 'issue': 'Unsafe eval() usage'
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[MEDIUM] SafeEvalAlternative line 22
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 23
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Code: 'Using ast.literal_eval (safe alternative to eval)',
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[LOW] PseudoRandom line 6401
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6406
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6411
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6416
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6421
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6426
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6431
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6436
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6441
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6446
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 9609
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 9614
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 9619
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 9624
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 9629
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 10175
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 10180
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 10185
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 13269
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 13274
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+
+File: test_reports\security_scan_20250701_063936.txt
+--------------------------------------------------------------------------------
+[HIGH] DynamicCodeExecution line 17
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 18
+    Use of eval() can lead to code injection
+    Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 35
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 36
+    Use of eval() can lead to code injection
+    Code: Code: 2025-07-01 06:31:15,004 - __main__ - INFO - Validating eval() usage...
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 40
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 41
+    Use of eval() can lead to code injection
+    Code: Code: 2025-07-01 06:33:28,710 - __main__ - INFO - Validating eval() usage...
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 48
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 49
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 53
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 54
+    Use of eval() can lead to code injection
+    Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 58
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 59
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 63
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 64
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 68
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 69
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 73
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 74
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6466
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6467
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6471
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6472
+    Use of eval() can lead to code injection
+    Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6476
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6477
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6481
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6482
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6486
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6487
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6491
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6492
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6496
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6497
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6501
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6502
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6506
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6507
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6511
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6512
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6516
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6517
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6521
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6522
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6526
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6527
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6531
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6532
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6536
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6537
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6541
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6542
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6546
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6547
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6551
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6552
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6556
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6557
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6561
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6562
+    Use of eval() can lead to code injection
+    Code: Code: Code: """Validate that eval() is not used insecurely"""
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6566
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6567
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6571
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6572
+    Use of eval() can lead to code injection
+    Code: Code: Code: logger.info("Validating eval() usage...")
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6576
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6577
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6581
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6582
+    Use of eval() can lead to code injection
+    Code: Code: Code: # Look for eval() usage
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6586
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6587
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6591
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 6592
+    Use of eval() can lead to code injection
+    Code: Code: Code: 'issue': 'Unsafe eval() usage'
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 19384
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 19385
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 19389
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 19390
+    Use of eval() can lead to code injection
+    Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22567
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22568
+    Use of eval() can lead to code injection
+    Code: Code: "issue": "Unsafe eval() usage"
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22575
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22576
+    Use of eval() can lead to code injection
+    Code: Code: eval() Security Fixes: FAILED
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22580
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22581
+    Use of eval() can lead to code injection
+    Code: Code: - validate_security.py: Unsafe eval() usage
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22588
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22589
+    Use of eval() can lead to code injection
+    Code: Code: eval() Security Fixes: PASSED
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22596
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22597
+    Use of eval() can lead to code injection
+    Code: Code: """Validate that eval() is not used insecurely"""
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22601
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22602
+    Use of eval() can lead to code injection
+    Code: Code: logger.info("Validating eval() usage...")
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22606
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22607
+    Use of eval() can lead to code injection
+    Code: Code: # Files to exclude from eval() checks (scanning/validation tools that might have eval() patterns)
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22611
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22616
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 22617
+    Use of eval() can lead to code injection
+    Code: Code: 'issue': 'Unsafe eval() usage'
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[MEDIUM] SafeEvalAlternative line 22
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 23
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Code: 'Using ast.literal_eval (safe alternative to eval)',
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 6596
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 6597
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 6601
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 6602
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Code: Code: 'Using ast.literal_eval (safe alternative to eval)',
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[LOW] PseudoRandom line 6414
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6419
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6424
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6429
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6434
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6439
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6444
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6449
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6454
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 6459
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19282
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19287
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19292
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19297
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19302
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19307
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19312
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19317
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19322
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19327
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19332
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19337
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19342
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19347
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19352
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19357
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19362
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19367
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19372
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 19377
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 22540
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 22545
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 22550
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 22555
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 22560
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 23140
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 23145
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 23150
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 26234
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 26239
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+
+File: test_reports\security_scan_20250701_064334.txt
+--------------------------------------------------------------------------------
+[HIGH] DynamicCodeExecution line 17
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 18
+    Use of eval() can lead to code injection
+    Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 30
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 31
+    Use of eval() can lead to code injection
+    Code: Code: 2025-07-01 06:31:15,004 - __main__ - INFO - Validating eval() usage...
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 35
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 36
+    Use of eval() can lead to code injection
+    Code: Code: 2025-07-01 06:33:28,710 - __main__ - INFO - Validating eval() usage...
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 40
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 41
+    Use of eval() can lead to code injection
+    Code: Code: 2025-07-01 06:39:37,465 - __main__ - INFO - Validating eval() usage...
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 48
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 49
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 53
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 54
+    Use of eval() can lead to code injection
+    Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 58
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 59
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 63
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 64
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 68
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 69
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 73
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 74
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 131
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 132
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 136
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 137
+    Use of eval() can lead to code injection
+    Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 141
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 142
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 146
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 147
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 151
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 152
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 156
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 157
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 161
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 162
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 166
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 167
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 171
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 172
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 176
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 177
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 181
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 182
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 186
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 187
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 191
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 192
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 196
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 197
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 201
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 202
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 206
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 207
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 211
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 212
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 216
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 217
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 221
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 222
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 226
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 227
+    Use of eval() can lead to code injection
+    Code: Code: Code: """Validate that eval() is not used insecurely"""
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 231
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 232
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 236
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 237
+    Use of eval() can lead to code injection
+    Code: Code: Code: logger.info("Validating eval() usage...")
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 241
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 242
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 246
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 247
+    Use of eval() can lead to code injection
+    Code: Code: Code: # Look for eval() usage
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 251
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 252
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 256
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 257
+    Use of eval() can lead to code injection
+    Code: Code: Code: 'issue': 'Unsafe eval() usage'
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 374
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 375
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 379
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 380
+    Use of eval() can lead to code injection
+    Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 384
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 385
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 389
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 390
+    Use of eval() can lead to code injection
+    Code: Code: Code: 2025-07-01 06:31:15,004 - __main__ - INFO - Validating eval() usage...
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 394
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 395
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 399
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 400
+    Use of eval() can lead to code injection
+    Code: Code: Code: 2025-07-01 06:33:28,710 - __main__ - INFO - Validating eval() usage...
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 404
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 405
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 409
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 410
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 414
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 415
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 419
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 420
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 424
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 425
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 429
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 430
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 434
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 435
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 439
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 440
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 444
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 445
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 449
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 450
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 454
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 455
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 459
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 460
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 464
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 465
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 469
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 470
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 474
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 475
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 479
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 480
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 484
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 485
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 489
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 490
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 494
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 495
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 499
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 500
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 504
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 505
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 509
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 510
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 514
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 515
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 519
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 520
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 524
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 525
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 529
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 530
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 534
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 535
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 539
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 540
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 544
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 545
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 549
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 550
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 554
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 555
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 559
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 560
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 564
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 565
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 569
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 570
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 574
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 575
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 579
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 580
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 584
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 585
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 589
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 590
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 594
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 595
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 599
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 600
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 604
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 605
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 609
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 610
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 614
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 615
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 619
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 620
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 624
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 625
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 629
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 630
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 634
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 635
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 639
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 640
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 644
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 645
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 649
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 650
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 654
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 655
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 659
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 660
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: """Validate that eval() is not used insecurely"""
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 664
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 665
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 669
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 670
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 674
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 675
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 679
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 680
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: logger.info("Validating eval() usage...")
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 684
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 685
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 689
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 690
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 694
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 695
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 699
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 700
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: # Look for eval() usage
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 704
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 705
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 709
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 710
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 714
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 715
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 719
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 720
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: 'issue': 'Unsafe eval() usage'
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 724
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 725
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 729
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 730
+    Use of eval() can lead to code injection
+    Code: Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 734
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 735
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 739
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 740
+    Use of eval() can lead to code injection
+    Code: Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 744
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 745
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 749
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 750
+    Use of eval() can lead to code injection
+    Code: Code: Code: "issue": "Unsafe eval() usage"
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 754
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 755
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 759
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 760
+    Use of eval() can lead to code injection
+    Code: Code: Code: eval() Security Fixes: FAILED
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 764
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 765
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 769
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 770
+    Use of eval() can lead to code injection
+    Code: Code: Code: - validate_security.py: Unsafe eval() usage
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 774
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 775
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 779
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 780
+    Use of eval() can lead to code injection
+    Code: Code: Code: eval() Security Fixes: PASSED
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 784
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 785
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 789
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 790
+    Use of eval() can lead to code injection
+    Code: Code: Code: """Validate that eval() is not used insecurely"""
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 794
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 795
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 799
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 800
+    Use of eval() can lead to code injection
+    Code: Code: Code: logger.info("Validating eval() usage...")
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 804
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 805
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 809
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 810
+    Use of eval() can lead to code injection
+    Code: Code: Code: # Files to exclude from eval() checks (scanning/validation tools that might have eval() patterns)
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 814
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 815
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 819
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 820
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 824
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 825
+    Use of eval() can lead to code injection
+    Code: Code: Code: 'issue': 'Unsafe eval() usage'
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1062
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1063
+    Use of eval() can lead to code injection
+    Code: Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1067
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1068
+    Use of eval() can lead to code injection
+    Code: Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1100
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1101
+    Use of eval() can lead to code injection
+    Code: Code: "issue": "Unsafe eval() usage"
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1108
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1109
+    Use of eval() can lead to code injection
+    Code: Code: eval() Security Fixes: FAILED
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1113
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1114
+    Use of eval() can lead to code injection
+    Code: Code: - validate_security.py: Unsafe eval() usage
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1121
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1122
+    Use of eval() can lead to code injection
+    Code: Code: eval() Security Fixes: PASSED
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1129
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1130
+    Use of eval() can lead to code injection
+    Code: Code: eval() Security Fixes: PASSED
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1137
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1138
+    Use of eval() can lead to code injection
+    Code: Code: """Validate that eval() is not used insecurely"""
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1142
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1143
+    Use of eval() can lead to code injection
+    Code: Code: logger.info("Validating eval() usage...")
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1147
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1148
+    Use of eval() can lead to code injection
+    Code: Code: # Files to exclude from eval() checks (scanning/validation tools that might have eval() patterns)
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1152
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 1153
+    Use of eval() can lead to code injection
+    Code: Code: 'issue': 'Unsafe eval() usage'
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[MEDIUM] SafeEvalAlternative line 22
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 23
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Code: 'Using ast.literal_eval (safe alternative to eval)',
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 261
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 262
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 266
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 267
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Code: Code: 'Using ast.literal_eval (safe alternative to eval)',
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 829
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 830
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 834
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 835
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Code: Code: 'Using ast.literal_eval (safe alternative to eval)',
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 839
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 840
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 844
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 845
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Code: Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 849
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 850
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 854
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Using ast.literal_eval (safe alternative to eval)
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[MEDIUM] SafeEvalAlternative line 855
+    Using ast.literal_eval (safe alternative to eval)
+    Code: Code: Code: Code: 'Using ast.literal_eval (safe alternative to eval)',
+    Remediation: This is a safe alternative to eval, but verify input is properly validated
+
+[LOW] PseudoRandom line 79
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 84
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 89
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 94
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 99
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 104
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 109
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 114
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 119
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 124
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 272
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 277
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 282
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 287
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 292
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 297
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 302
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 307
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 312
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 317
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 322
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 327
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 332
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 337
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 342
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 347
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 352
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 357
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 362
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 367
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 860
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 865
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 870
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 875
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 880
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 885
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 890
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 895
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 900
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 905
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 910
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 915
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 920
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 925
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 930
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 935
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 940
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 945
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 950
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 955
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 960
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 965
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 970
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 975
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 980
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 985
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 990
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 995
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1000
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1005
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1010
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1015
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1020
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1025
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1030
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1035
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1040
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1045
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1050
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1055
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1073
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1078
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1083
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1088
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1093
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1161
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1166
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1174
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1179
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 1184
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+
+File: test_reports\security_scan_results.txt
+--------------------------------------------------------------------------------
+[HIGH] DynamicCodeExecution line 17
+    Use of eval() can lead to code injection
+    Code: Use of eval() can lead to code injection
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 18
+    Use of eval() can lead to code injection
+    Code: Code: 'Use of eval() can lead to code injection',
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[LOW] PseudoRandom line 2294
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: op = random.choice(['command', 'event', 'memory'])
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 2299
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: 'emotional_state': {'valence': random.random()}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 3579
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 3584
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 3592
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: Code: {"cascade_id": random.randint(1, 1000)}
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+
+File: test_reports\security_validation_20250701_063115.json
+--------------------------------------------------------------------------------
+[HIGH] DynamicCodeExecution line 37
+    Use of eval() can lead to code injection
+    Code: "issue": "Unsafe eval() usage"
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+
+File: test_reports\security_validation_20250701_063115.txt
+--------------------------------------------------------------------------------
+[HIGH] DynamicCodeExecution line 29
+    Use of eval() can lead to code injection
+    Code: eval() Security Fixes: FAILED
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 32
+    Use of eval() can lead to code injection
+    Code: - validate_security.py: Unsafe eval() usage
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+
+File: test_reports\security_validation_20250701_063328.txt
+--------------------------------------------------------------------------------
+[HIGH] DynamicCodeExecution line 26
+    Use of eval() can lead to code injection
+    Code: eval() Security Fixes: PASSED
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+
+File: test_reports\security_validation_20250701_063937.txt
+--------------------------------------------------------------------------------
+[HIGH] DynamicCodeExecution line 32
+    Use of eval() can lead to code injection
+    Code: eval() Security Fixes: PASSED
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+
+File: test_reports\security_validation_20250701_064335.txt
+--------------------------------------------------------------------------------
+[HIGH] DynamicCodeExecution line 32
+    Use of eval() can lead to code injection
+    Code: eval() Security Fixes: PASSED
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+
+File: validate_security.py
+--------------------------------------------------------------------------------
+[HIGH] DynamicCodeExecution line 340
+    Use of eval() can lead to code injection
+    Code: """Validate that eval() is not used insecurely"""
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 341
+    Use of eval() can lead to code injection
+    Code: logger.info("Validating eval() usage...")
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 346
+    Use of eval() can lead to code injection
+    Code: # Files to exclude from eval() checks (scanning/validation tools that might have eval() patterns)
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+[HIGH] DynamicCodeExecution line 367
+    Use of eval() can lead to code injection
+    Code: 'issue': 'Unsafe eval() usage'
+    Remediation: Replace with safer alternatives like JSON parsing or static code
+
+
+File: examples\error_handling_demo.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 56
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: if random.random() < 0.3:  # 30% chance of rate limit
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 63
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: if random.random() < 0.5:  # 50% chance of network error
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+
+File: fix_random_issues.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 91
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: # Replace random.random() with secrets.randbelow() / 2**32 or similar
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 98
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: # Replace random.randint with secrets.randbelow
+    Remediation: Use secrets module for security-sensitive randomness needs
+
+[LOW] PseudoRandom line 107
+    Pseudo-random number generator used - not suitable for security purposes
+    Code: # Replace random.choice with secrets.choice
+    Remediation: Use secrets module for security-sensitive randomness needs
+

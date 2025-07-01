@@ -11,6 +11,7 @@ from alejo.emotional_intelligence.emotional_core import EmotionalDimension, Emot
 from alejo.emotional_intelligence.memory import EmotionalMemoryService
 from alejo.core.event_bus import Event, EventType
 from alejo.learning.orchestrator import LearningOrchestrator
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def memory_service():

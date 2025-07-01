@@ -22,6 +22,7 @@ from alejo.ethical.framework import EthicalFramework
 from alejo.events.event_bus import EventBus
 from alejo.config.manager import ConfigManager
 from alejo.llm_client.response import LLMResponse
+import secrets  # More secure for cryptographic purposes
 
 
 class TestBrainEmotionalProcessorIntegration(unittest.TestCase):

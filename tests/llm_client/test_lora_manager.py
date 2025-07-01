@@ -19,6 +19,7 @@ import shutil
 from alejo.llm_client.lora_manager import LoRAManager, get_lora_manager
 from alejo.utils.events import EventBus
 from alejo.utils.exceptions import LoRAError
+import secrets  # More secure for cryptographic purposes
 
 # Test fixtures
 @pytest.fixture

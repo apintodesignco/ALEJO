@@ -19,6 +19,7 @@ from alejo.emotional_intelligence.memory import EmotionalMemoryService
 from alejo.utils.events import EventBus
 from alejo.utils.exceptions import EmotionalMemoryError, LLMServiceError
 from alejo.llm_client import LLMResponse
+import secrets  # More secure for cryptographic purposes
 
 
 class TestBrainEmotionalMemoryIntegration:

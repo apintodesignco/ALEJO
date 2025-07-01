@@ -9,6 +9,7 @@ from datetime import datetime
 from alejo.core.event_bus import Event, EventType
 from alejo.core.memory_event_bus import MemoryEventBus
 from alejo.ui.controller import UIController
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def event_bus():

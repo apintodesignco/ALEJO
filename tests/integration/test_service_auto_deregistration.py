@@ -3,6 +3,7 @@ import pytest
 from datetime import datetime, timedelta
 
 from alejo.service_registry import ServiceRegistry
+import secrets  # More secure for cryptographic purposes
 
 class DummyRegistry(ServiceRegistry):
     """A dummy ServiceRegistry subclass to simulate passage of time for auto-deregistration."""

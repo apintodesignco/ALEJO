@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from alejo.brain import ALEJOBrain
 from alejo.utils.error_handling import ErrorTracker
 from alejo.utils.exceptions import ShutdownError
+import secrets  # More secure for cryptographic purposes
 
 class TestALEJOLifecycle(unittest.TestCase):
     """Test suite for ALEJO application lifecycle management."""

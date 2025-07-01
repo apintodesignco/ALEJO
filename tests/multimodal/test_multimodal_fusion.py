@@ -25,6 +25,7 @@ from alejo.multimodal.multimodal_processor import (
 from alejo.multimodal.integration import MultimodalIntegration
 from alejo.utils.events import EventBus
 from alejo.utils.exceptions import MultimodalError
+import secrets  # More secure for cryptographic purposes
 
 
 class TestMultimodalProcessor(unittest.TestCase):

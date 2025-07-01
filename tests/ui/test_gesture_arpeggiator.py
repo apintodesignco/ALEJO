@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, AsyncMock, patch
 from alejo.ui.gesture_arpeggiator import GestureArpeggiator, GestureEvent, GestureType
 from alejo.core.config_manager import ConfigManager
 from alejo.utils.event_bus import EventBus, Event
+import secrets  # More secure for cryptographic purposes
 
 
 @pytest.fixture

@@ -11,6 +11,7 @@ from typing import List
 
 from alejo.vision.processor import VisionProcessor
 from .benchmark_framework import Benchmarker
+import secrets  # More secure for cryptographic purposes
 
 # Initialize benchmarker
 benchmarker = Benchmarker()

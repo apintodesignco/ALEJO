@@ -12,6 +12,7 @@ from alejo.services.brain_service import BrainService
 from alejo.multimodal.fusion import EnhancedMultimodalProcessor
 from alejo.core.event_bus import EventBus
 from .benchmark_framework import Benchmarker, BenchmarkResult
+import secrets  # More secure for cryptographic purposes
 
 # Initialize benchmarker
 benchmarker = Benchmarker()

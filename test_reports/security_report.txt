@@ -1,0 +1,140 @@
+================================================================================
+ALEJO Security Scan Report
+================================================================================
+Files analyzed: 251
+Lines of code analyzed: 69374
+Total vulnerabilities found: 35
+  Critical: 0
+  High: 0
+  Medium: 11
+  Low: 24
+  Info: 0
+================================================================================
+
+
+File: alejo\database\database_manager.py
+--------------------------------------------------------------------------------
+[MEDIUM] SQLQuery line 53
+    SQL query detected - ensure parameterized queries are used
+[MEDIUM] SQLQuery line 66
+    SQL query detected - ensure parameterized queries are used
+
+File: alejo\database_manager.py
+--------------------------------------------------------------------------------
+[MEDIUM] SQLQuery line 34
+    SQL query detected - ensure parameterized queries are used
+
+File: alejo\emotional_intelligence\ethics_backup.py
+--------------------------------------------------------------------------------
+[MEDIUM] SQLQuery line 413
+    SQL query detected - ensure parameterized queries are used
+
+File: alejo\interaction\gesture_arpeggiator\static\js\toast.js
+--------------------------------------------------------------------------------
+[MEDIUM] DynamicCodeExecution line 50
+    setTimeout with string argument can lead to code injection
+
+File: alejo\static\js\gesture-controller-core.js
+--------------------------------------------------------------------------------
+[MEDIUM] LocalStorage line 434
+    Storing sensitive data in localStorage is insecure
+[MEDIUM] LocalStorage line 459
+    Storing sensitive data in localStorage is insecure
+
+File: alejo\static\js\gesture-controller.js
+--------------------------------------------------------------------------------
+[MEDIUM] DynamicCodeExecution line 95
+    setTimeout with string argument can lead to code injection
+
+File: alejo\static\js\gesture-handler.js
+--------------------------------------------------------------------------------
+[MEDIUM] LocalStorage line 68
+    Storing sensitive data in localStorage is insecure
+[MEDIUM] LocalStorage line 83
+    Storing sensitive data in localStorage is insecure
+[MEDIUM] DynamicCodeExecution line 136
+    setTimeout with string argument can lead to code injection
+
+File: alejo\cognitive\emotional\processor.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 226
+    Pseudo-random number generator used - not suitable for security purposes
+
+File: alejo\cognitive\learning\advanced_features.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 146
+    Pseudo-random number generator used - not suitable for security purposes
+
+File: alejo\cognitive\learning\reinforcement.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 192
+    Pseudo-random number generator used - not suitable for security purposes
+[LOW] PseudoRandom line 251
+    Pseudo-random number generator used - not suitable for security purposes
+
+File: alejo\emotional_intelligence\comfort_response.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 221
+    Pseudo-random number generator used - not suitable for security purposes
+
+File: alejo\emotional_intelligence\models\personality_modeling.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 118
+    Pseudo-random number generator used - not suitable for security purposes
+
+File: alejo\interaction\gesture_arpeggiator\audio_engine.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 205
+    Pseudo-random number generator used - not suitable for security purposes
+
+File: alejo\interaction\gesture_arpeggiator\service.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 297
+    Pseudo-random number generator used - not suitable for security purposes
+
+File: alejo\interaction\gesture_arpeggiator\visualizer.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 285
+    Pseudo-random number generator used - not suitable for security purposes
+
+File: alejo\llm_training\fine_tuner.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 44
+    Pseudo-random number generator used - not suitable for security purposes
+
+File: alejo\plugins\emotional_response_generator.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 157
+    Pseudo-random number generator used - not suitable for security purposes
+[LOW] PseudoRandom line 158
+    Pseudo-random number generator used - not suitable for security purposes
+[LOW] PseudoRandom line 159
+    Pseudo-random number generator used - not suitable for security purposes
+
+File: alejo\robotics\capabilities.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 138
+    Pseudo-random number generator used - not suitable for security purposes
+[LOW] PseudoRandom line 139
+    Pseudo-random number generator used - not suitable for security purposes
+[LOW] PseudoRandom line 140
+    Pseudo-random number generator used - not suitable for security purposes
+[LOW] PseudoRandom line 293
+    Pseudo-random number generator used - not suitable for security purposes
+[LOW] PseudoRandom line 304
+    Pseudo-random number generator used - not suitable for security purposes
+[LOW] PseudoRandom line 305
+    Pseudo-random number generator used - not suitable for security purposes
+[LOW] PseudoRandom line 306
+    Pseudo-random number generator used - not suitable for security purposes
+[LOW] PseudoRandom line 357
+    Pseudo-random number generator used - not suitable for security purposes
+
+File: alejo\utils\error_handling.py
+--------------------------------------------------------------------------------
+[LOW] PseudoRandom line 347
+    Pseudo-random number generator used - not suitable for security purposes
+[LOW] PseudoRandom line 559
+    Pseudo-random number generator used - not suitable for security purposes
+[LOW] PseudoRandom line 690
+    Pseudo-random number generator used - not suitable for security purposes

@@ -7,6 +7,7 @@ import asyncio
 
 from alejo.voice import VoiceService
 from alejo.core.event_bus import Event, EventType
+import secrets  # More secure for cryptographic purposes
 
 class TestProactiveVoice(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):

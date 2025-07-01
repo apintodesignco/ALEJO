@@ -7,6 +7,7 @@ import pytest
 
 from alejo.core.health_monitor import HealthMonitor
 from alejo.cognitive.curiosity_layer import CuriosityEngine, PromptSuggestion
+import secrets  # More secure for cryptographic purposes
 
 
 class DummyResp:  # Minimal stub for ``requests.Response``

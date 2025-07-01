@@ -3,6 +3,7 @@
 import pytest
 import pytest_asyncio
 import logging
+import secrets  # More secure for cryptographic purposes
 
 logger = logging.getLogger(__name__)
 

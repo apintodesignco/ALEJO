@@ -12,6 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 from alejo.testing.browser_detection import BrowserDetector
+import secrets  # More secure for cryptographic purposes
 
 class TestBrowserDetector(unittest.TestCase):
     """Test cases for the BrowserDetector class"""

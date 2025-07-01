@@ -14,6 +14,7 @@ from alejo.services.brain_service import app as brain_app
 from alejo.services.emotional_intelligence_service import app as emotion_app
 from alejo.services.communication import ServiceCommunicator
 from alejo.utils.exceptions import ErrorTracker
+import secrets  # More secure for cryptographic purposes
 
 class TestFullIntegration:
     """Comprehensive integration tests."""

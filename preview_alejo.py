@@ -38,8 +38,23 @@ logger = logging.getLogger(__name__)
 # Add the current directory to the path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+# Import security middleware
+try:
+    from security.middleware import configure_app_security
+    security_available = True
+except ImportError:
+    logger.warning("Security middleware not available. Running without enhanced security headers.")
+    security_available = False
+
 # Create FastAPI app
 app = FastAPI(title="ALEJO Preview", description="Preview server for ALEJO")
+
+# Configure security headers if available
+if security_available:
+    configure_app_security(app)
+    logger.info("Enhanced security headers enabled for ALEJO Preview")
+else:
+    logger.warning("Enhanced security headers not enabled - consider installing security module")
 
 # Create templates directory if it doesn't exist
 templates_dir = Path("templates")

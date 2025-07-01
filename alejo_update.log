@@ -1,0 +1,8 @@
+2025-06-30 23:52:21,057 - alejo.update_manager - INFO - Pulling latest changes from repository
+2025-06-30 23:52:21,058 - alejo.update_manager - ERROR - Error pulling updates: Failed to pull
+2025-06-30 23:52:21,062 - alejo.update_manager - INFO - Pulling latest changes from repository
+2025-06-30 23:52:21,063 - alejo.update_manager - INFO - Updating dependencies
+2025-06-30 23:52:21,063 - alejo.update_manager - INFO - Update completed successfully
+2025-06-30 23:52:21,068 - alejo.update_manager - INFO - Backing up current ALEJO installation to C:\Users\magic\AppData\Local\Temp\alejo_backup_h5jwy8dw
+2025-06-30 23:52:21,083 - alejo.update_manager - INFO - Restoring ALEJO from backup C:\Users\magic\AppData\Local\Temp\alejo_backup_h5jwy8dw
+2025-06-30 23:52:42,882 - alejo.update_manager - ERROR - Error restoring backup: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\magic\\CascadeProjects\\ALEJO\\alejo_update.log'

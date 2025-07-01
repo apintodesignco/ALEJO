@@ -18,6 +18,7 @@ from alejo.utils.error_handling import ErrorTracker
 from alejo.learning.interactive_learner import InteractiveLearner
 from alejo.emotional_intelligence.emotional_core import EmotionalCore
 from alejo.emotional_intelligence.models.emotional_memory import EmotionalMemoryService
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 def event_bus():

@@ -23,6 +23,7 @@ from alejo.brain.alejo_brain import ALEJOBrain
 from alejo.utils.events import EventBus
 from alejo.utils.exceptions import MultimodalError
 from alejo.multimodal.integration import MultimodalIntegration
+import secrets  # More secure for cryptographic purposes
 
 
 class TestBrainMultimodalIntegration(unittest.TestCase):

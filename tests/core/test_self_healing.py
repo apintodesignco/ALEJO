@@ -8,6 +8,7 @@ from datetime import datetime
 from alejo.core.self_healing import SelfHealingSystem, HealingStrategy, ComponentHealth
 from alejo.core.event_bus import EventBus
 from alejo.services.brain_service import BrainService
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def event_bus():

@@ -17,6 +17,7 @@ from alejo.llm_client import (
 )
 from alejo.brain.alejo_brain import ALEJOBrain
 from alejo.utils.exceptions import LLMServiceError
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 def mock_llm_config() -> Dict[str, Any]:

@@ -11,6 +11,7 @@ import tempfile
 from PIL import Image
 
 from alejo.multimodal.fusion import (
+import secrets  # More secure for cryptographic purposes
     EnhancedMultimodalProcessor,
     ModalityFeatures,
     ModalityFusion

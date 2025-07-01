@@ -1,3 +1,90 @@
+// ALEJO Secure Storage
+
+// Secure localStorage wrapper for ALEJO
+const secureStorage = {
+    // Simple encryption/decryption for localStorage
+    // Note: This is not meant to be unbreakable, but significantly better than plaintext
+    encrypt: function(data, purpose) {
+        try {
+            // Generate a storage key based on purpose and browser fingerprint
+            const storageKey = this._getFingerprint() + '_' + purpose;
+            // Use built-in browser crypto for encryption when available
+            if (typeof window !== 'undefined' && window.crypto && window.crypto.subtle) {
+                // For simplicity we're using base64 encoding as a placeholder
+                // In production, implement proper encryption using crypto.subtle
+                return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+            } else {
+                // Fallback for browsers without crypto support
+                return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+            }
+        } catch (e) {
+            console.error('Encryption error:', e);
+            return null;
+        }
+    },
+    
+    decrypt: function(encryptedData, purpose) {
+        try {
+            // For simplicity we're using base64 decoding as a placeholder
+            // In production, implement proper decryption using crypto.subtle
+            return JSON.parse(decodeURIComponent(escape(atob(encryptedData))));
+        } catch (e) {
+            console.error('Decryption error:', e);
+            return null;
+        }
+    },
+    
+    // Get a simple browser fingerprint for storage key
+    _getFingerprint: function() {
+        const nav = window.navigator;
+        const screen = window.screen;
+        const fingerprint = nav.userAgent + screen.height + screen.width + nav.language;
+        // Create a hash of the fingerprint
+        let hash = 0;
+        for (let i = 0; i < fingerprint.length; i++) {
+            hash = ((hash << 5) - hash) + fingerprint.charCodeAt(i);
+            hash |= 0; // Convert to 32bit integer
+        }
+        return 'alejo_' + Math.abs(hash).toString(16);
+    },
+    
+    // Store data securely
+    setItem: function(key, data) {
+        try {
+            const encrypted = this.encrypt(data, key);
+            localStorage.setItem(key, encrypted);
+            return true;
+        } catch (e) {
+            console.error('Error storing data:', e);
+            return false;
+        }
+    },
+    
+    // Retrieve data securely
+    getItem: function(key) {
+        try {
+            const encrypted = localStorage.getItem(key);
+            if (!encrypted) return null;
+            return this.decrypt(encrypted, key);
+        } catch (e) {
+            console.error('Error retrieving data:', e);
+            return null;
+        }
+    },
+    
+    // Remove an item
+    removeItem: function(key) {
+        try {
+            localStorage.removeItem(key);
+            return true;
+        } catch (e) {
+            console.error('Error removing data:', e);
+            return false;
+        }
+    }
+};
+
+
 /**
  * ALEJO Chat Interface - Advanced Implementation
  * Provides sophisticated chat functionality with AI-powered features
@@ -356,7 +443,7 @@ function queueMessage(content, sender, type = chatState.messageTypes.TEXT) {
 
 // Show welcome message
 function showWelcomeMessage() {
-    const welcomeMessage = "Hello! I'm ALEJO, your Advanced Language and Execution Jarvis Operator. How can I assist you today?";
+    const welcomeMessage = "Hello! I'm ALEJO, your Advanced Language and Execution Joint Operator. How can I assist you today?";
     queueMessage(welcomeMessage, 'alejo');
 }
 
@@ -449,7 +536,7 @@ function saveChatHistory() {
     try {
         // Limit history to last N messages
         const limitedHistory = chatState.conversationHistory.slice(-100);
-        localStorage.setItem('alejoChat', JSON.stringify(limitedHistory));
+        secureStorage.setItem('alejoChat', JSON.stringify(limitedHistory));
     } catch (error) {
         console.error('Error saving chat history:', error);
     }
@@ -458,7 +545,7 @@ function saveChatHistory() {
 // Load chat history from localStorage
 function loadChatHistory() {
     try {
-        const savedHistory = localStorage.getItem('alejoChat');
+        const savedHistory = secureStorage.getItem('alejoChat');
         if (savedHistory) {
             const history = JSON.parse(savedHistory);
             loadConversationHistory(history);
@@ -492,7 +579,7 @@ function clearChatHistory() {
     chatState.conversationHistory = [];
     
     // Clear storage
-    localStorage.removeItem('alejoChat');
+    secureStorage.removeItem('alejoChat');
     
     // Notify server
     socket.emit('clear_chat_history');

@@ -15,6 +15,13 @@ import time
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+# Import update manager
+try:
+    from update_manager import UpdateManager
+    UPDATE_MANAGER_AVAILABLE = True
+except ImportError:
+    UPDATE_MANAGER_AVAILABLE = False
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -83,7 +90,15 @@ SERVICES = {
 
 def parse_arguments():
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="ALEJO Production Startup with Gesture System")
+    parser = argparse.ArgumentParser(
+        description="Start ALEJO with gesture system integration"
+    )
+    # Add update-related command line arguments
+    parser.add_argument(
+        "--skip-updates",
+        action="store_true",
+        help="Skip checking for updates before starting"
+    )
     parser.add_argument("--mode", choices=["docker", "local"], default="docker",
                         help="Deployment mode (docker or local)")
     parser.add_argument("--services", nargs="+", choices=list(SERVICES.keys()) + ["all"],
@@ -397,6 +412,20 @@ async def main():
     logger.info("=" * 50)
     logger.info("ALEJO PRODUCTION STARTUP WITH GESTURE SYSTEM")
     logger.info("=" * 50)
+    
+    # Check for updates before starting services
+    if UPDATE_MANAGER_AVAILABLE and not args.skip_updates:
+        logger.info("Checking for ALEJO updates...")
+        try:
+            update_manager = UpdateManager()
+            update_success = update_manager.run_update_check(auto_apply=True)
+            if not update_success:
+                logger.error("Update process encountered errors. Starting with current version.")
+            else:
+                logger.info("Update check completed successfully.")
+        except Exception as e:
+            logger.error(f"Error during update process: {str(e)}")
+            logger.info("Continuing with current version...")
     
     # Set up environment
     setup_environment(args)

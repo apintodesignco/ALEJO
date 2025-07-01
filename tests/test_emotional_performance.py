@@ -11,6 +11,7 @@ from typing import Dict, List, Optional
 import logging
 from unittest.mock import patch, MagicMock, Mock
 from tests.mocks import EventBus, EmotionalIntelligenceService
+import secrets  # More secure for cryptographic purposes
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -318,7 +319,7 @@ class TestEmotionalPerformance:
         
         for _ in range(num_requests):
             emotional_service.detect_emotions(
-                text=np.random.choice(test_data["text"]),
+                text=np.secrets.choice(test_data["text"]),
                 audio_data=test_data["audio"],
                 image_data=test_data["image"]
             )
@@ -408,7 +409,7 @@ class TestEmotionalPerformance:
         num_iterations = 1000
         for _ in range(num_iterations):
             emotional_service.detect_emotions(
-                text=np.random.choice(test_data["text"])
+                text=np.secrets.choice(test_data["text"])
             )
             
         # Check memory usage
@@ -483,7 +484,7 @@ class TestEmotionalPerformance:
         for _ in range(num_requests):
             try:
                 # Intentionally cause errors randomly
-                if np.random.random() < 0.2:  # 20% error rate
+                if np.secrets.randbelow(2**32) / (2**32) < 0.2:  # 20% error rate
                     raise ValueError("Simulated error")
                 emotional_service.detect_emotions(text="Test")
             except Exception:
@@ -518,7 +519,7 @@ class TestEmotionalPerformance:
             
             # Process request
             emotional_service.detect_emotions(
-                text=np.random.choice(test_data["text"]),
+                text=np.secrets.choice(test_data["text"]),
                 audio_data=test_data["audio"],
                 image_data=test_data["image"]
             )

@@ -18,6 +18,7 @@ from alejo.core.brain_extensions import BrainExtensions
 from alejo.core.event_bus import EventBus
 from alejo.database.memory_store import MemoryStore
 from alejo.utils.exceptions import BrainExtensionError
+import secrets  # More secure for cryptographic purposes
 
 # Mock classes
 class MockBrain:

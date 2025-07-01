@@ -13,6 +13,7 @@ from alejo.brain.alejo_brain import ALEJOBrain
 from alejo.emotional_intelligence.processor import EmotionalProcessor
 from alejo.cognitive.learning_orchestrator import LearningOrchestrator
 from alejo.vision.vision_processor import VisionProcessor
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def event_bus():

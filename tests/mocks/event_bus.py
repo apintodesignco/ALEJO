@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 import asyncio
 import logging
+import secrets  # More secure for cryptographic purposes
 
 logger = logging.getLogger(__name__)
 

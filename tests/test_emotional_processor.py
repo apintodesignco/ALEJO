@@ -9,6 +9,7 @@ from unittest.mock import MagicMock, patch
 from alejo.cognitive.emotional.processor import EmotionalProcessor
 from alejo.cognitive.memory.emotional_memory import EmotionalMemory
 from alejo.core.events import Event, EventType
+import secrets  # More secure for cryptographic purposes
 
 class TestEmotionalProcessor:
     """Tests for EmotionalProcessor class."""

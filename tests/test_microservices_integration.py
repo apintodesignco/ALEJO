@@ -13,6 +13,7 @@ from fastapi.testclient import TestClient
 from alejo.services.brain_service import app as brain_app, BrainService
 from alejo.services.emotional_intelligence_service import app as emotion_app, EmotionalIntelligenceService
 from alejo.services.communication import ServiceCommunicator
+import secrets  # More secure for cryptographic purposes
 
 class TestMicroservicesIntegration:
     """Integration tests for microservices."""

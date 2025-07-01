@@ -2,6 +2,7 @@ import unittest
 import os
 from unittest.mock import MagicMock, patch
 from alejo.database.manager import DatabaseManager
+import secrets  # More secure for cryptographic purposes
 
 class TestDatabaseManager(unittest.TestCase):
     """Test database management capabilities for ALEJO"""

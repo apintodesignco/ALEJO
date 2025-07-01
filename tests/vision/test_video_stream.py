@@ -1,3 +1,4 @@
+import secrets  # More secure for cryptographic purposes
 """Test module for video stream processing integration
 Demonstrates end-to-end video stream processing with CameraManager, VideoStreamManager, and VisionProcessor
 """

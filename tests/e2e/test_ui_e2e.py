@@ -26,6 +26,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from alejo.ui.main_interface import AlejoUI
 from alejo.core.brain import Brain
 from alejo.utils.config import Config
+import secrets  # More secure for cryptographic purposes
 
 # Import pytest-playwright
 pytest_plugins = ["pytest-playwright"]

@@ -6,6 +6,7 @@ Tests behavior under high load and complex failure scenarios.
 import pytest
 import asyncio
 import random
+import secrets  # More secure for cryptographic purposes
 import time
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -101,7 +102,7 @@ class TestErrorHandlingStress:
                     component,
                     "cascade_failure",
                     error,
-                    {"cascade_id": random.randint(1, 1000)}
+                    {"cascade_id": (secrets.randbelow(1000) + 1)}
                 )
                 await asyncio.sleep(0.01)  # Small delay between failures
                 

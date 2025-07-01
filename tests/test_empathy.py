@@ -2,6 +2,7 @@
 
 from alejo.cognitive.empathy_layer import EmpathyEngine
 from alejo.cognitive.curiosity_layer import PromptSuggestion
+import secrets  # More secure for cryptographic purposes
 
 
 def test_empathy_engine_triggers_on_negative_keywords():

@@ -13,6 +13,7 @@ from unittest.mock import patch, MagicMock, mock_open
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from scripts import process_insights, generate_improvements, apply_improvements
+import secrets  # More secure for cryptographic purposes
 
 
 @pytest.fixture

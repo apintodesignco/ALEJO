@@ -6,6 +6,7 @@ import pytest
 import asyncio
 from alejo.core.brain import ALEJOBrain
 from alejo.utils.exceptions import APIError
+import secrets  # More secure for cryptographic purposes
 
 class TestALEJOBrainIntegrationPart3:
     """Final set of integration tests for ALEJOBrain."""

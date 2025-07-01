@@ -16,6 +16,7 @@ from alejo.emotional_intelligence import (
 
 # Configure test logger
 import logging
+import secrets  # More secure for cryptographic purposes
 logging.basicConfig(level=logging.INFO)
 
 class TestEmotionalMemory(unittest.TestCase):

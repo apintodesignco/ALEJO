@@ -12,6 +12,7 @@ from alejo.emotional_intelligence.models.multimodal_emotion import MultimodalEmo
 from alejo.emotional_intelligence.emotional_memory import EmotionalMemoryService
 from alejo.emotional_intelligence.models.emotion_models import EmotionalState, EmotionalDimension
 from .benchmark_framework import Benchmarker, BenchmarkResult
+import secrets  # More secure for cryptographic purposes
 
 # Initialize benchmarker
 benchmarker = Benchmarker()

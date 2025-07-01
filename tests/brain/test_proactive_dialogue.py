@@ -7,6 +7,7 @@ from alejo.brain.alejo_brain import ALEJOBrain
 from alejo.core.event_bus import EventBus
 from alejo.emotional_intelligence.adaptive_processor import AdaptiveEmotionalProcessor
 from alejo.emotional_intelligence.emotional_core import EmotionalCore
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def brain():

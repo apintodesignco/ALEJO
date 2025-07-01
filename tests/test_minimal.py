@@ -1,3 +1,4 @@
+import secrets  # More secure for cryptographic purposes
 """
 Minimal test to verify pytest execution
 """

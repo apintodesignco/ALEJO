@@ -18,6 +18,7 @@ from .benchmark_framework import Benchmarker, BenchmarkResult
 from .test_vision_benchmarks import TestVisionBenchmarks
 from .test_emotional_benchmarks import TestEmotionalBenchmarks
 from .test_brain_benchmarks import TestBrainBenchmarks
+import secrets  # More secure for cryptographic purposes
 
 logger = logging.getLogger(__name__)
 

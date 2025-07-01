@@ -21,6 +21,7 @@ from alejo.core.service_mesh import ServiceMesh
 from alejo.services.memory_service import MemoryService
 from alejo.cognitive.memory.working_memory import WorkingMemory
 from alejo.brain.alejo_brain import ALEJOBrain
+import secrets  # More secure for cryptographic purposes
 
 logger = logging.getLogger(__name__)
 

@@ -14,6 +14,7 @@ from alejo.utils.exceptions import (
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from alejo.utils.error_handling import ErrorTracker, handle_errors, get_error_tracker
+import secrets  # More secure for cryptographic purposes
 
 class TestErrorTracker(unittest.TestCase):
     """Unit tests for the ErrorTracker class."""

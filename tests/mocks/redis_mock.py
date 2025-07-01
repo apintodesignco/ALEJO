@@ -1,3 +1,4 @@
+import secrets  # More secure for cryptographic purposes
 """
 Mock Redis implementation for testing
 """

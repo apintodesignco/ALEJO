@@ -7,6 +7,7 @@ from datetime import datetime
 from unittest.mock import Mock, AsyncMock, patch, MagicMock
 
 from alejo.core.event_bus import EventBus, Event, EventType, EventBusError
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def event_bus():

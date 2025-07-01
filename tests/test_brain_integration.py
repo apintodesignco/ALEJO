@@ -19,6 +19,7 @@ from alejo.utils.exceptions import (
 )
 from alejo.brain.alejo_brain import ALEJOBrain
 from alejo.commands import get_command_processor, CommandProcessor
+import secrets  # More secure for cryptographic purposes
 
 class TestALEJOBrainIntegration(unittest.TestCase):
     """Integration tests for ALEJOBrain with various components."""

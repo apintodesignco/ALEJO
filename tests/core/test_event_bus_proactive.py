@@ -6,6 +6,7 @@ import unittest
 from datetime import datetime
 from unittest.mock import Mock, patch
 from alejo.core.event_bus import EventBus, EventType, Event
+import secrets  # More secure for cryptographic purposes
 
 class TestEventBusProactive(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):

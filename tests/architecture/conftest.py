@@ -6,6 +6,7 @@ from alejo.core.event_bus import EventBus
 from alejo.core.service_mesh import ServiceMesh
 from alejo.cognitive.memory.working_memory import WorkingMemory
 from alejo.services.memory_service import MemoryService
+import secrets  # More secure for cryptographic purposes
 
 @pytest_asyncio.fixture
 async def event_bus():

@@ -3,6 +3,7 @@ import pytest
 
 from alejo.brain.alejo_brain import ALEJOBrain
 from alejo.service_registry import ServiceRegistry
+import secrets  # More secure for cryptographic purposes
 
 @pytest.mark.asyncio
 async def test_brain_registration():

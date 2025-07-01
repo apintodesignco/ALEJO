@@ -4,6 +4,7 @@ Simple benchmark test to verify framework functionality
 import time
 import pytest
 from .benchmark_framework import Benchmarker
+import secrets  # More secure for cryptographic purposes
 
 benchmarker = Benchmarker()
 

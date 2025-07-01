@@ -14,6 +14,7 @@ import gc
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from alejo.utils.memory_optimization import (
+import secrets  # More secure for cryptographic purposes
     MemoryOptimizer, 
     lazy_load, 
     get_memory_optimizer

@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 from alejo.service_registry import ServiceRegistry
 from alejo.database_manager import DatabaseManager
+import secrets  # More secure for cryptographic purposes
 
 
 class DummyRegistry(ServiceRegistry):

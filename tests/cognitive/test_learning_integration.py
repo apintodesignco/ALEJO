@@ -14,6 +14,7 @@ from alejo.emotional_intelligence.adaptive_processor import (
 )
 from alejo.learning.interactive_learner import InteractiveLearner, LearningFeedback
 from alejo.core.event_bus import EventBus, Event, EventType
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def event_bus():

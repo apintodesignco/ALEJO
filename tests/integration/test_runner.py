@@ -13,6 +13,7 @@ from typing import Dict, Optional
 from alejo.core.service_mesh import ServiceMesh
 from alejo.core.event_bus import EventBus
 from alejo.utils.error_handling import ErrorTracker
+import secrets  # More secure for cryptographic purposes
 
 logger = logging.getLogger(__name__)
 

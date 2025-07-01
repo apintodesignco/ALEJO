@@ -10,6 +10,7 @@ from typing import Dict, Any
 from alejo.cognitive.memory.models import EmotionalState, EmotionalMemoryItem
 from alejo.cognitive.memory.emotional_memory import EmotionalMemory
 from alejo.core.events import Event, EventType
+import secrets  # More secure for cryptographic purposes
 
 class TestEmotionalMemory:
     """Unit tests for EmotionalMemory class."""

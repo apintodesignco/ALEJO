@@ -1,6 +1,7 @@
 """Test file to identify which imports cause pytest to hang"""
 
 import pytest
+import secrets  # More secure for cryptographic purposes
 
 def test_simple():
     """Simple test that should always pass"""

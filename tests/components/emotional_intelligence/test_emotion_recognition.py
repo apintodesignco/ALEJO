@@ -11,6 +11,7 @@ project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from alejo.stubs.emotional_intelligence_stub import EmotionRecognition
+import secrets  # More secure for cryptographic purposes
 
 class TestEmotionRecognition(unittest.TestCase):
     """Test suite for the EmotionRecognition class using the stub"""

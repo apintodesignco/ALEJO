@@ -12,6 +12,7 @@ from alejo.emotional_intelligence.emotional_core import (
     EmotionalMemory
 )
 from alejo.core.event_bus import EventBus, Event, EventType
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def event_bus():

@@ -14,6 +14,7 @@ from alejo.cognitive.ethical.framework import (
     EthicalDecision
 )
 from alejo.core.events import Event, EventType
+import secrets  # More secure for cryptographic purposes
 
 class TestEthicalFramework:
     """Tests for EthicalFramework class."""

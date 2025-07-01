@@ -22,6 +22,7 @@ sys.path.insert(0, str(project_root))
 # Import ALEJO modules
 from alejo.core.event_bus import EventBus, EventType
 from scripts.setup_test_env import TestEnvironmentSetup
+import secrets  # More secure for cryptographic purposes
 
 logger = logging.getLogger(__name__)
 

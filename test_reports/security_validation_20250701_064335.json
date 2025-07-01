@@ -1,0 +1,67 @@
+{
+  "js_issues": {
+    "passed": true,
+    "issues": 0,
+    "details": []
+  },
+  "localStorage_issues": {
+    "passed": true,
+    "issues": 0,
+    "details": []
+  },
+  "setTimeout_issues": {
+    "passed": true,
+    "issues": 0,
+    "details": []
+  },
+  "random_issues": {
+    "passed": true,
+    "issues": 0,
+    "details": []
+  },
+  "eval_issues": {
+    "passed": true,
+    "issues": 0,
+    "details": []
+  },
+  "sql_injection": {
+    "passed": false,
+    "issues": 0,
+    "details": []
+  },
+  "overall": {
+    "passed": false,
+    "issues": 0,
+    "security_scan_results": {
+      "issues_by_severity": {
+        "critical": 0,
+        "high": 138,
+        "medium": 9,
+        "low": 80,
+        "info": 0
+      },
+      "issues_by_type": {
+        "DynamicCodeExecution": 138,
+        "SafeEvalAlternative": 9,
+        "PseudoRandom": 80
+      },
+      "total_issues": 227,
+      "files_with_issues": [
+        "test_reports\\security_scan_20250701_063114.txt",
+        "focused_security_scan.py",
+        "test_reports\\security_validation_20250701_063328.txt",
+        "validate_security.py",
+        "fix_random_issues.py",
+        "test_reports\\final_security_scan_results.txt",
+        "test_reports\\security_validation_20250701_063115.txt",
+        "security_validation.log",
+        "test_reports\\security_validation_20250701_063115.json",
+        "test_reports\\security_validation_20250701_063937.txt",
+        "test_reports\\security_scan_20250701_063936.txt",
+        "test_reports\\security_scan_results.txt",
+        "examples\\error_handling_demo.py"
+      ],
+      "output_file": "test_reports\\security_scan_20250701_064334.txt"
+    }
+  }
+}

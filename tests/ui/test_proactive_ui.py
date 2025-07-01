@@ -9,6 +9,7 @@ import sys
 
 from alejo.ui.pyside_ui import HolographicUIPySide, HolographicWidget
 from alejo.core.event_bus import Event, EventType
+import secrets  # More secure for cryptographic purposes
 
 class TestProactiveUI(unittest.TestCase):
     @classmethod

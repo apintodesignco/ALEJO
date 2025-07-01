@@ -13,6 +13,7 @@ from alejo.services.self_improvement_service import (
     MetricsResponse
 )
 from alejo.learning.self_improvement import ImprovementMetrics
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 def mock_improvement_system():

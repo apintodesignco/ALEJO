@@ -17,6 +17,7 @@ from alejo.cognitive.memory.semantic_memory import SemanticMemory
 from .mocks.event_bus import MockEventBus, Event, EventType
 from alejo.database.memory_store import MemoryStore
 from alejo.utils.exceptions import EventBusError
+import secrets  # More secure for cryptographic purposes
 
 @pytest_asyncio.fixture
 async def memory_store(test_db_path):

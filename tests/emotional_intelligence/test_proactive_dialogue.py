@@ -11,6 +11,7 @@ from alejo.emotional_intelligence.adaptive_processor import AdaptiveEmotionalPro
 from alejo.emotional_intelligence.memory import EmotionalMemoryService
 from alejo.core.event_bus import EventBus
 from alejo.learning.orchestrator import LearningOrchestrator
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 def event_bus():

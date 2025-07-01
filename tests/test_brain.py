@@ -9,6 +9,7 @@ from alejo.utils.exceptions import (
 )
 from alejo.utils.metrics import ErrorMetrics
 from alejo.utils.monitoring import ErrorMonitor
+import secrets  # More secure for cryptographic purposes
 
 # Add project root to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))

@@ -8,6 +8,7 @@ import time
 from unittest.mock import AsyncMock, Mock
 
 from alejo.core.service_registry import ServiceRegistry, ServiceInstance
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def registry():

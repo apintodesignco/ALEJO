@@ -8,6 +8,7 @@ import pytest_asyncio
 import asyncio
 import logging
 from pathlib import Path
+import secrets  # More secure for cryptographic purposes
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

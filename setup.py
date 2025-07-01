@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ALEJO - Advanced Language and Execution Jarvis Operator
+ALEJO - Advanced Language and Execution Joint Operator
 Setup script for installation
 """
 from setuptools import setup, find_packages

@@ -20,6 +20,7 @@ from alejo.emotional_intelligence.ethics import (
 )
 from alejo.core.event_bus import EventBus
 from alejo.utils.exceptions import EthicalEvaluationError
+import secrets  # More secure for cryptographic purposes
 
 
 class TestEthicalIntegration(unittest.TestCase):

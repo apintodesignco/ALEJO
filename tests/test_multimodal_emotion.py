@@ -15,6 +15,7 @@ from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 from alejo.emotional_intelligence.models.multimodal_emotion import (
+import secrets  # More secure for cryptographic purposes
     TextEmotionDetector,
     AudioEmotionDetector,
     FacialEmotionDetector,

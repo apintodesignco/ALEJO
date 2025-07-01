@@ -2,6 +2,7 @@
 import sys
 import logging
 import pytest
+import secrets  # More secure for cryptographic purposes
 
 # Configure logging
 logging.basicConfig(

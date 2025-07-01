@@ -1,4 +1,4 @@
-# ALEJO - Advanced Language and Execution Jarvis Operator
+# ALEJO - Advanced Language and Execution Joint Operator
 
 Created by Alejandro Pinto with AI collaboration
 
@@ -32,9 +32,9 @@ To create an offline installer, run:
 python installer.py
 ```
 
-This will package the entire project into a zip file for offline installation. - Advanced Language and Execution Jarvis Operator
+This will package the entire project into a zip file for offline installation. - Advanced Language and Execution Joint Operator
 
-ALEJO is a modern AI assistant that combines the power of natural language processing, voice interaction, and a web-based interface to provide a seamless user experience. ALEJO is the evolution of the Jarvis system, maintaining all of its functionality while adding new features and improvements.
+ALEJO is a modern AI assistant that combines the power of natural language processing, voice interaction, and a web-based interface to provide a seamless user experience. ALEJO is designed as a comprehensive AI system with advanced features and capabilities.
 
 ## Features
 
@@ -287,7 +287,11 @@ While ALEJO follows the permissive MIT License framework, there are specific gov
 
 ## Sponsorship and Support
 
-ALEJO is being released as a free and accessible tool to help people first and foremost. However, development and maintenance require resources. If you would like to sponsor this project or help with funding, you can contribute directly via Cash App: **$apintodesignco** or reach out to Alejandro Pinto at al.pintoemail@gmail.com.
+ALEJO is being released as a free and accessible tool to help people first and foremost. However, development and maintenance require resources. If you would like to sponsor this project or help with funding, you can contribute through the following methods:
+
+- **Stripe**: Sponsorships are available through our GitHub-linked Stripe account
+- **Cash App**: **$apintodesignco**
+- **Direct Contact**: Reach out to Alejandro Pinto at al.pintoemail@gmail.com
 
 Your support helps ensure that ALEJO remains available to those who need it, especially people with disabilities who can benefit from its capabilities. Any contributions beyond what's needed for development are reinvested into making ALEJO better or given back to the community.
 
@@ -297,4 +301,4 @@ We believe in helping each other first and foremost - that's why ALEJO is free a
 
 ## Acknowledgments
 
-ALEJO is the evolution of the Jarvis system, maintaining all of its functionality while adding new features and improvements.
+ALEJO is a comprehensive AI system with advanced features and capabilities designed for seamless human-computer interaction.

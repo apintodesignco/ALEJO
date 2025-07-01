@@ -8,6 +8,7 @@ import datetime
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from alejo.commands import CommandProcessor
+import secrets  # More secure for cryptographic purposes
 
 class TestCommandProcessor(unittest.TestCase):
     """Unit tests for the CommandProcessor class."""

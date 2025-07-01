@@ -14,6 +14,7 @@ from datetime import datetime
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 from alejo.testing.browser_testing import BrowserCompatibilityTester
+import secrets  # More secure for cryptographic purposes
 
 class TestBrowserCompatibilityTester(unittest.TestCase):
     """Test cases for the BrowserCompatibilityTester class"""

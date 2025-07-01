@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the architecture, security measures, and ethical guidelines for integrating ALEJO (Advanced Language and Execution Jarvis Operator) with robotic platforms, autonomous vehicles, and other physical systems. ALEJO's core mission as a "defender, helper, and protector of mankind" guides all design decisions in this integration.
+This document outlines the architecture, security measures, and ethical guidelines for integrating ALEJO (Advanced Language and Execution Joint Operator) with robotic platforms, autonomous vehicles, and other physical systems. ALEJO's core mission as a "defender, helper, and protector of mankind" guides all design decisions in this integration.
 
 ## Core Architecture for Robotics Integration
 

@@ -8,6 +8,7 @@ from unittest.mock import Mock, patch
 from alejo.voice import VoiceManager, VoiceService, start_voice_service
 from alejo.voice.voice_input import VoiceInput
 from alejo.voice.voice_output import VoiceOutput
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 def mock_brain():

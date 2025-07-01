@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch, AsyncMock
 from alejo.ui.gesture_integration import GestureIntegration
 from alejo.config.config_manager import ConfigManager
 from alejo.events.event_bus import EventBus
+import secrets  # More secure for cryptographic purposes
 
 
 class TestGestureIntegration:

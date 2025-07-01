@@ -5,6 +5,7 @@ Minimal test file to debug VisionProcessor initialization
 import logging
 import pytest
 from unittest.mock import MagicMock, AsyncMock
+import secrets  # More secure for cryptographic purposes
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

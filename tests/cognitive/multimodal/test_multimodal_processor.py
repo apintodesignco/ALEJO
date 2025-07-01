@@ -21,6 +21,7 @@ from alejo.vision.processor import VisionProcessor
 from alejo.vision.scene_analyzer import SceneContext, SceneObject, EnvironmentalContext
 from alejo.core.event_bus import EventBus
 from alejo.database.memory_store import MemoryStore
+import secrets  # More secure for cryptographic purposes
 
 # Create mock classes for testing
 class MockVLMClient:

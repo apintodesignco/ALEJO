@@ -14,6 +14,7 @@ from alejo.emotional_intelligence.processor import EmotionalState
 from alejo.interaction.gesture_arpeggiator.service import HandGesture, GestureArpeggiatorService
 from alejo.emotional_intelligence.integration import EmotionalIntelligenceIntegration
 from alejo.interaction.gesture_arpeggiator.emotional_integration import (
+import secrets  # More secure for cryptographic purposes
     GestureEmotionalIntegration, MusicMood, create_gesture_emotional_integration
 )
 

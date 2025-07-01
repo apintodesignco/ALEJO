@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 import aiohttp
 from alejo.core.service_mesh import ServiceMesh, ServiceHealth, CircuitBreaker
 from alejo.core.event_bus import EventBus, Event, EventType
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 def event_bus():

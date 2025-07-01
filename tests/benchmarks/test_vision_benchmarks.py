@@ -17,6 +17,7 @@ from alejo.vision.stream_manager import StreamManager, StreamManagerConfig
 from alejo.vision.optimized_stream import OptimizedVideoStream, StreamConfig
 from alejo.core.event_bus import EventBus
 from .benchmark_framework import Benchmarker, BenchmarkResult
+import secrets  # More secure for cryptographic purposes
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

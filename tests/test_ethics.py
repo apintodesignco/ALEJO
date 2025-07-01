@@ -13,6 +13,7 @@ from datetime import datetime
 from unittest.mock import patch, MagicMock
 
 from alejo.emotional_intelligence.ethics import (
+import secrets  # More secure for cryptographic purposes
     EthicalFramework, EthicalPrinciple, EmotionalRiskLevel,
     EmotionalRisk, EthicalDecision, EmotionalEthicsEvaluation
 )

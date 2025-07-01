@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from alejo.llm_client.local_provider import LocalLLMProvider, ModelInstance
 from alejo.llm_client.base import ModelCapability, LLMResponse
 from alejo.utils.exceptions import ModelError
+import secrets  # More secure for cryptographic purposes
 
 # Mock classes
 class MockLocalLLMClient:

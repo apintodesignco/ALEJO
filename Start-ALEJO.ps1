@@ -1,5 +1,5 @@
 # Start-ALEJO.ps1
-# PowerShell script to launch ALEJO - Advanced Language and Execution Jarvis Operator
+# PowerShell script to launch ALEJO - Advanced Language and Execution Joint Operator
 # A world-class AI system designed to be a defender, helper, and protector of mankind
 
 # Set error action preference
@@ -193,7 +193,7 @@ function Start-ALEJOApp {
 }
 
 # Main script execution
-Write-Host "===== ALEJO - Advanced Language and Execution Jarvis Operator ====="
+Write-Host "===== ALEJO - Advanced Language and Execution Joint Operator =====" 
 Write-Host "===== Defender | Helper | Protector of Mankind ====="
 Write-Host "Current directory: $alejoRoot"
 

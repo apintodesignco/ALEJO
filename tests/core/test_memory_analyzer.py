@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import numpy as np
 
 from alejo.core.memory_analyzer import MemoryLeakDetector
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 def memory_detector():

@@ -9,6 +9,7 @@ import os
 import pytest
 import time
 from playwright.async_api import async_playwright, expect
+import secrets  # More secure for cryptographic purposes
 
 # Constants for testing
 GESTURE_INTERFACE_URL = "http://localhost:8000/gestures"

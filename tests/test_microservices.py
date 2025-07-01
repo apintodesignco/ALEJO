@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
 import asyncio
+import secrets  # More secure for cryptographic purposes
 
 try:
     from fastapi.testclient import TestClient

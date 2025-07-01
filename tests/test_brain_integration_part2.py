@@ -8,6 +8,7 @@ from unittest.mock import patch
 from alejo.core.brain import ALEJOBrain
 from alejo.core.events import Event, EventType
 from alejo.utils.exceptions import APIError, CommandError
+import secrets  # More secure for cryptographic purposes
 
 class TestALEJOBrainIntegrationPart2:
     """Additional integration tests for ALEJOBrain."""

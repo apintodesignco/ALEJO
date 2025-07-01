@@ -2,7 +2,7 @@
 
 ## Introduction
 
-ALEJO (Advanced Language and Execution Jarvis Operator) is designed with an extraordinary, futuristic startup experience featuring a powerful half-human, half-machine awakening sequence with synchronized audio-visual effects. This guide explains the multiple ways to start ALEJO and customize your experience.
+ALEJO (Advanced Language and Execution Joint Operator) is designed with an extraordinary, futuristic startup experience featuring a powerful half-human, half-machine awakening sequence with synchronized audio-visual effects. This guide explains the multiple ways to start ALEJO and customize your experience.
 
 ## Startup Methods
 

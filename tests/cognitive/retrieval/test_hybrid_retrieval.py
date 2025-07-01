@@ -20,6 +20,7 @@ from alejo.cognitive.retrieval.rag_system import RAGSystem, RAGConfig
 from alejo.cognitive.retrieval.cag_system import CAGSystem, CAGConfig
 from alejo.cognitive.retrieval.hybrid_retrieval import HybridRetrievalSystem, HybridConfig
 from alejo.cognitive.retrieval.cloud_cache import CloudCache, CloudCacheConfig, CloudStorageProvider
+import secrets  # More secure for cryptographic purposes
 
 # Mock LLM client for testing
 class MockLLMClient(BaseLLMClient):

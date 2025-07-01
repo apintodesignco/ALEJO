@@ -20,6 +20,7 @@ from alejo.database.memory_store import MemoryStore, Memory
 from alejo.cognitive.memory.semantic_memory import SemanticMemory, Concept
 from alejo.cognitive.retrieval.integration import RetrievalIntegration
 from alejo.cognitive.retrieval.cloud_cache import CloudStorageProvider
+import secrets  # More secure for cryptographic purposes
 
 # Mock classes for testing
 class MockLLMClient(BaseLLMClient):

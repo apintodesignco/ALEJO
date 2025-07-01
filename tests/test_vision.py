@@ -14,6 +14,7 @@ from alejo.vision.processor import VisionProcessor
 from alejo.utils.exceptions import VisionError
 from alejo.brain import ALEJOBrain
 from alejo.utils.error_handling import ErrorTracker
+import secrets  # More secure for cryptographic purposes
 
 class TestVisionProcessor(unittest.TestCase):
     """Test cases for VisionProcessor"""

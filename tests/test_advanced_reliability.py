@@ -5,6 +5,7 @@ Advanced reliability and stress tests for ALEJO
 import asyncio
 import pytest
 import random
+import secrets  # More secure for cryptographic purposes
 import time
 from concurrent.futures import ThreadPoolExecutor
 from unittest.mock import Mock, patch
@@ -69,7 +70,7 @@ async def test_race_conditions(setup_system):
     
     async def concurrent_operation(i: int):
         # Randomly choose operation
-        op = random.choice(['command', 'event', 'memory'])
+        op = secrets.choice(['command', 'event', 'memory'])
         
         if op == 'command':
             await brain.process_command(f"concurrent_cmd_{i}")
@@ -142,7 +143,7 @@ async def test_data_consistency(setup_system):
         {
             'command': f'test_{i}',
             'response': f'response_{i}',
-            'emotional_state': {'valence': random.random()}
+            'emotional_state': {'valence': secrets.randbelow(2**32) / (2**32)}
         }
         for i in range(100)
     ]

@@ -3,6 +3,7 @@ import asyncio
 from unittest.mock import MagicMock, patch
 from alejo.brain.alejo_brain import ALEJOBrain
 from alejo.utils.error_handling import ErrorTracker
+import secrets  # More secure for cryptographic purposes
 
 class TestAsyncProcessing(unittest.TestCase):
     """Test async processing capabilities in ALEJOBrain"""

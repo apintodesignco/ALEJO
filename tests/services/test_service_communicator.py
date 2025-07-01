@@ -11,6 +11,7 @@ from requests.exceptions import RequestException
 from alejo.services.communication import ServiceCommunicator
 from alejo.core.circuit_breaker import CircuitBreakerError
 from alejo.core.service_registry import ServiceInstance
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def communicator():

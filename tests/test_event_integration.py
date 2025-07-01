@@ -16,6 +16,7 @@ from alejo.services.brain_service import BrainService
 from alejo.services.emotional_intelligence_service import EmotionalIntelligenceService
 from alejo.services.memory_service import MemoryService
 from alejo.ui.controller import UIController
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def event_bus():

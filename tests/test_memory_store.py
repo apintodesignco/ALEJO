@@ -12,6 +12,7 @@ from pathlib import Path
 from dataclasses import dataclass
 from alejo.database.memory_store import MemoryStore
 from .mocks.event_bus import MockEventBus
+import secrets  # More secure for cryptographic purposes
 
 # Mock classes for testing
 @dataclass

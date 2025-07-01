@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from alejo.utils.error_handling import ErrorTracker, handle_errors
 from alejo.utils.exceptions import (
+import secrets  # More secure for cryptographic purposes
     CommandError, VoiceRecognitionError, LLMServiceError, 
     APIError, FileOperationError, NetworkError
 )

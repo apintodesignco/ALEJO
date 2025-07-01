@@ -11,6 +11,7 @@ from alejo.core.event_bus import EventBus
 from alejo.brain import ALEJOBrain
 from alejo.ui.pyside_ui import HolographicUIPySide
 from alejo.voice import VoiceService
+import secrets  # More secure for cryptographic purposes
 
 class TestProactiveIntegration(unittest.IsolatedAsyncioTestCase):
     @classmethod

@@ -12,6 +12,7 @@ from typing import Dict, Any
 from alejo.cognitive.memory.models import Episode, Concept, Relationship, WorkingMemoryItem
 from alejo.core.events import Event, EventType
 from alejo.utils.error_handling import handle_errors
+import secrets  # More secure for cryptographic purposes
 
 class TestMemorySystemIntegration:
     """Integration tests for memory system components working together."""

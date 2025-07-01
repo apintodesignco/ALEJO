@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="2" failures="0" skipped="0" tests="2" time="2.322" timestamp="2025-06-30T21:13:41.552619-04:00" hostname="StudioSurface"><testcase classname="" name="tests.e2e.test_gesture_interface" time="0.000"><error message="collection failure">ImportError while importing test module 'C:\Users\magic\CascadeProjects\ALEJO\tests\e2e\test_gesture_interface.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py:127: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\e2e\test_gesture_interface.py:11: in &lt;module&gt;
+    from playwright.async_api import async_playwright, expect
+E   ModuleNotFoundError: No module named 'playwright'</error></testcase><testcase classname="" name="tests.e2e.test_ui_e2e" time="0.000"><error message="collection failure">ImportError while importing test module 'C:\Users\magic\CascadeProjects\ALEJO\tests\e2e\test_ui_e2e.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+..\..\AppData\Local\Programs\Python\Python39\lib\importlib\__init__.py:127: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\e2e\test_ui_e2e.py:26: in &lt;module&gt;
+    from alejo.ui.main_interface import AlejoUI
+alejo\ui\main_interface.py:30: in &lt;module&gt;
+    from alejo.core.brain import Brain
+alejo\core\brain.py:10: in &lt;module&gt;
+    from .events import Event, EventType
+E   ModuleNotFoundError: No module named 'alejo.core.events'</error></testcase></testsuite></testsuites>

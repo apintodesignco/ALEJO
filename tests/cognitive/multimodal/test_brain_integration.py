@@ -21,6 +21,7 @@ from alejo.core.event_bus import EventBus
 from alejo.database.memory_store import MemoryStore
 from alejo.vision.processor import VisionProcessor
 from alejo.llm_client.base import LLMResponse
+import secrets  # More secure for cryptographic purposes
 
 # Mock classes
 class MockBrain:

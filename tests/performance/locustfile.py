@@ -3,6 +3,7 @@ Performance tests for ALEJO services using Locust.
 """
 
 from locust import HttpUser, task, between
+import secrets  # More secure for cryptographic purposes
 
 class ALEJOUser(HttpUser):
     wait_time = between(1, 2.5)

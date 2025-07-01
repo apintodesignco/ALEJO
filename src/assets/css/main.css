@@ -1,0 +1,174 @@
+/**
+ * ALEJO Main Stylesheet
+ * 
+ * This is the primary stylesheet for the ALEJO application.
+ * It follows a modular structure to support code splitting and lazy loading.
+ * Core styles are kept minimal to optimize initial load time.
+ */
+
+/* Base styles and CSS reset */
+@import 'reset.css';
+@import 'variables.css';
+@import 'typography.css';
+@import 'animations.css';
+@import 'utilities.css';
+@import 'layout.css';
+
+/* Core components (loaded immediately) */
+.alejo-app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  line-height: var(--line-height);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.alejo-header {
+  padding: 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.alejo-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.alejo-logo img {
+  height: 32px;
+  margin-right: 0.5rem;
+}
+
+.alejo-main {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.alejo-footer {
+  padding: 0.75rem;
+  background-color: var(--background-alt-color);
+  color: var(--text-muted-color);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* Loading indicators */
+.alejo-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.alejo-loading.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.alejo-loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.alejo-error {
+  padding: 1.5rem;
+  margin: 1rem 0;
+  border-left: 4px solid var(--error-color);
+  background-color: var(--error-bg-color);
+  color: var(--error-text-color);
+}
+
+.alejo-error pre {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.875rem;
+}
+
+.noscript-message {
+  padding: 2rem;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  color: var(--error-text-color);
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .alejo-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .alejo-logo {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: var(--dark-background-color);
+    --background-alt-color: var(--dark-background-alt-color);
+    --text-color: var(--dark-text-color);
+    --text-muted-color: var(--dark-text-muted-color);
+  }
+}
+
+/* Print styles */
+@media print {
+  .alejo-header, .alejo-footer, .alejo-control-panel {
+    display: none !important;
+  }
+  
+  .alejo-main {
+    padding: 0;
+  }
+  
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+
+/* Animation keyframes */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}

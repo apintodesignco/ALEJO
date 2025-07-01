@@ -8,6 +8,7 @@ import redis.exceptions
 
 from alejo.core.event_bus import EventBus, Event, EventType
 from alejo.utils.exceptions import EventBusError
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def event_bus():

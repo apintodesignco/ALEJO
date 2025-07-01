@@ -9,6 +9,7 @@ from alejo.emotional_intelligence.emotional_integration import EmotionalIntegrat
 from alejo.emotional_intelligence.emotional_core import EmotionalState, EmotionalDimension
 from alejo.core.event_bus import EventBus, Event, EventType
 from alejo.learning.orchestrator import LearningOrchestrator
+import secrets  # More secure for cryptographic purposes
 
 @pytest.fixture
 async def event_bus():
