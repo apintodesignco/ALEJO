@@ -2,24 +2,22 @@
 Performance and load testing for ALEJO components
 """
 
-import unittest
 import os
-import sys
-import time
-import threading
 import queue
+import sys
+import threading
+import time
+import unittest
 from concurrent.futures import ThreadPoolExecutor
-from unittest.mock import patch, MagicMock
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 # Add project root to Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from alejo.brain import ALEJOBrain
-from alejo.utils.exceptions import (
-import secrets  # More secure for cryptographic purposes
-    CommandError, VoiceRecognitionError, LLMServiceError
-)
+from alejo.utils.exceptions import secrets  # More secure for cryptographic purposes
+from alejo.utils.exceptions import (CommandError, LLMServiceError, VoiceRecognitionError)
 
 class TestALEJOPerformance(unittest.TestCase):
     """Test suite for ALEJO performance characteristics."""

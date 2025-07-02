@@ -2,25 +2,22 @@
 Integration tests for multimodal emotion detection system
 """
 
-import pytest
-import numpy as np
-import torch
 import base64
-import os
-import librosa
-import cv2
-from PIL import Image
 import io
+import os
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
+import cv2
+import librosa
+import numpy as np
+import pytest
+import torch
+from alejo.emotional_intelligence.models.multimodal_emotion import secrets  # More secure for cryptographic purposes
 from alejo.emotional_intelligence.models.multimodal_emotion import (
-import secrets  # More secure for cryptographic purposes
-    TextEmotionDetector,
-    AudioEmotionDetector,
-    FacialEmotionDetector,
-    MultimodalEmotionDetector
-)
+    AudioEmotionDetector, FacialEmotionDetector, MultimodalEmotionDetector,
+    TextEmotionDetector)
+from PIL import Image
 
 # Test data paths
 TEST_DATA_DIR = Path(__file__).parent / "test_data" / "multimodal"

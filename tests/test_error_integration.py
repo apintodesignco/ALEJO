@@ -2,21 +2,20 @@
 Integration tests for ALEJO error handling with various components
 """
 
-import unittest
 import os
 import sys
-from unittest.mock import patch, MagicMock
+import unittest
 from datetime import datetime
+from unittest.mock import MagicMock, patch
 
 # Add project root to Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from alejo.utils.error_handling import ErrorTracker, handle_errors
-from alejo.utils.exceptions import (
-import secrets  # More secure for cryptographic purposes
-    CommandError, VoiceRecognitionError, LLMServiceError, 
-    APIError, FileOperationError, NetworkError
-)
+from alejo.utils.exceptions import secrets  # More secure for cryptographic purposes
+from alejo.utils.exceptions import (APIError, CommandError, FileOperationError,
+                                    LLMServiceError, NetworkError,
+                                    VoiceRecognitionError)
 
 class TestCommandProcessorIntegration(unittest.TestCase):
     """Test error handling integration with CommandProcessor."""
