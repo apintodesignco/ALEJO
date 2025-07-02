@@ -89,3 +89,318 @@ focused_security_scan.py: error: unrecognized arguments: --exclude backups
 2025-07-01 06:50:23,972 - __main__ - INFO - Security validation report saved to test_reports\security_validation_20250701_065023.txt
 2025-07-01 06:50:23,972 - __main__ - INFO - JSON report saved to test_reports\security_validation_20250701_065023.json
 2025-07-01 15:06:32,351 - __main__ - ERROR - Error running security validation: 'SecurityValidator' object has no attribute 'run_validation'
+2025-07-01 21:34:41,885 - __main__ - INFO - Starting full security scan...
+2025-07-01 21:34:41,886 - __main__ - INFO - Scanning for hardcoded secrets...
+2025-07-01 21:34:43,974 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:373
+2025-07-01 21:34:43,974 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:381
+2025-07-01 21:34:43,974 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:375
+2025-07-01 21:34:43,975 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:374
+2025-07-01 21:34:43,975 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:382
+2025-07-01 21:34:44,331 - __main__ - INFO - Scanning for security vulnerabilities...
+2025-07-01 21:34:44,332 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\alejo_security_scanner.py:129
+2025-07-01 21:34:44,349 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\wake_alejo.py:442
+2025-07-01 21:34:44,352 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:262
+2025-07-01 21:34:44,352 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:266
+2025-07-01 21:34:44,353 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:268
+2025-07-01 21:34:44,353 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:276
+2025-07-01 21:34:44,353 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:288
+2025-07-01 21:34:44,353 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:373
+2025-07-01 21:34:44,355 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:564
+2025-07-01 21:34:44,355 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:576
+2025-07-01 21:34:44,356 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:64
+2025-07-01 21:34:44,357 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:372
+2025-07-01 21:34:44,357 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:408
+2025-07-01 21:34:44,358 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\main.js:281
+2025-07-01 21:34:44,358 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\main.js:308
+2025-07-01 21:34:44,360 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:443
+2025-07-01 21:34:44,360 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:448
+2025-07-01 21:34:44,360 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:464
+2025-07-01 21:34:44,360 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:472
+2025-07-01 21:34:44,371 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\index.js:18
+2025-07-01 21:34:44,372 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\index.js:91
+2025-07-01 21:34:44,372 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\main.js:108
+2025-07-01 21:34:44,381 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\gesture\calibration.js:115
+2025-07-01 21:34:44,386 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:34
+2025-07-01 21:34:44,388 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:39
+2025-07-01 21:34:44,388 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:74
+2025-07-01 21:34:44,389 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:26
+2025-07-01 21:34:44,390 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:212
+2025-07-01 21:34:44,390 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:215
+2025-07-01 21:34:44,390 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:31
+2025-07-01 21:34:44,391 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:47
+2025-07-01 21:34:44,391 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:128
+2025-07-01 21:34:44,393 - __main__ - INFO - Scanning for insecure configurations...
+2025-07-01 21:34:49,865 - __main__ - INFO - Security scan complete. Scanned 591 files, found 37 issues.
+2025-07-01 21:34:49,867 - __main__ - INFO - Security report generated at C:\Users\magic\CascadeProjects\ALEJO\security_report.json
+2025-07-01 21:34:49,868 - __main__ - ERROR - Found 5 high severity security issues
+2025-07-01 21:34:49,868 - __main__ - WARNING - Security issues found but continuing due to --ignore-warnings flag
+2025-07-01 21:34:49,869 - __main__ - INFO - Security scan completed successfully
+2025-07-01 21:35:06,482 - __main__ - INFO - Starting full security scan...
+2025-07-01 21:35:06,483 - __main__ - INFO - Scanning for hardcoded secrets...
+2025-07-01 21:35:06,510 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:16
+2025-07-01 21:35:06,510 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:23
+2025-07-01 21:35:06,510 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:30
+2025-07-01 21:35:06,510 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:37
+2025-07-01 21:35:06,510 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:44
+2025-07-01 21:35:06,582 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:373
+2025-07-01 21:35:06,582 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:381
+2025-07-01 21:35:06,583 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:375
+2025-07-01 21:35:06,584 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:374
+2025-07-01 21:35:06,584 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:382
+2025-07-01 21:35:06,596 - __main__ - INFO - Scanning for security vulnerabilities...
+2025-07-01 21:35:06,597 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\alejo_security_scanner.py:129
+2025-07-01 21:35:06,613 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\wake_alejo.py:442
+2025-07-01 21:35:06,617 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:262
+2025-07-01 21:35:06,617 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:266
+2025-07-01 21:35:06,618 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:268
+2025-07-01 21:35:06,618 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:276
+2025-07-01 21:35:06,618 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:288
+2025-07-01 21:35:06,618 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:373
+2025-07-01 21:35:06,618 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:564
+2025-07-01 21:35:06,619 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:576
+2025-07-01 21:35:06,619 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:64
+2025-07-01 21:35:06,619 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:372
+2025-07-01 21:35:06,620 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:408
+2025-07-01 21:35:06,620 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\main.js:281
+2025-07-01 21:35:06,620 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\main.js:308
+2025-07-01 21:35:06,621 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:443
+2025-07-01 21:35:06,621 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:448
+2025-07-01 21:35:06,621 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:464
+2025-07-01 21:35:06,621 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:472
+2025-07-01 21:35:06,631 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\index.js:18
+2025-07-01 21:35:06,631 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\index.js:91
+2025-07-01 21:35:06,631 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\main.js:108
+2025-07-01 21:35:06,639 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\gesture\calibration.js:115
+2025-07-01 21:35:06,643 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:34
+2025-07-01 21:35:06,644 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:39
+2025-07-01 21:35:06,644 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:74
+2025-07-01 21:35:06,644 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:26
+2025-07-01 21:35:06,644 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:212
+2025-07-01 21:35:06,644 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:215
+2025-07-01 21:35:06,646 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:31
+2025-07-01 21:35:06,646 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:47
+2025-07-01 21:35:06,646 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:128
+2025-07-01 21:35:06,647 - __main__ - INFO - Scanning for insecure configurations...
+2025-07-01 21:35:06,847 - __main__ - INFO - Security scan complete. Scanned 592 files, found 42 issues.
+2025-07-01 21:35:06,848 - __main__ - INFO - Security report generated at C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json
+2025-07-01 21:35:06,848 - __main__ - ERROR - Found 10 high severity security issues
+2025-07-01 21:35:06,850 - __main__ - WARNING - Security issues found but continuing due to --ignore-warnings flag
+2025-07-01 21:35:06,850 - __main__ - INFO - Security scan completed successfully
+2025-07-01 21:36:59,572 - __main__ - INFO - Starting full security scan...
+2025-07-01 21:36:59,572 - __main__ - INFO - Scanning for hardcoded secrets...
+2025-07-01 21:36:59,610 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:16
+2025-07-01 21:36:59,610 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:23
+2025-07-01 21:36:59,612 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:30
+2025-07-01 21:36:59,612 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:37
+2025-07-01 21:36:59,612 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:44
+2025-07-01 21:36:59,692 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:373
+2025-07-01 21:36:59,692 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:381
+2025-07-01 21:36:59,693 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:375
+2025-07-01 21:36:59,694 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:374
+2025-07-01 21:36:59,694 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:382
+2025-07-01 21:36:59,701 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:16
+2025-07-01 21:36:59,701 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:23
+2025-07-01 21:36:59,701 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:51
+2025-07-01 21:36:59,701 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:58
+2025-07-01 21:36:59,702 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:30
+2025-07-01 21:36:59,702 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:65
+2025-07-01 21:36:59,702 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:37
+2025-07-01 21:36:59,702 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:44
+2025-07-01 21:36:59,702 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:72
+2025-07-01 21:36:59,702 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:79
+2025-07-01 21:36:59,705 - __main__ - INFO - Scanning for security vulnerabilities...
+2025-07-01 21:36:59,707 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\alejo_security_scanner.py:129
+2025-07-01 21:36:59,724 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\wake_alejo.py:442
+2025-07-01 21:36:59,727 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:262
+2025-07-01 21:36:59,727 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:266
+2025-07-01 21:36:59,727 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:268
+2025-07-01 21:36:59,727 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:276
+2025-07-01 21:36:59,728 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:288
+2025-07-01 21:36:59,728 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:373
+2025-07-01 21:36:59,728 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:564
+2025-07-01 21:36:59,728 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:576
+2025-07-01 21:36:59,728 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:64
+2025-07-01 21:36:59,729 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:372
+2025-07-01 21:36:59,729 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:408
+2025-07-01 21:36:59,730 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\main.js:281
+2025-07-01 21:36:59,730 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\main.js:308
+2025-07-01 21:36:59,731 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:443
+2025-07-01 21:36:59,731 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:448
+2025-07-01 21:36:59,731 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:464
+2025-07-01 21:36:59,731 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:472
+2025-07-01 21:36:59,740 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\index.js:18
+2025-07-01 21:36:59,740 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\index.js:91
+2025-07-01 21:36:59,740 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\main.js:108
+2025-07-01 21:36:59,747 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\gesture\calibration.js:115
+2025-07-01 21:36:59,753 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:34
+2025-07-01 21:36:59,753 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:39
+2025-07-01 21:36:59,753 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:74
+2025-07-01 21:36:59,754 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:26
+2025-07-01 21:36:59,754 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:212
+2025-07-01 21:36:59,754 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:215
+2025-07-01 21:36:59,754 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:31
+2025-07-01 21:36:59,754 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:47
+2025-07-01 21:36:59,754 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:128
+2025-07-01 21:36:59,755 - __main__ - INFO - Scanning for insecure configurations...
+2025-07-01 21:36:59,925 - __main__ - INFO - Security scan complete. Scanned 593 files, found 52 issues.
+2025-07-01 21:36:59,927 - __main__ - INFO - Security report generated at C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json
+2025-07-01 21:36:59,927 - __main__ - ERROR - Found 20 high severity security issues
+2025-07-01 21:36:59,927 - __main__ - WARNING - Security issues found but continuing due to --ignore-warnings flag
+2025-07-01 21:36:59,927 - __main__ - INFO - Security scan completed successfully
+2025-07-01 22:45:40,517 - __main__ - INFO - Starting full security scan...
+2025-07-01 22:45:40,517 - __main__ - INFO - Scanning for hardcoded secrets...
+2025-07-01 22:45:40,546 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:16
+2025-07-01 22:45:40,546 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:23
+2025-07-01 22:45:40,546 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:30
+2025-07-01 22:45:40,547 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:37
+2025-07-01 22:45:40,547 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:44
+2025-07-01 22:45:40,630 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:373
+2025-07-01 22:45:40,630 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:381
+2025-07-01 22:45:40,631 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:375
+2025-07-01 22:45:40,632 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:374
+2025-07-01 22:45:40,632 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:382
+2025-07-01 22:45:40,642 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:16
+2025-07-01 22:45:40,642 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:23
+2025-07-01 22:45:40,642 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:51
+2025-07-01 22:45:40,642 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:58
+2025-07-01 22:45:40,642 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:86
+2025-07-01 22:45:40,642 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:93
+2025-07-01 22:45:40,642 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:100
+2025-07-01 22:45:40,642 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:107
+2025-07-01 22:45:40,642 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:30
+2025-07-01 22:45:40,643 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:65
+2025-07-01 22:45:40,643 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:114
+2025-07-01 22:45:40,643 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:121
+2025-07-01 22:45:40,643 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:37
+2025-07-01 22:45:40,643 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:44
+2025-07-01 22:45:40,644 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:72
+2025-07-01 22:45:40,644 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:79
+2025-07-01 22:45:40,644 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:128
+2025-07-01 22:45:40,644 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:135
+2025-07-01 22:45:40,644 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:142
+2025-07-01 22:45:40,644 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:149
+2025-07-01 22:45:40,650 - __main__ - INFO - Scanning for security vulnerabilities...
+2025-07-01 22:45:40,651 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\alejo_security_scanner.py:129
+2025-07-01 22:45:40,666 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\wake_alejo.py:442
+2025-07-01 22:45:40,668 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:262
+2025-07-01 22:45:40,668 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:266
+2025-07-01 22:45:40,669 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:268
+2025-07-01 22:45:40,669 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:276
+2025-07-01 22:45:40,669 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:288
+2025-07-01 22:45:40,669 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:373
+2025-07-01 22:45:40,669 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:564
+2025-07-01 22:45:40,669 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:576
+2025-07-01 22:45:40,670 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:64
+2025-07-01 22:45:40,670 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:372
+2025-07-01 22:45:40,671 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:408
+2025-07-01 22:45:40,671 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\main.js:281
+2025-07-01 22:45:40,671 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\main.js:308
+2025-07-01 22:45:40,672 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:443
+2025-07-01 22:45:40,672 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:448
+2025-07-01 22:45:40,672 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:464
+2025-07-01 22:45:40,672 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:472
+2025-07-01 22:45:40,679 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\index.js:18
+2025-07-01 22:45:40,679 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\index.js:91
+2025-07-01 22:45:40,680 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\main.js:108
+2025-07-01 22:45:40,687 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\gesture\calibration.js:115
+2025-07-01 22:45:40,696 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:34
+2025-07-01 22:45:40,696 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:39
+2025-07-01 22:45:40,696 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:74
+2025-07-01 22:45:40,698 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:26
+2025-07-01 22:45:40,698 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:212
+2025-07-01 22:45:40,698 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:215
+2025-07-01 22:45:40,699 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:31
+2025-07-01 22:45:40,699 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:47
+2025-07-01 22:45:40,699 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:128
+2025-07-01 22:45:40,700 - __main__ - INFO - Scanning for insecure configurations...
+2025-07-01 22:45:40,875 - __main__ - INFO - Security scan complete. Scanned 637 files, found 62 issues.
+2025-07-01 22:45:40,878 - __main__ - INFO - Security report generated at C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json
+2025-07-01 22:45:40,878 - __main__ - INFO - Security scan completed successfully
+2025-07-01 22:54:45,262 - __main__ - INFO - Starting full security scan...
+2025-07-01 22:54:45,262 - __main__ - INFO - Scanning for hardcoded secrets...
+2025-07-01 22:54:45,303 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:16
+2025-07-01 22:54:45,303 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:23
+2025-07-01 22:54:45,303 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:30
+2025-07-01 22:54:45,303 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:37
+2025-07-01 22:54:45,303 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\security_report.json:44
+2025-07-01 22:54:53,978 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:373
+2025-07-01 22:54:53,978 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:381
+2025-07-01 22:54:53,978 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:375
+2025-07-01 22:54:53,980 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:374
+2025-07-01 22:54:53,980 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\src\security\audit-trail.js:382
+2025-07-01 22:54:53,985 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:16
+2025-07-01 22:54:53,985 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:23
+2025-07-01 22:54:53,986 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:51
+2025-07-01 22:54:53,986 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:58
+2025-07-01 22:54:53,986 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:86
+2025-07-01 22:54:53,986 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:93
+2025-07-01 22:54:53,986 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:100
+2025-07-01 22:54:53,986 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:107
+2025-07-01 22:54:53,986 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:114
+2025-07-01 22:54:53,986 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:121
+2025-07-01 22:54:53,987 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:128
+2025-07-01 22:54:53,987 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:135
+2025-07-01 22:54:53,987 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:30
+2025-07-01 22:54:53,987 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:65
+2025-07-01 22:54:53,987 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:142
+2025-07-01 22:54:53,987 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:149
+2025-07-01 22:54:53,987 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:156
+2025-07-01 22:54:53,987 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:163
+2025-07-01 22:54:53,988 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:37
+2025-07-01 22:54:53,988 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:44
+2025-07-01 22:54:53,988 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:72
+2025-07-01 22:54:53,988 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:79
+2025-07-01 22:54:53,988 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:170
+2025-07-01 22:54:53,988 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:177
+2025-07-01 22:54:53,988 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:184
+2025-07-01 22:54:53,989 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:191
+2025-07-01 22:54:53,989 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:198
+2025-07-01 22:54:53,989 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:205
+2025-07-01 22:54:53,989 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:212
+2025-07-01 22:54:53,989 - __main__ - WARNING - Potential secret found in C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json:219
+2025-07-01 22:54:53,991 - __main__ - INFO - Scanning for security vulnerabilities...
+2025-07-01 22:54:53,992 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\alejo_security_scanner.py:129
+2025-07-01 22:54:54,007 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\wake_alejo.py:442
+2025-07-01 22:54:54,038 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\.venv\Lib\site-packages\pip\_internal\utils\setuptools_build.py:10
+2025-07-01 22:54:54,039 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\.venv\Lib\site-packages\pip\_internal\utils\setuptools_build.py:44
+2025-07-01 22:54:54,045 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\.venv\Lib\site-packages\pip\_vendor\typing_extensions.py:1300
+2025-07-01 22:54:54,053 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\.venv\Lib\site-packages\pip\_vendor\distlib\scripts.py:163
+2025-07-01 22:54:54,067 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\.venv\Lib\site-packages\pip\_vendor\pkg_resources\__init__.py:1714
+2025-07-01 22:54:54,067 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\.venv\Lib\site-packages\pip\_vendor\pkg_resources\__init__.py:1725
+2025-07-01 22:54:54,073 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\.venv\Lib\site-packages\pip\_vendor\pygments\formatters\__init__.py:103
+2025-07-01 22:54:54,075 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\.venv\Lib\site-packages\pip\_vendor\pygments\lexers\__init__.py:154
+2025-07-01 22:54:54,105 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\.venv\Lib\site-packages\pip\_vendor\urllib3\packages\six.py:787
+2025-07-01 22:54:54,110 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:262
+2025-07-01 22:54:54,111 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:266
+2025-07-01 22:54:54,111 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:268
+2025-07-01 22:54:54,111 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:276
+2025-07-01 22:54:54,111 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:288
+2025-07-01 22:54:54,111 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:373
+2025-07-01 22:54:54,111 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:564
+2025-07-01 22:54:54,111 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\chat.js:576
+2025-07-01 22:54:54,112 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:64
+2025-07-01 22:54:54,112 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:372
+2025-07-01 22:54:54,112 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\holographic.js:408
+2025-07-01 22:54:54,112 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\main.js:281
+2025-07-01 22:54:54,112 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\main.js:308
+2025-07-01 22:54:54,113 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:443
+2025-07-01 22:54:54,113 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:448
+2025-07-01 22:54:54,113 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:464
+2025-07-01 22:54:54,113 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\backups\pre_optimization_20250611_073107\js\vision.js:472
+2025-07-01 22:54:54,122 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\index.js:18
+2025-07-01 22:54:54,122 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\index.js:91
+2025-07-01 22:54:54,123 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\main.js:108
+2025-07-01 22:54:54,128 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\gesture\calibration.js:115
+2025-07-01 22:54:54,137 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:34
+2025-07-01 22:54:54,137 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:39
+2025-07-01 22:54:54,137 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\index.js:74
+2025-07-01 22:54:54,138 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:26
+2025-07-01 22:54:54,138 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:212
+2025-07-01 22:54:54,138 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\control-panel.js:215
+2025-07-01 22:54:54,138 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:31
+2025-07-01 22:54:54,138 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:47
+2025-07-01 22:54:54,138 - __main__ - WARNING - Potential vulnerability found in C:\Users\magic\CascadeProjects\ALEJO\src\ui\components\visualization.js:128
+2025-07-01 22:54:54,140 - __main__ - INFO - Scanning for insecure configurations...
+2025-07-01 22:54:54,312 - __main__ - INFO - Security scan complete. Scanned 1459 files, found 81 issues.
+2025-07-01 22:54:54,314 - __main__ - INFO - Security report generated at C:\Users\magic\CascadeProjects\ALEJO\test_reports\security_report.json
+2025-07-01 22:54:54,314 - __main__ - INFO - Security scan completed successfully

@@ -1,21 +1,20 @@
 """Integration tests for the enhanced multimodal fusion system."""
 
-import pytest
-import torch
-import numpy as np
-from unittest.mock import Mock, patch
 import asyncio
-from pathlib import Path
 import os
 import tempfile
+from pathlib import Path
+from unittest.mock import Mock, patch
+
+import numpy as np
+import pytest
+import torch
+from alejo.multimodal.fusion import \
+    secrets  # More secure for cryptographic purposes
+from alejo.multimodal.fusion import (EnhancedMultimodalProcessor,
+                                     ModalityFeatures, ModalityFusion, import)
 from PIL import Image
 
-from alejo.multimodal.fusion import (
-import secrets  # More secure for cryptographic purposes
-    EnhancedMultimodalProcessor,
-    ModalityFeatures,
-    ModalityFusion
-)
 
 @pytest.fixture
 def test_image():

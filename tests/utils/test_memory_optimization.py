@@ -2,23 +2,24 @@
 Tests for the Memory Optimization module
 """
 
+import gc
 import os
 import sys
-import time
-import pytest
-from unittest.mock import MagicMock, patch
 import tempfile
-import gc
+import time
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 # Add project root to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
-from alejo.utils.memory_optimization import (
-import secrets  # More secure for cryptographic purposes
-    MemoryOptimizer, 
-    lazy_load, 
-    get_memory_optimizer
-)
+from alejo.utils.memory_optimization import \
+    secrets  # More secure for cryptographic purposes
+from alejo.utils.memory_optimization import (MemoryOptimizer,
+                                             get_memory_optimizer, import,
+                                             lazy_load)
+
 
 # Mock classes
 class MockModel:

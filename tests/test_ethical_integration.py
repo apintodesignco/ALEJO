@@ -5,22 +5,26 @@ Tests the functionality of the EthicalIntegration class and its integration
 with the EthicalFramework and event system.
 """
 
-import unittest
-import os
-import json
-import tempfile
 import asyncio
+import json
+import os
+import secrets  # More secure for cryptographic purposes
+import tempfile
+import unittest
 from datetime import datetime
-from unittest.mock import patch, MagicMock, AsyncMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
+from alejo.core.event_bus import EventBus
 from alejo.emotional_intelligence.ethical_integration import EthicalIntegration
 from alejo.emotional_intelligence.ethics import (
-    EthicalFramework, EthicalPrinciple, EmotionalRiskLevel,
-    EmotionalRisk, EthicalDecision, EmotionalEthicsEvaluation
+    EmotionalEthicsEvaluation,
+    EmotionalRisk,
+    EmotionalRiskLevel,
+    EthicalDecision,
+    EthicalFramework,
+    EthicalPrinciple,
 )
-from alejo.core.event_bus import EventBus
 from alejo.utils.exceptions import EthicalEvaluationError
-import secrets  # More secure for cryptographic purposes
 
 
 class TestEthicalIntegration(unittest.TestCase):
@@ -33,20 +37,24 @@ class TestEthicalIntegration(unittest.TestCase):
         self.mock_event_bus = MagicMock(spec=EventBus)
         self.mock_memory_store = MagicMock()
         self.mock_ethical_framework = MagicMock(spec=EthicalFramework)
-        
+
         # Create a temporary config file
-        self.temp_config = tempfile.NamedTemporaryFile(delete=False, suffix='.json')
-        self.temp_config.write(json.dumps({
-            "ethical_evaluation_threshold": 0.75,
-            "ethical_logging_enabled": True,
-            "export_path": "test_exports"
-        }).encode('utf-8'))
+        self.temp_config = tempfile.NamedTemporaryFile(delete=False, suffix=".json")
+        self.temp_config.write(
+            json.dumps(
+                {
+                    "ethical_evaluation_threshold": 0.75,
+                    "ethical_logging_enabled": True,
+                    "export_path": "test_exports",
+                }
+            ).encode("utf-8")
+        )
         self.temp_config.close()
-        
+
         # Create a temporary database file
-        self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix='.db')
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix=".db")
         self.temp_db.close()
-        
+
         # Create the integration instance
         self.integration = EthicalIntegration(
             brain=self.mock_brain,
@@ -54,9 +62,9 @@ class TestEthicalIntegration(unittest.TestCase):
             memory_store=self.mock_memory_store,
             ethical_framework=self.mock_ethical_framework,
             config_path=self.temp_config.name,
-            db_path=self.temp_db.name
+            db_path=self.temp_db.name,
         )
-        
+
         # Sample data for testing
         self.emotional_state = {
             "joy": 0.8,
@@ -66,9 +74,9 @@ class TestEthicalIntegration(unittest.TestCase):
             "anger": 0.1,
             "fear": 0.0,
             "disgust": 0.0,
-            "sadness": 0.1
+            "sadness": 0.1,
         }
-        
+
         self.context = {
             "user_id": "test_user",
             "interaction_type": "conversation",
@@ -76,7 +84,7 @@ class TestEthicalIntegration(unittest.TestCase):
             "user_emotional_state": {"calm": 0.8, "interested": 0.7},
             "cultural_context": {"region": "global", "sensitivity_level": "standard"},
             "previous_interactions": 5,
-            "relationship_duration": "2 days"
+            "relationship_duration": "2 days",
         }
 
     def tearDown(self):
@@ -86,7 +94,7 @@ class TestEthicalIntegration(unittest.TestCase):
             os.unlink(self.temp_config.name)
         if os.path.exists(self.temp_db.name):
             os.unlink(self.temp_db.name)
-        
+
         # Remove any test export directories
         if os.path.exists("test_exports"):
             for file in os.listdir("test_exports"):
@@ -98,12 +106,14 @@ class TestEthicalIntegration(unittest.TestCase):
         self.assertEqual(self.integration.brain, self.mock_brain)
         self.assertEqual(self.integration.event_bus, self.mock_event_bus)
         self.assertEqual(self.integration.memory_store, self.mock_memory_store)
-        self.assertEqual(self.integration.ethical_framework, self.mock_ethical_framework)
+        self.assertEqual(
+            self.integration.ethical_framework, self.mock_ethical_framework
+        )
         self.assertIsNotNone(self.integration.config)
         self.assertEqual(self.integration.config["ethical_evaluation_threshold"], 0.75)
         self.assertTrue(self.integration.config["ethical_logging_enabled"])
         self.assertEqual(self.integration.config["export_path"], "test_exports")
-        
+
         # Verify event handlers were registered
         self.mock_event_bus.subscribe.assert_any_call(
             "brain.evaluate_ethics", self.integration._handle_evaluate_ethics
@@ -112,7 +122,8 @@ class TestEthicalIntegration(unittest.TestCase):
             "brain.evaluate_decision", self.integration._handle_evaluate_decision
         )
         self.mock_event_bus.subscribe.assert_any_call(
-            "brain.evaluate_emotional_response", self.integration._handle_evaluate_emotional_response
+            "brain.evaluate_emotional_response",
+            self.integration._handle_evaluate_emotional_response,
         )
         self.mock_event_bus.subscribe.assert_any_call(
             "brain.get_ethical_stats", self.integration._handle_get_ethical_stats
@@ -127,15 +138,15 @@ class TestEthicalIntegration(unittest.TestCase):
     def test_load_config_with_invalid_json(self):
         """Test loading config with invalid JSON."""
         # Create a file with invalid JSON
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.json') as temp_file:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as temp_file:
             temp_file.write(b"invalid json")
             temp_file.close()
-            
+
             # Should not raise an exception, should use defaults
             config = self.integration._load_config(temp_file.name)
             self.assertIsNotNone(config)
             self.assertIn("ethical_evaluation_threshold", config)
-            
+
             # Clean up
             os.unlink(temp_file.name)
 
@@ -144,7 +155,7 @@ class TestEthicalIntegration(unittest.TestCase):
         # Run the initialize method
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.integration.initialize())
-        
+
         # Verify event handlers were registered again
         self.mock_event_bus.subscribe.assert_any_call(
             "brain.evaluate_ethics", self.integration._handle_evaluate_ethics
@@ -159,20 +170,23 @@ class TestEthicalIntegration(unittest.TestCase):
         mock_evaluation.recommendations = ["Be more empathetic"]
         mock_evaluation.transparency_report = {"principle_scores": {}}
         mock_evaluation.timestamp = datetime.now()
-        
-        self.mock_ethical_framework.evaluate_emotional_ethics.return_value = mock_evaluation
-        
+
+        self.mock_ethical_framework.evaluate_emotional_ethics.return_value = (
+            mock_evaluation
+        )
+
         # Call the handler
-        result = await self.integration._handle_evaluate_ethics({
-            "emotional_state": self.emotional_state,
-            "context": self.context
-        })
-        
+        result = await self.integration._handle_evaluate_ethics(
+            {"emotional_state": self.emotional_state, "context": self.context}
+        )
+
         # Verify the result
         self.assertIn("evaluation", result)
         self.assertEqual(result["evaluation"]["overall_score"], 0.85)
-        self.assertEqual(result["evaluation"]["recommendations"], ["Be more empathetic"])
-        
+        self.assertEqual(
+            result["evaluation"]["recommendations"], ["Be more empathetic"]
+        )
+
         # Verify the framework method was called
         self.mock_ethical_framework.evaluate_emotional_ethics.assert_called_once_with(
             self.emotional_state, self.context
@@ -188,23 +202,25 @@ class TestEthicalIntegration(unittest.TestCase):
         mock_decision.recommendation = "Test recommendation"
         mock_decision.principles_evaluation = {"AUTONOMY": 0.8}
         mock_decision.timestamp = datetime.now()
-        
+
         self.mock_ethical_framework.evaluate_decision.return_value = mock_decision
-        
+
         # Call the handler
-        result = await self.integration._handle_evaluate_decision({
-            "action": "test action",
-            "context": self.context,
-            "emotional_context": self.emotional_state
-        })
-        
+        result = await self.integration._handle_evaluate_decision(
+            {
+                "action": "test action",
+                "context": self.context,
+                "emotional_context": self.emotional_state,
+            }
+        )
+
         # Verify the result
         self.assertIn("decision", result)
         self.assertEqual(result["decision"]["action"], "test action")
         self.assertEqual(result["decision"]["overall_score"], 0.75)
         self.assertEqual(result["decision"]["reasoning"], "Test reasoning")
         self.assertEqual(result["decision"]["recommendation"], "Test recommendation")
-        
+
         # Verify the framework method was called
         self.mock_ethical_framework.evaluate_decision.assert_called_once_with(
             "test action", self.context, self.emotional_state
@@ -216,22 +232,26 @@ class TestEthicalIntegration(unittest.TestCase):
         mock_response_eval = {
             "ethical_score": 0.8,
             "risks": [],
-            "recommendations": ["Be clear"]
+            "recommendations": ["Be clear"],
         }
-        
-        self.mock_ethical_framework.evaluate_emotional_response.return_value = mock_response_eval
-        
+
+        self.mock_ethical_framework.evaluate_emotional_response.return_value = (
+            mock_response_eval
+        )
+
         # Call the handler
-        result = await self.integration._handle_evaluate_emotional_response({
-            "response_text": "Hello, how can I help you?",
-            "emotional_state": self.emotional_state,
-            "context": self.context
-        })
-        
+        result = await self.integration._handle_evaluate_emotional_response(
+            {
+                "response_text": "Hello, how can I help you?",
+                "emotional_state": self.emotional_state,
+                "context": self.context,
+            }
+        )
+
         # Verify the result
         self.assertIn("evaluation", result)
         self.assertEqual(result["evaluation"], mock_response_eval)
-        
+
         # Verify the framework method was called
         self.mock_ethical_framework.evaluate_emotional_response.assert_called_once_with(
             "Hello, how can I help you?", self.emotional_state, self.context
@@ -240,23 +260,23 @@ class TestEthicalIntegration(unittest.TestCase):
     async def async_test_handle_get_ethical_stats(self):
         """Test the _handle_get_ethical_stats method."""
         # Mock the get_ethical_principle_stats method
-        mock_stats = {
-            "AUTONOMY": {"count": 5, "min": 0.6, "max": 0.9, "avg": 0.75}
-        }
-        
-        self.mock_ethical_framework.get_ethical_principle_stats.return_value = mock_stats
+        mock_stats = {"AUTONOMY": {"count": 5, "min": 0.6, "max": 0.9, "avg": 0.75}}
+
+        self.mock_ethical_framework.get_ethical_principle_stats.return_value = (
+            mock_stats
+        )
         self.mock_ethical_framework.get_recent_decisions.return_value = []
         self.mock_ethical_framework.get_recent_evaluations.return_value = []
-        
+
         # Call the handler
         result = await self.integration._handle_get_ethical_stats({"limit": 5})
-        
+
         # Verify the result
         self.assertIn("stats", result)
         self.assertEqual(result["stats"], mock_stats)
         self.assertIn("recent_decisions", result)
         self.assertIn("recent_evaluations", result)
-        
+
         # Verify the framework methods were called
         self.mock_ethical_framework.get_ethical_principle_stats.assert_called_once()
         self.mock_ethical_framework.get_recent_decisions.assert_called_once_with(5)
@@ -266,14 +286,18 @@ class TestEthicalIntegration(unittest.TestCase):
         """Test the evaluate_ethics method."""
         # Mock the evaluate_emotional_ethics method
         mock_evaluation = MagicMock(spec=EmotionalEthicsEvaluation)
-        self.mock_ethical_framework.evaluate_emotional_ethics.return_value = mock_evaluation
-        
+        self.mock_ethical_framework.evaluate_emotional_ethics.return_value = (
+            mock_evaluation
+        )
+
         # Call the method
-        result = await self.integration.evaluate_ethics(self.emotional_state, self.context)
-        
+        result = await self.integration.evaluate_ethics(
+            self.emotional_state, self.context
+        )
+
         # Verify the result
         self.assertEqual(result, mock_evaluation)
-        
+
         # Verify the framework method was called
         self.mock_ethical_framework.evaluate_emotional_ethics.assert_called_once_with(
             self.emotional_state, self.context
@@ -284,15 +308,15 @@ class TestEthicalIntegration(unittest.TestCase):
         # Mock the evaluate_decision method
         mock_decision = MagicMock(spec=EthicalDecision)
         self.mock_ethical_framework.evaluate_decision.return_value = mock_decision
-        
+
         # Call the method
         result = await self.integration.evaluate_decision(
             "test action", self.context, self.emotional_state
         )
-        
+
         # Verify the result
         self.assertEqual(result, mock_decision)
-        
+
         # Verify the framework method was called
         self.mock_ethical_framework.evaluate_decision.assert_called_once_with(
             "test action", self.context, self.emotional_state
@@ -304,19 +328,21 @@ class TestEthicalIntegration(unittest.TestCase):
         mock_response_eval = {
             "ethical_score": 0.8,
             "risks": [],
-            "recommendations": ["Be clear"]
+            "recommendations": ["Be clear"],
         }
-        
-        self.mock_ethical_framework.evaluate_emotional_response.return_value = mock_response_eval
-        
+
+        self.mock_ethical_framework.evaluate_emotional_response.return_value = (
+            mock_response_eval
+        )
+
         # Call the method
         result = await self.integration.evaluate_emotional_response(
             "Hello, how can I help you?", self.emotional_state, self.context
         )
-        
+
         # Verify the result
         self.assertEqual(result, mock_response_eval)
-        
+
         # Verify the framework method was called
         self.mock_ethical_framework.evaluate_emotional_response.assert_called_once_with(
             "Hello, how can I help you?", self.emotional_state, self.context
@@ -327,14 +353,14 @@ class TestEthicalIntegration(unittest.TestCase):
         # Mock the export methods
         self.mock_ethical_framework.export_decision_history.return_value = True
         self.mock_ethical_framework.export_ethics_evaluation_history.return_value = True
-        
+
         # Call the method
         success, message = await self.integration.export_ethics_data("test_exports")
-        
+
         # Verify the result
         self.assertTrue(success)
         self.assertIn("Ethics data exported successfully", message)
-        
+
         # Verify the framework methods were called
         self.mock_ethical_framework.export_decision_history.assert_called_once()
         self.mock_ethical_framework.export_ethics_evaluation_history.assert_called_once()
@@ -342,18 +368,18 @@ class TestEthicalIntegration(unittest.TestCase):
     async def async_test_get_ethical_principle_stats(self):
         """Test the get_ethical_principle_stats method."""
         # Mock the get_ethical_principle_stats method
-        mock_stats = {
-            "AUTONOMY": {"count": 5, "min": 0.6, "max": 0.9, "avg": 0.75}
-        }
-        
-        self.mock_ethical_framework.get_ethical_principle_stats.return_value = mock_stats
-        
+        mock_stats = {"AUTONOMY": {"count": 5, "min": 0.6, "max": 0.9, "avg": 0.75}}
+
+        self.mock_ethical_framework.get_ethical_principle_stats.return_value = (
+            mock_stats
+        )
+
         # Call the method
         result = await self.integration.get_ethical_principle_stats()
-        
+
         # Verify the result
         self.assertEqual(result, mock_stats)
-        
+
         # Verify the framework method was called
         self.mock_ethical_framework.get_ethical_principle_stats.assert_called_once()
 
@@ -367,17 +393,17 @@ class TestEthicalIntegration(unittest.TestCase):
         mock_decision.reasoning = "Test reasoning"
         mock_decision.recommendation = "Test recommendation"
         mock_decision.timestamp = datetime.now()
-        
+
         self.mock_ethical_framework.get_recent_decisions.return_value = [mock_decision]
-        
+
         # Call the method
         result = await self.integration.get_recent_decisions(5)
-        
+
         # Verify the result
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["action"], "test action")
         self.assertEqual(result[0]["overall_score"], 0.75)
-        
+
         # Verify the framework method was called
         self.mock_ethical_framework.get_recent_decisions.assert_called_once_with(5)
 
@@ -389,24 +415,24 @@ class TestEthicalIntegration(unittest.TestCase):
         mock_eval.context = self.context
         mock_eval.recommendations = ["Be more empathetic"]
         mock_eval.timestamp = datetime.now()
-        
+
         self.mock_ethical_framework.get_recent_evaluations.return_value = [mock_eval]
-        
+
         # Call the method
         result = await self.integration.get_recent_evaluations(5)
-        
+
         # Verify the result
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["overall_score"], 0.85)
         self.assertEqual(result[0]["recommendations"], ["Be more empathetic"])
-        
+
         # Verify the framework method was called
         self.mock_ethical_framework.get_recent_evaluations.assert_called_once_with(5)
 
     def test_async_methods(self):
         """Run all async test methods."""
         loop = asyncio.get_event_loop()
-        
+
         # Run all async tests
         loop.run_until_complete(self.async_test_handle_evaluate_ethics())
         loop.run_until_complete(self.async_test_handle_evaluate_decision())
@@ -421,5 +447,5 @@ class TestEthicalIntegration(unittest.TestCase):
         loop.run_until_complete(self.async_test_get_recent_evaluations())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

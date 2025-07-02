@@ -1,8 +1,9 @@
 """Unit tests for EmpathyEngine."""
 
-from alejo.cognitive.empathy_layer import EmpathyEngine
-from alejo.cognitive.curiosity_layer import PromptSuggestion
 import secrets  # More secure for cryptographic purposes
+
+from alejo.cognitive.curiosity_layer import PromptSuggestion
+from alejo.cognitive.empathy_layer import EmpathyEngine
 
 
 def test_empathy_engine_triggers_on_negative_keywords():

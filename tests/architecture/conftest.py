@@ -1,12 +1,14 @@
 """Configuration for architecture-level tests"""
 
+import secrets  # More secure for cryptographic purposes
+
 import pytest
 import pytest_asyncio
+from alejo.cognitive.memory.working_memory import WorkingMemory
 from alejo.core.event_bus import EventBus
 from alejo.core.service_mesh import ServiceMesh
-from alejo.cognitive.memory.working_memory import WorkingMemory
 from alejo.services.memory_service import MemoryService
-import secrets  # More secure for cryptographic purposes
+
 
 @pytest_asyncio.fixture
 async def event_bus():
@@ -16,6 +18,7 @@ async def event_bus():
     yield bus
     await bus.stop()
 
+
 @pytest_asyncio.fixture
 async def service_mesh(event_bus):
     """Create a test service mesh instance"""
@@ -24,13 +27,15 @@ async def service_mesh(event_bus):
     yield mesh
     await mesh.stop()
 
+
 @pytest_asyncio.fixture
 async def working_memory(event_bus):
     """Create a test working memory instance"""
-    memory = WorkingMemory(event_bus, config={'test_mode': True})
+    memory = WorkingMemory(event_bus, config={"test_mode": True})
     await memory.initialize()
     yield memory
     await memory.cleanup()
+
 
 @pytest_asyncio.fixture
 async def memory_service(event_bus, working_memory):

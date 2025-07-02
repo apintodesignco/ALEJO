@@ -1,0 +1,2 @@
+[console_scripts]
+alejo = alejo.__main__:main

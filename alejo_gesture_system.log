@@ -1,0 +1,12 @@
+2025-07-01 20:26:53,355 - __main__ - WARNING - .env file not found, using default settings
+2025-07-01 20:26:53,355 - __main__ - INFO - Starting ALEJO web server on 0.0.0.0:8000
+2025-07-01 20:26:53,356 - __main__ - ERROR - Failed to import required modules. Make sure ALEJO is properly installed.
+2025-07-01 20:26:53,356 - __main__ - ERROR - Failed to start web server. Exiting.
+2025-07-01 20:32:21,877 - __main__ - WARNING - .env file not found, using default settings
+2025-07-01 20:32:21,877 - __main__ - INFO - Starting ALEJO web server on 0.0.0.0:8000
+2025-07-01 20:32:21,877 - __main__ - ERROR - Failed to import required modules. Make sure ALEJO is properly installed.
+2025-07-01 20:32:21,878 - __main__ - ERROR - Failed to start web server. Exiting.
+2025-07-01 20:54:33,115 - __main__ - WARNING - .env file not found, using default settings
+2025-07-01 20:54:33,115 - __main__ - INFO - Starting ALEJO web server on 0.0.0.0:8000
+2025-07-01 20:54:33,116 - __main__ - ERROR - Failed to import required modules. Make sure ALEJO is properly installed.
+2025-07-01 20:54:33,116 - __main__ - ERROR - Failed to start web server. Exiting.

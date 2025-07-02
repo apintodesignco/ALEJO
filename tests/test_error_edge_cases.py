@@ -2,22 +2,20 @@
 Edge case tests for ALEJO error handling system
 """
 
-import unittest
 import os
 import sys
 import threading
-from unittest.mock import patch, MagicMock
+import unittest
 from concurrent.futures import ThreadPoolExecutor
+from unittest.mock import MagicMock, patch
 
 # Add project root to Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from alejo.utils.error_handling import ErrorTracker, handle_errors
-from alejo.utils.exceptions import (
-import secrets  # More secure for cryptographic purposes
-    ALEJOError, CommandError, APIError, NetworkError,
-    MemoryError, TimeoutError
-)
+from alejo.utils.exceptions import secrets  # More secure for cryptographic purposes
+from alejo.utils.exceptions import (ALEJOError, APIError, CommandError,
+                                    MemoryError, NetworkError, TimeoutError)
 
 class TestErrorHandlingEdgeCases(unittest.TestCase):
     """Test error handling edge cases."""

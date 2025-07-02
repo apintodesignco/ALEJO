@@ -1,0 +1,271 @@
+{
+  "summary": {
+    "files_scanned": 179,
+    "issues_found": 5,
+    "critical": 0,
+    "high": 5,
+    "medium": 32,
+    "low": 0
+  },
+  "issues": [
+    {
+      "file": "src\\security\\audit-trail.js",
+      "line": 373,
+      "description": "Potential hardcoded password",
+      "severity": "high",
+      "code": "if (sanitized.password) sanitized.password = '[REDACTED]';"
+    },
+    {
+      "file": "src\\security\\audit-trail.js",
+      "line": 381,
+      "description": "Potential hardcoded password",
+      "severity": "high",
+      "code": "if (sanitized.password) sanitized.password = '[REDACTED]';"
+    },
+    {
+      "file": "src\\security\\audit-trail.js",
+      "line": 375,
+      "description": "Potential API key",
+      "severity": "high",
+      "code": "if (sanitized.apiKey) sanitized.apiKey = '[REDACTED]';"
+    },
+    {
+      "file": "src\\security\\audit-trail.js",
+      "line": 374,
+      "description": "Potential token",
+      "severity": "high",
+      "code": "if (sanitized.token) sanitized.token = '[REDACTED]';"
+    },
+    {
+      "file": "src\\security\\audit-trail.js",
+      "line": 382,
+      "description": "Potential token",
+      "severity": "high",
+      "code": "if (sanitized.token) sanitized.token = '[REDACTED]';"
+    },
+    {
+      "file": "alejo_security_scanner.py",
+      "line": 129,
+      "description": "Use of exec() can lead to code injection vulnerabilities",
+      "severity": "medium",
+      "code": "(r'exec\\s*\\(', 'Use of exec() can lead to code injection vulnerabilities', 'py'),"
+    },
+    {
+      "file": "wake_alejo.py",
+      "line": 442,
+      "description": "Use of exec() can lead to code injection vulnerabilities",
+      "severity": "medium",
+      "code": "sys.exit(app.exec())"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\chat.js",
+      "line": 262,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "copyBtn.innerHTML = '<i class=\"fas fa-copy\"></i>';"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\chat.js",
+      "line": 266,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "copyBtn.innerHTML = '<i class=\"fas fa-check\"></i>';"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\chat.js",
+      "line": 268,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "copyBtn.innerHTML = '<i class=\"fas fa-copy\"></i>';"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\chat.js",
+      "line": 276,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "contentDiv.innerHTML = processMessageContent(content);"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\chat.js",
+      "line": 288,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "avatarDiv.innerHTML = '<div class=\"avatar-icon\">A</div>';"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\chat.js",
+      "line": 373,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "contentDiv.innerHTML = '<span class=\"dot\"></span><span class=\"dot\"></span><span class=\"dot\"></span>';"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\chat.js",
+      "line": 564,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "chatMessages.innerHTML = '';"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\chat.js",
+      "line": 576,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "chatMessages.innerHTML = '';"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\holographic.js",
+      "line": 64,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "container.innerHTML = '';"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\holographic.js",
+      "line": 372,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "container.innerHTML = '';"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\holographic.js",
+      "line": 408,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "notification.innerHTML = message;"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\main.js",
+      "line": 281,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "contentDiv.innerHTML = `<p>${content}</p>`;"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\main.js",
+      "line": 308,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "contentDiv.innerHTML = `<p>${content}</p>`;"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\vision.js",
+      "line": 443,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "resultsContainer.innerHTML = '';"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\vision.js",
+      "line": 448,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "objectsList.innerHTML = '<h4>Detected Objects</h4>';"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\vision.js",
+      "line": 464,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "textSection.innerHTML = '<h4>Detected Text</h4>';"
+    },
+    {
+      "file": "backups\\pre_optimization_20250611_073107\\js\\vision.js",
+      "line": 472,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "descSection.innerHTML = '<h4>Image Description</h4>';"
+    },
+    {
+      "file": "src\\index.js",
+      "line": 18,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "app.innerHTML = '<div class=\"loading\">Loading ALEJO...</div>';"
+    },
+    {
+      "file": "src\\index.js",
+      "line": 91,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "app.innerHTML = '<div class=\"error\">Failed to initialize ALEJO. Please refresh the page.</div>';"
+    },
+    {
+      "file": "src\\main.js",
+      "line": 108,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "errorElement.innerHTML = `"
+    },
+    {
+      "file": "src\\gesture\\calibration.js",
+      "line": 115,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "overlay.innerHTML = `"
+    },
+    {
+      "file": "src\\ui\\index.js",
+      "line": 34,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "app.innerHTML = '';"
+    },
+    {
+      "file": "src\\ui\\index.js",
+      "line": 39,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "uiContainer.innerHTML = `"
+    },
+    {
+      "file": "src\\ui\\index.js",
+      "line": 74,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "app.innerHTML = `"
+    },
+    {
+      "file": "src\\ui\\components\\control-panel.js",
+      "line": 26,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "controlPanelElement.innerHTML = `"
+    },
+    {
+      "file": "src\\ui\\components\\control-panel.js",
+      "line": 212,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "expandButton.innerHTML = '<span class=\"icon\">\u25b2</span>';"
+    },
+    {
+      "file": "src\\ui\\components\\control-panel.js",
+      "line": 215,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "expandButton.innerHTML = '<span class=\"icon\">\u25bc</span>';"
+    },
+    {
+      "file": "src\\ui\\components\\visualization.js",
+      "line": 31,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "container.innerHTML = '<div class=\"loader\">Loading visualization...</div>';"
+    },
+    {
+      "file": "src\\ui\\components\\visualization.js",
+      "line": 47,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "container.innerHTML = '';"
+    },
+    {
+      "file": "src\\ui\\components\\visualization.js",
+      "line": 128,
+      "description": "Direct manipulation of innerHTML can lead to XSS vulnerabilities",
+      "severity": "medium",
+      "code": "container.innerHTML = `"
+    }
+  ]
+}

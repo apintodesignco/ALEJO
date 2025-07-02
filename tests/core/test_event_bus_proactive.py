@@ -1,12 +1,15 @@
 """
 Unit tests for EventBus proactive prompt functionality
 """
+
 import asyncio
+import secrets  # More secure for cryptographic purposes
 import unittest
 from datetime import datetime
 from unittest.mock import Mock, patch
-from alejo.core.event_bus import EventBus, EventType, Event
-import secrets  # More secure for cryptographic purposes
+
+from alejo.core.event_bus import Event, EventBus, EventType
+
 
 class TestEventBusProactive(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
@@ -38,11 +41,9 @@ class TestEventBusProactive(unittest.IsolatedAsyncioTestCase):
         test_text = "How are you feeling today?"
         test_type = "empathy"
         test_rationale = "User seems stressed"
-        
+
         await self.event_bus.emit_proactive_prompt(
-            text=test_text,
-            prompt_type=test_type,
-            rationale=test_rationale
+            text=test_text, prompt_type=test_type, rationale=test_rationale
         )
 
         # Allow time for event processing
@@ -51,7 +52,7 @@ class TestEventBusProactive(unittest.IsolatedAsyncioTestCase):
         # Verify event was received
         self.assertEqual(len(self.received_events), 1)
         event = self.received_events[0]
-        
+
         self.assertEqual(event.type, EventType.PROACTIVE_PROMPT)
         self.assertEqual(event.data["text"], test_text)
         self.assertEqual(event.data["prompt_type"], test_type)
@@ -77,7 +78,7 @@ class TestEventBusProactive(unittest.IsolatedAsyncioTestCase):
         await self.event_bus.emit_proactive_prompt(
             text="Test prompt",
             prompt_type="curiosity",
-            rationale="Testing multiple subscribers"
+            rationale="Testing multiple subscribers",
         )
 
         # Allow time for event processing
@@ -87,21 +88,18 @@ class TestEventBusProactive(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(handler1_events), 1)
         self.assertEqual(len(handler2_events), 1)
         self.assertEqual(
-            handler1_events[0].data["text"],
-            handler2_events[0].data["text"]
+            handler1_events[0].data["text"], handler2_events[0].data["text"]
         )
 
     async def test_unsubscribe(self):
         """Test unsubscribing from proactive prompt events"""
         await self.event_bus.subscribe(EventType.PROACTIVE_PROMPT, self.event_handler)
-        
+
         # Emit first prompt
         await self.event_bus.emit_proactive_prompt(
-            text="First prompt",
-            prompt_type="empathy",
-            rationale="Testing unsubscribe"
+            text="First prompt", prompt_type="empathy", rationale="Testing unsubscribe"
         )
-        
+
         await asyncio.sleep(0.1)
         self.assertEqual(len(self.received_events), 1)
 
@@ -110,14 +108,13 @@ class TestEventBusProactive(unittest.IsolatedAsyncioTestCase):
 
         # Emit second prompt
         await self.event_bus.emit_proactive_prompt(
-            text="Second prompt",
-            prompt_type="empathy",
-            rationale="Testing unsubscribe"
+            text="Second prompt", prompt_type="empathy", rationale="Testing unsubscribe"
         )
-        
+
         await asyncio.sleep(0.1)
         # Verify only first event was received
         self.assertEqual(len(self.received_events), 1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

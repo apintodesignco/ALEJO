@@ -256,6 +256,9 @@ def parse_arguments():
     parser.add_argument('--report', action='store_true', help='Generate a JSON report')
     parser.add_argument('--output', default='security_report.json', help='Output file for the report')
     parser.add_argument('--path', help='Path to the project root')
+    parser.add_argument('--fail-on', choices=['critical', 'high', 'medium', 'low', 'none'], default='high', 
+                      help='Minimum severity level to cause build failure in CI mode')
+    parser.add_argument('--ignore-warnings', action='store_true', help='Only fail on errors, not warnings')
     
     return parser.parse_args()
 
@@ -270,9 +273,37 @@ def main():
     if args.report:
         scanner.generate_report(args.output)
     
-    if args.ci and scanner.issues_found > 0:
-        sys.exit(1)
+    # Determine if we should exit with error based on severity thresholds
+    if args.ci and args.fail_on != 'none':
+        severity_levels = {'critical': 3, 'high': 2, 'medium': 1, 'low': 0}
+        threshold = severity_levels.get(args.fail_on, 2)  # Default to high if invalid
+        
+        # Check if any issues meet or exceed the threshold
+        should_fail = False
+        
+        if threshold <= 3 and report['summary']['critical'] > 0:
+            logger.error(f"Found {report['summary']['critical']} critical security issues")
+            should_fail = True
+        
+        if threshold <= 2 and report['summary']['high'] > 0:
+            logger.error(f"Found {report['summary']['high']} high severity security issues")
+            should_fail = True
+        
+        if threshold <= 1 and report['summary']['medium'] > 0:
+            logger.error(f"Found {report['summary']['medium']} medium severity security issues")
+            should_fail = True
+        
+        if threshold <= 0 and report['summary']['low'] > 0:
+            logger.error(f"Found {report['summary']['low']} low severity security issues")
+            should_fail = True
+        
+        if should_fail and not args.ignore_warnings:
+            logger.error("Security scan failed. Fix the issues or adjust severity thresholds.")
+            sys.exit(1)
+        elif should_fail:
+            logger.warning("Security issues found but continuing due to --ignore-warnings flag")
     
+    logger.info("Security scan completed successfully")
     sys.exit(0)
 
 

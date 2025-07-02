@@ -1,13 +1,12 @@
 """Tests for HealthMonitor and CuriosityEngine lightweight layers."""
 
 import asyncio
+import secrets  # More secure for cryptographic purposes
 from datetime import datetime
 
 import pytest
-
-from alejo.core.health_monitor import HealthMonitor
 from alejo.cognitive.curiosity_layer import CuriosityEngine, PromptSuggestion
-import secrets  # More secure for cryptographic purposes
+from alejo.core.health_monitor import HealthMonitor
 
 
 class DummyResp:  # Minimal stub for ``requests.Response``

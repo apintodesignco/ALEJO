@@ -2,18 +2,21 @@
 Tests for the ALEJO Collective Learning CI/CD pipeline scripts
 """
 
-import pytest
-import os
 import json
-import tempfile
-from pathlib import Path
-from unittest.mock import patch, MagicMock, mock_open
+import os
 
 # Import the scripts as modules
 import sys
+import tempfile
+from pathlib import Path
+from unittest.mock import MagicMock, mock_open, patch
+
+import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from scripts import process_insights, generate_improvements, apply_improvements
 import secrets  # More secure for cryptographic purposes
+
+from scripts import apply_improvements, generate_improvements, process_insights
 
 
 @pytest.fixture
@@ -23,7 +26,7 @@ def mock_config_manager():
     config_manager.get_config.return_value = {
         "enabled": True,
         "auto_apply": False,
-        "min_confidence": 0.8
+        "min_confidence": 0.8,
     }
     return config_manager
 
@@ -59,7 +62,7 @@ def sample_insights():
             "time": 500,
             "tags": ["performance", "slow"],
             "anonymized": True,
-            "processed": False
+            "processed": False,
         },
         {
             "id": "insight-2",
@@ -68,8 +71,8 @@ def sample_insights():
             "vulnerability_type": "sql_injection",
             "severity": "high",
             "anonymized": True,
-            "processed": False
-        }
+            "processed": False,
+        },
     ]
 
 
@@ -85,7 +88,7 @@ def sample_improvements():
             "component": "database",
             "operation": "query",
             "confidence": 0.8,
-            "status": "proposed"
+            "status": "proposed",
         },
         {
             "id": "sec-sql_injection-87654321",
@@ -96,32 +99,34 @@ def sample_improvements():
             "components": ["authentication"],
             "confidence": 0.9,
             "severity": "high",
-            "status": "proposed"
-        }
+            "status": "proposed",
+        },
     ]
 
 
 class TestProcessInsights:
     """Tests for the process_insights.py script"""
-    
+
     @patch("scripts.process_insights.CollectiveDataManager")
     @patch("scripts.process_insights.ConfigManager")
-    def test_process_insights(self, mock_config_cls, mock_data_cls, sample_insights, tmp_path):
+    def test_process_insights(
+        self, mock_config_cls, mock_data_cls, sample_insights, tmp_path
+    ):
         """Test processing insights"""
         # Setup mocks
         mock_data = MagicMock()
         mock_data.get_unprocessed_insights.return_value = sample_insights
         mock_data_cls.return_value = mock_data
-        
+
         output_dir = tmp_path / "insights"
         output_dir.mkdir()
         output_file = output_dir / "processed_insights.json"
-        
+
         # Run the function
         with patch.object(process_insights, "parse_args") as mock_args:
             mock_args.return_value = MagicMock(output_dir=str(output_dir))
             process_insights.main()
-        
+
         # Verify
         assert output_file.exists()
         with open(output_file) as f:
@@ -132,36 +137,41 @@ class TestProcessInsights:
 
 class TestGenerateImprovements:
     """Tests for the generate_improvements.py script"""
-    
+
     @patch("scripts.generate_improvements.ImprovementEngine")
     @patch("scripts.generate_improvements.CollectiveDataManager")
     @patch("scripts.generate_improvements.ConfigManager")
-    def test_generate_improvements(self, mock_config_cls, mock_data_cls, mock_engine_cls, 
-                                  sample_insights, sample_improvements, tmp_path):
+    def test_generate_improvements(
+        self,
+        mock_config_cls,
+        mock_data_cls,
+        mock_engine_cls,
+        sample_insights,
+        sample_improvements,
+        tmp_path,
+    ):
         """Test generating improvements"""
         # Setup mocks
         mock_engine = MagicMock()
         mock_engine.generate_improvements.return_value = sample_improvements
         mock_engine_cls.return_value = mock_engine
-        
+
         input_dir = tmp_path / "insights"
         input_dir.mkdir()
         input_file = input_dir / "processed_insights.json"
         with open(input_file, "w") as f:
             json.dump(sample_insights, f)
-            
+
         output_dir = tmp_path / "improvements"
         output_dir.mkdir()
-        
+
         # Run the function
         with patch.object(generate_improvements, "parse_args") as mock_args:
             mock_args.return_value = MagicMock(
-                input_file=str(input_file),
-                output_dir=str(output_dir),
-                create_prs=False
+                input_file=str(input_file), output_dir=str(output_dir), create_prs=False
             )
             generate_improvements.main()
-        
+
         # Verify
         output_file = output_dir / "improvement_proposals.json"
         assert output_file.exists()
@@ -172,67 +182,83 @@ class TestGenerateImprovements:
 
 class TestApplyImprovements:
     """Tests for the apply_improvements.py script"""
-    
+
     @patch("scripts.apply_improvements.ImprovementEngine")
     @patch("scripts.apply_improvements.CollectiveDataManager")
     @patch("scripts.apply_improvements.ConfigManager")
-    def test_apply_improvements(self, mock_config_cls, mock_data_cls, mock_engine_cls, 
-                               sample_improvements, tmp_path):
+    def test_apply_improvements(
+        self,
+        mock_config_cls,
+        mock_data_cls,
+        mock_engine_cls,
+        sample_improvements,
+        tmp_path,
+    ):
         """Test applying improvements"""
         # Setup mocks
         mock_engine = MagicMock()
         mock_engine.apply_improvement.return_value = True
         mock_engine_cls.return_value = mock_engine
-        
+
         input_dir = tmp_path / "improvements"
         input_dir.mkdir()
         input_file = input_dir / "improvement_proposals.json"
-        
+
         # Only include high-confidence improvements
-        high_confidence_improvements = [imp for imp in sample_improvements if imp["confidence"] >= 0.8]
+        high_confidence_improvements = [
+            imp for imp in sample_improvements if imp["confidence"] >= 0.8
+        ]
         with open(input_file, "w") as f:
             json.dump(high_confidence_improvements, f)
-            
+
         # Run the function
         with patch.object(apply_improvements, "parse_args") as mock_args:
             mock_args.return_value = MagicMock(
-                input_file=str(input_file),
-                dry_run=True,
-                min_confidence=0.8
+                input_file=str(input_file), dry_run=True, min_confidence=0.8
             )
             apply_improvements.main()
-        
+
         # Verify
-        assert mock_engine.apply_improvement.call_count == len(high_confidence_improvements)
-    
+        assert mock_engine.apply_improvement.call_count == len(
+            high_confidence_improvements
+        )
+
     @patch("scripts.apply_improvements.ImprovementEngine")
     @patch("scripts.apply_improvements.CollectiveDataManager")
     @patch("scripts.apply_improvements.ConfigManager")
-    def test_apply_improvements_with_filter(self, mock_config_cls, mock_data_cls, mock_engine_cls, 
-                                          sample_improvements, tmp_path):
+    def test_apply_improvements_with_filter(
+        self,
+        mock_config_cls,
+        mock_data_cls,
+        mock_engine_cls,
+        sample_improvements,
+        tmp_path,
+    ):
         """Test applying improvements with category filter"""
         # Setup mocks
         mock_engine = MagicMock()
         mock_engine.apply_improvement.return_value = True
         mock_engine_cls.return_value = mock_engine
-        
+
         input_dir = tmp_path / "improvements"
         input_dir.mkdir()
         input_file = input_dir / "improvement_proposals.json"
-        
+
         with open(input_file, "w") as f:
             json.dump(sample_improvements, f)
-            
+
         # Run the function with category filter
         with patch.object(apply_improvements, "parse_args") as mock_args:
             mock_args.return_value = MagicMock(
                 input_file=str(input_file),
                 dry_run=True,
                 min_confidence=0.7,
-                category="security"
+                category="security",
             )
             apply_improvements.main()
-        
+
         # Verify only security improvements were applied
-        security_improvements = [imp for imp in sample_improvements if imp["category"] == "security"]
+        security_improvements = [
+            imp for imp in sample_improvements if imp["category"] == "security"
+        ]
         assert mock_engine.apply_improvement.call_count == len(security_improvements)

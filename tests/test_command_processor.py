@@ -1,15 +1,17 @@
-import unittest
 import os
-import sys
-from pathlib import Path
 import shutil
+import sys
+import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 # Add project root to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+import secrets  # More secure for cryptographic purposes
 
 from alejo.commands import CommandProcessor
-import secrets  # More secure for cryptographic purposes
+
 
 class TestCommandProcessor(unittest.TestCase):
     """Unit tests for the CommandProcessor"""
@@ -29,7 +31,7 @@ class TestCommandProcessor(unittest.TestCase):
     def test_handle_create_file(self):
         """Test the internal _handle_create_file method."""
         test_file = self.test_dir / "new_test_file.txt"
-        
+
         # Ensure the file does not exist before the test
         self.assertFalse(test_file.exists())
 
@@ -38,19 +40,23 @@ class TestCommandProcessor(unittest.TestCase):
 
         # Verify the result
         self.assertIn("Created file", result)
-        self.assertTrue(test_file.exists(), "_handle_create_file did not create the file.")
+        self.assertTrue(
+            test_file.exists(), "_handle_create_file did not create the file."
+        )
 
     def test_handle_delete_file(self):
         """Test the internal _handle_delete_file method."""
         test_file = self.test_dir / "file_to_delete.txt"
-        test_file.touch() # Create the file to be deleted
+        test_file.touch()  # Create the file to be deleted
 
         self.assertTrue(test_file.exists())
 
         result = self.cmd_processor._handle_delete_file(str(test_file))
 
         self.assertIn("Deleted file", result)
-        self.assertFalse(test_file.exists(), "_handle_delete_file did not delete the file.")
+        self.assertFalse(
+            test_file.exists(), "_handle_delete_file did not delete the file."
+        )
 
     def test_handle_rename_file(self):
         """Test the internal _handle_rename_file method."""
@@ -66,10 +72,12 @@ class TestCommandProcessor(unittest.TestCase):
         result = self.cmd_processor._handle_rename_file(args_string)
 
         self.assertIn("Renamed file", result)
-        self.assertFalse(original_file.exists(), "Original file still exists after rename.")
+        self.assertFalse(
+            original_file.exists(), "Original file still exists after rename."
+        )
         self.assertTrue(renamed_file.exists(), "Renamed file was not created.")
 
-    @patch('alejo.commands.os.startfile')
+    @patch("alejo.commands.os.startfile")
     def test_handle_open_file_windows(self, mock_os_startfile):
         """Test the internal _handle_open_file method on Windows."""
         test_file = self.test_dir / "file_to_open.txt"
@@ -82,5 +90,5 @@ class TestCommandProcessor(unittest.TestCase):
         mock_os_startfile.assert_called_once_with(str(test_file.resolve()))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -84,3 +84,13 @@ PyJWT
 passlib
 pyotp
 qrcode
+
+# Dev Dependencies
+lxml==4.9.3
+isort==5.13.0
+black==24.4.2
+
+# Linting & Type Checking
+dev-requirements:
+flake8==6.0.0
+mypy==1.3.0

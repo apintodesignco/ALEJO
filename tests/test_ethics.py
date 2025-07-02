@@ -5,18 +5,21 @@ Tests the functionality of the ethical decision making and emotional response
 evaluation capabilities of the EthicalFramework class.
 """
 
-import unittest
-import os
 import json
+import os
 import tempfile
+import unittest
 from datetime import datetime
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
-from alejo.emotional_intelligence.ethics import (
-import secrets  # More secure for cryptographic purposes
-    EthicalFramework, EthicalPrinciple, EmotionalRiskLevel,
-    EmotionalRisk, EthicalDecision, EmotionalEthicsEvaluation
-)
+from alejo.emotional_intelligence.ethics import \
+    secrets  # More secure for cryptographic purposes
+from alejo.emotional_intelligence.ethics import (EmotionalEthicsEvaluation,
+                                                 EmotionalRisk,
+                                                 EmotionalRiskLevel,
+                                                 EthicalDecision,
+                                                 EthicalFramework,
+                                                 EthicalPrinciple, import)
 
 
 class TestEthicalFramework(unittest.TestCase):

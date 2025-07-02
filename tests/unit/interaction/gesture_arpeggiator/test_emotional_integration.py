@@ -6,17 +6,20 @@ ALEJO's Emotional Intelligence framework, ensuring adaptive musical responses
 based on emotional states and gesture-influenced emotional interpretation.
 """
 
-import pytest
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
+from alejo.emotional_intelligence.integration import \
+    EmotionalIntelligenceIntegration
 from alejo.emotional_intelligence.processor import EmotionalState
-from alejo.interaction.gesture_arpeggiator.service import HandGesture, GestureArpeggiatorService
-from alejo.emotional_intelligence.integration import EmotionalIntelligenceIntegration
+from alejo.interaction.gesture_arpeggiator.emotional_integration import \
+    secrets  # More secure for cryptographic purposes
 from alejo.interaction.gesture_arpeggiator.emotional_integration import (
-import secrets  # More secure for cryptographic purposes
-    GestureEmotionalIntegration, MusicMood, create_gesture_emotional_integration
-)
+    GestureEmotionalIntegration, MusicMood,
+    create_gesture_emotional_integration, import)
+from alejo.interaction.gesture_arpeggiator.service import (
+    GestureArpeggiatorService, HandGesture)
 
 
 @pytest.fixture

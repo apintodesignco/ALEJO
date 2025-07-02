@@ -1,14 +1,16 @@
 """Basic test to verify fixture functionality in architecture tests"""
 
-import pytest
-import pytest_asyncio
 import logging
 import secrets  # More secure for cryptographic purposes
+
+import pytest
+import pytest_asyncio
 
 logger = logging.getLogger(__name__)
 
 # Set up basic logging to ensure we see any output
 logging.basicConfig(level=logging.INFO)
+
 
 @pytest.mark.asyncio
 async def test_event_bus_fixture(event_bus):
@@ -18,6 +20,7 @@ async def test_event_bus_fixture(event_bus):
     assert event_bus.redis_url == "redis://localhost:6379/0"
     logger.info("Event bus initialized successfully")
 
+
 @pytest.mark.asyncio
 async def test_service_mesh_fixture(service_mesh, event_bus):
     """Test that service_mesh fixture initializes correctly"""
@@ -26,14 +29,16 @@ async def test_service_mesh_fixture(service_mesh, event_bus):
     assert service_mesh.event_bus == event_bus
     logger.info("Service mesh initialized successfully")
 
+
 @pytest.mark.asyncio
 async def test_working_memory_fixture(working_memory, event_bus):
     """Test that working_memory fixture initializes correctly"""
     logger.info("Starting working_memory fixture test")
     assert working_memory is not None
     assert working_memory.event_bus == event_bus
-    assert working_memory.config.get('test_mode') is True
+    assert working_memory.config.get("test_mode") is True
     logger.info("Working memory initialized successfully")
+
 
 @pytest.mark.asyncio
 async def test_memory_service_fixture(memory_service, event_bus, working_memory):

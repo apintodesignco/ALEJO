@@ -1,14 +1,15 @@
 import asyncio
-import pytest
+import secrets  # More secure for cryptographic purposes
 from datetime import datetime, timedelta
 
-from alejo.service_registry import ServiceRegistry
+import pytest
 from alejo.database_manager import DatabaseManager
-import secrets  # More secure for cryptographic purposes
+from alejo.service_registry import ServiceRegistry
 
 
 class DummyRegistry(ServiceRegistry):
     """A dummy ServiceRegistry subclass for testing purposes."""
+
     def __init__(self):
         super().__init__(event_bus=None)
 
@@ -19,22 +20,24 @@ async def test_extended_service_deregistration_and_database_manager():
     and validate that the DatabaseManager can insert and fetch interactions."""
     # Create dummy registry and register a service
     registry = DummyRegistry()
-    await registry.register_service('TestService')
+    await registry.register_service("TestService")
 
     # Simulate that the service's last update occurred sufficiently in the past
     async with registry._lock:
-        registry.services['TestService'] = datetime.now() - timedelta(seconds=120)
+        registry.services["TestService"] = datetime.now() - timedelta(seconds=120)
 
     # Check services with an unhealthy threshold of 60 seconds
     await registry.check_services(unhealthy_threshold=60)
 
     # Verify that the service has been deregistered
     async with registry._lock:
-        assert 'TestService' not in registry.services, "Service should be auto-deregistered due to health timeout"
+        assert (
+            "TestService" not in registry.services
+        ), "Service should be auto-deregistered due to health timeout"
 
     # Validate DatabaseManager functionality
     # Use in-memory SQLite database for testing
-    db = DatabaseManager(db_path=':memory:')
+    db = DatabaseManager(db_path=":memory:")
 
     # Insert an interaction record
     test_data = "Test interaction record"
@@ -42,7 +45,9 @@ async def test_extended_service_deregistration_and_database_manager():
     interactions = db.fetch_interactions()
 
     # Assert at least one record exists and the data matches
-    assert len(interactions) > 0, "There should be at least one interaction record in the database"
+    assert (
+        len(interactions) > 0
+    ), "There should be at least one interaction record in the database"
     # Each record is a tuple (id, timestamp, data)
     record_found = any(test_data in record[2] for record in interactions)
     assert record_found, "The inserted interaction data should be found in the database"
