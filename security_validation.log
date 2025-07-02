@@ -88,3 +88,4 @@ focused_security_scan.py: error: unrecognized arguments: --exclude backups
 2025-07-01 06:50:23,971 - __main__ - INFO - Generating security validation report...
 2025-07-01 06:50:23,972 - __main__ - INFO - Security validation report saved to test_reports\security_validation_20250701_065023.txt
 2025-07-01 06:50:23,972 - __main__ - INFO - JSON report saved to test_reports\security_validation_20250701_065023.json
+2025-07-01 15:06:32,351 - __main__ - ERROR - Error running security validation: 'SecurityValidator' object has no attribute 'run_validation'

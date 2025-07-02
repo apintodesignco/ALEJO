@@ -8,6 +8,25 @@ ALEJO is a powerful, self-contained, offline-capable AI system designed to be ac
 
 ALEJO combines cutting-edge AI capabilities with a commitment to accessibility and user autonomy. It's designed to work entirely offline with local models, ensuring your data remains private and secure.
 
+## Quick Start - One-Click Installation
+
+1. **[Download ALEJO](https://github.com/apintodesignco/ALEJO/releases/latest)** - Click to download the latest release
+2. **Run the installer** - Double-click the downloaded file to start installation
+3. **Launch ALEJO** - After installation completes, ALEJO will start automatically
+
+The installer will:
+- Set up all required dependencies (Python, Redis, Node.js)
+- Configure security settings automatically
+- Install the default Alejo Pinto voice and face
+- Create desktop and start menu shortcuts
+
+**System Requirements:**
+- Windows 10/11, macOS 10.15+, or Ubuntu 20.04+
+- 8GB RAM minimum (16GB recommended)
+- 10GB free disk space
+- Webcam (optional, for gesture system)
+- Microphone (optional, for voice interaction)
+
 ## Distributed Intelligence
 
 ALEJO is designed as a distributed intelligence system that can learn and evolve through collective usage. With user opt-in, ALEJO instances across the world can contribute anonymized learning data to improve the collective intelligence of the system. This creates a form of "superconsciousness" that grows smarter through the combined experiences of millions of users, while maintaining individual privacy and control.
