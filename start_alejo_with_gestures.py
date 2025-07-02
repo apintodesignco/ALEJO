@@ -17,18 +17,25 @@ from typing import Dict, List, Optional, Tuple
 
 # Import update manager
 try:
-    from update_manager import UpdateManager
-    UPDATE_MANAGER_AVAILABLE = True
+    import importlib.util
+    spec = importlib.util.find_spec('update_manager')
+    UPDATE_MANAGER_AVAILABLE = spec is not None
 except ImportError:
     UPDATE_MANAGER_AVAILABLE = False
 
 # Configure logging
+import io
+import codecs
+
+# Fix for Windows console encoding issues
+sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler('alejo_production.log')
+        logging.FileHandler('alejo_production.log', encoding='utf-8')
     ]
 )
 
@@ -211,19 +218,19 @@ def start_docker_services(services_to_start):
             healthy = wait_for_service_health(config["health_check"], timeout=30)
             
             if healthy:
-                logger.info(f"✅ {config['name']} started successfully")
+                logger.info(f"[OK] {config['name']} started successfully")
             else:
-                logger.error(f"❌ {config['name']} failed to start or become healthy")
+                logger.error(f"[FAILED] {config['name']} failed to start or become healthy")
                 if config["required"]:
                     logger.error(f"Required service {config['name']} failed to start. Aborting.")
                     return False
         except subprocess.SubprocessError as e:
-            logger.error(f"❌ Error starting {config['name']}: {e}")
+            logger.error(f"[FAILED] Error starting {config['name']}: {e}")
             if config["required"]:
                 logger.error(f"Required service {config['name']} failed to start. Aborting.")
                 return False
     
-    logger.info("✅ All Docker services started successfully")
+    logger.info("[OK] All Docker services started successfully")
     return True
 
 
@@ -236,8 +243,9 @@ def start_local_services(services_to_start):
         logger.info("Starting Redis...")
         try:
             # Check if Redis is already running
+            redis_cli_path = os.path.join(os.getcwd(), "redis", "redis-cli.exe")
             redis_check = subprocess.run(
-                ["redis-cli", "ping"],
+                [redis_cli_path, "ping"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
@@ -245,8 +253,10 @@ def start_local_services(services_to_start):
             
             if redis_check.returncode != 0:
                 # Start Redis server
+                redis_server_path = os.path.join(os.getcwd(), "redis", "redis-server.exe")
+                redis_conf_path = os.path.join(os.getcwd(), "redis", "redis.windows.conf")
                 subprocess.Popen(
-                    ["redis-server", "--port", "6379"],
+                    [redis_server_path, redis_conf_path],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE
                 )
@@ -256,21 +266,21 @@ def start_local_services(services_to_start):
                 
                 # Check if Redis started successfully
                 redis_check = subprocess.run(
-                    ["redis-cli", "ping"],
+                    [redis_cli_path, "ping"],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True
                 )
                 
                 if redis_check.returncode != 0:
-                    logger.error("❌ Failed to start Redis server")
+                    logger.error("[FAILED] Failed to start Redis server")
                     return False
                 
-                logger.info("✅ Redis server started")
+                logger.info("[OK] Redis server started")
             else:
-                logger.info("✅ Redis server is already running")
+                logger.info("[OK] Redis server is already running")
         except Exception as e:
-            logger.error(f"❌ Error starting Redis: {e}")
+            logger.error(f"[FAILED] Error starting Redis: {e}")
             return False
     
     # Start the gesture system if needed
@@ -296,11 +306,11 @@ def start_local_services(services_to_start):
             )
             
             if result.returncode == 0:
-                logger.info("✅ Gesture system started successfully")
+                logger.info("[OK] Gesture system started successfully")
             else:
                 logger.warning("⚠️ Gesture system may not have started correctly")
         except Exception as e:
-            logger.error(f"❌ Error starting gesture system: {e}")
+            logger.error(f"[FAILED] Error starting gesture system: {e}")
             # Don't return False here, as the gesture system is optional
     
     # Start the main ALEJO system
@@ -324,13 +334,13 @@ def start_local_services(services_to_start):
         )
         
         if result.returncode == 0:
-            logger.info("✅ ALEJO web server started successfully")
+            logger.info("[OK] ALEJO web server started successfully")
             return True
         else:
-            logger.error("❌ ALEJO web server failed to start")
+            logger.error("[FAILED] ALEJO web server failed to start")
             return False
     except Exception as e:
-        logger.error(f"❌ Error starting ALEJO system: {e}")
+        logger.error(f"[FAILED] Error starting ALEJO system: {e}")
         return False
 
 
@@ -392,16 +402,16 @@ async def validate_deployment(web_port, ws_port):
         success = await validator.validate_all()
         
         if success:
-            logger.info("✅ Validation completed successfully")
+            logger.info("[OK] Validation completed successfully")
         else:
             logger.warning("⚠️ Some validation checks failed")
         
         return success
     except ImportError:
-        logger.error("❌ Validation module not found. Make sure validate_gesture_deployment.py exists.")
+        logger.error("[FAILED] Validation module not found. Make sure validate_gesture_deployment.py exists.")
         return False
     except Exception as e:
-        logger.error(f"❌ Error during validation: {e}")
+        logger.error(f"[FAILED] Error during validation: {e}")
         return False
 
 
@@ -413,16 +423,27 @@ async def main():
     logger.info("ALEJO PRODUCTION STARTUP WITH GESTURE SYSTEM")
     logger.info("=" * 50)
     
-    # Check for updates before starting services
+    # Check for updates before starting services (with safety timeout)
     if UPDATE_MANAGER_AVAILABLE and not args.skip_updates:
         logger.info("Checking for ALEJO updates...")
         try:
-            update_manager = UpdateManager()
-            update_success = update_manager.run_update_check(auto_apply=True)
-            if not update_success:
-                logger.error("Update process encountered errors. Starting with current version.")
-            else:
-                logger.info("Update check completed successfully.")
+            # Create a separate process for update check to avoid blocking
+            update_process = subprocess.Popen(
+                [sys.executable, '-c', 'from update_manager import UpdateManager; UpdateManager().run_update_check(auto_apply=False)'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            
+            # Wait for update check with timeout (10 seconds max)
+            try:
+                update_process.wait(timeout=10)
+                if update_process.returncode == 0:
+                    logger.info("Update check completed successfully.")
+                else:
+                    logger.warning("Update check returned non-zero exit code. Continuing with current version.")
+            except subprocess.TimeoutExpired:
+                logger.warning("Update check timed out after 10 seconds. Continuing with current version.")
+                update_process.terminate()
         except Exception as e:
             logger.error(f"Error during update process: {str(e)}")
             logger.info("Continuing with current version...")
