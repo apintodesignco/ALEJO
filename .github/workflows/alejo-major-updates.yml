@@ -1,0 +1,347 @@
+name: ALEJO Major Updates Pipeline
+
+on:
+  push:
+    # Trigger on commits with specific prefixes in the commit message
+    branches: [ master, main ]
+  
+  # Allow manual triggering for major releases
+  workflow_dispatch:
+    inputs:
+      update_type:
+        description: 'Type of major update'
+        required: true
+        type: choice
+        options:
+          - feature
+          - security
+          - performance
+          - user-experience
+      
+      version_bump:
+        description: 'Version bump type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+      release_notes:
+        description: 'Additional release notes'
+        required: false
+        type: string
+
+jobs:
+  check-update-type:
+    name: Check Update Type
+    runs-on: ubuntu-latest
+    outputs:
+      is_major_update: ${{ steps.check-commit.outputs.is_major_update }}
+      update_type: ${{ steps.check-commit.outputs.update_type }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 5
+      
+      - name: Check commit message for major update indicators
+        id: check-commit
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "is_major_update=true" >> $GITHUB_OUTPUT
+            echo "update_type=${{ github.event.inputs.update_type }}" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          COMMIT_MSG=$(git log -1 --pretty=format:%s)
+          
+          # Check for major update indicators in commit message
+          if [[ $COMMIT_MSG == *"[MAJOR FEATURE]"* ]]; then
+            echo "is_major_update=true" >> $GITHUB_OUTPUT
+            echo "update_type=feature" >> $GITHUB_OUTPUT
+          elif [[ $COMMIT_MSG == *"[SECURITY FIX]"* ]]; then
+            echo "is_major_update=true" >> $GITHUB_OUTPUT
+            echo "update_type=security" >> $GITHUB_OUTPUT
+          elif [[ $COMMIT_MSG == *"[PERFORMANCE]"* ]]; then
+            echo "is_major_update=true" >> $GITHUB_OUTPUT
+            echo "update_type=performance" >> $GITHUB_OUTPUT
+          elif [[ $COMMIT_MSG == *"[UX]"* ]]; then
+            echo "is_major_update=true" >> $GITHUB_OUTPUT
+            echo "update_type=user-experience" >> $GITHUB_OUTPUT
+          else
+            echo "is_major_update=false" >> $GITHUB_OUTPUT
+            echo "update_type=none" >> $GITHUB_OUTPUT
+          fi
+
+  comprehensive-testing:
+    name: Comprehensive Testing
+    needs: check-update-type
+    if: needs.check-update-type.outputs.is_major_update == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install pytest pytest-cov pytest-xdist
+      
+      - name: Run comprehensive tests
+        run: |
+          # Check if our comprehensive test runner exists
+          if [ -f run_comprehensive_tests.py ]; then
+            python run_comprehensive_tests.py --ci --full --report
+          else
+            # Fall back to standard pytest
+            python -m pytest --cov=alejo --cov-report=xml -v
+          fi
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: test-reports/
+
+  update-version:
+    name: Update Version
+    needs: [check-update-type, comprehensive-testing]
+    if: needs.check-update-type.outputs.is_major_update == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.update-version.outputs.new_version }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Determine version bump
+        id: version-bump
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "bump_type=${{ github.event.inputs.version_bump }}" >> $GITHUB_OUTPUT
+          else
+            # Determine bump type based on update type
+            UPDATE_TYPE="${{ needs.check-update-type.outputs.update_type }}"
+            if [ "$UPDATE_TYPE" == "security" ]; then
+              echo "bump_type=patch" >> $GITHUB_OUTPUT
+            elif [ "$UPDATE_TYPE" == "feature" ]; then
+              echo "bump_type=minor" >> $GITHUB_OUTPUT
+            elif [ "$UPDATE_TYPE" == "performance" ]; then
+              echo "bump_type=patch" >> $GITHUB_OUTPUT
+            else
+              echo "bump_type=patch" >> $GITHUB_OUTPUT
+            fi
+          fi
+      
+      - name: Update version file
+        id: update-version
+        run: |
+          # Check if version file exists
+          if [ -f "alejo/version.py" ]; then
+            # Read current version
+            CURRENT_VERSION=$(grep -oP '__version__ = "\K[^"]+' alejo/version.py)
+            echo "Current version: $CURRENT_VERSION"
+            
+            # Split version into parts
+            IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
+            MAJOR=${VERSION_PARTS[0]}
+            MINOR=${VERSION_PARTS[1]}
+            PATCH=${VERSION_PARTS[2]}
+            
+            # Update version based on bump type
+            if [ "${{ steps.version-bump.outputs.bump_type }}" == "major" ]; then
+              NEW_VERSION="$((MAJOR+1)).0.0"
+            elif [ "${{ steps.version-bump.outputs.bump_type }}" == "minor" ]; then
+              NEW_VERSION="$MAJOR.$((MINOR+1)).0"
+            else
+              NEW_VERSION="$MAJOR.$MINOR.$((PATCH+1))"
+            fi
+            
+            # Update version file
+            sed -i "s/__version__ = \"$CURRENT_VERSION\"/__version__ = \"$NEW_VERSION\"/" alejo/version.py
+            echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+            echo "Updated version to $NEW_VERSION"
+          else
+            echo "Version file not found, creating one"
+            mkdir -p alejo
+            echo '__version__ = "0.1.0"' > alejo/version.py
+            echo "new_version=0.1.0" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit version update
+        run: |
+          # Get the new version from the previous step
+          NEW_VERSION="${{ steps.update-version.outputs.new_version }}"
+          
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add alejo/version.py
+          git commit -m "Bump version to ${NEW_VERSION}"
+          git push
+
+  # This job ensures version information is available to all downstream jobs
+  prepare-version-info:
+    name: Prepare Version Info
+    needs: [check-update-type, update-version]
+    if: always() && needs.check-update-type.outputs.is_major_update == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+    steps:
+      - name: Determine version
+        id: get-version
+        run: |
+          # Check if update-version job was successful and has output
+          if [[ "${{ needs.update-version.result }}" == "success" && -n "${{ needs.update-version.outputs.new_version }}" ]]; then
+            echo "version=${{ needs.update-version.outputs.new_version }}" >> $GITHUB_OUTPUT
+            echo "Using version from update-version job: ${{ needs.update-version.outputs.new_version }}"
+          # If manual trigger with version bump, use that
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ github.event.inputs.version_bump }}" ]]; then
+            echo "version=${{ github.event.inputs.version_bump }}" >> $GITHUB_OUTPUT
+            echo "Using version from manual input: ${{ github.event.inputs.version_bump }}"
+          # Default fallback
+          else
+            echo "version=0.0.0" >> $GITHUB_OUTPUT
+            echo "Using fallback version: 0.0.0"
+          fi
+          
+  create-release:
+    name: Create Release
+    needs: [check-update-type, prepare-version-info]
+    if: needs.check-update-type.outputs.is_major_update == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      
+      - name: Generate release notes
+        id: generate-notes
+        run: |
+          UPDATE_TYPE="${{ needs.check-update-type.outputs.update_type }}"
+          VERSION="${{ needs.prepare-version-info.outputs.version }}"
+          
+          # Start building release notes
+          echo "# ALEJO v$VERSION Release" > RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          
+          # Add update type specific notes
+          if [ "$UPDATE_TYPE" == "security" ]; then
+            echo "## Security Update" >> RELEASE_NOTES.md
+            echo "This release contains important security fixes to ensure ALEJO's integrity and user data protection." >> RELEASE_NOTES.md
+          elif [ "$UPDATE_TYPE" == "feature" ]; then
+            echo "## Feature Update" >> RELEASE_NOTES.md
+            echo "This release adds new capabilities to ALEJO, enhancing its functionality and user experience." >> RELEASE_NOTES.md
+          elif [ "$UPDATE_TYPE" == "performance" ]; then
+            echo "## Performance Update" >> RELEASE_NOTES.md
+            echo "This release improves ALEJO's performance, making it faster and more efficient." >> RELEASE_NOTES.md
+          elif [ "$UPDATE_TYPE" == "user-experience" ]; then
+            echo "## User Experience Update" >> RELEASE_NOTES.md
+            echo "This release enhances ALEJO's interface and interactions for a better user experience." >> RELEASE_NOTES.md
+          fi
+          
+          echo "" >> RELEASE_NOTES.md
+          
+          # Add recent commits
+          echo "## Changes" >> RELEASE_NOTES.md
+          git log -5 --pretty=format:"* %s" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          
+          # Add manual release notes if provided
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ github.event.inputs.release_notes }}" ]; then
+            echo "" >> RELEASE_NOTES.md
+            echo "## Additional Notes" >> RELEASE_NOTES.md
+            echo "${{ github.event.inputs.release_notes }}" >> RELEASE_NOTES.md
+          fi
+          
+          cat RELEASE_NOTES.md
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.prepare-version-info.outputs.version }}
+          name: ALEJO v${{ needs.prepare-version-info.outputs.version }}
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-documentation:
+    name: Update Documentation
+    needs: [check-update-type, create-release, prepare-version-info]
+    if: needs.check-update-type.outputs.is_major_update == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install documentation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs mkdocs-material
+          if [ -f docs/requirements.txt ]; then pip install -r docs/requirements.txt; fi
+      
+      - name: Update documentation version
+        run: |
+          if [ -f docs/mkdocs.yml ]; then
+            sed -i "s/version: .*/version: ${{ needs.prepare-version-info.outputs.version }}/" docs/mkdocs.yml
+          fi
+      
+      - name: Build and deploy documentation
+        run: |
+          if [ -f docs/mkdocs.yml ]; then
+            cd docs
+            mkdocs build
+            mkdocs gh-deploy --force
+          else
+            echo "Documentation not found, skipping update"
+          fi
+
+  notify-team:
+    name: Notify Team
+    needs: [create-release, update-documentation, prepare-version-info]
+    if: always()
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Send notification
+        run: |
+          echo "Major update workflow completed"
+          
+          # Get the version from prepare-version-info job
+          VERSION="${{ needs.prepare-version-info.outputs.version }}"
+          
+          # Set a fallback webhook URL
+          WEBHOOK_URL="${SLACK_WEBHOOK_URL:-https://hooks.slack.com/services/your-webhook-url}"
+          
+          # Add notification mechanism here (email, Slack, etc.)
+          # For example, using curl to send a webhook:
+          # curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"ALEJO major update v${VERSION} completed\"}" "$WEBHOOK_URL"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
