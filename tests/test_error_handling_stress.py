@@ -154,16 +154,16 @@ class TestErrorHandlingStress:
         tracker = ErrorTracker()
         num_attempts = 50
 
-        async def test_strategy():
+        async def test_strategy(attempt_num):
             error = Exception(f"{error_type} error")
-            context = {"attempt": i}
+            context = {"attempt": attempt_num}
             result = await tracker.track_error(
                 "stress_test", error_type, error, context
             )
             return result["recovery"]["success"] if "recovery" in result else False
 
         # Run multiple recovery attempts
-        tasks = [test_strategy() for i in range(num_attempts)]
+        tasks = [test_strategy(i) for i in range(num_attempts)]
         results = await asyncio.gather(*tasks)
 
         # Calculate success rate

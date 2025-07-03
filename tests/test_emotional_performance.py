@@ -13,7 +13,7 @@ import numpy as np
 import psutil
 import pytest
 
-from tests.mocks import EmotionalIntelligenceService, EventBus
+from tests.mocks import EmotionalIntelligenceService, EventBus, AdaptivePersonality, EmpathyModel, MultimodalEmotionDetector
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)

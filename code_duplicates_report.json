@@ -1,0 +1,33 @@
+{
+  "duplicate_groups": {
+    "3c7adc5f04fd0a43118ccebb9f659e5ae8d5c24952e94ae0960ad4559885a3ba": [
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\__init__.py",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\architecture\\__init__.py",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\benchmarks\\__init__.py",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\components\\__init__.py",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\components\\emotional_intelligence\\__init__.py"
+    ]
+  },
+  "statistics": {
+    "total_duplicate_groups": 1,
+    "total_duplicate_files": 4,
+    "extension_stats": {
+      ".py": 5
+    },
+    "directory_stats": {
+      "Users\\magic": 5
+    }
+  },
+  "refactoring_suggestions": {
+    "3c7adc5f04fd0a43118ccebb9f659e5ae8d5c24952e94ae0960ad4559885a3ba": {
+      "files": [
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\__init__.py",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\architecture\\__init__.py",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\benchmarks\\__init__.py",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\components\\__init__.py",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\components\\emotional_intelligence\\__init__.py"
+      ],
+      "suggestion": "Create a common module '__init__' in 'c:\\CascadeProjects\\tests\\ALEJO\\Users' and import it in all locations"
+    }
+  }
+}

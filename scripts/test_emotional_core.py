@@ -4,8 +4,8 @@ Manual test script for ALEJO's emotional intelligence components
 
 import asyncio
 import logging
-from datetime import datetime
-from alejo.emotional_intelligence.emotional_core import EmotionalCore
+from datetime import datetime, timedelta
+from alejo.emotional_intelligence.emotional_core import EmotionalCore, EmotionalDimension
 from alejo.emotional_intelligence.emotional_integration import EmotionalIntegration
 from alejo.core.event_bus import EventBus
 from alejo.learning.orchestrator import LearningOrchestrator

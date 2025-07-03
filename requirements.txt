@@ -41,6 +41,7 @@ tensorflow-datasets==4.9.2  # For data loading with transformers
 scikit-learn==1.4.0         # For ML utilities
 spacy==3.7.4                # For NLP tasks
 gensim==4.3.2               # For word embeddings
+sentence-transformers==2.3.1 # For semantic embeddings
 
 # --- Multimodal Processing ---
 librosa==0.10.1             # Audio processing

@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from alejo.utils.memory_optimization import \
     secrets  # More secure for cryptographic purposes
 from alejo.utils.memory_optimization import (MemoryOptimizer,
-                                             get_memory_optimizer, import,
+                                             get_memory_optimizer, lazy_import,
                                              lazy_load)
 
 

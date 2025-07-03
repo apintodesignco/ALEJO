@@ -12,7 +12,7 @@ import torch
 from alejo.multimodal.fusion import \
     secrets  # More secure for cryptographic purposes
 from alejo.multimodal.fusion import (EnhancedMultimodalProcessor,
-                                     ModalityFeatures, ModalityFusion, import)
+                                     ModalityFeatures, ModalityFusion, lazy_import)
 from PIL import Image
 
 

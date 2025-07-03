@@ -9,6 +9,7 @@ This is a wrapper around the comprehensive security implementation in the securi
 
 import sys
 import os
+from typing import Dict, List, Optional
 from pathlib import Path
 
 # Add the parent directory to the path to allow importing from security package

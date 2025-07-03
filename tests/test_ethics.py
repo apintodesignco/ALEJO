@@ -19,7 +19,7 @@ from alejo.emotional_intelligence.ethics import (EmotionalEthicsEvaluation,
                                                  EmotionalRiskLevel,
                                                  EthicalDecision,
                                                  EthicalFramework,
-                                                 EthicalPrinciple, import)
+                                                 EthicalPrinciple, lazy_import)
 
 
 class TestEthicalFramework(unittest.TestCase):

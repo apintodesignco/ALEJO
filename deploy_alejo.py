@@ -9,6 +9,7 @@ import shutil
 import logging
 import argparse
 import subprocess
+import multiprocessing
 from pathlib import Path
 from dotenv import load_dotenv
 

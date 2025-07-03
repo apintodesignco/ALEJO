@@ -67,7 +67,8 @@ class TestALEJOBrain(unittest.TestCase):
         """Test that a command from a mocked LLM is executed correctly."""
         with patch.dict(os.environ, {"ALEJO_LOCAL_INFERENCE": "1"}):
             mock_commands = MagicMock()
-        mock_commands.get_command_processor = MagicMock(return_value=MagicMock())
+        mock_get_cmd_processor = MagicMock()
+        mock_commands.get_command_processor = mock_get_cmd_processor
         with patch.dict("sys.modules", {"alejo.commands": mock_commands}):
             with patch("openai.OpenAI") as mock_OpenAI_class:
                 # Configure mocks

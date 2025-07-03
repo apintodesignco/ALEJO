@@ -452,7 +452,7 @@ def lazy_load(module_path: str, attribute: Optional[str] = None) -> Callable[[Ca
 
 
 # Convenience function for importing modules lazily
-def import(module_path: str, attribute: Optional[str] = None) -> Any:
+def lazy_import(module_path: str, attribute: Optional[str] = None) -> Any:
     """
     Import a module or attribute lazily.
     

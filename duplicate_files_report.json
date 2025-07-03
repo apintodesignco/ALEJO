@@ -1,0 +1,111 @@
+{
+  "duplicate_groups": {
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855": [
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\analysis_debug.log",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\new_test.txt",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\data\\brain\\brain_state.db",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\data\\brain\\brain_state.db.bak",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\data\\emotional\\emotional_memory.db",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\data\\emotional\\emotional_memory.db.bak",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\data\\memory\\alejo_memory.db",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\data\\memory\\alejo_memory.db.bak",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\logs\\alejo.log",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\scripts\\__init__.py",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\reports\\alejo_test_20250627_162459.log",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\reports\\alejo_test_20250627_181845.log",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\reports\\alejo_test_20250627_182035.log",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\reports\\alejo_test_20250627_182744.log",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\reports\\alejo_test_20250627_183842.log",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\test_files\\new_file.txt"
+    ],
+    "a8adf834b0435976ce20e1c9d1e594bca0c38453276ab73c8ca5a4eda4ed74c6": [
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\pyproject.toml",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\pyproject.toml.bak"
+    ],
+    "cfcf45bc72c6746c6eb9d3d5e72d062ca33696873b6d6c1e49f05098fbcb661f": [
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\backups\\pre_optimization_20250611_073107\\css\\ALEJO-ui-fixed.css",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\backups\\pre_optimization_20250611_073107\\css\\ALEJO-ui.css"
+    ],
+    "3c7adc5f04fd0a43118ccebb9f659e5ae8d5c24952e94ae0960ad4559885a3ba": [
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\__init__.py",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\architecture\\__init__.py",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\benchmarks\\__init__.py",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\components\\__init__.py",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\components\\emotional_intelligence\\__init__.py"
+    ],
+    "d00e555c8ae7387f277582cbd06e51e6dae81c771ed2c8afb7cf4dfd759ac7f8": [
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\test_files\\renamed_file.txt",
+      "c:\\Users\\magic\\CascadeProjects\\ALEJO\\test_files\\test_file.txt"
+    ]
+  },
+  "statistics": {
+    "total_duplicate_groups": 5,
+    "total_duplicate_files": 22,
+    "extension_stats": {
+      ".log": 7,
+      ".txt": 4,
+      ".db": 3,
+      ".bak": 4,
+      ".py": 6,
+      ".toml": 1,
+      ".css": 2
+    },
+    "directory_stats": {
+      "Users": 27
+    }
+  },
+  "refactoring_suggestions": {
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855": {
+      "keep": "c:\\Users\\magic\\CascadeProjects\\ALEJO\\new_test.txt",
+      "remove_or_refactor": [
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\analysis_debug.log",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\data\\brain\\brain_state.db",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\data\\brain\\brain_state.db.bak",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\data\\emotional\\emotional_memory.db",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\data\\emotional\\emotional_memory.db.bak",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\data\\memory\\alejo_memory.db",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\data\\memory\\alejo_memory.db.bak",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\logs\\alejo.log",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\scripts\\__init__.py",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\reports\\alejo_test_20250627_162459.log",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\reports\\alejo_test_20250627_181845.log",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\reports\\alejo_test_20250627_182035.log",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\reports\\alejo_test_20250627_182744.log",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\reports\\alejo_test_20250627_183842.log",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\test_files\\new_file.txt"
+      ],
+      "suggestion": "Consider keeping the file with the shortest path and refactoring others to import/reference it"
+    },
+    "a8adf834b0435976ce20e1c9d1e594bca0c38453276ab73c8ca5a4eda4ed74c6": {
+      "keep": "c:\\Users\\magic\\CascadeProjects\\ALEJO\\pyproject.toml",
+      "remove_or_refactor": [
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\pyproject.toml.bak"
+      ],
+      "suggestion": "Consider keeping the file with the shortest path and refactoring others to import/reference it"
+    },
+    "cfcf45bc72c6746c6eb9d3d5e72d062ca33696873b6d6c1e49f05098fbcb661f": {
+      "keep": "c:\\Users\\magic\\CascadeProjects\\ALEJO\\backups\\pre_optimization_20250611_073107\\css\\ALEJO-ui.css",
+      "remove_or_refactor": [
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\backups\\pre_optimization_20250611_073107\\css\\ALEJO-ui-fixed.css"
+      ],
+      "suggestion": "Consider keeping the file with the shortest path and refactoring others to import/reference it"
+    },
+    "3c7adc5f04fd0a43118ccebb9f659e5ae8d5c24952e94ae0960ad4559885a3ba": {
+      "keep": "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\__init__.py",
+      "remove_or_refactor": [
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\architecture\\__init__.py",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\benchmarks\\__init__.py",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\components\\__init__.py",
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\tests\\components\\emotional_intelligence\\__init__.py"
+      ],
+      "suggestion": "Consider keeping the file with the shortest path and refactoring others to import/reference it"
+    },
+    "d00e555c8ae7387f277582cbd06e51e6dae81c771ed2c8afb7cf4dfd759ac7f8": {
+      "keep": "c:\\Users\\magic\\CascadeProjects\\ALEJO\\test_files\\test_file.txt",
+      "remove_or_refactor": [
+        "c:\\Users\\magic\\CascadeProjects\\ALEJO\\test_files\\renamed_file.txt"
+      ],
+      "suggestion": "Consider keeping the file with the shortest path and refactoring others to import/reference it"
+    }
+  }
+}

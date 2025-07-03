@@ -17,7 +17,7 @@ from alejo.interaction.gesture_arpeggiator.emotional_integration import \
     secrets  # More secure for cryptographic purposes
 from alejo.interaction.gesture_arpeggiator.emotional_integration import (
     GestureEmotionalIntegration, MusicMood,
-    create_gesture_emotional_integration, import)
+    create_gesture_emotional_integration, lazy_import)
 from alejo.interaction.gesture_arpeggiator.service import (
     GestureArpeggiatorService, HandGesture)
 

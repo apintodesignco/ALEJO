@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import numpy as np
+from sentence_transformers import SentenceTransformer
 
 from alejo.cognitive.memory.models import Concept, MemoryType, Relationship, RelationshipType
 from alejo.database.memory_store import MemoryStore
@@ -757,21 +758,51 @@ class SemanticMemory:
         await self.memory_store.execute(query, (now, relationship_id))
         
     async def _generate_embedding(self, text: str) -> np.ndarray:
-        """Generate an embedding vector for the given text.
+        """Generate an embedding vector for the given text using a sentence transformer model.
         
-        In a production implementation, this would use a proper embedding model.
-        For now, we use a simple placeholder that generates random vectors.
-        """
-        # TODO: Replace with actual embedding model
-        # This is a placeholder that generates a random vector of the right dimensionality
-        vector = np.random.rand(384).astype(np.float32)  # 384-dim embedding
+        This implementation uses the sentence-transformers library with a pre-trained model
+        optimized for semantic similarity tasks.
         
-        # Normalize to unit length
-        norm = np.linalg.norm(vector)
-        if norm > 0:
-            vector = vector / norm
+        Args:
+            text: The text to generate an embedding for
             
-        return vector
+        Returns:
+            A normalized embedding vector as numpy array
+        """
+        # Lazy-load the embedding model on first use
+        if self._embedding_model is None:
+            try:
+                # Run model loading in a separate thread to avoid blocking
+                loop = asyncio.get_event_loop()
+                self._embedding_model = await loop.run_in_executor(
+                    None, 
+                    lambda: SentenceTransformer('all-MiniLM-L6-v2')  # Lightweight but effective model
+                )
+                # Update embedding dimension based on the actual model
+                self._embedding_dimension = self._embedding_model.get_sentence_embedding_dimension()
+                logging.info(f"Initialized embedding model with dimension {self._embedding_dimension}")
+            except Exception as e:
+                logging.error(f"Failed to load embedding model: {e}")
+                # Fallback to random embeddings if model loading fails
+                logging.warning("Using fallback random embeddings")
+                vector = np.random.rand(self._embedding_dimension).astype(np.float32)
+                norm = np.linalg.norm(vector)
+                return vector / norm if norm > 0 else vector
+        
+        try:
+            # Generate embedding using the model (run in executor to avoid blocking)
+            loop = asyncio.get_event_loop()
+            vector = await loop.run_in_executor(
+                None,
+                lambda: self._embedding_model.encode(text, convert_to_numpy=True, normalize_embeddings=True)
+            )
+            return vector.astype(np.float32)
+        except Exception as e:
+            logging.error(f"Error generating embedding: {e}")
+            # Fallback to random embedding in case of error
+            vector = np.random.rand(self._embedding_dimension).astype(np.float32)
+            norm = np.linalg.norm(vector)
+            return vector / norm if norm > 0 else vector
         
     def _calculate_similarity(self, embedding1: np.ndarray, embedding2: np.ndarray) -> float:
         """Calculate cosine similarity between two embeddings."""
