@@ -1,0 +1,45 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2022": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:import/recommended",
+    "plugin:compat/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "import",
+    "compat"
+  ],
+  "rules": {
+    "compat/compat": "warn"
+  },
+  "settings": {
+    "polyfills": [
+      "Promise",
+      "fetch",
+      "IntersectionObserver"
+    ]
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "build/"
+  ],
+  "overrides": [
+    {
+      "files": ["public/*.html"],
+      "rules": {
+        // Disable compat warnings for theme-color meta tags as we've implemented proper fallbacks
+        "compat/compat": "off"
+      }
+    }
+  ]
+}

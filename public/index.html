@@ -12,12 +12,74 @@
   <!-- Additional SEO Meta Tags -->
   <meta name="application-name" content="ALEJO AI">
   <meta name="apple-mobile-web-app-title" content="ALEJO AI">
-  <!-- Theme color for Chrome, Safari, Edge (Not supported in Firefox, Firefox for Android, Opera) -->
-  <!-- We keep these for browsers that do support them while acknowledging the compatibility limitation -->
-  <meta name="theme-color" content="#4285f4" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#2c2c2c" media="(prefers-color-scheme: dark)">
+  
+  <!-- Theme colors - Browser-specific implementation -->
+  <!--
+    BROWSER COMPATIBILITY NOTES:
+    1. Chrome, Safari, and Edge support theme-color meta tags for browser UI coloring
+    2. Firefox, Firefox for Android, and Opera DO NOT support theme-color meta tags
+    3. The data-supports attribute is for documentation only and doesn't affect functionality
+    4. CSS variables below handle theming for ALL browsers including those without theme-color support
+  -->
+  <!-- Chrome/Safari/Edge theming (explicitly ignored by linter with comments) -->
+  <!-- eslint-disable-next-line compat/compat -->
+  <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)" data-supports="chrome, safari, edge" />
+  <!-- eslint-disable-next-line compat/compat -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" data-supports="chrome, safari, edge" />
+  
+  <!-- Cross-browser compatibility for Firefox and Opera which don't support theme-color -->
+  <style>
+    :root {
+      --theme-color-light: #ffffff;
+      --theme-color-dark: #1a1a2e;
+      --current-theme-color: var(--theme-color-light);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --current-theme-color: var(--theme-color-dark);
+      }
+    }
+    
+    /* Apply theme color to header for Firefox/Opera */
+    header {
+      background-color: var(--current-theme-color);
+    }
+  </style>
   <!-- Microsoft specific -->
   <meta name="msapplication-TileColor" content="#4285f4">
+  
+  <!-- Cross-browser theming using CSS Variables -->
+  <style>
+    :root {
+      --theme-color-light: #4285f4;
+      --theme-color-dark: #2c2c2c;
+      color-scheme: light dark; /* Enable automatic dark mode where supported */
+    }
+    
+    /* Apply header style consistently across all browsers */
+    header {
+      background-color: var(--theme-color-light);
+      color: white;
+    }
+    
+    /* Cross-browser dark mode support */
+    @media (prefers-color-scheme: dark) {
+      header {
+        background-color: var(--theme-color-dark);
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: var(--theme-color-dark);
+      }
+    }
+    @media (prefers-color-scheme: light) {
+      body {
+        background-color: var(--theme-color-light);
+      }
+    }
+  </style>
   <!-- Apple specific -->
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   
