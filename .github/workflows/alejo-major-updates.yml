@@ -98,6 +98,13 @@ jobs:
       
       - name: Run comprehensive tests
         run: |
+          # Ensure directory structure exists
+          if [ ! -d "alejo" ]; then
+            mkdir -p alejo/core alejo/handlers alejo/services alejo/testing alejo/ui alejo/cognitive alejo/cognitive/reasoning
+            touch alejo/__init__.py alejo/core/__init__.py alejo/handlers/__init__.py
+            touch alejo/services/__init__.py alejo/testing/__init__.py alejo/ui/__init__.py
+            touch alejo/cognitive/__init__.py alejo/cognitive/reasoning/__init__.py
+          fi
           # Check if our comprehensive test runner exists
           if [ -f run_comprehensive_tests.py ]; then
             python run_comprehensive_tests.py --ci --full --report

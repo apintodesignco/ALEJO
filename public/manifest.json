@@ -1,7 +1,8 @@
 {
-  "name": "ALEJO Gesture Recognition System",
+  "name": "ALEJO AI Assistant",
   "short_name": "ALEJO",
-  "description": "Advanced gesture recognition system for intuitive human-computer interaction",
+  "description": "Advanced Learning Engine with Judgment Orchestration - Next-generation AI assistant with voice, face, and gesture recognition capabilities",
+  "categories": ["ai", "productivity", "personalization", "accessibility"],
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -91,10 +92,9 @@
       "icons": [{ "src": "/assets/icons/docs-icon-192x192.png", "sizes": "192x192" }]
     }
   ],
-  "categories": ["productivity", "education", "utilities"],
   "lang": "en-US",
   "dir": "ltr",
-  "iarc_rating_id": "",
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "share_target": {
     "action": "/share-target",
     "method": "POST",

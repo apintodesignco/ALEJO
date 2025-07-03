@@ -1,8 +1,30 @@
 {
-  "name": "alejo-frontend",
+  "name": "alejo-ai",
   "version": "0.1.0",
-  "private": true,
-  "description": "Frontend client for ALEJO Gesture Arpeggiator and other UI modules.",
+  "private": false,
+  "description": "ALEJO: Advanced Learning Engine with Judgment Orchestration - The next-generation AI assistant with personalized voice, face, and gesture recognition.",
+  "keywords": [
+    "ai assistant",
+    "voice recognition",
+    "facial recognition",
+    "gesture recognition",
+    "personalized ai",
+    "memory preservation",
+    "emotional intelligence",
+    "reasoning engine",
+    "multimodal ai",
+    "personal entity graph",
+    "memorial mode",
+    "voice training",
+    "custom avatar"
+  ],
+  "homepage": "https://alejoai.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apintodesignco/ALEJO"
+  },
+  "author": "Alejo Pinto Design Co.",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite --open",

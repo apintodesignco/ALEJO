@@ -1,0 +1,26 @@
+/* TEAM */
+Creator: Alejandro Pinto
+Contact: contact@alejoai.com
+Twitter: @alejoai
+CashApp: $apintodesignco (for donations to support development)
+Location: Silicon Valley, California
+
+/* SITE */
+Last update: 2025-07-03
+Standards: HTML5, CSS3, ES2022
+Components: React, TensorFlow.js, Web Speech API, Face-API.js
+Software: Visual Studio Code, Git, Node.js, Python
+Language: English
+Doctype: HTML5
+IDE: Visual Studio Code
+
+/* THANKS */
+Name: Open Source Community
+Name: AI Research Community
+Name: Early Adopters and Beta Testers
+
+/* SITE */
+Website: https://alejoai.com
+Description: ALEJO - Advanced Learning Engine with Judgment Orchestration
+Mission: Creating the most personalized, ethical, and privacy-focused AI assistant
+Features: Voice Recognition, Face Recognition, Gesture Recognition, Personalization Engine, Reasoning Core, Memory Systems

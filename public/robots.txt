@@ -1,3 +1,4 @@
+# ALEJO AI - Advanced Learning Engine with Judgment Orchestration
 User-agent: *
 Allow: /
 
@@ -5,6 +6,20 @@ Allow: /
 Disallow: /admin/
 Disallow: /internal/
 Disallow: /api/private/
+Disallow: /dev/
+Disallow: /beta/
+
+# Allow access to assets
+Allow: /assets/
+Allow: /images/
+Allow: /docs/
+
+# Crawl delay for heavy bots
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
 
 # Allow search engines to access the sitemap
-Sitemap: https://alejo-gesture.io/sitemap.xml
+Sitemap: https://alejoai.com/sitemap.xml

@@ -1,53 +1,155 @@
-# ALEJO
+<div align="center">
+  <img src="assets/alejo-logo.png" alt="ALEJO AI" width="250">
+  <h1>ALEJO: Advanced Learning Engine with Judgment Orchestration</h1>
+  <p><strong>The next-generation personalized AI assistant with voice, face, and gesture recognition capabilities</strong></p>
+  <p>
+    <a href="#features">Features</a> •
+    <a href="#demo">Demo</a> •
+    <a href="#installation">Installation</a> •
+    <a href="#usage">Usage</a> •
+    <a href="#contributing">Contributing</a> •
+    <a href="#license">License</a>
+  </p>
+  
+  [![GitHub stars](https://img.shields.io/github/stars/apintodesignco/ALEJO)](https://github.com/apintodesignco/ALEJO/stargazers)
+  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+  [![Build Status](https://github.com/apintodesignco/ALEJO/actions/workflows/alejo-ci-cd.yml/badge.svg)](https://github.com/apintodesignco/ALEJO/actions/workflows/alejo-ci-cd.yml)
+</div>
 
-ALEJO is a production-ready AI solution offering advanced error handling, multimodal personalization, voice & vision training, and a comprehensive cognitive framework.
+# ALEJO AI: Personal AI Assistant with Human-Like Capabilities
 
-## Features
+ALEJO is a cutting-edge AI assistant that combines advanced personalization, voice recognition, facial recognition, and gesture control with a sophisticated reasoning engine. Unlike other AI assistants, ALEJO creates a deeply personalized experience by learning your preferences, communication style, and important relationships while maintaining strict privacy through local processing.
 
-- **Error Handling:** Robust error tracking and diagnostics.
-- **Voice & Vision Training:** Modules for voice recognition, synthesis, and facial recognition.
-- **Cognitive Framework:** Integrated reasoning, ethical analysis, and personalization.
-- **Security & Integration:** Secure CI/CD integration with enhanced privacy controls.
+## 🚀 Key Features
 
-## Installation
+### Personalized AI Experience
+- **🧠 Advanced Memory Systems** - Remembers your preferences, important people, and past interactions
+- **🗣️ Voice Recognition & Training** - Recognizes your voice and adapts to your speaking style
+- **👤 Facial Recognition** - Recognizes and responds to different users with personalized interactions
+- **👋 Gesture Control System** - Intuitive hands-free interaction through camera-based gesture recognition
+
+### Cognitive Capabilities
+- **🧮 Reasoning Engine** - Logical consistency validation and transparent reasoning processes
+- **🔍 Truth Core** - Foundation facts database with fallacy detection
+- **📝 Reasoning Tracer** - Full transparency into how conclusions are reached
+- **📚 Memory Preservation** - Optional memorial mode to respectfully preserve memories of loved ones
+
+### Security & Privacy
+- **🔒 Local Processing** - All data stays on your device by default
+- **🛡️ Privacy Guard** - End-to-end encryption for all sensitive data
+- **✅ Consent Manager** - Granular control over what data is collected and how it's used
+- **📊 Audit Trail** - Complete transparency into all system actions
+
+## 🛠️ Installation
 
 1. Clone the repository:
 
    ```bash
-git clone https://github.com/YOUR_GITHUB/ALEJO.git
+   git clone https://github.com/apintodesignco/ALEJO.git
+   cd ALEJO
    ```
+
 2. Install dependencies:
 
    ```bash
-pip install -r requirements.txt
+   pip install -r requirements.txt
+   npm install
    ```
-3. Run tests:
+
+3. Run the setup script:
 
    ```bash
-pytest --maxfail=1 --disable-warnings -q
+   python setup.py install
    ```
 
-## Usage
+4. Verify the installation:
 
-Refer to the documentation for configuration and execution instructions.
+   ```bash
+   python -m alejo.verify
+   ```
 
-## License
+## 💻 Usage
 
-Source-available for personal and test use. Public modifications or redistribution are prohibited.
+### Quick Start
 
-## Sponsorship & Donations
+```python
+from alejo import ALEJO
 
-ALEJO is a passion project that requires significant resources to maintain and develop. If you find this project valuable, please consider supporting its continued development!
+# Initialize ALEJO with default configuration
+alejo = ALEJO()
 
-### Sponsorship Options
-- **GitHub Sponsors**: Support ongoing development through [GitHub Sponsors](https://github.com/sponsors/apintodesignco)
-- **Cash App**: Send donations directly via Cash App to `$apintodesignco`
+# Start the voice and vision systems
+alejo.start()
 
-All donations help fund server costs, development time, and enable new features to be added more quickly. Sponsors will be acknowledged in release notes and may receive early access to new features.
+# Interact with ALEJO
+response = alejo.process("Tell me about my schedule today")
+print(response)
+```
 
+### Web Interface
 
+```bash
+# Start the web interface
+python -m alejo.serve
+```
 
-ALEJO combines cutting-edge AI capabilities with a commitment to accessibility and user autonomy. It's designed to work entirely offline with local models, ensuring your data remains private and secure.
+Then open your browser to http://localhost:8000 to access the ALEJO web interface.
+
+## 🔍 Use Cases
+
+- **Personal Assistant** - Manage your schedule, answer questions, and help with daily tasks
+- **Memory Companion** - Preserve and relive memories of loved ones through respectful AI representation
+- **Accessibility Tool** - Provide assistance to users with disabilities through voice, vision, and gesture interfaces
+- **Knowledge Manager** - Organize and retrieve your personal knowledge base
+- **Creative Partner** - Collaborate on creative projects with personalized feedback
+
+## 📚 Documentation
+
+Comprehensive documentation is available at [docs.alejoai.com](https://docs.alejoai.com):
+
+- [Getting Started Guide](https://docs.alejoai.com/getting-started)
+- [API Reference](https://docs.alejoai.com/api)
+- [Advanced Configuration](https://docs.alejoai.com/configuration)
+- [Privacy & Security](https://docs.alejoai.com/privacy)
+- [Contributing Guidelines](https://docs.alejoai.com/contributing)
+
+## 📋 Requirements
+
+- Python 3.9 or higher
+- Node.js 18 or higher
+- 8GB RAM minimum (16GB recommended)
+- NVIDIA GPU with CUDA support (for optimal performance)
+- Webcam and microphone (for vision and voice features)
+
+## 📄 License
+
+ALEJO is released under the [MIT License](LICENSE). See the LICENSE file for more details.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please see our [Contributing Guidelines](CONTRIBUTING.md) for more information.
+
+## 💖 Support & Community
+
+- Join our [Discord community](https://discord.gg/alejoai)
+- Follow us on [Twitter](https://twitter.com/alejoai)
+- Support development through [GitHub Sponsors](https://github.com/sponsors/apintodesignco)
+
+## 🔮 Roadmap
+
+Our upcoming features include:
+
+- Advanced memorial mode with ethical guidelines
+- AR integration for avatar projection in physical space
+- Enhanced accessibility features
+- External API integrations
+- Cross-device synchronization
+
+---
+
+<div align="center">
+ALEJO combines cutting-edge AI capabilities with a commitment to accessibility, personalization, and user privacy. Experience the next generation of AI assistance today!
+</div>
 
 
 
