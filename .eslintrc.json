@@ -40,6 +40,12 @@
         // Disable compat warnings for theme-color meta tags as we've implemented proper fallbacks
         "compat/compat": "off"
       }
+    },
+    {
+      "files": ["**/*.js"],
+      "rules": {
+        "compat/compat": "warn"
+      }
     }
   ]
 }

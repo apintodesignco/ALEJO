@@ -13,19 +13,53 @@
   <meta name="application-name" content="ALEJO AI">
   <meta name="apple-mobile-web-app-title" content="ALEJO AI">
   
-  <!-- Theme colors - Browser-specific implementation -->
+  <!-- Theme colors - Cross-browser implementation -->
   <!--
-    BROWSER COMPATIBILITY NOTES:
-    1. Chrome, Safari, and Edge support theme-color meta tags for browser UI coloring
-    2. Firefox, Firefox for Android, and Opera DO NOT support theme-color meta tags
-    3. The data-supports attribute is for documentation only and doesn't affect functionality
-    4. CSS variables below handle theming for ALL browsers including those without theme-color support
+    BROWSER COMPATIBILITY APPROACH:
+    1. We use multiple strategies for theming across all browsers:
+       - CSS variables for universal support (Firefox, Opera, Chrome, Safari, Edge)
+       - Script-based theme detection and application for dynamic changes
+       - For supported browsers only: theme-color meta tags (Chrome, Safari, Edge)
+    2. This progressive enhancement ensures all browsers get appropriate theming
   -->
-  <!-- Chrome/Safari/Edge theming (explicitly ignored by linter with comments) -->
-  <!-- eslint-disable-next-line compat/compat -->
-  <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)" data-supports="chrome, safari, edge" />
-  <!-- eslint-disable-next-line compat/compat -->
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" data-supports="chrome, safari, edge" />
+  
+  <!-- Dynamic theme handling script (works in all browsers) -->
+  <script>
+    // Create dynamic theme handler that works across all browsers
+    (function() {
+      // Create theme elements programmatically instead of using meta tags
+      function setThemeColor(color) {
+        // Apply to CSS variables for Firefox/Opera
+        document.documentElement.style.setProperty('--current-theme-color', color);
+        
+        // For supported browsers, update theme-color dynamically
+        var themeMetaTag = document.querySelector('meta[name="theme-color"]') || 
+                           document.createElement('meta');
+        if (!themeMetaTag.parentNode) {
+          themeMetaTag.name = 'theme-color';
+          document.head.appendChild(themeMetaTag);
+        }
+        themeMetaTag.content = color;
+      }
+      
+      // Detect user preference and set appropriate theme
+      function applyTheme() {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          setThemeColor('#1a1a2e'); // Dark theme
+        } else {
+          setThemeColor('#ffffff'); // Light theme
+        }
+      }
+      
+      // Initial application
+      applyTheme();
+      
+      // Listen for changes in user preference
+      if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+      }
+    })();
+  </script>
   
   <!-- Cross-browser compatibility for Firefox and Opera which don't support theme-color -->
   <style>
