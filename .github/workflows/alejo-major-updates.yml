@@ -330,18 +330,22 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Send notification
+      - name: Log completion
+        run: echo "Major update workflow completed for version ${{ needs.prepare-version-info.outputs.version }}"
+      
+      # Simplified notification approach that avoids context access warnings
+      - name: Send email notification
         run: |
-          echo "Major update workflow completed"
+          echo "Sending notification for ALEJO update v${{ needs.prepare-version-info.outputs.version }}"
+          echo "In a production environment, this step would send an email or other notification"
+          echo "For example:"
+          echo "  - Send email to the team"
+          echo "  - Post message to team chat"
+          echo "  - Update status dashboard"
           
-          # Get the version from prepare-version-info job
-          VERSION="${{ needs.prepare-version-info.outputs.version }}"
-          
-          # Set a fallback webhook URL
-          WEBHOOK_URL="${SLACK_WEBHOOK_URL:-https://hooks.slack.com/services/your-webhook-url}"
-          
-          # Add notification mechanism here (email, Slack, etc.)
-          # For example, using curl to send a webhook:
-          # curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"ALEJO major update v${VERSION} completed\"}" "$WEBHOOK_URL"
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          # Example email command (commented out):
+          # mail -s "ALEJO Update v${{ needs.prepare-version-info.outputs.version }} Complete" team@example.com << EOF
+          # The ALEJO major update workflow has completed successfully.
+          # Version: ${{ needs.prepare-version-info.outputs.version }}
+          # See the release notes for more details.
+          # EOF
