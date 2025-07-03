@@ -1,14 +1,55 @@
-# ALEJO - Advanced Language and Execution Joint Operator
+# ALEJO
 
-Created by Alejandro Pinto with AI collaboration
+ALEJO is a production-ready AI solution offering advanced error handling, multimodal personalization, voice & vision training, and a comprehensive cognitive framework.
 
-ALEJO is a powerful, self-contained, offline-capable AI system designed to be accessible, adaptable, and exceptionally helpful. This open source project is made available to benefit as many people as possible while maintaining its integrity and vision.
+## Features
 
-## About ALEJO
+- **Error Handling:** Robust error tracking and diagnostics.
+- **Voice & Vision Training:** Modules for voice recognition, synthesis, and facial recognition.
+- **Cognitive Framework:** Integrated reasoning, ethical analysis, and personalization.
+- **Security & Integration:** Secure CI/CD integration with enhanced privacy controls.
+
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+git clone https://github.com/YOUR_GITHUB/ALEJO.git
+   ```
+2. Install dependencies:
+
+   ```bash
+pip install -r requirements.txt
+   ```
+3. Run tests:
+
+   ```bash
+pytest --maxfail=1 --disable-warnings -q
+   ```
+
+## Usage
+
+Refer to the documentation for configuration and execution instructions.
+
+## License
+
+Source-available for personal and test use. Public modifications or redistribution are prohibited.
+
+## Sponsorship & Donations
+
+ALEJO is a passion project that requires significant resources to maintain and develop. If you find this project valuable, please consider supporting its continued development!
+
+### Sponsorship Options
+- **GitHub Sponsors**: Support ongoing development through [GitHub Sponsors](https://github.com/sponsors/apintodesignco)
+- **Cash App**: Send donations directly via Cash App to `$apintodesignco`
+
+All donations help fund server costs, development time, and enable new features to be added more quickly. Sponsors will be acknowledged in release notes and may receive early access to new features.
+
+
 
 ALEJO combines cutting-edge AI capabilities with a commitment to accessibility and user autonomy. It's designed to work entirely offline with local models, ensuring your data remains private and secure.
 
-## Quick Start - One-Click Installation
+
 
 1. **[Download ALEJO](https://github.com/apintodesignco/ALEJO/releases/latest)** - Click to download the latest release
 2. **Run the installer** - Double-click the downloaded file to start installation

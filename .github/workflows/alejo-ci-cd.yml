@@ -154,7 +154,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     # GitHub environment for deployment approvals and secrets
-    environment: 'staging'
+
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
@@ -234,7 +234,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy-staging
     # GitHub environment for deployment approvals and secrets
-    environment: 'production'
+
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
