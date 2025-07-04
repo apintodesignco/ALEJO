@@ -58,6 +58,26 @@ const EMOTION_CATEGORIES = {
   }
 };
 
+// Topics that amplify specific emotions
+const EMOTION_TOPIC_AMPLIFIERS = {
+  love: ['family', 'relationship', 'romance', 'friendship', 'connection'],
+  joy: ['achievement', 'celebration', 'success', 'entertainment', 'recreation'],
+  sadness: ['loss', 'failure', 'grief', 'disappointment', 'separation'],
+  anger: ['injustice', 'betrayal', 'frustration', 'conflict', 'violation'],
+  fear: ['threat', 'danger', 'uncertainty', 'health', 'future'],
+  surprise: ['unexpected', 'revelation', 'discovery', 'announcement', 'twist'],
+  disgust: ['corruption', 'immorality', 'unsanitary', 'offensive', 'violation'],
+  trust: ['reliability', 'honesty', 'consistency', 'transparency', 'support'],
+  anticipation: ['planning', 'future', 'expectation', 'preparation', 'upcoming'],
+  awe: ['nature', 'art', 'achievement', 'spirituality', 'wonder'],
+  submission: ['authority', 'guidance', 'instruction', 'leadership', 'mentorship'],
+  disappointment: ['expectation', 'promise', 'hope', 'anticipation', 'prediction'],
+  remorse: ['mistake', 'regret', 'apology', 'guilt', 'responsibility'],
+  contempt: ['superiority', 'judgment', 'criticism', 'dismissal', 'disrespect'],
+  aggressiveness: ['competition', 'challenge', 'conflict', 'defense', 'assertion'],
+  optimism: ['future', 'opportunity', 'possibility', 'improvement', 'hope']
+};
+
 // Linguistic markers for emotion detection
 const EMOTION_MARKERS = {
   joy: [
@@ -356,26 +376,125 @@ function getDominantEmotion(emotionalState) {
 }
 
 /**
- * Get secondary and tertiary emotions based on primary emotions.
+ * Get secondary and tertiary emotions based on primary emotions with sophisticated blending.
  * @param {Object} emotionalState - Emotional state with primary emotions
+ * @param {Object} context - Optional context information that may influence emotion blending
  * @returns {Object} Enhanced emotional state with derived emotions
  */
-function getDerivedEmotions(emotionalState) {
+function getDerivedEmotions(emotionalState, context = {}) {
   const enhanced = { ...emotionalState };
+  const emotionalComplexity = getEmotionalComplexity(emotionalState);
   
-  // Calculate secondary emotions
+  // Emotion opposition effects - certain emotions suppress others
+  const oppositionEffects = {
+    joy: ['sadness', 'disgust'],
+    sadness: ['joy'],
+    anger: ['trust'],
+    fear: ['trust'],
+    trust: ['disgust', 'fear'],
+    disgust: ['trust', 'joy']
+  };
+  
+  // Apply opposition effects to primary emotions
+  Object.entries(oppositionEffects).forEach(([emotion, opposites]) => {
+    if (emotionalState[emotion] > 0.4) { // Only apply if emotion is strong enough
+      opposites.forEach(opposite => {
+        // Reduce opposite emotions proportionally to the strength of this emotion
+        const reductionFactor = emotionalState[emotion] * 0.7; // 70% effectiveness
+        enhanced[opposite] = Math.max(0, enhanced[opposite] - reductionFactor);
+      });
+    }
+  });
+  
+  // Intensity thresholds for emotion activation
+  const activationThreshold = 0.2; // Emotions below this threshold don't contribute to blends
+  
+  // Calculate secondary emotions with weighted blending
   for (const [secondary, primaries] of Object.entries(EMOTION_CATEGORIES.SECONDARY)) {
     const [first, second] = primaries;
-    enhanced[secondary] = Math.min(1.0, (emotionalState[first] + emotionalState[second]) / 2);
+    
+    // Only blend if both emotions are above threshold
+    if (enhanced[first] > activationThreshold && enhanced[second] > activationThreshold) {
+      // Weighted average based on relative strengths
+      const total = enhanced[first] + enhanced[second];
+      const firstWeight = enhanced[first] / total;
+      const secondWeight = enhanced[second] / total;
+      
+      // Apply synergy effect - some combinations are stronger than the sum of parts
+      const synergy = 1.2; // 20% synergy boost for compatible emotions
+      
+      enhanced[secondary] = Math.min(1.0, 
+        ((enhanced[first] * firstWeight) + (enhanced[second] * secondWeight)) * synergy
+      );
+      
+      // Context can amplify certain emotions
+      if (context.topic && EMOTION_TOPIC_AMPLIFIERS[secondary]?.includes(context.topic)) {
+        enhanced[secondary] = Math.min(1.0, enhanced[secondary] * 1.3); // 30% boost
+      }
+    } else {
+      // If emotions aren't strong enough, the blend is weaker than average
+      enhanced[secondary] = Math.min(1.0, (enhanced[first] + enhanced[second]) / 3);
+    }
   }
   
-  // Calculate tertiary emotions
+  // Calculate tertiary emotions with weighted blending and complexity factors
   for (const [tertiary, primaries] of Object.entries(EMOTION_CATEGORIES.TERTIARY)) {
     const [first, second, third] = primaries;
-    enhanced[tertiary] = Math.min(1.0, (emotionalState[first] + emotionalState[second] + emotionalState[third]) / 3);
+    
+    // Count how many emotions are above threshold
+    const activeEmotions = [first, second, third].filter(e => enhanced[e] > activationThreshold).length;
+    
+    if (activeEmotions >= 2) { // Need at least 2 active emotions
+      // Calculate weighted contribution based on emotional complexity
+      const complexityFactor = 1 + (emotionalComplexity * 0.2); // Up to 20% boost for complex states
+      
+      // Weighted average with diminishing returns for very high values
+      const sum = enhanced[first] + enhanced[second] + enhanced[third];
+      const weights = {
+        [first]: Math.pow(enhanced[first], 0.8) / sum,
+        [second]: Math.pow(enhanced[second], 0.8) / sum,
+        [third]: Math.pow(enhanced[third], 0.8) / sum
+      };
+      
+      enhanced[tertiary] = Math.min(1.0, 
+        ((enhanced[first] * weights[first]) + 
+         (enhanced[second] * weights[second]) + 
+         (enhanced[third] * weights[third])) * complexityFactor
+      );
+    } else {
+      // Weaker blend if not enough active emotions
+      enhanced[tertiary] = Math.min(1.0, (enhanced[first] + enhanced[second] + enhanced[third]) / 4);
+    }
   }
   
   return enhanced;
+}
+
+/**
+ * Calculate the emotional complexity of a state.
+ * Higher complexity means more distinct emotions are present simultaneously.
+ * @param {Object} emotionalState - Emotional state to analyze
+ * @returns {number} Complexity score between 0-1
+ */
+function getEmotionalComplexity(emotionalState) {
+  // Count significant emotions (above threshold)
+  const significantThreshold = 0.3;
+  const significantEmotions = EMOTION_CATEGORIES.PRIMARY.filter(
+    emotion => emotionalState[emotion] >= significantThreshold
+  ).length;
+  
+  // Calculate variance between emotion intensities
+  const values = EMOTION_CATEGORIES.PRIMARY.map(emotion => emotionalState[emotion]);
+  const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
+  const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
+  
+  // Normalize complexity score
+  // More significant emotions + higher variance = more complex emotional state
+  const maxSignificant = EMOTION_CATEGORIES.PRIMARY.length;
+  const normalizedCount = significantEmotions / maxSignificant;
+  const normalizedVariance = Math.min(variance * 5, 1); // Scale variance to 0-1 range
+  
+  return (normalizedCount * 0.7) + (normalizedVariance * 0.3); // Weighted combination
 }
 
 /**
@@ -390,14 +509,13 @@ export async function generateEmpatheticResponse(userId, baseResponse, context =
     // Get user's emotional state
     const emotionalState = await getEmotionalState(userId);
     const dominantEmotion = getDominantEmotion(emotionalState);
+    const derivedEmotions = getDerivedEmotions(emotionalState, context);
+    const emotionalComplexity = getEmotionalComplexity(emotionalState);
     
     // If emotional state is neutral, return the base response
     if (dominantEmotion === 'neutral') {
       return baseResponse;
     }
-    
-    // Get derived emotions for more nuanced understanding
-    const derivedEmotions = getDerivedEmotions(emotionalState);
     
     // Empathetic response templates based on emotions
     const empathyTemplates = {

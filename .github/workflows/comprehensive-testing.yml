@@ -1,0 +1,57 @@
+name: ALEJO Comprehensive Testing
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags:
+      - '[MAJOR FEATURE]*'
+      - '[SECURITY FIX]*'
+      - '[PERFORMANCE]*'
+      - '[UX]*'
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  comprehensive-tests:
+    name: Comprehensive Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Lint code
+      run: npm run lint
+      
+    - name: Run tests
+      run: npm test
+      
+    - name: Report test results
+      if: always()
+      uses: dorny/test-reporter@v1
+      with:
+        name: ALEJO Test Results
+        path: vitest-results.json
+        reporter: vitest-json
+    
+    - name: Check browser compatibility
+      run: npx eslint --no-eslintrc --parser-options=ecmaVersion:2022 --rule 'compat/compat:1' ./public/
+      
+    - name: Upload test artifacts
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: |
+          vitest-results.json
+          test-reports/
+          coverage/
