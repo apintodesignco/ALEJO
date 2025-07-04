@@ -1,51 +1,56 @@
-<div align="center">
-  <img src="assets/alejo-logo.png" alt="ALEJO AI" width="250">
-  <h1>ALEJO: Advanced Learning Engine with Judgment Orchestration</h1>
-  <p><strong>The next-generation personalized AI assistant with voice, face, and gesture recognition capabilities</strong></p>
-  <p>
-    <a href="#features">Features</a> •
-    <a href="#demo">Demo</a> •
-    <a href="#installation">Installation</a> •
-    <a href="#usage">Usage</a> •
-    <a href="#contributing">Contributing</a> •
-    <a href="#license">License</a>
-  </p>
-  
-  [![GitHub stars](https://img.shields.io/github/stars/apintodesignco/ALEJO)](https://github.com/apintodesignco/ALEJO/stargazers)
-  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-  [![Build Status](https://github.com/apintodesignco/ALEJO/actions/workflows/alejo-ci-cd.yml/badge.svg)](https://github.com/apintodesignco/ALEJO/actions/workflows/alejo-ci-cd.yml)
-</div>
+# ALEJO: Advanced Learning Engine with Judgment and Observation
 
-# ALEJO AI: Personal AI Assistant with Human-Like Capabilities
+![ALEJO AI](assets/alejo-logo.png)
 
-ALEJO is a cutting-edge AI assistant that combines advanced personalization, voice recognition, facial recognition, and gesture control with a sophisticated reasoning engine. Unlike other AI assistants, ALEJO creates a deeply personalized experience by learning your preferences, communication style, and important relationships while maintaining strict privacy through local processing.
+[![GitHub stars](https://img.shields.io/github/stars/apintodesignco/ALEJO)](https://github.com/apintodesignco/ALEJO/stargazers)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://github.com/apintodesignco/ALEJO/actions/workflows/alejo-ci-cd.yml/badge.svg)](https://github.com/apintodesignco/ALEJO/actions/workflows/alejo-ci-cd.yml)
+
+> **ALEJO is a next-generation cognitive assistant that transforms human-computer interaction through advanced memory systems, multimodal perception, and ethical reasoning—all with uncompromising privacy.**
+
+[Features](#-key-features) • [Installation](#️-installation) • [Usage](#-usage) • [Contributing](#-contributing) • [License](#-license)
+
+## 🌟 What Makes ALEJO Different
+
+ALEJO stands apart from conventional AI assistants through its unique combination of:
+
+- **Sophisticated Memory Architecture** — Maintains rich contextual awareness across conversations through relationship memory, autobiographical timeline, and adaptive prioritization
+
+- **Human-Like Interaction** — Seamlessly integrates voice, vision, and gesture recognition to create natural, intuitive interactions that adapt to your communication style
+
+- **Ethical Reasoning Foundation** — Makes decisions based on verifiable truth foundations with full transparency into reasoning processes and fallacy detection
+
+- **Uncompromising Privacy** — Processes data locally by default with end-to-end encryption, giving you complete control over what information is stored and how it's used
 
 ## 🚀 Key Features
 
 ### Personalized AI Experience
-- **🧠 Advanced Memory Systems** - Remembers your preferences, important people, and past interactions
-- **🗣️ Voice Recognition & Training** - Recognizes your voice and adapts to your speaking style
-- **👤 Facial Recognition** - Recognizes and responds to different users with personalized interactions
-- **👋 Gesture Control System** - Intuitive hands-free interaction through camera-based gesture recognition
+
+- **🧠 Advanced Memory Systems** — Builds relationship memories, autobiographical timelines, and prioritizes information based on your interactions
+- **🗣️ Voice Recognition & Training** — Recognizes your voice and adapts to your unique speaking style over time
+- **👤 Facial Recognition** — Provides personalized interactions through secure, privacy-focused facial recognition
+- **👋 Gesture Control System** — Enables intuitive hands-free interaction through camera-based gesture recognition
 
 ### Cognitive Capabilities
-- **🧮 Reasoning Engine** - Logical consistency validation and transparent reasoning processes
-- **🔍 Truth Core** - Foundation facts database with fallacy detection
-- **📝 Reasoning Tracer** - Full transparency into how conclusions are reached
-- **📚 Memory Preservation** - Optional memorial mode to respectfully preserve memories of loved ones
+
+- **🧮 Reasoning Engine** — Validates logical consistency and provides transparent reasoning processes
+- **🔍 Truth Foundation** — Maintains a core database of verifiable facts with built-in fallacy detection
+- **📝 Reasoning Tracer** — Offers full transparency into how conclusions are reached
+- **📚 Memory Preservation** — Features an optional memorial mode to respectfully preserve memories of loved ones
 
 ### Security & Privacy
-- **🔒 Local Processing** - All data stays on your device by default
-- **🛡️ Privacy Guard** - End-to-end encryption for all sensitive data
-- **✅ Consent Manager** - Granular control over what data is collected and how it's used
-- **📊 Audit Trail** - Complete transparency into all system actions
+
+- **🔒 Local Processing** — Keeps all data on your device by default
+- **🛡️ Privacy Guard** — Implements end-to-end encryption for all sensitive data
+- **✅ Consent Manager** — Provides granular control over data collection and usage
+- **📊 Audit Trail** — Maintains complete transparency into all system actions
 
 ## 🛠️ Installation
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/apintodesignco/ALEJO.git
+   git clone <https://github.com/apintodesignco/ALEJO.git>
    cd ALEJO
    ```
 
@@ -93,7 +98,7 @@ print(response)
 python -m alejo.serve
 ```
 
-Then open your browser to http://localhost:8000 to access the ALEJO web interface.
+Then open your browser to <http://localhost:8000> to access the ALEJO web interface.
 
 ## 🔍 Use Cases
 
@@ -147,23 +152,21 @@ Our upcoming features include:
 
 ---
 
-<div align="center">
-ALEJO combines cutting-edge AI capabilities with a commitment to accessibility, personalization, and user privacy. Experience the next generation of AI assistance today!
-</div>
-
-
+*ALEJO combines cutting-edge AI capabilities with a commitment to accessibility, personalization, and user privacy. Experience the next generation of AI assistance today!*
 
 1. **[Download ALEJO](https://github.com/apintodesignco/ALEJO/releases/latest)** - Click to download the latest release
 2. **Run the installer** - Double-click the downloaded file to start installation
 3. **Launch ALEJO** - After installation completes, ALEJO will start automatically
 
 The installer will:
+
 - Set up all required dependencies (Python, Redis, Node.js)
 - Configure security settings automatically
 - Install the default Alejo Pinto voice and face
 - Create desktop and start menu shortcuts
 
 **System Requirements:**
+
 - Windows 10/11, macOS 10.15+, or Ubuntu 20.04+
 - 8GB RAM minimum (16GB recommended)
 - 10GB free disk space
@@ -176,10 +179,10 @@ ALEJO is designed as a distributed intelligence system that can learn and evolve
 
 Key aspects of this distributed intelligence:
 
-* **Federated Learning**: ALEJO learns locally on your device, then shares only anonymized insights
-* **Collective Evolution**: The system becomes more helpful through aggregated experiences
-* **Privacy-Preserving**: All learning is opt-in and respects user privacy
-* **Guided Growth**: Core evolution is overseen by Alejandro Pinto and authorized AI systems
+- **Federated Learning**: ALEJO learns locally on your device, then shares only anonymized insights
+- **Collective Evolution**: The system becomes more helpful through aggregated experiences
+- **Privacy-Preserving**: All learning is opt-in and respects user privacy
+- **Guided Growth**: Core evolution is overseen by Alejandro Pinto and authorized AI systems
 
 ## Customization
 
@@ -189,18 +192,17 @@ ALEJO can be customized by users for their own personal use cases and test scena
 
 To create an offline installer, run:
 
-
 ```python
 python installer.py
 ```
 
 This will package the entire project into a zip file for offline installation. - Advanced Language and Execution Joint Operator
-
 ALEJO is a modern AI assistant that combines the power of natural language processing, voice interaction, and a web-based interface to provide a seamless user experience. ALEJO is designed as a comprehensive AI system with advanced features and capabilities.
 
 ## Features
 
 ### Built-in Accessibility
+
 Alejo delivers every response twice: on-screen text and synthesized voice. If voice is enabled but a microphone or speakers are missing, Alejo falls back gracefully and still renders text.
 
 On startup with `--voice` Alejo enumerates available input/output devices (when `sounddevice` or `pyaudio` present) and lets the user pick. A default is selected after 10 s of no answer, ensuring blind users aren’t blocked.
@@ -218,25 +220,24 @@ On startup with `--voice` Alejo enumerates available input/output devices (when 
 
 To install ALEJO, simply run the installer script:
 
-```
+```bash
 python installer.py
 ```
 
 The installer will request administrator privileges and will prompt for full access to your camera and microphone. After granting permission, it will automatically download the latest ALEJO installer package from GitHub releases and install it via pip. Once installed, launch ALEJO microservices using:
 
-```
+```bash
 python run_services.py
-```
 
-For further details, consult the documentation below.
+For further details, consult the [documentation](#documentation).
 
+ALEJO's core infrastructure has been enhanced as follows:
 
-ALEJO’s core infrastructure has been enhanced as follows:
-
-- **EventBus**: A central asynchronous messaging system using Redis Pub/Sub for reliable inter-service communication.
-- **HealthMonitor**: Continuously monitors registered services, auto-deregistering those that are unresponsive to ensure system stability.
-- **ServiceRegistry**: Manages service registration and health updates, providing a single source of truth for service status.
-- **Observability**: A new module that exposes system metrics and health data via an HTTP endpoint (using FastAPI) for real‐time monitoring.
+* **EventBus**: A central asynchronous messaging system using Redis Pub/Sub for reliable inter-service communication.
+* **HealthMonitor**: Continuously monitors registered services, auto-deregistering those that are unresponsive to ensure system stability.
+* **ServiceRegistry**: Manages service registration and health updates, providing a single source of truth for service status.
+* **Observability**: A new module that exposes system metrics and health data via an HTTP endpoint (using FastAPI) for real‐time monitoring.
+{{ ... }}
 - **Brain Integration**: ALEJOBrain (and other microservices) now automatically register themselves with the ServiceRegistry and publish events via the EventBus for coordinated, dynamic service orchestration.
 
 ## System Requirements
@@ -252,7 +253,6 @@ ALEJO’s core infrastructure has been enhanced as follows:
 1. Clone the repository or download the source code
 2. Configure your environment variables (see [Environment Setup](#environment-setup-guide))
 3. Run the PowerShell launcher script:
-
 
 ```powershell
 .\Start-ALEJO.ps1
@@ -280,10 +280,13 @@ This script will:
 - Provide detailed logging for troubleshooting
 
 ## Quick smoke test
+
 After cloning and installing dependencies you can verify an end-to-end baseline (no camera/voice/UI) with:
+
 ```bash
 python scripts/smoke_test.py
 ```
+
 Expect ✔ when all core modules are healthy.
 
 ---
@@ -294,9 +297,9 @@ If you prefer to install manually:
 
 1. Create a virtual environment:
 
-```bash
-python -m venv venv
-```
+   ```bash
+   python -m venv venv
+   ```
 
 2. Activate the virtual environment:
    - Windows: `..\venv\Scripts\activate`
@@ -304,9 +307,9 @@ python -m venv venv
 
 3. Install dependencies:
 
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 4. Run ALEJO:
 
@@ -324,9 +327,9 @@ The `alejo.py` script accepts the following command line options:
 - `--host HOST`: Web interface host (default: 0.0.0.0)
 - `--debug`: Enable debug mode (default: off)
 
-## Web Interface
+## User Interface
 
-The web interface is accessible at `http://localhost:5000` by default. It provides:
+The web interface is accessible at <http://localhost:5000> by default. It provides:
 
 - Chat interface for text-based interaction
 - Vision interface for image analysis
@@ -368,16 +371,19 @@ from alejo.utils.metrics import get_metrics
 from alejo.utils.monitoring import get_monitor
 
 # Decorate functions for automatic error handling
+
 @handle_errors(component='my_component', category='file_operation')
 def process_file(path):
     # Your code here
     pass
 
 # Track performance metrics
+
 metrics = get_metrics()
 metrics.record_recovery_time('my_component', 'file_recovery', 1.5)
 
 # Monitor errors in production
+
 monitor = get_monitor()
 monitor.log_error({
     'component': 'my_component',
@@ -404,7 +410,7 @@ For more details, see the [Error Handling Documentation](alejo/utils/README.md).
 
 ## Directory Structure
 
-```
+```text
 ALEJO/
 ├── alejo.py                # Main entry point
 ├── requirements.txt        # Python dependencies
@@ -453,7 +459,7 @@ ALEJO is being released as a free and accessible tool to help people first and f
 
 - **Stripe**: Sponsorships are available through our GitHub-linked Stripe account
 - **Cash App**: **$apintodesignco**
-- **Direct Contact**: Reach out to Alejandro Pinto at al.pintoemail@gmail.com
+- **Direct Contact**: Reach out to Alejandro Pinto at <al.pintoemail@gmail.com>
 
 Your support helps ensure that ALEJO remains available to those who need it, especially people with disabilities who can benefit from its capabilities. Any contributions beyond what's needed for development are reinvested into making ALEJO better or given back to the community.
 

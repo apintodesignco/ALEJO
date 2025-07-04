@@ -43,7 +43,7 @@ python deploy.py stop
 
    # Emotional Intelligence Service
    docker-compose up emotional_intelligence
-   
+
    # Gesture WebSocket Service
    docker-compose up gesture_websocket
    ```
@@ -60,7 +60,7 @@ The ALEJO gesture system enables intuitive, hands-free interaction through a Web
 
 2. Access the gesture demo interface at:
 
-   [http://localhost:8000/gestures](http://localhost:8000/gestures)
+   <http://localhost:8000/gestures>
 
 3. Configure gesture settings in your environment file:
 
@@ -94,10 +94,10 @@ We've included a comprehensive testing suite for the gesture system to ensure it
    ```bash
    # Unit tests for gesture components
    python -m pytest tests/unit/interaction/test_gesture_websocket.py -v
-   
+
    # Integration tests for the WebSocket handler
    python -m pytest tests/integration/test_gesture_websocket.py -v
-   
+
    # End-to-end tests for the complete gesture system
    python -m pytest tests/e2e/test_gesture_interface.py -v
    ```
@@ -112,54 +112,66 @@ We've included a comprehensive testing suite for the gesture system to ensure it
 
 Access the various ALEJO services at these URLs:
 
-- Main UI: [http://localhost:8000/ui](http://localhost:8000/ui)
-- Gesture Interface: [http://localhost:8000/gestures](http://localhost:8000/gestures)
-- Brain Service API: [http://localhost:8000](http://localhost:8000)
-- Emotional Intelligence API: [http://localhost:8001](http://localhost:8001)
-- Memory Service API: [http://localhost:8002](http://localhost:8002)
-- Command Processor API: [http://localhost:8003](http://localhost:8003)
-- Gesture WebSocket: [ws://localhost:8765](ws://localhost:8765)
+- Main UI: <http://localhost:8000/ui>
+- Gesture Interface: <http://localhost:8000/gestures>
+- Brain Service API: <http://localhost:8000>
+- Emotional Intelligence API: <http://localhost:8001>
+- Memory Service API: <http://localhost:8002>
+- Command Processor API: <http://localhost:8003>
+- Gesture WebSocket: <ws://localhost:8765>
 
 ## Health Checks
+
 Both services expose health endpoints:
-- Brain Service: http://localhost:8000/health
-- Emotional Intelligence Service: http://localhost:8001/health
+
+- Brain Service: <http://localhost:8000/health>
+- Emotional Intelligence Service: <http://localhost:8001/health>
 
 ## Metrics
+
 Monitor service performance at:
-- Brain Service: http://localhost:8000/metrics
-- Emotional Intelligence Service: http://localhost:8001/metrics
+
+- Brain Service: <http://localhost:8000/metrics>
+- Emotional Intelligence Service: <http://localhost:8001/metrics>
 
 ## Container Structure
+
 - `Dockerfile.brain`: Brain service container
 - `Dockerfile.emotional`: Emotional Intelligence service container
 - `docker-compose.yml`: Service orchestration
 
 ## Service Dependencies
-```
+
+```text
 Redis
   ├── Brain Service
   └── Emotional Intelligence Service
 ```
 
 ## Volume Management
+
 - `redis_data`: Redis persistence
 - `emotional_data`: Emotional Intelligence data
 - `memory_data`: Memory service data
 
 ## Scaling
+
 To scale services horizontally:
+
 ```bash
 docker-compose up --scale brain=2 --scale emotional_intelligence=2
 ```
 
 ## Monitoring
+
 1. Service Health:
+
    ```bash
    docker-compose ps
    ```
 
 2. Logs:
+
    ```bash
    # All services
    docker-compose logs -f
@@ -170,26 +182,32 @@ docker-compose up --scale brain=2 --scale emotional_intelligence=2
    ```
 
 ## Troubleshooting
+
 1. If services fail to start:
+
    ```bash
    docker-compose down
    docker-compose up --build
    ```
 
 2. To reset data:
+
    ```bash
    docker-compose down -v
    docker-compose up --build
    ```
 
 3. Check container status:
+
    ```bash
    docker ps
    docker inspect <container_id>
    ```
 
 ## Production Deployment
+
 For production deployment:
+
 1. Use proper SSL/TLS certificates
 2. Configure proper authentication
 3. Set up monitoring (e.g., Prometheus + Grafana)

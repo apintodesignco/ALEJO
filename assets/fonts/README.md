@@ -12,8 +12,8 @@ After downloading, rename the font file to `tech_font.ttf` and place it in this 
 
 ## Font Sources
 
-- Google Fonts: https://fonts.google.com/
-- Font Squirrel: https://www.fontsquirrel.com/
-- DaFont: https://www.dafont.com/
+- Google Fonts: <https://fonts.google.com/>
+- Font Squirrel: <https://www.fontsquirrel.com/>
+- DaFont: <https://www.dafont.com/>
 
 Make sure to check the license of any font you download to ensure it can be used in your project.

@@ -411,8 +411,27 @@ function detectComplexFallacies(sentences, normalizedSentences, detected, fallac
   
   // Detect post hoc fallacy
   detectPostHoc(sentences, normalizedSentences, detected, fallacyInstances, confidenceThreshold);
+  
+  // Enhanced detection methods
+  detectAppealToEmotion(sentences, normalizedSentences, detected, fallacyInstances, confidenceThreshold);
+  detectFalseCause(sentences, normalizedSentences, detected, fallacyInstances, confidenceThreshold);
+  detectMovingGoalposts(sentences, normalizedSentences, detected, fallacyInstances, confidenceThreshold);
+  detectNoTrueScotsman(sentences, normalizedSentences, detected, fallacyInstances, confidenceThreshold);
+  
+  // Advanced analysis of argument structure
+  analyzeArgumentStructure(sentences, normalizedSentences, detected, confidenceThreshold);
+  
+  // Publish events for complex fallacy detection
+  if (detected.length > 0) {
+    publish('reasoning:complex-fallacies-detected', {
+      fallacyCount: detected.length,
+      complexFallacies: detected.filter(f => f.isComplex),
+      timestamp: new Date().toISOString(),
+      confidenceScores: detected.map(f => f.confidence),
+      argumentStructureAnalysis: detected.some(f => f.structuralAnalysis)
+    });
+  }
 }
-
 /**
  * Detect false dichotomy fallacies across sentences.
  * @private
