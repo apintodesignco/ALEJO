@@ -35,7 +35,7 @@ This document outlines a neuromorphic architecture for ALEJO inspired by the hum
 
 ### 1. Dual Processing Architecture
 
-```text
+```ascii
 ┌─────────────────────────────────────────────────────────┐
 │                  ALEJO Neural Core                      │
 │                                                         │
@@ -62,7 +62,7 @@ This document outlines a neuromorphic architecture for ALEJO inspired by the hum
 │        │                                      │         │
 │        └─────────────────────────────────────┘         │
 └─────────────────────────────────────────────────────────┘
-```text
+```
 
 ### 2. Left Hemisphere Module Components
 

@@ -10,7 +10,7 @@ Before running the services, ensure you have the necessary dependencies installe
 
 ```bash
 pip install fastapi uvicorn requests
-```text
+```
 
 ## Available Services
 
@@ -24,28 +24,22 @@ ALEJO currently has two primary microservices:
 You can run each service independently using the following commands from the project root directory:
 
 ```bash
-
 # Run Brain Service (default port 8000)
-
 python alejo/services/brain_service.py
 
 # Run Emotional Intelligence Service (default port 8001)
-
 python alejo/services/emotional_intelligence_service.py
-```text
+```
 
 To specify custom host or port values:
 
 ```bash
-
 # Run Brain Service on a custom port
-
 python alejo/services/brain_service.py --host 0.0.0.0 --port 9000
 
 # Run Emotional Intelligence Service on a custom port
-
 python alejo/services/emotional_intelligence_service.py --host 0.0.0.0 --port 9001
-```text
+```
 
 ## Running All Services at Once
 
@@ -53,7 +47,7 @@ For convenience during development, you can use the `run_services.py` script to 
 
 ```bash
 python run_services.py
-```text
+```
 
 This script starts each service in a separate process and monitors their output. Use Ctrl+C to stop all services gracefully.
 
@@ -61,8 +55,8 @@ This script starts each service in a separate process and monitors their output.
 
 Once the services are started, you can verify they are running by accessing their API endpoints:
 
-- Brain Service: `<http://localhost:8000/docs`> (Swagger UI for API documentation)
-- Emotional Intelligence Service: `<http://localhost:8001/docs`> (Swagger UI for API documentation)
+- Brain Service: `http://localhost:8000/docs` (Swagger UI for API documentation)
+- Emotional Intelligence Service: `http://localhost:8001/docs` (Swagger UI for API documentation)
 
 Alternatively, use a tool like `curl` or Postman to send test requests to the services.
 

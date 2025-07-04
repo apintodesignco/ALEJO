@@ -29,34 +29,34 @@
 ```bash
 istioctl install --set profile=demo -y
 kubectl label namespace alejo istio-injection=enabled
-```text
+```
 
-2. Create monitoring namespace:
+1. Create monitoring namespace:
 
 ```bash
 kubectl create namespace monitoring
-```text
+```
 
-3. Deploy Prometheus:
+1. Deploy Prometheus:
 
 ```bash
 kubectl apply -f monitoring/prometheus-config.yaml
 kubectl apply -f monitoring/prometheus.yaml
-```text
+```
 
-4. Deploy Grafana:
+1. Deploy Grafana:
 
 ```bash
 kubectl apply -f monitoring/grafana.yaml
 kubectl apply -f monitoring/grafana-dashboards.yaml
-```text
+```
 
-5. Apply Istio configurations:
+1. Apply Istio configurations:
 
 ```bash
 kubectl apply -f istio/gateway.yaml
 kubectl apply -f istio/policies.yaml
-```text
+```
 
 ## Dashboards
 
@@ -81,19 +81,19 @@ kubectl apply -f istio/policies.yaml
 
 ```bash
 kubectl port-forward svc/grafana 3000:3000 -n monitoring
-```text
+```
 
-2. Access Prometheus:
+1. Access Prometheus:
 
 ```bash
 kubectl port-forward svc/prometheus 9090:9090 -n monitoring
-```text
+```
 
-3. View service mesh metrics:
+1. View service mesh metrics:
 
 ```bash
 istioctl dashboard kiali
-```text
+```
 
 ## Alerts
 

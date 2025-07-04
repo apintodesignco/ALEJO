@@ -14,7 +14,6 @@ The overall priority score is calculated using the formula:
 Priority Score = (Impact * 0.5) + (Urgency * 0.3) + ((6 - Complexity) * 0.2)
 ```text
 
-
 Higher scores indicate higher priority. This framework helps us focus on high-impact, urgent items that are relatively less complex to implement first.
 
 ## Optimization Items by Priority

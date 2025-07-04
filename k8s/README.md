@@ -23,43 +23,40 @@ ALEJO runs as a set of microservices in Kubernetes:
 
 ```bash
 kubectl apply -f namespace.yaml
-```text
+```
 
-2. Create ConfigMap and Secrets:
+1. Create ConfigMap and Secrets:
 
 ```bash
-
 # Create ConfigMap
-
 kubectl apply -f configmap.yaml
 
 # Create secrets (replace placeholders first)
-
 kubectl create secret generic alejo-secrets \
   --from-literal=OPENAI_API_KEY='your-api-key' \
   --from-literal=DB_PASSWORD='your-db-password' \
   --from-literal=JWT_SECRET='your-jwt-secret' \
   -n alejo
-```text
+```
 
-3. Deploy Redis:
+1. Deploy Redis:
 
 ```bash
 kubectl apply -f redis.yaml
-```text
+```
 
-4. Deploy services:
+1. Deploy services:
 
 ```bash
 kubectl apply -f brain-service.yaml
 kubectl apply -f emotional-service.yaml
-```text
+```
 
-5. Configure ingress:
+1. Configure ingress:
 
 ```bash
 kubectl apply -f ingress.yaml
-```text
+```
 
 ## Monitoring
 
@@ -67,32 +64,29 @@ kubectl apply -f ingress.yaml
 
 ```bash
 kubectl get deployments -n alejo
-```text
+```
 
-2. Check pods:
+1. Check pods:
 
 ```bash
 kubectl get pods -n alejo
-```text
+```
 
-3. Check services:
+1. Check services:
 
 ```bash
 kubectl get services -n alejo
-```text
+```
 
-4. View logs:
+1. View logs:
 
 ```bash
-
 # Brain Service logs
-
 kubectl logs -f deployment/brain-service -n alejo
 
 # Emotional Service logs
-
 kubectl logs -f deployment/emotional-service -n alejo
-```text
+```
 
 ## Scaling
 

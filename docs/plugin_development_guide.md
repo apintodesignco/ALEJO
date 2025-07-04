@@ -66,7 +66,7 @@ class ExamplePlugin:
         """
         # Plugin implementation
         return result
-```text
+```
 
 ## Plugin Metadata
 

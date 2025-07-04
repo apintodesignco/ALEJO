@@ -36,7 +36,7 @@ python update_manager.py --check-only
 # Force update check regardless of when the last check occurred
 
 python update_manager.py --force
-```text
+```
 
 ## Configuration
 
@@ -75,4 +75,4 @@ Before making changes, run the test suite to ensure everything works correctly:
 
 ```bash
 python -m unittest test_update_manager.py
-```text
+```

@@ -17,7 +17,7 @@ Ensure you have the required dependencies installed:
 
 ```bash
 pip install -r requirements-full.txt
-```text
+```
 
 The browser testing modules require Selenium WebDriver executables for each browser you want to test with. Make sure the WebDriver executables are in your system PATH or specify their locations in your configuration.
 
@@ -29,25 +29,21 @@ The `BrowserDetector` class provides cross-platform browser detection capabiliti
 from alejo.testing.browser_detection import BrowserDetector
 
 # Create detector
-
 detector = BrowserDetector()
 
 # Detect installed browsers
-
 browsers = detector.detect_browsers()
 print(f"Detected browsers: {list(browsers.keys())}")
 
 # Get detailed browser information
-
 browser_info = detector.get_browser_info()
 for browser, info in browser_info.items():
     print(f"{browser}: {info['version']} at {info['path']}")
     print(f"WebDriver: {info['webdriver_path']}")
 
 # Print formatted browser information
-
 detector.print_browser_info()
-```text
+```
 
 ## Browser Compatibility Testing
 
@@ -57,7 +53,6 @@ The `BrowserCompatibilityTester` class provides functionality to test web applic
 from alejo.testing.browser_testing import BrowserCompatibilityTester
 
 # Create configuration
-
 config = {
     "headless": True,      # Run browsers in headless mode
     "timeout": 30,         # Page load timeout in seconds
@@ -66,26 +61,22 @@ config = {
 }
 
 # Create tester
-
 tester = BrowserCompatibilityTester(config)
 
 # Run tests on a URL with specific browsers
-
-url = "<https://example.com">
+url = "https://example.com"
 browsers = ["chrome", "firefox"]  # Leave empty to use all detected browsers
 test_name = "example_test"
 
 results = tester.run_tests(url, browsers, test_name)
 
 # Print test summary
-
 tester.print_test_summary(test_name)
 
 # Compare two test runs
-
 comparison = tester.compare_test_results("test1", "test2")
 tester.print_comparison_summary(comparison)
-```text
+```
 
 ## Browser Test Runner
 
@@ -143,8 +134,8 @@ results = runner.run_scenario_tests(scenarios)
 
 # Run regression tests comparing baseline and test URLs
 
-baseline_url = "<https://example.com">
-test_url = "<https://staging.example.com">
+baseline_url = "https://example.com"
+test_url = "https://staging.example.com"
 results = runner.run_regression_tests(baseline_url, test_url, browsers)
 ```text
 

@@ -8,7 +8,7 @@ This document outlines the architecture, security measures, and ethical guidelin
 
 ### 1. Multi-Layered Security Architecture
 
-```text
+```ascii
 ┌─────────────────────────────────────────────────────────┐
 │                  ALEJO Core System                      │
 │  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐   │
@@ -17,7 +17,7 @@ This document outlines the architecture, security measures, and ethical guidelin
 │  └─────────────┘   └─────────────┘   └─────────────┘   │
 │          ▲                ▲                 ▲          │
 └──────────┼────────────────┼─────────────────┼──────────┘
-           │                │                 │
+            │                │                 │
 ┌──────────┼────────────────┼─────────────────┼──────────┐
 │          │                │                 │          │
 │  ┌───────▼──────┐  ┌──────▼───────┐  ┌─────▼───────┐  │
@@ -27,7 +27,7 @@ This document outlines the architecture, security measures, and ethical guidelin
 │  └──────────────┘  └──────────────┘  └─────────────┘  │
 │                                                       │
 └───────────────────────────────────────────────────────┘
-           │                │                 │
+            │                │                 │
 ┌──────────┼────────────────┼─────────────────┼──────────┐
 │          ▼                ▼                 ▼          │
 │  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐  │
@@ -37,7 +37,7 @@ This document outlines the architecture, security measures, and ethical guidelin
 │                                                       │
 │                  Robot Hardware Layer                 │
 └───────────────────────────────────────────────────────┘
-```text
+```
 
 ### 2. Perception System
 
@@ -119,21 +119,21 @@ This document outlines the architecture, security measures, and ethical guidelin
 
 ### 1. Boston Dynamics-Style Robots
 
-#### Capabilities
+#### Boston Dynamics Robot Capabilities
 
 - **Dynamic Movement**: Advanced locomotion on varied terrain
 - **Object Manipulation**: Precise grasping and manipulation of objects
 - **Environmental Interaction**: Safe navigation and interaction in human environments
 - **Task Automation**: Autonomous completion of physical tasks
 
-#### Integration Architecture
+#### Boston Dynamics Integration Architecture
 
 - **Low-Level Control Interface**: Direct integration with robot's control systems
 - **Sensor Data Processing**: Real-time processing of robot's sensor array
 - **Motion Planning**: Advanced pathfinding and movement optimization
 - **Task Planning**: Breaking down complex tasks into executable actions
 
-#### Safety Features
+#### Boston Dynamics Safety Features
 
 - **Balance Preservation**: Preventing dangerous falls or collisions
 - **Force Limitation**: Adaptive force control to prevent harm
@@ -142,21 +142,21 @@ This document outlines the architecture, security measures, and ethical guidelin
 
 ### 2. Autonomous Vehicles
 
-#### Capabilities
+#### Autonomous Vehicle Capabilities
 
 - **Advanced Navigation**: GPS-independent navigation using visual landmarks
 - **Traffic Interaction**: Safe interaction with other vehicles and pedestrians
 - **Passenger Interaction**: Natural language interface for passengers
 - **Predictive Driving**: Anticipating road conditions and other drivers' actions
 
-#### Integration Architecture
+#### Autonomous Vehicle Integration Architecture
 
 - **Sensor Fusion System**: Combining data from cameras, radar, LiDAR, and ultrasonic sensors
 - **Decision Making System**: Multi-layered decision system for driving actions
 - **Vehicle Control Interface**: Secure interface with steering, acceleration, and braking systems
 - **Communication System**: V2X (Vehicle-to-Everything) communication capabilities
 
-#### Safety Features
+#### Autonomous Vehicle Safety Features
 
 - **Defensive Driving Logic**: Always prioritizing safety over speed or convenience
 - **Redundant Systems**: Multiple backup systems for critical functions
@@ -165,21 +165,21 @@ This document outlines the architecture, security measures, and ethical guidelin
 
 ### 3. Industrial Robotics
 
-#### Capabilities
+#### Industrial Robotics Capabilities
 
 - **Precision Manufacturing**: High-precision assembly and fabrication
 - **Collaborative Operation**: Safe collaboration with human workers
 - **Adaptive Production**: Adjusting to variations in materials and conditions
 - **Quality Control**: Real-time inspection and verification
 
-#### Integration Architecture
+#### Industrial Robotics Integration Architecture
 
 - **Production System Interface**: Integration with manufacturing execution systems
 - **Tool Control System**: Precise control of end effectors and tools
 - **Workflow Management**: Coordination with overall production processes
 - **Human Collaboration Interface**: Systems for safe human-robot collaboration
 
-#### Safety Features
+#### Industrial Robotics Safety Features
 
 - **Work Zone Monitoring**: Constant monitoring of shared workspaces
 - **Force and Speed Limitation**: Adaptive limits based on proximity to humans

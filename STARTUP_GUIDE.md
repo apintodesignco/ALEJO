@@ -23,7 +23,7 @@ For more control, you can use the PowerShell script:
 
 ```powershell
 .\Start-ALEJO.ps1
-```text
+```
 
 This script provides the same functionality as the batch file but with more detailed output and error handling.
 
@@ -31,7 +31,7 @@ This script provides the same functionality as the batch file but with more deta
 
 ALEJO can be started using voice commands:
 
-#### Using Windows Speech Recognition:
+#### Using Windows Speech Recognition
 
 1. Run the `enable_voice_commands.reg` file once to register ALEJO with Windows Speech Recognition
 2. Start Windows Speech Recognition (Win+H or search for "Speech Recognition")
@@ -41,7 +41,7 @@ ALEJO can be started using voice commands:
    - "Start ALEJO"
    - "Hello ALEJO"
 
-#### Using ALEJO's Built-in Voice Recognition:
+#### Using ALEJO's Built-in Voice Recognition
 
 1. Run `wake_alejo.py` to start the background listener
 2. Say "Wake up, ALEJO" or any configured wake phrase
@@ -70,7 +70,7 @@ For maximum control, you can start ALEJO directly from the command line:
 
 ```bash
 python run_alejo_optimized.py [options]
-```text
+```
 
 Available options:
 
@@ -102,7 +102,7 @@ The startup sound is generated using `assets/create_startup_sound.py`. You can c
 
 ```bash
 python assets/create_startup_sound.py --duration 6.0
-```text
+```
 
 ### Changing the Icon
 

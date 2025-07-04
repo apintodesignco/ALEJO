@@ -94,7 +94,7 @@ python start_gesture_system.py --port 8000 --ws-port 8765
 # Start without opening browser automatically
 
 python start_gesture_system.py --no-browser
-```text
+```
 
 ### Docker Deployment
 
