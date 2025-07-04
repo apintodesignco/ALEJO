@@ -520,3 +520,117 @@ class RelationshipMemory:
             to_remove = sorted_entries[:len(self._summary_cache) - self._cache_max_size]
             for key, _ in to_remove:
                 del self._summary_cache[key]
+                
+    async def get_relationship_context(self, user_id: str, entity_id: str) -> Dict[str, Any]:
+        """Get relationship context for an entity to inform preference adjustments.
+        
+        This function is used by the JavaScript preference system to adjust preference
+        strength based on relationship context.
+        
+        Args:
+            user_id: ID of the user
+            entity_id: ID of the entity
+            
+        Returns:
+            Dictionary with relationship context information
+        """
+        try:
+            # Get entity information
+            entity = self.entity_graph.get_entity(entity_id)
+            if not entity:
+                logger.warning(f"Entity not found: {entity_id}")
+                return {}
+                
+            # Get relationship information
+            relationships = self.entity_graph.get_relationships(target_id=entity_id)
+            if not relationships:
+                logger.info(f"No relationship found for entity: {entity_id}")
+                return {
+                    "entity_id": entity_id,
+                    "entity_type": entity.entity_type.value if entity else "unknown",
+                    "name": entity.name if entity else "unknown",
+                    "strength": 0.0,
+                    "sentiment": 0.0
+                }
+                
+            # Get primary relationship
+            relationship = relationships[0]
+            
+            # Get relationship attributes
+            attributes = relationship.get("attributes", {})
+            sentiment_history = attributes.get("sentiment_history", [])
+            last_interaction = attributes.get("last_interaction")
+            
+            # Calculate average sentiment
+            avg_sentiment = sum(sentiment_history) / len(sentiment_history) if sentiment_history else 0.0
+            
+            # Get interaction patterns
+            patterns = await self.find_relationship_patterns(entity_id)
+            
+            # Create context object
+            context = {
+                "entity_id": entity_id,
+                "entity_type": entity.entity_type.value if entity else "unknown",
+                "name": entity.name if entity else "unknown",
+                "strength": relationship.get("strength", 0.0),
+                "sentiment": avg_sentiment,
+                "last_interaction": last_interaction,
+                "interaction_patterns": [{
+                    "type": p["type"],
+                    "value": p["value"],
+                    "frequency": p["confidence"]
+                } for p in patterns.get("patterns", [])]
+            }
+            
+            return context
+        except Exception as e:
+            logger.error(f"Error getting relationship context: {str(e)}")
+            return {}
+            
+    async def record_preference_interaction(
+        self,
+        user_id: str,
+        entity_id: str,
+        interaction_type: str,
+        content: str,
+        sentiment: float = 0.0,
+        importance: float = 0.5,
+        context: Dict[str, Any] = None
+    ) -> str:
+        """Record a preference-related interaction with an entity.
+        
+        This function is called from the JavaScript preference system when a preference
+        is observed that relates to a specific entity.
+        
+        Args:
+            user_id: ID of the user
+            entity_id: ID of the entity
+            interaction_type: Type of interaction (e.g., 'preference_update')
+            content: Content of the interaction
+            sentiment: Sentiment score (-1.0 to 1.0)
+            importance: Importance of this interaction (0.0 to 1.0)
+            context: Additional context for this interaction
+            
+        Returns:
+            ID of the created memory
+        """
+        try:
+            # Convert interaction type to enum
+            interaction_enum = InteractionType.CUSTOM
+            if hasattr(InteractionType, interaction_type.upper()):
+                interaction_enum = getattr(InteractionType, interaction_type.upper())
+                
+            # Record the interaction using the existing method
+            memory_id = await self.record_interaction(
+                entity_id=entity_id,
+                interaction_type=interaction_enum,
+                content=content,
+                sentiment=sentiment,
+                importance=importance,
+                context=context
+            )
+            
+            return memory_id
+        except Exception as e:
+            logger.error(f"Error recording preference interaction: {str(e)}")
+            return None

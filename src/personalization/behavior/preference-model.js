@@ -33,7 +33,11 @@ const PREFERENCE_CATEGORIES = {
   PRIVACY: 'privacy',           // Privacy settings
   SCHEDULING: 'scheduling',     // Time and scheduling preferences
   LANGUAGE: 'language',         // Language and communication preferences
-  ACCESSIBILITY: 'accessibility' // Accessibility needs
+  ACCESSIBILITY: 'accessibility', // Accessibility needs
+  COGNITIVE: 'cognitive',       // Cognitive processing preferences
+  EMOTIONAL: 'emotional',       // Emotional tone preferences
+  SOCIAL: 'social',             // Social interaction preferences
+  LEARNING: 'learning'          // Learning style preferences
 };
 
 // Preference confidence levels
@@ -42,6 +46,23 @@ const CONFIDENCE_LEVELS = {
   OBSERVED: 0.6,    // Observed multiple times
   CONFIRMED: 0.9,   // Explicitly confirmed by user
   EXPLICIT: 1.0     // Explicitly set by user
+};
+
+// Preference decay rates - how quickly preferences become less relevant over time
+const DECAY_RATES = {
+  FAST: 0.05,       // Decays quickly (e.g., temporary preferences)
+  STANDARD: 0.02,   // Normal decay rate
+  SLOW: 0.01,       // Decays slowly (e.g., fundamental preferences)
+  PERSISTENT: 0.005 // Very slow decay (e.g., core values)
+};
+
+// Context factors for preference strength adjustment
+const CONTEXT_FACTORS = {
+  TIME_OF_DAY: 1.2,    // Time-relevant preferences get boosted
+  EMOTIONAL: 0.9,      // Emotional state can affect preference strength
+  LOCATION: 1.1,       // Location context can boost relevant preferences
+  SOCIAL: 1.15,        // Social context can affect preferences
+  ACTIVITY: 1.2        // Activity context can boost relevant preferences
 };
 
 // In-memory cache of user preferences
@@ -189,90 +210,109 @@ export async function setPreference(userId, key, value, category = PREFERENCE_CA
 }
 
 /**
- * Observe a potential user preference from interaction.
+ * Observe a user preference and update the model.
  * @param {string} userId - User identifier
  * @param {string} key - Preference key
- * @param {*} value - Observed preference value
+ * @param {*} value - Preference value
  * @param {string} category - Preference category
- * @param {string} source - Source of observation
+ * @param {string} source - Source of the preference observation
+ * @param {number} strength - Strength of the preference (0.0 to 1.0)
+ * @param {number} decayRate - Rate at which this preference decays over time
+ * @param {Object} context - Additional context for the preference observation
  * @returns {Promise<boolean>} Success status
  */
-export async function observePreference(userId, key, value, category = PREFERENCE_CATEGORIES.CONTENT, source = 'interaction') {
+export async function observePreference(userId, key, value, category = PREFERENCE_CATEGORIES.CONTENT, source = 'interaction', strength = 0.5, decayRate = DECAY_RATES.STANDARD, context = {}) {
   try {
+    // Get current preference model
     const model = await getPreferenceModel(userId);
-    const timestamp = Date.now();
-    const existingPref = model.preferences[key];
     
-    // If preference doesn't exist, create it
-    if (!existingPref) {
-      model.preferences[key] = {
-        value,
-        confidence: CONFIDENCE_LEVELS.INFERRED,
-        category,
-        firstObserved: timestamp,
-        lastUpdated: timestamp,
-        source,
-        occurrences: 1
-      };
-    } 
-    // If preference exists but value is different, update based on confidence
-    else if (JSON.stringify(existingPref.value) !== JSON.stringify(value)) {
-      // Only update if existing preference isn't explicit or confirmed
-      if (existingPref.confidence < CONFIDENCE_LEVELS.CONFIRMED) {
-        // If observed multiple times, increase confidence
-        const newConfidence = existingPref.occurrences >= 3 ? 
-                             CONFIDENCE_LEVELS.OBSERVED : 
-                             CONFIDENCE_LEVELS.INFERRED;
-        
-        model.preferences[key] = {
-          value,
-          confidence: newConfidence,
-          category: existingPref.category,
-          firstObserved: existingPref.firstObserved,
-          lastUpdated: timestamp,
-          source,
-          occurrences: existingPref.occurrences + 1
-        };
-      }
-    } 
-    // If preference exists with same value, increase confidence
-    else {
-      const occurrences = existingPref.occurrences + 1;
-      let newConfidence = existingPref.confidence;
-      
-      // Increase confidence with more observations
-      if (occurrences >= 5 && newConfidence < CONFIDENCE_LEVELS.OBSERVED) {
-        newConfidence = CONFIDENCE_LEVELS.OBSERVED;
-      }
-      
-      model.preferences[key] = {
-        ...existingPref,
-        lastUpdated: timestamp,
-        occurrences,
-        confidence: newConfidence
-      };
+    // Initialize category if needed
+    if (!model.preferences[category]) {
+      model.preferences[category] = {};
     }
     
-    model.lastUpdated = timestamp;
-    model.version += 1;
+    const now = Date.now();
+    const preference = model.preferences[category][key] || {
+      value: null,
+      confidence: CONFIDENCE_LEVELS.LOW,
+      observations: 0,
+      firstObserved: now,
+      lastObserved: now,
+      lastUpdated: now,
+      strength: 0,
+      decayRate: DECAY_RATES.STANDARD
+    };
+    
+    // Apply temporal decay to existing preference strength if it exists
+    if (preference.value !== null) {
+      const timeSinceLastUpdate = now - preference.lastUpdated;
+      const decayFactor = Math.exp(-preference.decayRate * (timeSinceLastUpdate / (1000 * 60 * 60 * 24))); // Convert to days
+      preference.strength *= decayFactor;
+    }
+    
+    // If we have relationship context, adjust preference strength
+    if (context.entityId) {
+      try {
+        // Import the relationship integration module
+        const { adjustPreferenceByRelationship, updateRelationshipFromPreference } = await import('./preference-relationship-integration.js');
+        
+        // Adjust strength based on relationship context
+        const relationshipAdjustedStrength = await adjustPreferenceByRelationship(userId, context.entityId, strength);
+        strength = relationshipAdjustedStrength;
+        
+        // Update relationship memory with this preference
+        await updateRelationshipFromPreference(userId, context.entityId, key, value, strength);
+      } catch (err) {
+        console.warn('Failed to integrate with relationship memory:', err);
+        // Continue with original strength if relationship integration fails
+      }
+    }
+    
+    // Update preference with new observation
+    preference.observations += 1;
+    preference.lastObserved = now;
+    preference.lastUpdated = now;
+    
+    // Store context snapshot with this preference if provided
+    if (Object.keys(context).length > 0) {
+      preference.contextSnapshot = { ...context, timestamp: now };
+    }
+    
+    // Update value and strength conservatively based on confidence and new strength
+    if (preference.value === null || strength > preference.strength) {
+      preference.value = value;
+      preference.strength = Math.min(1.0, preference.strength + (strength * 0.5)); // Conservative update
+    }
+    
+    // Update confidence based on observations and strength
+    if (preference.observations >= 3 && preference.strength >= 0.6) {
+      preference.confidence = CONFIDENCE_LEVELS.OBSERVED;
+    } else if (preference.observations >= 1) {
+      preference.confidence = CONFIDENCE_LEVELS.INFERRED;
+    }
+    
+    // Save the updated preference
+    model.preferences[category][key] = preference;
+    
+    // Update model metadata
+    model.lastUpdated = now;
+    model.version = (model.version || 0) + 1;
     
     // Save updated model
-    userPreferences.set(userId, model);
     await savePreferenceModel(userId, model);
     
-    // Record in history if confidence changed
-    if (!existingPref || existingPref.confidence !== model.preferences[key].confidence) {
-      await recordPreferenceChange(userId, key, value, source, category);
-    }
+    // Record preference change in history
+    await recordPreferenceChange(userId, key, value, source, category, strength);
     
-    // Only publish event if confidence is sufficient
-    if (model.preferences[key].confidence >= CONFIDENCE_LEVELS.OBSERVED) {
+    // Publish event if confidence is sufficient
+    if (preference.confidence >= CONFIDENCE_LEVELS.OBSERVED) {
       publish('user:preference:observed', {
         userId,
         key,
         value,
         category,
-        confidence: model.preferences[key].confidence,
+        confidence: preference.confidence,
+        strength: preference.strength,
         source
       });
     }
@@ -552,96 +592,281 @@ export async function initialize() {
 }
 
 /**
- * Detect preferences from user message content.
+ * Detect preferences from user message content using advanced NLP patterns and contextual analysis.
  * @param {string} userId - User identifier
  * @param {string} message - User message
- * @param {Object} context - Message context
+ * @param {Object} context - Message context including time, emotional state, etc.
  * @returns {Promise<boolean>} Success status
  */
-async function detectPreferencesFromMessage(userId, message, context) {
+async function detectPreferencesFromMessage(userId, message, context = {}) {
   try {
-    // Simple preference detection patterns
+    // Enhanced preference detection patterns with more nuanced understanding
     const patterns = [
-      // Content preferences
+      // Content preferences - explicit statements with sentiment analysis
       {
-        regex: /I (like|love|enjoy|prefer) ([\w\s]+)/i,
+        regex: /I (like|love|enjoy|prefer|am interested in|am fond of) ([\w\s\-,']+)/i,
         handler: (match) => {
+          const sentiment = getPreferenceSentiment(match[1]);
           const topic = match[2].trim().toLowerCase();
           return {
             key: `content:liked:${topic}`,
             value: true,
-            category: PREFERENCE_CATEGORIES.CONTENT
+            strength: sentiment,
+            category: PREFERENCE_CATEGORIES.CONTENT,
+            decayRate: DECAY_RATES.STANDARD
           };
         }
       },
       {
-        regex: /I (dislike|hate|don't like|do not like) ([\w\s]+)/i,
+        regex: /I (dislike|hate|don't like|do not like|can't stand|cannot stand|am not interested in) ([\w\s\-,']+)/i,
         handler: (match) => {
+          const sentiment = getPreferenceSentiment(match[1], true);
           const topic = match[2].trim().toLowerCase();
           return {
             key: `content:disliked:${topic}`,
             value: true,
-            category: PREFERENCE_CATEGORIES.CONTENT
+            strength: sentiment,
+            category: PREFERENCE_CATEGORIES.CONTENT,
+            decayRate: DECAY_RATES.STANDARD
           };
         }
       },
       
-      // Interface preferences
+      // Content preferences - comparative statements
       {
-        regex: /I (like|prefer) (dark|light) mode/i,
+        regex: /I (prefer|would rather|like more) ([\w\s\-,']+) (than|over|instead of) ([\w\s\-,']+)/i,
         handler: (match) => {
-          const mode = match[2].toLowerCase();
+          const preferredTopic = match[2].trim().toLowerCase();
+          const lesserTopic = match[4].trim().toLowerCase();
+          return [
+            {
+              key: `content:liked:${preferredTopic}`,
+              value: true,
+              strength: 0.8,
+              category: PREFERENCE_CATEGORIES.CONTENT,
+              decayRate: DECAY_RATES.STANDARD
+            },
+            {
+              key: `content:comparative:${preferredTopic}:${lesserTopic}`,
+              value: true,
+              strength: 0.7,
+              category: PREFERENCE_CATEGORIES.CONTENT,
+              decayRate: DECAY_RATES.STANDARD
+            }
+          ];
+        }
+      },
+      
+      // Interface preferences with more detail
+      {
+        regex: /I (like|prefer|want) (dark|light|high contrast|minimalist|colorful|simple) (mode|theme|interface|design|layout)/i,
+        handler: (match) => {
+          const preference = match[2].toLowerCase();
           return {
             key: 'interface:theme',
-            value: mode,
-            category: PREFERENCE_CATEGORIES.INTERFACE
+            value: preference,
+            strength: 0.9,
+            category: PREFERENCE_CATEGORIES.INTERFACE,
+            decayRate: DECAY_RATES.SLOW
           };
         }
       },
       
-      // Notification preferences
+      // Font and text preferences
       {
-        regex: /(don't|do not) (notify|alert|send) me/i,
-        handler: () => {
-          return {
-            key: 'notification:enabled',
-            value: false,
-            category: PREFERENCE_CATEGORIES.NOTIFICATION
-          };
-        }
-      },
-      
-      // Language preferences
-      {
-        regex: /I (prefer|like) to (speak|talk|communicate) in (\w+)/i,
+        regex: /I (prefer|like|need) (larger|smaller|bigger|readable|legible|accessible) (text|font|fonts)/i,
         handler: (match) => {
-          const language = match[3].toLowerCase();
+          const size = match[2].toLowerCase();
+          let value = 'medium';
+          
+          if (['larger', 'bigger'].includes(size)) value = 'large';
+          else if (['smaller'].includes(size)) value = 'small';
+          else if (['readable', 'legible', 'accessible'].includes(size)) value = 'accessible';
+          
+          return {
+            key: 'interface:font_size',
+            value: value,
+            strength: 0.85,
+            category: PREFERENCE_CATEGORIES.ACCESSIBILITY,
+            decayRate: DECAY_RATES.SLOW
+          };
+        }
+      },
+      
+      // Notification preferences with more detail
+      {
+        regex: /(don't|do not|please don't|never) (notify|alert|send|bother) me (?:about|with) ([\w\s\-,']+)/i,
+        handler: (match) => {
+          const topic = match[3].trim().toLowerCase();
+          return {
+            key: `notification:disabled:${topic}`,
+            value: true,
+            strength: 0.9,
+            category: PREFERENCE_CATEGORIES.NOTIFICATION,
+            decayRate: DECAY_RATES.STANDARD
+          };
+        }
+      },
+      {
+        regex: /(always|please) (notify|alert|inform|tell) me (?:about|of|when) ([\w\s\-,']+)/i,
+        handler: (match) => {
+          const topic = match[3].trim().toLowerCase();
+          return {
+            key: `notification:enabled:${topic}`,
+            value: true,
+            strength: 0.9,
+            category: PREFERENCE_CATEGORIES.NOTIFICATION,
+            decayRate: DECAY_RATES.STANDARD
+          };
+        }
+      },
+      
+      // Language preferences with more detail
+      {
+        regex: /I (prefer|like|want) to (speak|talk|communicate|use|read|write) in ([\w\s\-,']+)/i,
+        handler: (match) => {
+          const language = match[3].trim().toLowerCase();
           return {
             key: 'language:preferred',
             value: language,
-            category: PREFERENCE_CATEGORIES.LANGUAGE
+            strength: 0.95,
+            category: PREFERENCE_CATEGORIES.LANGUAGE,
+            decayRate: DECAY_RATES.SLOW
+          };
+        }
+      },
+      
+      // Cognitive style preferences
+      {
+        regex: /I (prefer|like|want) (detailed|brief|concise|thorough|comprehensive|simple|complex) (explanations|information|answers|responses)/i,
+        handler: (match) => {
+          const style = match[2].toLowerCase();
+          let value = 'balanced';
+          
+          if (['detailed', 'thorough', 'comprehensive'].includes(style)) value = 'detailed';
+          else if (['brief', 'concise', 'simple'].includes(style)) value = 'concise';
+          else if (['complex'].includes(style)) value = 'complex';
+          
+          return {
+            key: 'cognitive:detail_level',
+            value: value,
+            strength: 0.85,
+            category: PREFERENCE_CATEGORIES.COGNITIVE,
+            decayRate: DECAY_RATES.STANDARD
+          };
+        }
+      },
+      
+      // Learning style preferences
+      {
+        regex: /I (learn|understand) better (with|through|by|using) (visual|audio|text|reading|listening|watching|examples|practice|doing)/i,
+        handler: (match) => {
+          const style = match[3].toLowerCase();
+          let value = style;
+          
+          // Normalize learning styles
+          if (['reading', 'text'].includes(style)) value = 'textual';
+          else if (['listening', 'audio'].includes(style)) value = 'auditory';
+          else if (['watching', 'visual'].includes(style)) value = 'visual';
+          else if (['doing', 'practice', 'examples'].includes(style)) value = 'kinesthetic';
+          
+          return {
+            key: 'learning:style',
+            value: value,
+            strength: 0.8,
+            category: PREFERENCE_CATEGORIES.LEARNING,
+            decayRate: DECAY_RATES.SLOW
+          };
+        }
+      },
+      
+      // Emotional tone preferences
+      {
+        regex: /I (prefer|like|want) (formal|informal|serious|casual|professional|friendly|humorous|technical) (tone|communication|conversation|interaction)/i,
+        handler: (match) => {
+          const tone = match[2].toLowerCase();
+          return {
+            key: 'emotional:tone',
+            value: tone,
+            strength: 0.75,
+            category: PREFERENCE_CATEGORIES.EMOTIONAL,
+            decayRate: DECAY_RATES.STANDARD
+          };
+        }
+      },
+      
+      // Social interaction preferences
+      {
+        regex: /I (prefer|like|enjoy) (direct|indirect|collaborative|independent|guided|autonomous) (communication|work|interaction|approach)/i,
+        handler: (match) => {
+          const style = match[2].toLowerCase();
+          return {
+            key: 'social:interaction_style',
+            value: style,
+            strength: 0.8,
+            category: PREFERENCE_CATEGORIES.SOCIAL,
+            decayRate: DECAY_RATES.STANDARD
+          };
+        }
+      },
+      
+      // Time of day preferences
+      {
+        regex: /I (prefer|like|am more productive|work better) (in the|during the|at) (morning|afternoon|evening|night)/i,
+        handler: (match) => {
+          const timeOfDay = match[3].toLowerCase();
+          return {
+            key: 'scheduling:preferred_time',
+            value: timeOfDay,
+            strength: 0.7,
+            category: PREFERENCE_CATEGORIES.SCHEDULING,
+            decayRate: DECAY_RATES.STANDARD
           };
         }
       }
     ];
     
+    // Extract contextual factors that might affect preference strength
+    const contextFactors = extractContextFactors(context);
+    
     // Check message against patterns
+    const detectedPreferences = [];
+    
     for (const pattern of patterns) {
       const match = message.match(pattern.regex);
       
       if (match) {
-        const preference = pattern.handler(match);
+        const preferences = pattern.handler(match);
         
-        if (preference) {
-          await observePreference(
-            userId,
-            preference.key,
-            preference.value,
-            preference.category,
-            'message_analysis'
-          );
+        // Handle both single preference and arrays of preferences
+        const prefsArray = Array.isArray(preferences) ? preferences : [preferences];
+        
+        for (const pref of prefsArray) {
+          if (pref) {
+            // Apply contextual weighting to preference strength
+            const adjustedStrength = adjustPreferenceStrength(pref.strength, contextFactors);
+            
+            // Add to detected preferences
+            detectedPreferences.push({
+              ...pref,
+              strength: adjustedStrength
+            });
+          }
         }
       }
+    }
+    
+    // Process all detected preferences
+    for (const pref of detectedPreferences) {
+      await observePreference(
+        userId,
+        pref.key,
+        pref.value,
+        pref.category,
+        'message_analysis',
+        pref.strength,
+        pref.decayRate || DECAY_RATES.STANDARD
+      );
     }
     
     return true;
@@ -652,65 +877,349 @@ async function detectPreferencesFromMessage(userId, message, context) {
 }
 
 /**
- * Detect preferences from user actions.
+ * Get sentiment strength based on preference verb used
+ * @param {string} verb - The preference verb used
+ * @param {boolean} negative - Whether this is a negative preference
+ * @returns {number} Sentiment strength from 0.0 to 1.0
+ */
+function getPreferenceSentiment(verb, negative = false) {
+  const verbLower = verb.toLowerCase();
+  
+  // Positive sentiment mappings
+  const positiveSentiments = {
+    'love': 1.0,
+    'adore': 0.95,
+    'enjoy': 0.8,
+    'like': 0.7,
+    'prefer': 0.6,
+    'am interested in': 0.5,
+    'am fond of': 0.65
+  };
+  
+  // Negative sentiment mappings
+  const negativeSentiments = {
+    'hate': 1.0,
+    'can\'t stand': 0.9,
+    'cannot stand': 0.9,
+    'dislike': 0.7,
+    'don\'t like': 0.6,
+    'do not like': 0.6,
+    'am not interested in': 0.5
+  };
+  
+  const sentiments = negative ? negativeSentiments : positiveSentiments;
+  
+  // Find the closest matching verb
+  for (const [key, value] of Object.entries(sentiments)) {
+    if (verbLower.includes(key)) {
+      return value;
+    }
+  }
+  
+  // Default sentiment if no match
+  return negative ? 0.6 : 0.6;
+}
+
+/**
+ * Extract contextual factors from the provided context
+ * @param {Object} context - The context object
+ * @returns {Object} Extracted context factors
+ */
+function extractContextFactors(context) {
+  const factors = {};
+  
+  if (context.time) {
+    const hour = new Date(context.time).getHours();
+    factors.timeOfDay = hour < 6 ? 'night' : 
+                       (hour < 12 ? 'morning' : 
+                       (hour < 18 ? 'afternoon' : 'evening'));
+  }
+  
+  if (context.location) {
+    factors.location = context.location;
+  }
+  
+  if (context.activity) {
+    factors.activity = context.activity;
+  }
+  
+  if (context.emotional_state) {
+    factors.emotionalState = context.emotional_state;
+  }
+  
+  if (context.device) {
+    factors.device = context.device;
+  }
+  
+  if (context.social_context) {
+    factors.socialContext = context.social_context;
+  }
+  
+  return factors;
+}
+
+/**
+ * Adjust preference strength based on contextual factors
+ * @param {number} baseStrength - Base preference strength
+ * @param {Object} contextFactors - Contextual factors
+ * @returns {number} Adjusted preference strength
+ */
+function adjustPreferenceStrength(baseStrength, contextFactors) {
+  let adjustedStrength = baseStrength;
+  
+  // Apply time of day context
+  if (contextFactors.timeOfDay) {
+    // Time-sensitive preferences are stronger when expressed during relevant time
+    adjustedStrength *= CONTEXT_FACTORS.TIME_OF_DAY;
+  }
+  
+  // Apply emotional state context
+  if (contextFactors.emotionalState) {
+    // Preferences expressed during strong emotional states may be temporary
+    const emotionIntensity = typeof contextFactors.emotionalState === 'object' ? 
+                            contextFactors.emotionalState.intensity || 0.5 : 0.5;
+    
+    if (emotionIntensity > 0.7) {
+      // High emotional states might lead to temporary preferences
+      adjustedStrength *= (1 - (emotionIntensity - 0.7));
+    } else {
+      // Normal emotional states don't affect preferences much
+      adjustedStrength *= CONTEXT_FACTORS.EMOTIONAL;
+    }
+  }
+  
+  // Ensure strength stays within valid range
+  return Math.max(0.1, Math.min(1.0, adjustedStrength));
+}
+
+/**
+ * Detect preferences from user actions with advanced context analysis.
  * @param {string} userId - User identifier
  * @param {Object} action - User action
  * @param {Object} context - Action context
  * @returns {Promise<boolean>} Success status
  */
-async function detectPreferencesFromAction(userId, action, context) {
+async function detectPreferencesFromAction(userId, action, context = {}) {
   try {
-    // Handle different action types
+    // Extract contextual factors that might affect preference strength
+    const contextFactors = extractContextFactors(context);
+    
+    // Handle different action types with appropriate strength and decay rates
     switch (action.type) {
       case 'select':
-        // Track selection preferences
+        // Track selection preferences - explicit selections are strong signals
         await observePreference(
           userId,
           `interaction:selected:${action.category}:${action.item}`,
           true,
           PREFERENCE_CATEGORIES.INTERACTION,
-          'user_action'
+          'user_action',
+          0.85, // High strength for explicit selections
+          DECAY_RATES.STANDARD
+        );
+        
+        // Also infer content preference from selection
+        await observePreference(
+          userId,
+          `content:liked:${action.category}:${action.item}`,
+          true,
+          PREFERENCE_CATEGORIES.CONTENT,
+          'user_action_inference',
+          0.7, // Slightly lower strength for inferred preference
+          DECAY_RATES.STANDARD
         );
         break;
         
       case 'skip':
-        // Track skipped content
+        // Track skipped content - skipping is a moderate negative signal
         await observePreference(
           userId,
           `content:skipped:${action.category}:${action.item}`,
           true,
           PREFERENCE_CATEGORIES.CONTENT,
-          'user_action'
+          'user_action',
+          0.6, // Moderate strength for skips
+          DECAY_RATES.STANDARD
         );
+        
+        // Also infer potential dislike from skipping
+        if (action.immediate === true) { // If skipped immediately, stronger signal
+          await observePreference(
+            userId,
+            `content:disliked:${action.category}:${action.item}`,
+            true,
+            PREFERENCE_CATEGORIES.CONTENT,
+            'user_action_inference',
+            0.5, // Lower strength for inferred dislike
+            DECAY_RATES.STANDARD
+          );
+        }
         break;
         
       case 'view':
-        // Track viewed content duration
-        if (action.duration > 30000) { // Only if viewed for more than 30 seconds
+        // Track viewed content duration - longer views indicate stronger preference
+        if (action.duration) {
+          // Calculate strength based on view duration
+          let viewStrength = 0.3; // Base strength
+          
+          if (action.duration > 120000) { // > 2 minutes
+            viewStrength = 0.8;
+          } else if (action.duration > 60000) { // > 1 minute
+            viewStrength = 0.7;
+          } else if (action.duration > 30000) { // > 30 seconds
+            viewStrength = 0.6;
+          } else if (action.duration > 10000) { // > 10 seconds
+            viewStrength = 0.4;
+          }
+          
+          // Apply contextual adjustments
+          viewStrength = adjustPreferenceStrength(viewStrength, contextFactors);
+          
           await observePreference(
             userId,
             `content:viewed:${action.category}:${action.item}`,
             true,
             PREFERENCE_CATEGORIES.CONTENT,
-            'user_action'
+            'user_action',
+            viewStrength,
+            DECAY_RATES.STANDARD
           );
+          
+          // For very long views, infer a stronger content preference
+          if (action.duration > 60000) { // > 1 minute
+            await observePreference(
+              userId,
+              `content:liked:${action.category}:${action.item}`,
+              true,
+              PREFERENCE_CATEGORIES.CONTENT,
+              'user_action_inference',
+              viewStrength * 0.8, // Slightly lower than view strength
+              DECAY_RATES.STANDARD
+            );
+          }
         }
         break;
         
       case 'schedule':
-        // Track scheduling preferences
+        // Track scheduling preferences with time context
         if (action.time) {
           const hour = new Date(action.time).getHours();
-          const timeOfDay = hour < 12 ? 'morning' : 
-                           (hour < 17 ? 'afternoon' : 'evening');
+          const timeOfDay = hour < 6 ? 'night' : 
+                           (hour < 12 ? 'morning' : 
+                           (hour < 17 ? 'afternoon' : 'evening'));
           
           await observePreference(
             userId,
             `scheduling:preferred_time`,
             timeOfDay,
             PREFERENCE_CATEGORIES.SCHEDULING,
-            'user_action'
+            'user_action',
+            0.75, // Strong signal for explicit scheduling
+            DECAY_RATES.SLOW // Time preferences change slowly
           );
+        }
+        break;
+        
+      case 'search':
+        // Track search queries as potential interests
+        if (action.query) {
+          const query = action.query.toLowerCase().trim();
+          
+          await observePreference(
+            userId,
+            `content:searched:${query}`,
+            true,
+            PREFERENCE_CATEGORIES.CONTENT,
+            'user_action',
+            0.6, // Moderate strength for searches
+            DECAY_RATES.FAST // Search interests can change quickly
+          );
+        }
+        break;
+        
+      case 'share':
+        // Track shared content as strong preference
+        await observePreference(
+          userId,
+          `content:shared:${action.category}:${action.item}`,
+          true,
+          PREFERENCE_CATEGORIES.CONTENT,
+          'user_action',
+          0.9, // Very high strength for sharing
+          DECAY_RATES.STANDARD
+        );
+        
+        // Also infer strong content preference from sharing
+        await observePreference(
+          userId,
+          `content:liked:${action.category}:${action.item}`,
+          true,
+          PREFERENCE_CATEGORIES.CONTENT,
+          'user_action_inference',
+          0.85, // High strength for shared content
+          DECAY_RATES.STANDARD
+        );
+        break;
+        
+      case 'save':
+        // Track saved content as strong preference
+        await observePreference(
+          userId,
+          `content:saved:${action.category}:${action.item}`,
+          true,
+          PREFERENCE_CATEGORIES.CONTENT,
+          'user_action',
+          0.8, // High strength for saving
+          DECAY_RATES.SLOW // Saved preferences decay slowly
+        );
+        break;
+        
+      case 'rate':
+        // Track explicit ratings
+        if (typeof action.rating === 'number') {
+          // Normalize rating to 0-1 scale if needed
+          let normalizedRating = action.rating;
+          if (action.ratingScale) {
+            normalizedRating = action.rating / action.ratingScale;
+          }
+          
+          // Determine preference strength from rating
+          const ratingStrength = Math.min(1.0, Math.max(0.3, normalizedRating));
+          
+          await observePreference(
+            userId,
+            `content:rating:${action.category}:${action.item}`,
+            normalizedRating,
+            PREFERENCE_CATEGORIES.CONTENT,
+            'user_action',
+            ratingStrength,
+            DECAY_RATES.STANDARD
+          );
+          
+          // For high ratings, also record as liked content
+          if (normalizedRating > 0.7) {
+            await observePreference(
+              userId,
+              `content:liked:${action.category}:${action.item}`,
+              true,
+              PREFERENCE_CATEGORIES.CONTENT,
+              'user_action_inference',
+              ratingStrength * 0.9,
+              DECAY_RATES.STANDARD
+            );
+          }
+          // For low ratings, also record as disliked content
+          else if (normalizedRating < 0.3) {
+            await observePreference(
+              userId,
+              `content:disliked:${action.category}:${action.item}`,
+              true,
+              PREFERENCE_CATEGORIES.CONTENT,
+              'user_action_inference',
+              (1 - ratingStrength) * 0.9,
+              DECAY_RATES.STANDARD
+            );
+          }
         }
         break;
     }
