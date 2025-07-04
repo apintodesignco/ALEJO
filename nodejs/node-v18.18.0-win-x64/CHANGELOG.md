@@ -91,7 +91,9 @@ release.
 ## Notes
 
 * The [Node.js Long Term Support plan](https://github.com/nodejs/Release) covers
+
   LTS releases.
+
 * Release versions in **bold** text are the most recent supported releases.
 
 ***
