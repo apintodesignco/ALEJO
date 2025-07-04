@@ -17,7 +17,7 @@ Ensure you have the required dependencies installed:
 
 ```bash
 pip install -r requirements-full.txt
-```
+```text
 
 The browser testing modules require Selenium WebDriver executables for each browser you want to test with. Make sure the WebDriver executables are in your system PATH or specify their locations in your configuration.
 
@@ -29,21 +29,25 @@ The `BrowserDetector` class provides cross-platform browser detection capabiliti
 from alejo.testing.browser_detection import BrowserDetector
 
 # Create detector
+
 detector = BrowserDetector()
 
 # Detect installed browsers
+
 browsers = detector.detect_browsers()
 print(f"Detected browsers: {list(browsers.keys())}")
 
 # Get detailed browser information
+
 browser_info = detector.get_browser_info()
 for browser, info in browser_info.items():
     print(f"{browser}: {info['version']} at {info['path']}")
     print(f"WebDriver: {info['webdriver_path']}")
 
 # Print formatted browser information
+
 detector.print_browser_info()
-```
+```text
 
 ## Browser Compatibility Testing
 
@@ -53,6 +57,7 @@ The `BrowserCompatibilityTester` class provides functionality to test web applic
 from alejo.testing.browser_testing import BrowserCompatibilityTester
 
 # Create configuration
+
 config = {
     "headless": True,      # Run browsers in headless mode
     "timeout": 30,         # Page load timeout in seconds
@@ -61,22 +66,26 @@ config = {
 }
 
 # Create tester
+
 tester = BrowserCompatibilityTester(config)
 
 # Run tests on a URL with specific browsers
-url = "https://example.com"
+
+url = "<https://example.com">
 browsers = ["chrome", "firefox"]  # Leave empty to use all detected browsers
 test_name = "example_test"
 
 results = tester.run_tests(url, browsers, test_name)
 
 # Print test summary
+
 tester.print_test_summary(test_name)
 
 # Compare two test runs
+
 comparison = tester.compare_test_results("test1", "test2")
 tester.print_comparison_summary(comparison)
-```
+```text
 
 ## Browser Test Runner
 
@@ -86,6 +95,7 @@ The `BrowserTestRunner` class provides advanced testing capabilities for running
 from alejo.testing.browser_testing import BrowserTestRunner
 
 # Create configuration
+
 config = {
     "headless": True,
     "timeout": 30,
@@ -94,21 +104,25 @@ config = {
 }
 
 # Create test runner
+
 runner = BrowserTestRunner(config)
 
 # Run comprehensive tests on multiple URLs
-urls = ["https://example.com", "https://www.python.org"]
+
+urls = ["<https://example.com",> "<https://www.python.org"]>
 browsers = ["chrome", "firefox"]  # Optional
 results = runner.run_comprehensive_tests(urls, browsers)
 
 # Print test summary
+
 runner.print_test_summary(results)
 
 # Run scenario tests
+
 scenarios = [
     {
         "name": "desktop_scenario",
-        "url": "https://example.com",
+        "url": "<https://example.com",>
         "browsers": ["chrome", "firefox"],
         "config": {
             "window_size": (1920, 1080),
@@ -117,7 +131,7 @@ scenarios = [
     },
     {
         "name": "mobile_scenario",
-        "url": "https://example.com",
+        "url": "<https://example.com",>
         "browsers": ["chrome"],
         "config": {
             "window_size": (375, 812),
@@ -128,10 +142,11 @@ scenarios = [
 results = runner.run_scenario_tests(scenarios)
 
 # Run regression tests comparing baseline and test URLs
-baseline_url = "https://example.com"
-test_url = "https://staging.example.com"
+
+baseline_url = "<https://example.com">
+test_url = "<https://staging.example.com">
 results = runner.run_regression_tests(baseline_url, test_url, browsers)
-```
+```text
 
 ## Secure Browser Testing
 
@@ -142,6 +157,7 @@ from alejo.testing.secure_browser_testing import SecureBrowserTesting
 from alejo.security.security_manager import SecurityManager
 
 # Create security manager
+
 security_config = {
     "security_level": "medium",
     "encryption_key": "your_encryption_key"  # Use environment variable in production
@@ -149,6 +165,7 @@ security_config = {
 security_manager = SecurityManager(security_config)
 
 # Create configuration
+
 config = {
     "headless": True,
     "timeout": 30,
@@ -157,10 +174,12 @@ config = {
 }
 
 # Create secure browser testing
+
 secure_tester = SecureBrowserTesting(config, security_manager)
 
 # Run secure test
-url = "https://example.com"
+
+url = "<https://example.com">
 browsers = ["chrome", "firefox"]  # Optional
 results = secure_tester.run_secure_test(
     url,
@@ -171,7 +190,8 @@ results = secure_tester.run_secure_test(
 )
 
 # Run secure comprehensive tests
-urls = ["https://example.com", "https://www.python.org"]
+
+urls = ["<https://example.com",> "<https://www.python.org"]>
 results = secure_tester.run_secure_comprehensive_tests(
     urls,
     browsers=browsers,
@@ -180,39 +200,47 @@ results = secure_tester.run_secure_comprehensive_tests(
 )
 
 # List secure test results
+
 results_info = secure_tester.list_secure_results(
     session_id="user_session_id",
     username="username"
 )
 
 # Retrieve secure test results
+
 results = secure_tester.retrieve_secure_results(
     "secure_test_20230101_123456.enc",
     session_id="user_session_id",
     username="username"
 )
-```
+```text
 
 ## Command-Line Interface
 
 ALEJO provides a command-line interface for browser testing:
 
 ```bash
+
 # Detect installed browsers
+
 python -m alejo-browser-test detect
 
 # Test a URL with specific browsers
-python -m alejo-browser-test test https://example.com --browsers chrome firefox --headless
+
+python -m alejo-browser-test test <https://example.com> --browsers chrome firefox --headless
 
 # Run comprehensive tests on multiple URLs
-python -m alejo-browser-test comprehensive https://example.com https://www.python.org --browsers chrome firefox
+
+python -m alejo-browser-test comprehensive <https://example.com> <https://www.python.org> --browsers chrome firefox
 
 # List test results
+
 python -m alejo-browser-test list
 
 # Show test results
+
 python -m alejo-browser-test show test_20230101_123456
-```
+```text
 
 ## Test Results
 

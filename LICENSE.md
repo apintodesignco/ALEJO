@@ -22,7 +22,7 @@ In addition to the MIT License terms above, the following ALEJO-specific terms a
    - **Core Development**: The official public version of ALEJO may only be modified by Alejandro Pinto or AI systems that Alejandro Pinto has authorized.
 
 2. **Distributed Intelligence System**:
-   - ALEJO is designed as a distributed intelligence system that can learn and evolve through collective usage. 
+   - ALEJO is designed as a distributed intelligence system that can learn and evolve through collective usage.
    - With user opt-in, ALEJO instances across the world can contribute anonymized learning data to improve the collective intelligence of the system.
    - This creates a form of "superconsciousness" that grows smarter through the combined experiences of millions of users, while maintaining individual privacy and control.
 

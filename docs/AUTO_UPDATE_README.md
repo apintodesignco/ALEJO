@@ -20,18 +20,23 @@ The ALEJO update system performs the following operations:
 The update system works automatically and requires no user intervention. However, several command-line options are available:
 
 ```bash
+
 # Normal startup with automatic update check
+
 python start_alejo_with_gestures.py
 
 # Skip update check during startup
+
 python start_alejo_with_gestures.py --skip-updates
 
 # Manually check for updates without starting ALEJO
+
 python update_manager.py --check-only
 
 # Force update check regardless of when the last check occurred
+
 python update_manager.py --force
-```
+```text
 
 ## Configuration
 
@@ -70,4 +75,4 @@ Before making changes, run the test suite to ensure everything works correctly:
 
 ```bash
 python -m unittest test_update_manager.py
-```
+```text

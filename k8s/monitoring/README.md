@@ -3,6 +3,7 @@
 ## Components
 
 ### Service Mesh (Istio)
+
 1. Gateway configuration
 2. Virtual services
 3. mTLS policies
@@ -10,11 +11,12 @@
 5. Circuit breakers
 
 ### Monitoring Stack
+
 1. Prometheus
    - Metrics collection
    - Data storage
    - Query interface
-   
+
 2. Grafana
    - Dashboards
    - Alerting
@@ -23,33 +25,38 @@
 ## Installation
 
 1. Install Istio:
+
 ```bash
 istioctl install --set profile=demo -y
 kubectl label namespace alejo istio-injection=enabled
-```
+```text
 
 2. Create monitoring namespace:
+
 ```bash
 kubectl create namespace monitoring
-```
+```text
 
 3. Deploy Prometheus:
+
 ```bash
 kubectl apply -f monitoring/prometheus-config.yaml
 kubectl apply -f monitoring/prometheus.yaml
-```
+```text
 
 4. Deploy Grafana:
+
 ```bash
 kubectl apply -f monitoring/grafana.yaml
 kubectl apply -f monitoring/grafana-dashboards.yaml
-```
+```text
 
 5. Apply Istio configurations:
+
 ```bash
 kubectl apply -f istio/gateway.yaml
 kubectl apply -f istio/policies.yaml
-```
+```text
 
 ## Dashboards
 
@@ -71,23 +78,27 @@ kubectl apply -f istio/policies.yaml
 ## Monitoring
 
 1. Access Grafana:
+
 ```bash
 kubectl port-forward svc/grafana 3000:3000 -n monitoring
-```
+```text
 
 2. Access Prometheus:
+
 ```bash
 kubectl port-forward svc/prometheus 9090:9090 -n monitoring
-```
+```text
 
 3. View service mesh metrics:
+
 ```bash
 istioctl dashboard kiali
-```
+```text
 
 ## Alerts
 
 Configured alerts for:
+
 1. High error rates
 2. Service unavailability
 3. Memory pressure
@@ -97,19 +108,22 @@ Configured alerts for:
 ## Troubleshooting
 
 1. Check Istio proxy:
+
 ```bash
 istioctl proxy-status
-```
+```text
 
 2. Verify metrics collection:
+
 ```bash
-curl http://localhost:9090/api/v1/targets
-```
+curl <http://localhost:9090/api/v1/targets>
+```text
 
 3. Check Grafana datasources:
+
 ```bash
 kubectl get configmap grafana-datasources -n monitoring -o yaml
-```
+```text
 
 ## Best Practices
 
@@ -122,16 +136,19 @@ kubectl get configmap grafana-datasources -n monitoring -o yaml
 ## Maintenance
 
 1. Update Istio:
+
 ```bash
 istioctl upgrade
-```
+```text
 
 2. Update monitoring stack:
+
 ```bash
 kubectl apply -f monitoring/
-```
+```text
 
 3. Backup Grafana:
+
 ```bash
 kubectl cp monitoring/grafana-0:/var/lib/grafana ./grafana-backup
-```
+```text

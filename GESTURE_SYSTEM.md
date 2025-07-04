@@ -82,34 +82,41 @@ The gesture system is now production-ready with the following components fully i
 We've created a dedicated startup script for the gesture system:
 
 ```bash
+
 # Start the complete gesture system
+
 python start_gesture_system.py
 
 # Specify custom ports
+
 python start_gesture_system.py --port 8000 --ws-port 8765
 
 # Start without opening browser automatically
+
 python start_gesture_system.py --no-browser
-```
+```text
 
 ### Docker Deployment
 
 The gesture system is fully integrated with the Docker deployment:
 
 ```bash
+
 # Deploy all services including gesture system
+
 docker-compose up
 
 # Deploy only the gesture WebSocket service
+
 docker-compose up gesture_websocket
-```
+```text
 
 ### Accessing the Gesture Interface
 
 Once deployed, access the gesture interface at:
 
-- Local development: [http://localhost:8000/gestures](http://localhost:8000/gestures)
-- Docker deployment: [http://localhost:8000/gestures](http://localhost:8000/gestures)
+- Local development: [<http://localhost:8000/gestures](http://localhost:8000/gesture>s)
+- Docker deployment: [<http://localhost:8000/gestures](http://localhost:8000/gesture>s)
 
 ### Configuration
 
@@ -119,7 +126,7 @@ The gesture system can be configured through environment variables in your `.env
 ALEJO_GESTURE_ENABLED=true
 ALEJO_WEBSOCKET_PORT=8765
 ALEJO_ACCESSIBILITY_LEVEL=enhanced  # basic, standard, or enhanced
-```
+```text
 
 ## End-to-End Flow
 

@@ -21,6 +21,7 @@ Description of what the plugin does
 import logging
 
 # Plugin metadata (required)
+
 PLUGIN_NAME = "example_plugin"
 PLUGIN_VERSION = "1.0.0"
 PLUGIN_DESCRIPTION = "Description of what this plugin does"
@@ -32,6 +33,7 @@ PLUGIN_TAGS = ["category1", "category2"]
 logger = logging.getLogger(__name__)
 
 # For module-level plugins
+
 def register():
     """
     Register the plugin with ALEJO.
@@ -47,6 +49,7 @@ def process_data(data):
     return processed_data
 
 # For class-based plugins
+
 class ExamplePlugin:
     """
     Example plugin class
@@ -56,14 +59,14 @@ class ExamplePlugin:
         Initialize the plugin
         """
         pass
-        
+
     def execute(self, *args, **kwargs):
         """
         Execute the plugin functionality
         """
         # Plugin implementation
         return result
-```
+```text
 
 ## Plugin Metadata
 
@@ -145,6 +148,7 @@ import logging
 from typing import Dict, Any
 
 # Plugin metadata
+
 PLUGIN_NAME = "sentiment_analyzer"
 PLUGIN_VERSION = "1.0.0"
 PLUGIN_DESCRIPTION = "Advanced sentiment analysis for text processing"
@@ -158,14 +162,14 @@ logger = logging.getLogger(__name__)
 class SentimentAnalyzer:
     def __init__(self):
         logger.info("Initializing sentiment analyzer")
-        
+
     def process(self, text: str) -> Dict[str, Any]:
         """
         Analyze the sentiment of the provided text
-        
+
         Args:
             text: Text to analyze
-            
+
         Returns:
             Dictionary with sentiment analysis results
         """
@@ -175,7 +179,7 @@ class SentimentAnalyzer:
             "negative": 0.2,
             "neutral": 0.1
         }
-```
+```text
 
 ### Text Summarizer Plugin (with Dependencies)
 
@@ -188,6 +192,7 @@ import logging
 from typing import Dict, Any, List
 
 # Plugin metadata
+
 PLUGIN_NAME = "text_summarizer"
 PLUGIN_VERSION = "1.0.0"
 PLUGIN_DESCRIPTION = "Text summarization for content processing"
@@ -205,15 +210,15 @@ def register():
 class TextSummarizer:
     def __init__(self):
         logger.info("Initializing text summarizer")
-        
+
     def process(self, text: str, max_length: int = 100) -> Dict[str, Any]:
         """
         Summarize the provided text
-        
+
         Args:
             text: Text to summarize
             max_length: Maximum length of the summary
-            
+
         Returns:
             Dictionary with summarization results
         """
@@ -223,7 +228,7 @@ class TextSummarizer:
             "original_length": len(text),
             "summary_length": len("Summarized text...")
         }
-```
+```text
 
 ## Troubleshooting
 
@@ -258,72 +263,72 @@ class PluginLoader:
     def __init__(self, plugin_dirs: Optional[List[str]] = None, alejo_version: str = "0.1.0"):
         """
         Initialize the plugin loader.
-        
+
         Args:
             plugin_dirs: List of directories to search for plugins
             alejo_version: Current ALEJO version for compatibility checking
         """
-        
+
     def discover_plugins(self) -> Dict[str, Any]:
         """
         Discover all available plugins in the plugin directories.
-        
+
         Returns:
             Dictionary mapping plugin names to plugin objects/functions
         """
-        
+
     def register_with_registry(self, registry) -> int:
         """
         Register all discovered plugins with the provided registry.
-        
+
         Args:
             registry: The plugin registry to register plugins with
-            
+
         Returns:
             Number of plugins registered
         """
-        
+
     def get_plugin_metadata(self, plugin_name: str) -> Optional[PluginMetadata]:
         """
         Get metadata for a specific plugin
-        
+
         Args:
             plugin_name: Name of the plugin
-            
+
         Returns:
             PluginMetadata object or None if not found
         """
-        
+
     def get_all_plugin_metadata(self) -> Dict[str, PluginMetadata]:
         """
         Get metadata for all plugins
-        
+
         Returns:
             Dictionary mapping plugin names to PluginMetadata objects
         """
-        
+
     def get_plugins_by_tag(self, tag: str) -> List[str]:
         """
         Get all plugins with a specific tag
-        
+
         Args:
             tag: Tag to search for
-            
+
         Returns:
             List of plugin names
         """
-        
+
     def get_plugin_dependents(self, plugin_name: str) -> Set[str]:
         """
         Get all plugins that depend on the specified plugin
-        
+
         Args:
             plugin_name: Name of the plugin
-            
+
         Returns:
             Set of plugin names that depend on the specified plugin
         """
-```
+```text
 
 ### PluginMetadata
 
@@ -339,4 +344,4 @@ class PluginMetadata:
     requires_alejo_version: str = "0.1.0"
     tags: List[str] = field(default_factory=list)
     enabled: bool = True
-```
+```text

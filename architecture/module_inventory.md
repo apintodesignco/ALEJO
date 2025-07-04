@@ -3,7 +3,8 @@
 ## Core Modules
 
 ### Brain Module
-- **Main Files**: 
+
+- **Main Files**:
   - `core/brain/alejo_brain.py`
 - **Dependencies**:
   - Standard libraries: logging, datetime
@@ -14,6 +15,7 @@
   - Main ALEJO interface (`alejo.py`)
 
 ### Security Module
+
 - **Main Files**:
   - `core/security/security_manager.py` - Main security interface
   - `core/security/encryption.py` - Data encryption
@@ -37,6 +39,7 @@
   - Security demo (`secure_alejo_demo.py`)
 
 ### Vision Module
+
 - **Main Files**:
   - `core/vision/camera_integration.py` - Camera access and image capture
   - `core/vision/secure_camera_integration.py` - Security-enhanced camera integration
@@ -54,6 +57,7 @@
   - Camera-based tests
 
 ### Testing Module
+
 - **Main Files**:
   - `core/testing/secure_browser_testing.py` - Security-enhanced browser testing
 - **Dependencies**:
@@ -70,6 +74,7 @@
   - Browser compatibility tests
 
 ### Web Interface
+
 - **Main Files**:
   - `core/web/web_interface.py` - Web UI for ALEJO
 - **Dependencies**:
@@ -85,6 +90,7 @@
 ## Utility Scripts and Tests
 
 ### Browser Detection
+
 - **Main Files**:
   - `browser_detector.py`
   - `browser_finder.py`
@@ -101,6 +107,7 @@
   - Report browser capabilities
 
 ### Browser Testing
+
 - **Main Files**:
   - `test_browser_compatibility.py`
   - `comprehensive_browser_tests.py`
@@ -119,6 +126,7 @@
   - Compare browser behavior
 
 ### Selenium Integration
+
 - **Main Files**:
   - `test_selenium_basic.py`
   - `test_selenium_integration.py`
@@ -138,6 +146,7 @@
   - Basic browser automation
 
 ### System Tests
+
 - **Main Files**:
   - `test_alejo.py`
   - `test_all_components.py`
@@ -159,7 +168,7 @@
 
 ## Dependency Graph
 
-```
+```text
 alejo.py
 ├── core/brain/alejo_brain.py
 ├── core/voice/voice_service.py
@@ -179,7 +188,7 @@ core/vision/secure_camera_integration.py
 ├── core/vision/camera_integration.py
 │   └── cv2 (OpenCV)
 └── core/security/security_manager.py
-```
+```text
 
 ## Identified Issues
 

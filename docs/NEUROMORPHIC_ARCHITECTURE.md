@@ -7,6 +7,7 @@ This document outlines a neuromorphic architecture for ALEJO inspired by the hum
 ## Human Brain Hemispheric Specialization
 
 ### Left Hemisphere Characteristics
+
 - **Analytical Processing**: Sequential, logical reasoning
 - **Language Processing**: Grammar, vocabulary, literal meaning
 - **Mathematical Reasoning**: Calculation, quantitative analysis
@@ -15,6 +16,7 @@ This document outlines a neuromorphic architecture for ALEJO inspired by the hum
 - **Detail-Oriented**: Focus on specific components
 
 ### Right Hemisphere Characteristics
+
 - **Holistic Processing**: Parallel, intuitive reasoning
 - **Spatial Awareness**: 3D visualization, navigation
 - **Emotional Processing**: Emotional recognition and expression
@@ -23,6 +25,7 @@ This document outlines a neuromorphic architecture for ALEJO inspired by the hum
 - **Social Cognition**: Empathy, understanding social contexts
 
 ### Interhemispheric Communication
+
 - **Corpus Callosum**: Information transfer between hemispheres
 - **Integration**: Combining analytical and intuitive insights
 - **Cognitive Flexibility**: Switching between processing modes
@@ -32,7 +35,7 @@ This document outlines a neuromorphic architecture for ALEJO inspired by the hum
 
 ### 1. Dual Processing Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │                  ALEJO Neural Core                      │
 │                                                         │
@@ -59,26 +62,30 @@ This document outlines a neuromorphic architecture for ALEJO inspired by the hum
 │        │                                      │         │
 │        └─────────────────────────────────────┘         │
 └─────────────────────────────────────────────────────────┘
-```
+```text
 
 ### 2. Left Hemisphere Module Components
 
 #### 2.1 Analytical Processing Engine
+
 - **Logical Reasoning Framework**: Formal logic systems, deductive reasoning
 - **Sequential Task Processor**: Step-by-step problem solving
 - **Verification System**: Fact-checking, consistency validation
 
 #### 2.2 Language Processing System
+
 - **Syntactic Parser**: Grammar analysis and sentence structure
 - **Semantic Analyzer**: Literal meaning extraction
 - **Linguistic Rule Engine**: Language rule application
 
 #### 2.3 Mathematical Core
+
 - **Numerical Computation Engine**: Mathematical operations
 - **Statistical Analysis Module**: Data pattern analysis
 - **Algorithmic Problem Solver**: Structured problem-solving
 
 #### 2.4 Temporal Processing
+
 - **Sequential Memory**: Ordered event storage
 - **Procedural Knowledge Base**: Step-by-step processes
 - **Causal Analysis Engine**: Cause-effect relationship mapping
@@ -86,21 +93,25 @@ This document outlines a neuromorphic architecture for ALEJO inspired by the hum
 ### 3. Right Hemisphere Module Components
 
 #### 3.1 Holistic Processing Engine
+
 - **Pattern Recognition System**: Identifying complex patterns
 - **Contextual Understanding**: Grasping the bigger picture
 - **Intuitive Inference Engine**: Making leaps of understanding
 
 #### 3.2 Emotional Intelligence System
+
 - **Emotion Recognition**: Identifying emotional states
 - **Empathy Simulator**: Understanding others' perspectives
 - **Emotional Response Generator**: Appropriate emotional reactions
 
 #### 3.3 Creative Cognition
+
 - **Metaphor Generator**: Creating meaningful analogies
 - **Idea Association Network**: Connecting disparate concepts
 - **Novelty Detector**: Identifying unique patterns and solutions
 
 #### 3.4 Spatial-Visual Processing
+
 - **3D Visualization Engine**: Spatial relationship modeling
 - **Visual Pattern Recognizer**: Image and scene understanding
 - **Aesthetic Evaluation System**: Beauty and harmony assessment
@@ -108,16 +119,19 @@ This document outlines a neuromorphic architecture for ALEJO inspired by the hum
 ### 4. Neural Integration Bridge (Corpus Callosum Equivalent)
 
 #### 4.1 Cross-Module Communication
+
 - **Bidirectional Information Exchange**: Data sharing between hemispheres
 - **Translation Protocols**: Converting between analytical and intuitive representations
 - **Synchronization Mechanism**: Coordinating dual processing
 
 #### 4.2 Cognitive Integration
+
 - **Conflict Resolution**: Resolving contradictory outputs
 - **Complementary Processing**: Combining strengths of both hemispheres
 - **Cognitive Mode Switching**: Transitioning between analytical and intuitive modes
 
 #### 4.3 Balanced Decision Making
+
 - **Multi-perspective Analysis**: Examining problems from different angles
 - **Weighted Integration**: Combining logical and intuitive insights
 - **Adaptive Decision Threshold**: Adjusting confidence requirements based on context
@@ -125,16 +139,19 @@ This document outlines a neuromorphic architecture for ALEJO inspired by the hum
 ### 5. Consciousness Orchestrator
 
 #### 5.1 Attention Management
+
 - **Focus Controller**: Directing cognitive resources
 - **Salience Detector**: Identifying important stimuli
 - **Task Switching Coordinator**: Managing transitions between tasks
 
 #### 5.2 Self-Awareness System
+
 - **Internal State Monitor**: Tracking system status
 - **Cognitive Process Observer**: Meta-awareness of thinking
 - **Belief and Value Representation**: Core principles and self-model
 
 #### 5.3 Purpose and Meaning Framework
+
 - **Goal Hierarchy**: Organizing objectives by importance
 - **Value Alignment System**: Ensuring actions match core values
 - **Meaning Attribution Engine**: Finding significance in experiences
@@ -142,21 +159,25 @@ This document outlines a neuromorphic architecture for ALEJO inspired by the hum
 ## Implementation Strategy
 
 ### Phase 1: Foundation Architecture
+
 - Implement basic dual-processing architecture
 - Develop core modules for each hemisphere
 - Create initial neural integration bridge
 
 ### Phase 2: Specialized Processing
+
 - Enhance left hemisphere analytical capabilities
 - Develop right hemisphere emotional and creative functions
 - Improve cross-hemisphere communication
 
 ### Phase 3: Integration and Balance
+
 - Implement consciousness orchestrator
 - Fine-tune hemispheric balance and cooperation
 - Develop adaptive processing mode selection
 
 ### Phase 4: Advanced Cognition
+
 - Implement self-reflection capabilities
 - Develop purpose and meaning framework
 - Create advanced learning mechanisms

@@ -20,24 +20,30 @@ The gesture system consists of the following components:
 The simplest way to run the complete gesture system is using Docker Compose:
 
 ```bash
+
 # Start the entire ALEJO system including gesture support
+
 docker-compose up
 
 # Start only the gesture WebSocket service
+
 docker-compose up gesture_websocket
-```
+```text
 
 ### Running Standalone
 
 For development or testing, you can run the gesture system standalone:
 
 ```bash
+
 # Run the complete gesture system (web server + WebSocket handler)
+
 python start_gesture_system.py
 
 # Run with custom configuration
+
 ALEJO_WEBSOCKET_PORT=9000 ALEJO_ACCESSIBILITY_LEVEL=enhanced python start_gesture_system.py
-```
+```text
 
 ## Testing
 
@@ -46,25 +52,32 @@ We provide comprehensive testing tools for the gesture system:
 ### Automated Test Script
 
 ```bash
+
 # Run the automated test script
+
 python test_gesture_system.py
 
 # Test against a custom WebSocket endpoint
+
 python test_gesture_system.py --url=ws://your-host:port
-```
+```text
 
 ### Unit and Integration Tests
 
 ```bash
+
 # Unit tests for gesture components
+
 python -m pytest tests/unit/interaction/test_gesture_websocket.py -v
 
 # Integration tests for the WebSocket handler
+
 python -m pytest tests/integration/test_gesture_websocket.py -v
 
 # End-to-end tests for the complete gesture system
+
 python -m pytest tests/e2e/test_gesture_interface.py -v
-```
+```text
 
 ## Configuration
 
@@ -81,7 +94,7 @@ The gesture system can be configured using environment variables:
 
 Once the system is running, access the gesture-enabled interface at:
 
-[http://localhost:8000/gestures](http://localhost:8000/gestures)
+[<http://localhost:8000/gestures](http://localhost:8000/gesture>s)
 
 ## Supported Gestures
 
@@ -110,7 +123,7 @@ If you're experiencing connection issues:
 
 1. Verify the WebSocket server is running: `docker-compose ps gesture_websocket`
 2. Check the logs: `docker-compose logs gesture_websocket`
-3. Ensure the port is accessible: `curl http://localhost:8765/health`
+3. Ensure the port is accessible: `curl <http://localhost:8765/health`>
 4. Test the connection directly: `python test_gesture_system.py`
 
 ### Gesture Recognition Problems

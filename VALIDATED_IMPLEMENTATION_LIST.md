@@ -27,7 +27,7 @@ This document contains a verified list of remaining components needed for ALEJO.
    - Voice fingerprinting and recognition
    - Adaptive voice models
    - Voice style transfer capabilities
-   - Memorial voice reconstruction 
+   - Memorial voice reconstruction
 
 5. **Vision System**
    - Face recognition with emotional understanding

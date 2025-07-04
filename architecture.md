@@ -1,7 +1,8 @@
 # ALEJO Enhanced Architecture
 
 ## Core Services Architecture
-```
+
+```text
 ┌─────────────────┐     ┌─────────────────┐
 │   API Gateway   │────▶│  Event Bus      │
 └────────┬────────┘     └────────┬────────┘
@@ -17,7 +18,7 @@
 │ Memory  │      │ Emotional   │  │ Command  │
 │ Service │      │Intelligence │  │Processor │
 └─────────┘      └─────────────┘  └──────────┘
-```
+```text
 
 ## Proposed Improvements
 

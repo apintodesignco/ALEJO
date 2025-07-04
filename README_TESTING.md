@@ -17,7 +17,7 @@ To run all tests with default settings:
 
 ```bash
 python run_comprehensive_tests.py
-```
+```text
 
 ## Comprehensive Test Runner
 
@@ -27,7 +27,7 @@ The `run_comprehensive_tests.py` script orchestrates all testing tools and provi
 
 ```bash
 python run_comprehensive_tests.py [options]
-```
+```text
 
 ### Options
 
@@ -51,19 +51,19 @@ Run only unit tests:
 
 ```bash
 python run_comprehensive_tests.py --unit
-```
+```text
 
 Run unit and integration tests with verbose output:
 
 ```bash
 python run_comprehensive_tests.py --unit --integration --verbose
-```
+```text
 
 Generate HTML reports for all tests:
 
 ```bash
 python run_comprehensive_tests.py --all --report
-```
+```text
 
 ## Bug Detection
 
@@ -73,7 +73,7 @@ The `alejo_bug_detector.py` script performs static analysis to find common bugs 
 
 ```bash
 python alejo_bug_detector.py --path PATH [options]
-```
+```text
 
 ### Bug Detector Options
 
@@ -90,7 +90,7 @@ The `alejo_performance_tester.py` script benchmarks ALEJO components and detects
 
 ```bash
 python alejo_performance_tester.py [options]
-```
+```text
 
 ### Performance Tester Options
 
@@ -108,7 +108,7 @@ The `alejo_security_scanner.py` script detects security vulnerabilities in Pytho
 
 ```bash
 python alejo_security_scanner.py --path PATH [options]
-```
+```text
 
 ### Security Scanner Options
 

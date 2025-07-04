@@ -1,6 +1,7 @@
 # ALEJO Package Structure Reorganization
 
 ## Current Issues
+
 - Many standalone scripts in the root directory
 - Inconsistent import patterns
 - Manual path manipulation
@@ -9,7 +10,7 @@
 
 ## Proposed Package Structure
 
-```
+```text
 ALEJO/
 ├── alejo/                      # Main package
 │   ├── __init__.py             # Package initialization
@@ -88,26 +89,30 @@ ALEJO/
 ├── requirements-dev.txt        # Development dependencies
 ├── README.md                   # Project overview
 └── LICENSE                     # License information
-```
+```text
 
 ## Implementation Plan
 
 ### Phase 1: Initial Structure Setup
+
 1. Create the basic directory structure
 2. Set up package initialization files
 3. Create setup.py for installation
 
 ### Phase 2: Module Migration
+
 1. Move core modules to their respective directories
 2. Update imports to use package structure
 3. Create proper __init__.py files with exports
 
 ### Phase 3: Script Consolidation
+
 1. Consolidate browser detection scripts
 2. Consolidate browser testing scripts
 3. Create unified entry points
 
 ### Phase 4: Test Organization
+
 1. Set up test directory structure
 2. Migrate existing tests
 3. Create test configuration
@@ -115,6 +120,7 @@ ALEJO/
 ## Migration Strategy
 
 ### For Each Module:
+
 1. Create the target directory
 2. Copy the module files
 3. Update imports to use package structure
@@ -122,6 +128,7 @@ ALEJO/
 5. Remove the original files once verified
 
 ### For Root Scripts:
+
 1. Identify the purpose of each script
 2. Determine the appropriate location in the new structure
 3. Refactor as needed to fit the new structure

@@ -42,20 +42,25 @@ The encryption module provides:
 from core.security.encryption import AlejoEncryption
 
 # Create encryption instance
+
 encryption = AlejoEncryption()
 
 # Encrypt text
+
 encrypted_data = encryption.encrypt_text("Sensitive data")
 
 # Decrypt text
+
 decrypted_data = encryption.decrypt_text(encrypted_data)
 
 # Encrypt file
+
 encrypted_file = encryption.encrypt_file("path/to/file.txt")
 
 # Decrypt file
+
 decrypted_file = encryption.decrypt_file(encrypted_file)
-```
+```text
 
 ### Access Control (`core.security.access_control`)
 
@@ -71,17 +76,21 @@ The access control module provides:
 from core.security.access_control import AccessControl
 
 # Create access control instance
+
 access_control = AccessControl()
 
 # Authenticate user
+
 session = access_control.authenticate("username", "password")
 
 # Check permission
+
 has_permission = access_control.has_permission(session["session_id"], "read")
 
 # Create user
+
 access_control.create_user("new_user", "password", "tester")
-```
+```text
 
 ### Audit Logging (`core.security.audit_logging`)
 
@@ -96,9 +105,11 @@ The audit logging module provides:
 from core.security.audit_logging import AuditLogger
 
 # Create audit logger instance
+
 audit_logger = AuditLogger("./audit_logs")
 
 # Log event
+
 event_id = audit_logger.log_event(
     "user_login",
     "username",
@@ -107,11 +118,13 @@ event_id = audit_logger.log_event(
 )
 
 # Verify logs
+
 verification = audit_logger.verify_logs()
 
 # Search logs
+
 events = audit_logger.search_logs("user_login", "username")
-```
+```text
 
 ### Multi-Factor Authentication (`core.security.mfa`)
 
@@ -126,17 +139,21 @@ The MFA module provides:
 from core.security.mfa import MFAManager
 
 # Create MFA manager instance
+
 mfa_manager = MFAManager()
 
 # Set up TOTP for a user
+
 totp_setup = mfa_manager.setup_totp("username")
 
 # Verify TOTP code
+
 valid = mfa_manager.verify_totp("username", "123456")
 
 # Generate backup codes
+
 backup_codes = mfa_manager.generate_backup_codes("username")
-```
+```text
 
 ### SSO Integration (`core.security.sso_integration`)
 
@@ -151,20 +168,23 @@ The SSO integration module provides:
 from core.security.sso_integration import SSOIntegration
 
 # Create SSO integration instance
+
 sso = SSOIntegration({
     "provider": "okta",
     "client_id": "your-client-id",
     "client_secret": "your-client-secret",
-    "redirect_uri": "http://localhost:8000/callback",
+    "redirect_uri": "<http://localhost:8000/callback",>
     "domain": "your-domain.okta.com"
 })
 
 # Get authorization URL
+
 auth_url = sso.get_auth_url()
 
 # Exchange code for tokens
+
 result = sso.exchange_code("authorization-code")
-```
+```text
 
 ### Secure Camera Integration (`core.vision.secure_camera_integration`)
 
@@ -180,17 +200,21 @@ The secure camera integration module provides:
 from core.vision.secure_camera_integration import SecureCameraIntegration
 
 # Create secure camera integration instance
+
 camera = SecureCameraIntegration()
 
 # Initialize camera
+
 camera.initialize_camera()
 
 # Capture screenshot
+
 image = camera.capture_screenshot("screenshot.png")
 
 # Compare images
+
 similar, score, diff_image = camera.compare_images("image1.png", "image2.png")
-```
+```text
 
 ### Secure Browser Testing (`core.testing.secure_browser_testing`)
 
@@ -205,14 +229,17 @@ The secure browser testing module provides:
 from core.testing.secure_browser_testing import SecureBrowserTesting
 
 # Create secure browser testing instance
+
 tester = SecureBrowserTesting()
 
 # Detect browsers
+
 browsers = tester.detect_browsers()
 
 # Run browser tests
-results = tester.run_browser_tests("https://www.example.com")
-```
+
+results = tester.run_browser_tests("<https://www.example.com>")
+```text
 
 ### Security Manager (`core.security.security_manager`)
 
@@ -222,25 +249,29 @@ The security manager provides a unified interface for all security features:
 from core.security.security_manager import SecurityManager
 
 # Create security manager instance
+
 security_manager = SecurityManager({
     "security_level": "high",
     "audit_log_dir": "./audit_logs"
 })
 
 # Encrypt data
+
 encrypted_data = security_manager.encrypt_data("Sensitive data")
 
 # Authenticate user
+
 session = security_manager.authenticate("username", "password")
 
 # Log event
+
 event_id = security_manager.log_event(
     "user_action",
     "username",
     {"action": "delete_file"},
     "INFO"
 )
-```
+```text
 
 ## Installation
 
@@ -248,7 +279,7 @@ To use the security features, ensure you have the required dependencies:
 
 ```bash
 pip install cryptography pyotp qrcode pillow requests
-```
+```text
 
 ## Configuration
 
@@ -285,11 +316,11 @@ You can create a configuration file for the `SecureALEJO` class:
         "provider": "okta",
         "client_id": "your-client-id",
         "client_secret": "your-client-secret",
-        "redirect_uri": "http://localhost:8000/callback",
+        "redirect_uri": "<http://localhost:8000/callback",>
         "domain": "your-domain.okta.com"
     }
 }
-```
+```text
 
 ## Usage
 
@@ -301,38 +332,48 @@ The `SecureALEJO` class provides a unified interface for all security features:
 from secure_alejo import SecureALEJO
 
 # Create SecureALEJO instance
+
 secure_alejo = SecureALEJO("config.json")
 
 # Authenticate user
+
 auth_result = secure_alejo.authenticate("username", "password", "123456")
 
 # Run secure browser tests
-test_results = secure_alejo.run_secure_browser_tests("https://www.example.com")
+
+test_results = secure_alejo.run_secure_browser_tests("<https://www.example.com>")
 
 # Capture secure screenshot
+
 secure_alejo.capture_secure_screenshot("screenshot.png")
 
 # Get security status
+
 status = secure_alejo.get_security_status()
-```
+```text
 
 ### Command Line Interface
 
 The `secure_alejo.py` script provides a command line interface:
 
 ```bash
+
 # Show security status
+
 python secure_alejo.py --status
 
 # Run browser tests
-python secure_alejo.py --test-url https://www.example.com
+
+python secure_alejo.py --test-url <https://www.example.com>
 
 # Encrypt file
+
 python secure_alejo.py --encrypt path/to/file.txt
 
 # Decrypt file
+
 python secure_alejo.py --decrypt path/to/file.txt.encrypted --output path/to/file.txt
-```
+```text
 
 ## Integration with Existing ALEJO Features
 
@@ -344,14 +385,17 @@ The security features are designed to integrate seamlessly with existing ALEJO f
 from secure_alejo import SecureALEJO
 
 # Create SecureALEJO instance
+
 secure_alejo = SecureALEJO()
 
 # Authenticate
+
 auth_result = secure_alejo.authenticate("username", "password")
 
 # Run browser tests
-test_results = secure_alejo.run_secure_browser_tests("https://www.example.com")
-```
+
+test_results = secure_alejo.run_secure_browser_tests("<https://www.example.com>")
+```text
 
 ### Camera Integration
 
@@ -359,17 +403,21 @@ test_results = secure_alejo.run_secure_browser_tests("https://www.example.com")
 from secure_alejo import SecureALEJO
 
 # Create SecureALEJO instance
+
 secure_alejo = SecureALEJO()
 
 # Authenticate
+
 auth_result = secure_alejo.authenticate("username", "password")
 
 # Capture screenshot
+
 secure_alejo.capture_secure_screenshot("screenshot.png")
 
 # Compare images
+
 comparison = secure_alejo.compare_secure_images("image1.png", "image2.png")
-```
+```text
 
 ## Security Best Practices
 
@@ -399,7 +447,7 @@ Enable debug logging for more detailed information:
 ```python
 import logging
 logging.basicConfig(level=logging.DEBUG)
-```
+```text
 
 ### Security Integration Test
 
@@ -407,7 +455,7 @@ Run the security integration test to verify that all components are working corr
 
 ```bash
 python security_integration_test.py
-```
+```text
 
 This test will verify:
 

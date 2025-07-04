@@ -5,6 +5,7 @@ This document provides guidance on migrating from the current ALEJO structure to
 ## Migration Overview
 
 The migration process involves:
+
 1. Setting up the new package structure
 2. Moving code from existing files to the new structure
 3. Updating imports and dependencies
@@ -30,6 +31,7 @@ We have created the initial package structure with the following components:
 ### 1. Brain Module
 
 **Status: Migrated ✅**
+
 - Enhanced with better command handling
 - Added extensibility for new commands
 - Improved documentation
@@ -37,6 +39,7 @@ We have created the initial package structure with the following components:
 ### 2. Security Module
 
 **Status: Partially Migrated ⚠️**
+
 - Security manager migrated with enhancements
 - Need to migrate:
   - `encryption.py`
@@ -48,6 +51,7 @@ We have created the initial package structure with the following components:
 ### 3. Vision Module
 
 **Status: Not Migrated ❌**
+
 - Need to create:
   - `alejo/vision/__init__.py`
   - `alejo/vision/camera_integration.py`
@@ -56,6 +60,7 @@ We have created the initial package structure with the following components:
 ### 4. Testing Module
 
 **Status: Not Migrated ❌**
+
 - Need to create:
   - `alejo/testing/__init__.py`
   - `alejo/testing/browser_detection/`
@@ -65,6 +70,7 @@ We have created the initial package structure with the following components:
 ### 5. Web Interface
 
 **Status: Not Migrated ❌**
+
 - Need to create:
   - `alejo/web/__init__.py`
   - `alejo/web/web_interface.py`
@@ -75,6 +81,7 @@ We have created the initial package structure with the following components:
 ### 6. Voice Module
 
 **Status: Not Migrated ❌**
+
 - Need to create:
   - `alejo/voice/__init__.py`
   - `alejo/voice/voice_service.py`
@@ -82,6 +89,7 @@ We have created the initial package structure with the following components:
 ### 7. Utilities
 
 **Status: Not Migrated ❌**
+
 - Need to create:
   - `alejo/utils/__init__.py`
   - `alejo/utils/config.py`
@@ -122,44 +130,57 @@ We have created the initial package structure with the following components:
 Once the migration is complete, ALEJO can be installed as a Python package:
 
 ```bash
+
 # Install in development mode
+
 pip install -e .
 
 # Install from PyPI (future)
+
 pip install alejo
-```
+```text
 
 ### Running ALEJO
 
 ```bash
+
 # Run as a module
+
 python -m alejo
 
 # Run using entry point
+
 alejo
 
 # Run with web interface
+
 alejo --web
 
 # Run with voice interface
+
 alejo --voice
-```
+```text
 
 ### Importing ALEJO Components
 
 ```python
+
 # Import the brain
+
 from alejo.brain import ALEJOBrain
 
 # Import security components
+
 from alejo.security import SecurityManager
 
 # Import vision components
+
 from alejo.vision import CameraIntegration
 
 # Import testing components
+
 from alejo.testing import BrowserCompatibilityTester
-```
+```text
 
 ## Compatibility Notes
 
