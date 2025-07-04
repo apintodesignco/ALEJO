@@ -265,6 +265,72 @@ def initialize_default_caches():
     logger.info("Initialized default application caches")
 
 
+# Convenience functions for direct access to cache functionality
+def get_cache(
+    name: str,
+    cache_type: str = "memory",
+    max_size: int = 1000,
+    ttl: Optional[int] = None,
+    eviction_policy: EvictionPolicy = EvictionPolicy.LRU,
+    **kwargs
+) -> BaseCache:
+    """
+    Get or create a cache with the specified configuration.
+    
+    This is a convenience function that delegates to CacheManager.get_cache.
+    
+    Args:
+        name: Unique name for the cache
+        cache_type: Type of cache ("memory" or "persistent")
+        max_size: Maximum number of items in the cache
+        ttl: Default time-to-live for cache entries in seconds
+        eviction_policy: Policy to use when cache is full
+        **kwargs: Additional arguments for specific cache types
+        
+    Returns:
+        The requested cache instance
+    """
+    return CacheManager.get_cache(
+        name=name,
+        cache_type=cache_type,
+        max_size=max_size,
+        ttl=ttl,
+        eviction_policy=eviction_policy,
+        **kwargs
+    )
+
+
+def create_memory_cache(
+    name: str,
+    max_size: int = 1000,
+    ttl: Optional[int] = None,
+    eviction_policy: EvictionPolicy = EvictionPolicy.LRU,
+    cleanup_interval: int = 60
+) -> MemoryCache:
+    """
+    Create a new memory cache with the specified configuration.
+    
+    This is a convenience function that delegates to CacheManager.get_memory_cache.
+    
+    Args:
+        name: Unique name for the cache
+        max_size: Maximum number of items in the cache
+        ttl: Default time-to-live for cache entries in seconds
+        eviction_policy: Policy to use when cache is full
+        cleanup_interval: Seconds between automatic cleanup runs
+        
+    Returns:
+        Memory cache instance
+    """
+    return CacheManager.get_memory_cache(
+        name=name,
+        max_size=max_size,
+        ttl=ttl,
+        eviction_policy=eviction_policy,
+        cleanup_interval=cleanup_interval
+    )
+
+
 # Export public API
 __all__ = [
     'CacheManager',
@@ -276,5 +342,7 @@ __all__ = [
     'invalidate_cache',
     'invalidate_all_caches',
     'get_cache_stats',
-    'initialize_default_caches'
+    'initialize_default_caches',
+    'get_cache',
+    'create_memory_cache'
 ]

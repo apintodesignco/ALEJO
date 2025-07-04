@@ -67,7 +67,8 @@ def cached(
     max_size: int = 1000,
     cache_name: Optional[str] = None,
     key_generator: Optional[Callable] = None,
-    eviction_policy: EvictionPolicy = EvictionPolicy.LRU
+    eviction_policy: EvictionPolicy = EvictionPolicy.LRU,
+    ttl_seconds: Optional[int] = None
 ) -> Callable[[Callable[..., T]], Callable[..., T]]:
     """
     Decorator to cache function results in memory.
@@ -78,20 +79,24 @@ def cached(
         cache_name: Name for this cache (defaults to function name)
         key_generator: Custom function to generate cache keys
         eviction_policy: Policy to use when cache is full
+        ttl_seconds: Alias for ttl parameter (for backward compatibility)
         
     Returns:
         Decorated function with caching
     """
     def decorator(func: Callable[..., T]) -> Callable[..., T]:
         # Get or create cache for this function
-        nonlocal cache_name
+        nonlocal cache_name, ttl
         if cache_name is None:
             cache_name = f"{func.__module__}.{func.__qualname__}"
+            
+        # Use ttl_seconds if provided (for backward compatibility)
+        effective_ttl = ttl_seconds if ttl_seconds is not None else ttl
         
         if cache_name not in _function_caches:
             _function_caches[cache_name] = MemoryCache(
                 max_size=max_size,
-                default_ttl=ttl,
+                default_ttl=effective_ttl,
                 eviction_policy=eviction_policy
             )
         
