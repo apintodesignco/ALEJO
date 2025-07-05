@@ -6,10 +6,31 @@
  * ALEJO testing system and provides detailed reporting.
  */
 
-const { spawn } = require('child_process');
-const path = require('path');
-const fs = require('fs');
+import { spawn } from 'child_process';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+// ES module equivalents for __dirname and __filename
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const { argv } = process;
+
+// Create a batch script to run Node.js commands
+const TEMP_DIR = path.join(__dirname, 'temp');
+if (!fs.existsSync(TEMP_DIR)) {
+  fs.mkdirSync(TEMP_DIR, { recursive: true });
+}
+
+// Create helper scripts for Node.js commands
+const RUN_NODE_BATCH = path.join(TEMP_DIR, 'run_node.bat');
+fs.writeFileSync(RUN_NODE_BATCH, '@echo off\r\n"C:\\Program Files\\nodejs\\node.exe" %*');
+
+const RUN_NPX_BATCH = path.join(TEMP_DIR, 'run_npx.bat');
+fs.writeFileSync(RUN_NPX_BATCH, '@echo off\r\n"C:\\Program Files\\nodejs\\npx.cmd" %*');
+
+const RUN_NPM_BATCH = path.join(TEMP_DIR, 'run_npm.bat');
+fs.writeFileSync(RUN_NPM_BATCH, '@echo off\r\n"C:\\Program Files\\nodejs\\npm.cmd" %*');
 
 /**
  * Parse command line arguments
@@ -105,7 +126,7 @@ async function runTest(testType, component, testFile) {
       mochaArgs.unshift('--coverage');
     }
     
-    const testProcess = spawn('npx', ['mocha', ...mochaArgs], { 
+    const testProcess = spawn(RUN_NPX_BATCH, ['mocha', ...mochaArgs], { 
       stdio: 'inherit',
       shell: true
     });
@@ -142,7 +163,7 @@ async function runSecurityScan() {
   return new Promise((resolve) => {
     console.log('\n🔒 Running security scan on biometrics code...');
     
-    const scanProcess = spawn('node', [
+    const scanProcess = spawn(RUN_NODE_BATCH, [
       path.join(__dirname, '../tools/alejo_security_scanner.py'),
       '--module=biometrics',
       '--report-file=' + path.join(config.reportDir, 'security-report.json')
@@ -170,7 +191,7 @@ async function runPerformanceBenchmark() {
   return new Promise((resolve) => {
     console.log('\n⚡ Running performance benchmark on biometrics code...');
     
-    const benchmarkProcess = spawn('node', [
+    const benchmarkProcess = spawn(RUN_NODE_BATCH, [
       path.join(__dirname, '../tools/alejo_performance_tester.py'),
       '--module=biometrics',
       '--report-file=' + path.join(config.reportDir, 'performance-report.json')

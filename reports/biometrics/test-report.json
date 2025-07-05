@@ -1,0 +1,49 @@
+{
+  "summary": {
+    "total": 3,
+    "passed": 0,
+    "failed": 3,
+    "skipped": 0,
+    "duration": 89.466,
+    "success": false,
+    "timestamp": "2025-07-05T15:44:55.183Z"
+  },
+  "config": {
+    "testTypes": [
+      "unit",
+      "integration",
+      "system"
+    ],
+    "components": [
+      "eye"
+    ],
+    "reportDir": "C:\\Users\\magic\\CascadeProjects\\ALEJO\\reports\\biometrics",
+    "timeoutMs": 60000,
+    "securityScan": true,
+    "performanceBenchmark": true,
+    "coverageThreshold": 80
+  },
+  "results": [
+    {
+      "component": "eye",
+      "testType": "unit",
+      "testFile": "eye-tracking-test.js",
+      "passed": false,
+      "exitCode": 1
+    },
+    {
+      "component": "eye",
+      "testType": "integration",
+      "testFile": "eye-tracking-integration-test.js",
+      "passed": false,
+      "exitCode": 1
+    },
+    {
+      "component": "eye",
+      "testType": "integration",
+      "testFile": "eye-tracking-system-test.js",
+      "passed": false,
+      "exitCode": 1
+    }
+  ]
+}

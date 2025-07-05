@@ -1,4 +1,4 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 // This test checks that the visualizer page loads and a WebSocket connection is established
 

@@ -37,9 +37,9 @@ jobs:
     name: Lint Code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '16'
           cache: 'npm'
@@ -53,9 +53,9 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '16'
           cache: 'npm'
@@ -64,7 +64,7 @@ jobs:
       - name: Run comprehensive biometrics tests
         run: node tests/run_biometrics_tests.js --component=eye --coverage-threshold=80
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: reports/biometrics/
@@ -75,9 +75,9 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '16'
           cache: 'npm'
@@ -86,7 +86,7 @@ jobs:
       - name: Run security scanner
         run: node tools/alejo_security_scanner.py --target src/biometrics/eye
       - name: Upload security scan results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: security-scan-results
           path: security-scan-results/
@@ -97,9 +97,9 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '16'
           cache: 'npm'
@@ -108,7 +108,7 @@ jobs:
       - name: Run performance tests
         run: node tools/alejo_performance_tester.py --component eye-tracking
       - name: Upload performance results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: performance-results
           path: performance-results/
@@ -119,9 +119,9 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '16'
           cache: 'npm'
@@ -130,7 +130,7 @@ jobs:
       - name: Run accessibility tests
         run: npm run test:accessibility -- --component eye-tracking
       - name: Upload accessibility results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: accessibility-results
           path: accessibility-results/
@@ -141,9 +141,9 @@ jobs:
     needs: [security-scan, performance-test, accessibility-test]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '16'
           cache: 'npm'
@@ -157,7 +157,7 @@ jobs:
           cp demos/eye-tracking-demo.js dist/demos/
           cp demos/server.js dist/
       - name: Upload demo build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: eye-tracking-demo
           path: dist/
@@ -168,23 +168,31 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
     needs: build-demo
     runs-on: ubuntu-latest
-    environment:
-      name: staging
-      url: ${{ steps.deploy.outputs.deployment-url }}
+    # Deployment target
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Download demo build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: eye-tracking-demo
           path: dist
       - name: Deploy to staging
         id: deploy
-        uses: netlify/actions/cli@master
+        uses: nwtgck/actions-netlify@v2.0
         with:
-          args: deploy --dir=dist --prod
+          publish-dir: './dist'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: 'Deploy from GitHub Actions'
+          enable-pull-request-comment: true
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        # These environment variables are required by the Netlify GitHub Action
+        # Make sure to add these secrets in your GitHub repository settings
         env:
+          # Netlify Site ID for staging environment
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          # Netlify authentication token
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
   deploy-production:
@@ -192,23 +200,31 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
     needs: build-demo
     runs-on: ubuntu-latest
-    environment:
-      name: production
-      url: ${{ steps.deploy.outputs.deployment-url }}
+    # Production deployment target
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Download demo build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: eye-tracking-demo
           path: dist
       - name: Deploy to production
         id: deploy
-        uses: netlify/actions/cli@master
+        uses: nwtgck/actions-netlify@v2.0
         with:
-          args: deploy --dir=dist --prod
+          publish-dir: './dist'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: 'Production deployment from GitHub Actions'
+          enable-pull-request-comment: true
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        # These environment variables are required by the Netlify GitHub Action
+        # Make sure to add these secrets in your GitHub repository settings
         env:
+          # Netlify Site ID for production environment
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_PRODUCTION_SITE_ID }}
+          # Netlify authentication token
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
       
   create-release:
@@ -217,11 +233,11 @@ jobs:
     needs: [deploy-staging]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
       - name: Generate release notes
@@ -236,8 +252,8 @@ jobs:
           files: |
             RELEASE_NOTES.md
           body_path: RELEASE_NOTES.md
-          tag_name: v${{ env.NEW_VERSION }}
-          name: ALEJO v${{ env.NEW_VERSION }} - Eye Tracking
+          tag_name: v${{ github.run_number }}
+          name: ALEJO v${{ github.run_number }} - Eye Tracking
           draft: false
           prerelease: false
         env:

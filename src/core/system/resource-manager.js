@@ -1,5 +1,5 @@
-const os = require('os');
-const EventEmitter = require('events');
+import os from 'os';
+import EventEmitter from 'events';
 
 class ResourceManager extends EventEmitter {
   constructor(options = {}) {
@@ -52,4 +52,4 @@ class ResourceManager extends EventEmitter {
   }
 }
 
-module.exports = new ResourceManager();
+export default new ResourceManager();

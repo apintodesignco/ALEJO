@@ -5,9 +5,9 @@
  * integrated with the main biometrics system.
  */
 
-const { expect } = require('chai');
-const sinon = require('sinon');
-const { JSDOM } = require('jsdom');
+import { expect } from 'chai';
+import sinon from 'sinon';
+import { JSDOM } from 'jsdom';
 
 // Mock browser environment
 const dom = new JSDOM('<!DOCTYPE html><html><body><video id="video"></video><canvas id="canvas"></canvas></body></html>');
@@ -56,8 +56,8 @@ global.publish = (eventName, data) => {
 };
 
 // Import modules under test
-const biometrics = require('../../src/biometrics/index.js');
-const eyeTracking = require('../../src/biometrics/eye/index.js');
+import biometrics from '../../src/biometrics/index.js';
+import eyeTracking from '../../src/biometrics/eye/index.js';
 
 describe('Eye Tracking Calibration Integration Tests', () => {
   let sandbox;

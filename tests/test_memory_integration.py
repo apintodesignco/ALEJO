@@ -5,9 +5,11 @@ Tests interaction between Working Memory, Episodic Memory, and Semantic Memory.
 
 import asyncio
 import json
-import secrets  # More secure for cryptographic purposes
 from datetime import datetime, timedelta
 from typing import Any, Dict
+
+# Import from common test utilities
+from tests.common.test_utils import generate_test_token, setup_test_logging
 
 import pytest
 from alejo.cognitive.memory.models import (

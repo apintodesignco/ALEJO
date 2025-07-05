@@ -262,7 +262,7 @@ describe('Eye Tracking Unit Tests', () => {
   
   describe('Calibration', () => {
     it('should start calibration process', () => {
-      const { publish } = require('../../src/events');
+      import { publish } from '../../src/events';
       
       const result = startCalibration({ points: 5, speed: 'normal' });
       
@@ -271,7 +271,7 @@ describe('Eye Tracking Unit Tests', () => {
     });
     
     it('should cancel calibration process', () => {
-      const { publish } = require('../../src/events');
+      import { publish } from '../../src/events';
       
       // Start calibration first
       startCalibration({ points: 5, speed: 'normal' });
@@ -286,7 +286,7 @@ describe('Eye Tracking Unit Tests', () => {
   
   describe('Accessibility Features', () => {
     it('should update accessibility settings', () => {
-      const { publish } = require('../../src/events');
+      import { publish } from '../../src/events';
       
       const settings = {
         highContrastMode: true,
@@ -305,7 +305,7 @@ describe('Eye Tracking Unit Tests', () => {
   
   describe('Privacy Modes', () => {
     it('should set privacy mode', () => {
-      const { publish } = require('../../src/events');
+      import { publish } from '../../src/events';
       
       const result = setPrivacyMode('blur');
       
@@ -323,7 +323,7 @@ describe('Eye Tracking Unit Tests', () => {
   
   describe('Eye Data Processing', () => {
     it('should process eye data and emit events', async () => {
-      const { publish } = require('../../src/events');
+      import { publish } from '../../src/events';
       
       const result = await processEyeData({
         leftEye: mockOpenEyes.leftEye,
@@ -336,7 +336,7 @@ describe('Eye Tracking Unit Tests', () => {
     });
     
     it('should detect and publish blink events', async () => {
-      const { publish } = require('../../src/events');
+      import { publish } from '../../src/events';
       
       // First process open eyes
       await processEyeData({

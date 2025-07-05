@@ -211,7 +211,7 @@ function cleanupPreferenceSystem(monitorInterval) {
     preferenceCache.stopMaintenance();
     
     // Stop normalization scheduler
-    const { stopScheduler } = require('./preference-normalization-scheduler.js');
+    import { stopScheduler } from './preference-normalization-scheduler.js';
     stopScheduler();
     
     auditTrail.log('preference:system:cleanup', {

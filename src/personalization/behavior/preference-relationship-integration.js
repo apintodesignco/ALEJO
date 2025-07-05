@@ -222,7 +222,7 @@ async function detectPreferencesFromRelationship(userId, entityId) {
     }
     
     // Import preference model functions
-    const { observePreference } = require('./preference-model');
+    import { observePreference } from './preference-model';
     
     // Record entity preference based on relationship strength and sentiment
     if (strength > 0.4) {
@@ -409,7 +409,7 @@ async function updateRelationshipFromPreference(userId, entityId, key, value, st
   }
 }
 
-module.exports = {
+export default {
   getRelationshipContext,
   adjustPreferenceByRelationship,
   detectPreferencesFromRelationship,

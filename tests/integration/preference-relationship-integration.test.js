@@ -3,8 +3,8 @@
  * Tests the full pipeline from preference observation to relationship updates
  */
 
-const { observePreference, getPreferenceModel } = require('../../src/personalization/behavior/preference-model');
-const { setupPythonBridge, teardownPythonBridge } = require('../utils/python-test-utils');
+import { observePreference, getPreferenceModel } from '../../src/personalization/behavior/preference-model';
+import { setupPythonBridge, teardownPythonBridge } from '../utils/python-test-utils';
 
 describe('Preference-Relationship Integration', () => {
   let pythonBridge;
@@ -120,7 +120,7 @@ describe('Preference-Relationship Integration', () => {
     
     test('should measure performance metrics during preference observation', async () => {
       // 1. Spy on the auditTrail.log function
-      const auditTrailModule = require('../../src/utils/audit-trail');
+      import auditTrailModule from '../../src/utils/audit-trail';
       const logSpy = jest.spyOn(auditTrailModule.auditTrail, 'log');
       
       // 2. Observe preference with relationship context
