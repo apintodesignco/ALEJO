@@ -5,14 +5,21 @@ on:
     branches: [ main, develop ]
     paths:
       - 'src/biometrics/eye/**'
-      - 'tests/biometrics/eye*'
+      - 'tests/unit/eye*'
+      - 'tests/integration/eye*'
       - 'demos/eye-tracking*'
       - '.github/workflows/eye-tracking-ci.yml'
+    tags:
+      - '[MAJOR FEATURE] Eye Tracking*'
+      - '[SECURITY FIX] Eye Tracking*'
+      - '[PERFORMANCE] Eye Tracking*'
+      - '[UX] Eye Tracking*'
   pull_request:
     branches: [ main ]
     paths:
       - 'src/biometrics/eye/**'
-      - 'tests/biometrics/eye*'
+      - 'tests/unit/eye*'
+      - 'tests/integration/eye*'
       - 'demos/eye-tracking*'
   workflow_dispatch:
     inputs:
@@ -54,13 +61,13 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
-      - name: Run eye tracking unit tests
-        run: npm run test:eye-tracking
+      - name: Run comprehensive biometrics tests
+        run: node tests/run_biometrics_tests.js --component=eye --coverage-threshold=80
       - name: Upload test results
         uses: actions/upload-artifact@v3
         with:
           name: test-results
-          path: test-results/
+          path: reports/biometrics/
           retention-days: 7
 
   security-scan:

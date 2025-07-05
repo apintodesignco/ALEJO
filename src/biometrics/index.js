@@ -9,7 +9,7 @@
 import { publish, subscribe } from '../core/event-bus.js';
 import { loadFaceDetectionModels } from './face/detection.js';
 import { loadHandTrackingModels } from './hand/tracking.js';
-import { loadEyeTrackingModels } from './eye/tracking.js';
+import eyeTracking from './eye/index.js';
 import { setupAccessibilityFeatures } from './accessibility.js';
 import { setupPrivacyControls } from './privacy.js';
 import { BiometricConsentManager } from './consent-manager.js';
@@ -113,25 +113,41 @@ export async function initializeBiometrics(options = {}) {
     await setupAccessibilityFeatures(config.accessibility);
 
     // Load required models in parallel
-    const modelPromises = [];
+    // Load models based on configuration
+    try {
+      if (config.faceDetection.enabled) {
+        await loadFaceDetectionModels(config.faceDetection.modelPath);
+        activeScanners.add('face');
+      }
+      
+      if (config.handTracking.enabled) {
+        await loadHandTrackingModels(config.handTracking.modelPath);
+        activeScanners.add('hand');
+      }
+      
+      if (config.eyeTracking.enabled) {
+        await eyeTracking.initialize(config.eyeTracking);
+        activeScanners.add('eye');
+      }
 
-    if (config.faceDetection.enabled) {
-      modelPromises.push(loadFaceDetectionModels(config.faceDetection.modelPath));
-      activeScanners.add('face');
+      isInitialized = true;
+      publish('biometrics:initialized', { activeScanners: Array.from(activeScanners) });
+
+      // Auto-start if configured
+      if (config.autoStart) {
+        await startProcessing();
+      }
+
+      return getPublicAPI();
+    } catch (error) {
+      console.error('Failed to load models:', error);
+      publish('biometrics:error', { 
+        type: 'model_loading_failed',
+        message: error.message,
+        error
+      });
+      throw error;
     }
-
-    if (config.handTracking.enabled) {
-      modelPromises.push(loadHandTrackingModels(config.handTracking.modelPath));
-      activeScanners.add('hand');
-    }
-
-    if (config.eyeTracking.enabled) {
-      modelPromises.push(loadEyeTrackingModels());
-      activeScanners.add('eye');
-    }
-
-    await Promise.all(modelPromises);
-
     isInitialized = true;
     publish('biometrics:initialized', { activeScanners: Array.from(activeScanners) });
 
@@ -298,22 +314,8 @@ export async function startProcessing() {
     }
     
     if (activeScanners.has('eye')) {
-      await import('./eye/processor.js').then(module => {
-        // Create video element for eye tracking
-        const videoElement = document.createElement('video');
-        videoElement.srcObject = currentVideoStream;
-        videoElement.autoplay = true;
-        videoElement.muted = true;
-        videoElement.playsInline = true;
-        
-        // Initialize eye processor with video source
-        module.initializeProcessor(config.eyeTracking)
-          .then(() => {
-            module.setVideoSource(videoElement);
-            module.startProcessing();
-            publish('biometrics:eye:started');
-          });
-      });
+      await eyeTracking.startProcessing();
+      publish('biometrics:eye:started');
     }
   } catch (error) {
     console.error('Failed to start biometric processing:', error);
@@ -330,28 +332,26 @@ export async function startProcessing() {
 /**
  * Stop biometric processing
  */
-export function stopProcessing() {
+export async function stopProcessing() {
   if (!isProcessing) return;
 
   try {
     // Stop individual scanners
     if (activeScanners.has('face')) {
-      import('./face/processor.js').then(module => module.stopFaceProcessing());
+      await import('./face/processor.js').then(module => module.stopFaceProcessing());
     }
     
     if (activeScanners.has('hand')) {
-      import('./hand/processor.js').then(module => module.stopHandProcessing());
+      await import('./hand/processor.js').then(module => module.stopHandProcessing());
     }
     
     if (activeScanners.has('eye')) {
-      import('./eye/processor.js').then(module => {
-        module.stopProcessing();
-        publish('biometrics:eye:stopped');
-      });
+      await eyeTracking.stopProcessing();
+      publish('biometrics:eye:stopped');
     }
 
     isProcessing = false;
-
+    
     // Release camera stream
     if (currentVideoStream) {
       currentVideoStream.getTracks().forEach(track => track.stop());
@@ -372,7 +372,7 @@ export function stopProcessing() {
 /**
  * Pause biometric processing temporarily
  */
-export function pauseProcessing() {
+export async function pauseProcessing() {
   if (!isProcessing) return;
 
   try {
@@ -386,10 +386,8 @@ export function pauseProcessing() {
     }
     
     if (activeScanners.has('eye')) {
-      import('./eye/processor.js').then(module => {
-        module.pauseProcessing();
-        publish('biometrics:eye:paused');
-      });
+      await eyeTracking.pauseProcessing();
+      publish('biometrics:eye:paused');
     }
 
     isProcessing = false;
@@ -407,7 +405,7 @@ export function pauseProcessing() {
 /**
  * Resume biometric processing
  */
-export function resumeProcessing() {
+export async function resumeProcessing() {
   if (isProcessing) return;
 
   try {
@@ -421,10 +419,8 @@ export function resumeProcessing() {
     }
     
     if (activeScanners.has('eye')) {
-      import('./eye/processor.js').then(module => {
-        module.resumeProcessing();
-        publish('biometrics:eye:resumed');
-      });
+      await eyeTracking.resumeProcessing();
+      publish('biometrics:eye:resumed');
     }
 
     isProcessing = true;
@@ -503,13 +499,20 @@ export function updateConfig(newConfig) {
       newConfig.eyeTracking.enabled !== oldConfig.eyeTracking.enabled) {
     if (newConfig.eyeTracking.enabled) {
       activeScanners.add('eye');
-      if (isProcessing) {
-        import('./eye/processor.js').then(module => module.startEyeProcessing(currentVideoStream, config));
-      }
+      eyeTracking.initialize(config.eyeTracking).then(() => {
+        if (isProcessing) {
+          eyeTracking.startProcessing();
+        }
+      });
     } else {
       activeScanners.delete('eye');
-      import('./eye/processor.js').then(module => module.stopEyeProcessing());
+      eyeTracking.stopProcessing();
     }
+  }
+  
+  // Update eye tracking configuration if it changed
+  if (newConfig.eyeTracking && isInitialized && activeScanners.has('eye')) {
+    eyeTracking.updateConfig(config.eyeTracking);
   }
 
   // Propagate configuration changes to individual processors
@@ -564,9 +567,9 @@ function getPublicAPI() {
     stopProcessing,
     pauseProcessing,
     resumeProcessing,
-    calibrateEyeTracking: async () => {
+    calibrateEyeTracking: async (options = {}) => {
       if (activeScanners.has('eye')) {
-        return import('./eye/calibration.js').then(module => module.startCalibration());
+        return eyeTracking.startCalibration(options);
       }
       throw new Error('Eye tracking not enabled');
     },

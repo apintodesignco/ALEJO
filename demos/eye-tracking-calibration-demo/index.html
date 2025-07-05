@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Eye Tracking Calibration Demo</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Security headers will be added by the Vite plugin -->
+</head>
+<body>
+  <header>
+    <h1>ALEJO Eye Tracking Calibration Demo</h1>
+    <div class="controls">
+      <button id="startBtn" class="primary">Start Calibration</button>
+      <button id="stopBtn" disabled>Stop</button>
+      <button id="resetBtn" disabled>Reset</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="video-container">
+        <video id="video" autoplay muted></video>
+        <canvas id="overlay"></canvas>
+        <div id="calibration-target" class="hidden"></div>
+      </div>
+      
+      <div class="info-panel">
+        <div class="status-container">
+          <h2>Status</h2>
+          <div id="status">Ready to start</div>
+          <div id="accuracy" class="accuracy-meter">
+            <div class="accuracy-label">Calibration Accuracy</div>
+            <div class="accuracy-bar">
+              <div class="accuracy-fill" data-width="0"></div>
+            </div>
+            <div class="accuracy-value">0%</div>
+          </div>
+        </div>
+        
+        <div class="options-container">
+          <h2>Options</h2>
+          
+          <div class="option-group">
+            <h3>Calibration</h3>
+            <div class="option">
+              <label for="calibration-points">Calibration Points</label>
+              <select id="calibration-points">
+                <option value="5">5 Points</option>
+                <option value="9" selected>9 Points</option>
+                <option value="16">16 Points</option>
+              </select>
+            </div>
+            <div class="option">
+              <label for="point-duration">Point Duration (ms)</label>
+              <input type="number" id="point-duration" value="1500" min="500" max="5000" step="100">
+            </div>
+          </div>
+          
+          <div class="option-group">
+            <h3>Accessibility</h3>
+            <div class="option checkbox">
+              <input type="checkbox" id="audio-feedback">
+              <label for="audio-feedback">Audio Feedback</label>
+            </div>
+            <div class="option checkbox">
+              <input type="checkbox" id="high-contrast">
+              <label for="high-contrast">High Contrast Mode</label>
+            </div>
+            <div class="option checkbox">
+              <input type="checkbox" id="large-targets">
+              <label for="large-targets">Large Targets</label>
+            </div>
+            <div class="option checkbox">
+              <input type="checkbox" id="extended-duration">
+              <label for="extended-duration">Extended Duration</label>
+            </div>
+          </div>
+          
+          <div class="option-group">
+            <h3>Privacy</h3>
+            <div class="option">
+              <label for="privacy-mode">Privacy Mode</label>
+              <select id="privacy-mode">
+                <option value="none">None</option>
+                <option value="blur" selected>Blur</option>
+                <option value="abstract">Abstract</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <div class="log-container">
+          <h2>Event Log</h2>
+          <div id="log"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>ALEJO Biometrics System &copy; 2025 | <a href="#" id="privacy-policy">Privacy Policy</a></p>
+  </footer>
+
+  <!-- Modal for consent -->
+  <div id="consent-modal" class="modal">
+    <div class="modal-content">
+      <h2>Biometric Data Consent</h2>
+      <p>This demo will use your camera to track your eyes for calibration purposes. All processing is done locally in your browser, and no data is sent to any server.</p>
+      <p>The following data will be collected:</p>
+      <ul>
+        <li>Eye position and movement</li>
+        <li>Gaze direction</li>
+        <li>Calibration accuracy metrics</li>
+      </ul>
+      <p>You can revoke consent at any time by clicking the "Stop" button.</p>
+      <div class="modal-buttons">
+        <button id="consent-deny">Deny</button>
+        <button id="consent-allow" class="primary">Allow</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="main.js"></script>
+</body>
+</html>
