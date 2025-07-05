@@ -33,7 +33,12 @@
     "lint": "eslint --ext .js --max-warnings 0 alejo/interaction/gesture_arpeggiator/static/js",
     "format": "prettier -w alejo/interaction/gesture_arpeggiator/static/js",
     "test": "vitest run",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "test:accessibility": "node test/run_comprehensive_tests.js --accessibility",
+    "test:hearing": "node test/personalization/hearing/run-hearing-accessibility-tests.js",
+    "test:vision": "node test/personalization/vision/run-vision-accessibility-tests.js",
+    "test:compliance": "node test/accessibility/compliance-tests.js",
+    "test:all": "node test/run_comprehensive_tests.js"
   },
   "devDependencies": {
     "vite": "^5.0.0",
@@ -47,6 +52,24 @@
     "three": "^0.159.0",
     "tone": "^14.8.40",
     "@mediapipe/hands": "^0.5.1675460977",
-    "@playwright/test": "^1.44.0"
+    "@playwright/test": "^1.44.0",
+    "@axe-core/puppeteer": "^4.8.1",
+    "@babel/core": "^7.22.5",
+    "@babel/register": "^7.22.5",
+    "axe-html-reporter": "^2.2.3",
+    "chai": "^4.3.7",
+    "express": "^4.18.2",
+    "mocha": "^10.2.0",
+    "mocha-html-reporter": "^0.0.1",
+    "mochawesome": "^7.1.3",
+    "puppeteer": "^21.5.0",
+    "sinon": "^15.2.0",
+    "yargs": "^17.7.2",
+    "chalk": "^4.1.2"
+  },
+  "dependencies": {
+    "face-api.js": "^0.22.2",
+    "tensorflow": "^0.2.0",
+    "web-speech-cognitive-services": "^7.1.3"
   }
 }

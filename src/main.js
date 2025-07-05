@@ -13,6 +13,7 @@
 
 import { initializeCore } from './core/index.js';
 import { initializeSEO } from './seo/index.js';
+import { initializeAccessibility } from './personalization/accessibility/index.js';
 
 // Main application state
 const ALEJO = {
@@ -66,6 +67,13 @@ async function initializeApplication(options = {}) {
     ALEJO.modules.ui = await uiModule.initializeUI({
       rootElement: document.getElementById('app'),
       ...options.ui
+    });
+    
+    // Initialize accessibility features (medium priority)
+    console.log('Initializing accessibility features...');
+    ALEJO.modules.accessibility = await initializeAccessibility({
+      debug: ALEJO.debug,
+      ...options.accessibility
     });
     
     // Register service worker for PWA features (low priority)

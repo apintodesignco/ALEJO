@@ -1,0 +1,204 @@
+/* Vision test fixture styles */
+
+/* Base styles */
+:root {
+    --primary-color: #4a86e8;
+    --secondary-color: #6aa84f;
+    --text-color: #333333;
+    --background-color: #ffffff;
+    --error-color: #cc0000;
+    --focus-color: #ff9900;
+    --border-color: #cccccc;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2, h3 {
+    color: var(--primary-color);
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.error {
+    color: var(--error-color);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+/* Navigation styles */
+nav {
+    background-color: var(--primary-color);
+    padding: 10px 20px;
+    color: white;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+nav li {
+    margin-right: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+/* Card component */
+.card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.card-title {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+/* High contrast mode */
+.alejo-high-contrast {
+    --primary-color: #ffffff;
+    --secondary-color: #ffffff;
+    --text-color: #ffffff;
+    --background-color: #000000;
+    --error-color: #ff0000;
+    --focus-color: #ffff00;
+    --border-color: #ffffff;
+}
+
+.alejo-high-contrast body {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.alejo-high-contrast button {
+    background-color: #000000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+}
+
+.alejo-high-contrast a {
+    color: #ffff00;
+    text-decoration: underline;
+}
+
+.alejo-high-contrast .card {
+    border: 2px solid #ffffff;
+}
+
+/* Focus styles */
+button:focus, a:focus, input:focus, select:focus, textarea:focus {
+    outline: 3px solid var(--focus-color);
+    outline-offset: 2px;
+}
+
+/* Text scaling */
+.alejo-text-zoom {
+    font-size: 125%;
+}
+
+/* Color samples */
+.color-samples div {
+    padding: 10px;
+    margin-bottom: 5px;
+}
+
+/* Screen reader only class */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Screen reader announcer */
+#alejo-screen-reader-announcer {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Color samples */
+.red-sample {
+    background-color: red;
+    color: white;
+}
+
+.green-sample {
+    background-color: green;
+    color: white;
+}
+
+.blue-sample {
+    background-color: blue;
+    color: white;
+}
+
+.yellow-sample {
+    background-color: yellow;
+    color: black;
+}

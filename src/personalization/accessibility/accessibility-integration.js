@@ -14,6 +14,18 @@
 import { initializeAccessibilitySystem, adaptiveFeatureManager } from './index.js';
 import { eventEmitter } from '../../core/event-emitter.js';
 import { auditTrail } from '../../security/audit-trail.js';
+import { publish, subscribe } from '../../core/events.js';
+import { showAccessibilityPanel } from './accessibility-settings-panel.js';
+import { toggleFeature, getFeatureStatus } from './adaptive-feature-manager.js';
+import { registerCommand as registerGestureCommand } from '../../gesture/commands.js';
+
+// Import voice recognition if available
+let voiceRecognition;
+try {
+  voiceRecognition = require('../../personalization/voice/recognition.js');
+} catch (error) {
+  console.warn('Voice recognition module not available, voice commands for accessibility will be limited');
+}
 
 class AccessibilityIntegration {
     constructor() {
@@ -125,46 +137,133 @@ class AccessibilityIntegration {
     }
     
     /**
-     * Register accessibility-specific voice commands
-     * @returns {boolean} Success status
+     * Register accessibility-related voice commands
      */
     registerVoiceCommands() {
-        // Check if voice system is available
-        if (!window.voiceRecognition || typeof window.voiceRecognition.registerCommand !== 'function') {
-            console.log('Voice system not available for accessibility commands');
+        console.log('Registering accessibility voice commands');
+        
+        if (!voiceRecognition) {
+            console.warn('Voice recognition not available, skipping voice command registration');
             return false;
         }
         
-        try {
-            // Register each voice command
-            for (const [phrase, handler] of Object.entries(this.voiceCommands)) {
-                window.voiceRecognition.registerCommand(phrase, handler);
+        // Register voice commands for accessibility features
+        subscribe('voice:command:detected', (event) => {
+            const command = event.command.toLowerCase();
+            
+            // Screen reader commands
+            if (command === 'enable screen reader' || command === 'turn on screen reader') {
+                toggleFeature('screenReader', true);
+                publish('accessibility:announcement', { message: 'Screen reader enabled' });
+            } else if (command === 'disable screen reader' || command === 'turn off screen reader') {
+                toggleFeature('screenReader', false);
+                publish('accessibility:announcement', { message: 'Screen reader disabled' });
             }
             
-            this.voiceCommandsRegistered = true;
-            auditTrail.log('accessibility', 'Registered accessibility voice commands');
-            return true;
-        } catch (error) {
-            console.error('Failed to register accessibility voice commands:', error);
-            return false;
-        }
+            // High contrast commands
+            else if (command === 'enable high contrast' || command === 'turn on high contrast') {
+                toggleFeature('highContrast', true);
+                publish('accessibility:announcement', { message: 'High contrast mode enabled' });
+            } else if (command === 'disable high contrast' || command === 'turn off high contrast') {
+                toggleFeature('highContrast', false);
+                publish('accessibility:announcement', { message: 'High contrast mode disabled' });
+            }
+            
+            // Text zoom commands
+            else if (command === 'increase text size' || command === 'larger text') {
+                toggleFeature('textZoom', true);
+                publish('accessibility:announcement', { message: 'Text size increased' });
+            } else if (command === 'decrease text size' || command === 'smaller text') {
+                toggleFeature('textZoom', false);
+                publish('accessibility:announcement', { message: 'Text size decreased' });
+            }
+            
+            // Settings panel commands
+            else if (command === 'open accessibility settings' || command === 'show accessibility options') {
+                showAccessibilityPanel();
+                publish('accessibility:announcement', { message: 'Accessibility settings panel opened' });
+            }
+        });
+        
+        return true;
     }
     
     /**
-     * Register accessibility-specific gesture commands
-     * @returns {boolean} Success status
+     * Register accessibility-related gesture commands
      */
     registerGestureCommands() {
-        // Check if gesture system is available
-        if (!window.gestureSystem || typeof window.gestureSystem.registerGestureHandler !== 'function') {
-            console.log('Gesture system not available for accessibility commands');
-            return false;
-        }
+        console.log('Registering accessibility gesture commands');
+        
+        // Define gesture constants if not already defined
+        const GESTURES = {
+            OPEN_HAND: 'open_hand',
+            CLOSED_FIST: 'closed_fist',
+            POINTING: 'pointing',
+            VICTORY: 'victory',
+            THUMBS_UP: 'thumbs_up',
+            WAVE: 'wave',
+            TRIPLE_TAP: 'triple_tap'
+        };
+        
+        // Register accessibility-specific gesture commands
+        
+        // Triple tap to open accessibility panel (works in any context)
+        registerGestureCommand('default', GESTURES.TRIPLE_TAP, () => {
+            showAccessibilityPanel();
+            publish('accessibility:announcement', { 
+                message: 'Accessibility settings panel opened via gesture',
+                source: 'gesture'
+            });
+        });
+        
+        // In accessibility context, use thumbs up to toggle screen reader
+        registerGestureCommand('accessibility', GESTURES.THUMBS_UP, () => {
+            const currentStatus = getFeatureStatus('screenReader');
+            toggleFeature('screenReader', !currentStatus);
+            publish('accessibility:announcement', { 
+                message: currentStatus ? 'Screen reader disabled' : 'Screen reader enabled',
+                source: 'gesture'
+            });
+        });
+        
+        // In accessibility context, use victory gesture to toggle high contrast
+        registerGestureCommand('accessibility', GESTURES.VICTORY, () => {
+            const currentStatus = getFeatureStatus('highContrast');
+            toggleFeature('highContrast', !currentStatus);
+            publish('accessibility:announcement', { 
+                message: currentStatus ? 'High contrast mode disabled' : 'High contrast mode enabled',
+                source: 'gesture'
+            });
+        });
+        
+        // In accessibility context, use pointing to toggle text zoom
+        registerGestureCommand('accessibility', GESTURES.POINTING, () => {
+            const currentStatus = getFeatureStatus('textZoom');
+            toggleFeature('textZoom', !currentStatus);
+            publish('accessibility:announcement', { 
+                message: currentStatus ? 'Text zoom disabled' : 'Text zoom enabled',
+                source: 'gesture'
+            });
+        });
+        
+        // Listen for gesture detection events
+        subscribe('gesture:detected', (event) => {
+            // Handle special gesture sequences for accessibility
+            if (event.sequence && event.sequence === 'triple_tap') {
+                showAccessibilityPanel();
+                publish('accessibility:announcement', { 
+                    message: 'Accessibility settings panel opened via gesture sequence',
+                    source: 'gesture'
+                });
+            }
+        });
         
         try {
-            // Register each gesture command
-            for (const [gesture, handler] of Object.entries(this.gestureCommands)) {
-                window.gestureSystem.registerGestureHandler(gesture, handler);
+            // Register each gesture command from the class if available
+            for (const [gesture, handler] of Object.entries(this.gestureCommands || {})) {
+                if (window.gestureSystem && typeof window.gestureSystem.registerGestureHandler === 'function') {
+                    window.gestureSystem.registerGestureHandler(gesture, handler);
+                }
             }
             
             this.gestureCommandsRegistered = true;

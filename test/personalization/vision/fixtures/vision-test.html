@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEJO Vision Accessibility Test Fixture</title>
+    <link rel="stylesheet" href="vision-test.css">
+</head>
+<body>
+    <a href="#main-content" class="sr-only">Skip to main content</a>
+    
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+        <h1>ALEJO Vision Accessibility Test</h1>
+    </header>
+    
+    <main id="main-content" class="container">
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>This page contains various UI elements for testing vision accessibility features including:</p>
+            <ul>
+                <li>High contrast mode</li>
+                <li>Screen reader compatibility</li>
+                <li>Keyboard navigation</li>
+                <li>Focus indicators</li>
+                <li>Text scaling</li>
+                <li>Color blindness adaptations</li>
+            </ul>
+        </section>
+        
+        <section id="form-demo">
+            <h2>Form Elements</h2>
+            <form action="#" method="post">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="accessibility-type">Accessibility Need:</label>
+                    <select id="accessibility-type" name="accessibility-type">
+                        <option value="">Select an option</option>
+                        <option value="vision">Vision impairment</option>
+                        <option value="hearing">Hearing impairment</option>
+                        <option value="motor">Motor impairment</option>
+                        <option value="cognitive">Cognitive impairment</option>
+                        <option value="multiple">Multiple needs</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Enter your message"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <fieldset>
+                        <legend>Notification Preferences:</legend>
+                        <div>
+                            <input type="checkbox" id="email-notifications" name="notifications" value="email">
+                            <label for="email-notifications">Email notifications</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="sms-notifications" name="notifications" value="sms">
+                            <label for="sms-notifications">SMS notifications</label>
+                        </div>
+                    </fieldset>
+                </div>
+                
+                <button type="submit">Submit</button>
+                <button type="reset">Reset</button>
+            </form>
+        </section>
+        
+        <section id="cards-demo">
+            <h2>Card Components</h2>
+            
+            <div class="card">
+                <h3 class="card-title">High Contrast Mode</h3>
+                <p>Tests the application of high contrast styles when this mode is activated.</p>
+                <button class="feature-toggle" data-feature="highContrast">Toggle High Contrast</button>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">Screen Reader Support</h3>
+                <p>This card contains an image without an alt attribute, which should be flagged as an accessibility issue.</p>
+                <img src="placeholder.png" width="200" height="100" alt="Placeholder image for accessibility testing">
+                <div>
+                    <button class="feature-toggle" data-feature="screenReader">Enable Screen Reader Support</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">Keyboard Navigation</h3>
+                <p>Tests keyboard navigation between interactive elements.</p>
+                <div>
+                    <button>Button 1</button>
+                    <button>Button 2</button>
+                    <a href="#">Link 1</a>
+                    <a href="#">Link 2</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">Focus Indicators</h3>
+                <p>Tests visibility of focus indicators on interactive elements.</p>
+                <div>
+                    <!-- This button has custom focus styles that might be insufficient -->
+                    <button class="no-outline">Button without outline</button>
+                    <a href="#" class="no-outline">Link without outline</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">Text Scaling</h3>
+                <p>Tests the application's ability to handle text scaling for readability.</p>
+                <button class="feature-toggle" data-feature="textZoom">Toggle Text Zoom</button>
+            </div>
+        </section>
+        
+        <section id="color-blindness-demo">
+            <h2>Color Blindness Simulation</h2>
+            <div class="color-samples">
+                <div class="red-sample">Red text on red background</div>
+                <div class="green-sample">Green text on green background</div>
+                <div class="blue-sample">Blue text on blue background</div>
+                <div class="yellow-sample">Black text on yellow background</div>
+            </div>
+            <button class="feature-toggle" data-feature="colorBlindMode">Toggle Color Blind Mode</button>
+        </section>
+        
+        <section id="aria-live-demo">
+            <h2>ARIA Live Regions</h2>
+            <div aria-live="polite" id="live-region" class="card">
+                This content will update dynamically. Changes should be announced by screen readers.
+            </div>
+            <button id="update-live-region">Update Live Region</button>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 ALEJO Accessibility Testing</p>
+        <p>
+            <a href="#">Privacy Policy</a> |
+            <a href="#">Terms of Service</a> |
+            <a href="#">Accessibility Statement</a>
+        </p>
+    </footer>
+    
+    <div id="alejo-screen-reader-announcer" aria-live="polite" aria-atomic="true" class="sr-only">
+        <!-- Screen reader announcements will be inserted here -->
+    </div>
+    
+    <script>
+        // Simple implementation to mock the ALEJO accessibility manager for testing
+        window.adaptiveFeatureManager = {
+            toggleFeature: function(featureId, state, userTriggered = false) {
+                console.log(`Toggling feature: ${featureId} to ${state} (userTriggered: ${userTriggered})`);
+                
+                // Apply feature toggle based on feature ID
+                switch(featureId) {
+                    case 'highContrast':
+                        if (state || state === undefined) {
+                            document.documentElement.classList.add('alejo-high-contrast');
+                            return true;
+                        } else {
+                            document.documentElement.classList.remove('alejo-high-contrast');
+                            return false;
+                        }
+                    case 'textZoom':
+                        if (state || state === undefined) {
+                            document.documentElement.classList.add('alejo-text-zoom');
+                            return true;
+                        } else {
+                            document.documentElement.classList.remove('alejo-text-zoom');
+                            return false;
+                        }
+                    case 'screenReader':
+                        // For testing only - would integrate with actual screen reader support
+                        this.announceToScreenReader('Screen reader support activated');
+                        return true;
+                    case 'colorBlindMode':
+                        // For testing only - would apply color blind filters in real implementation
+                        return true;
+                    default:
+                        console.warn(`Unknown feature: ${featureId}`);
+                        return false;
+                }
+            },
+            
+            announceToScreenReader: function(message) {
+                const announcer = document.getElementById('alejo-screen-reader-announcer');
+                if (announcer) {
+                    announcer.textContent = message;
+                }
+            }
+        };
+        
+        // Set up event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Feature toggle buttons
+            const toggleButtons = document.querySelectorAll('.feature-toggle');
+            toggleButtons.forEach(button => {
+                const featureId = button.getAttribute('data-feature');
+                button.addEventListener('click', () => {
+                    const isEnabled = document.documentElement.classList.contains(`alejo-${featureId}`);
+                    window.adaptiveFeatureManager.toggleFeature(featureId, !isEnabled, true);
+                });
+            });
+            
+            // Live region update button
+            const updateLiveRegionButton = document.getElementById('update-live-region');
+            const liveRegion = document.getElementById('live-region');
+            
+            if (updateLiveRegionButton && liveRegion) {
+                updateLiveRegionButton.addEventListener('click', () => {
+                    const now = new Date().toLocaleTimeString();
+                    liveRegion.textContent = `This content was updated at ${now}. Screen readers should announce this change.`;
+                });
+            }
+            
+            // Handle URL parameters
+            const params = new URLSearchParams(window.location.search);
+            const featureParam = params.get('feature');
+            
+            if (featureParam) {
+                window.adaptiveFeatureManager.toggleFeature(featureParam, true);
+                console.log(`Auto-enabled feature: ${featureParam} from URL parameter`);
+            }
+        });
+    </script>
+</body>
+</html>
