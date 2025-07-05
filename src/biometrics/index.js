@@ -46,7 +46,20 @@ const DEFAULT_CONFIG = {
     calibrationRequired: true,
     trackPupils: true,
     trackGaze: true,
-    trackBlinks: true
+    trackBlinks: true,
+    processingIntervalMs: 50,
+    adaptiveProcessing: true,
+    debugMode: false,
+    privacyMode: 'none',
+    smoothingFactor: 0.7,
+    performanceMode: 'balanced',
+    accessibility: {
+      highContrastMode: false,
+      largerTargets: false,
+      slowerAnimation: false,
+      voicePrompts: false,
+      extraTime: false
+    }
   },
   accessibility: {
     detectionFeedback: true,
@@ -285,7 +298,22 @@ export async function startProcessing() {
     }
     
     if (activeScanners.has('eye')) {
-      await import('./eye/processor.js').then(module => module.startEyeProcessing(currentVideoStream, config));
+      await import('./eye/processor.js').then(module => {
+        // Create video element for eye tracking
+        const videoElement = document.createElement('video');
+        videoElement.srcObject = currentVideoStream;
+        videoElement.autoplay = true;
+        videoElement.muted = true;
+        videoElement.playsInline = true;
+        
+        // Initialize eye processor with video source
+        module.initializeProcessor(config.eyeTracking)
+          .then(() => {
+            module.setVideoSource(videoElement);
+            module.startProcessing();
+            publish('biometrics:eye:started');
+          });
+      });
     }
   } catch (error) {
     console.error('Failed to start biometric processing:', error);
@@ -316,7 +344,10 @@ export function stopProcessing() {
     }
     
     if (activeScanners.has('eye')) {
-      import('./eye/processor.js').then(module => module.stopEyeProcessing());
+      import('./eye/processor.js').then(module => {
+        module.stopProcessing();
+        publish('biometrics:eye:stopped');
+      });
     }
 
     isProcessing = false;
@@ -355,7 +386,10 @@ export function pauseProcessing() {
     }
     
     if (activeScanners.has('eye')) {
-      import('./eye/processor.js').then(module => module.pauseEyeProcessing());
+      import('./eye/processor.js').then(module => {
+        module.pauseProcessing();
+        publish('biometrics:eye:paused');
+      });
     }
 
     isProcessing = false;
@@ -387,7 +421,10 @@ export function resumeProcessing() {
     }
     
     if (activeScanners.has('eye')) {
-      import('./eye/processor.js').then(module => module.resumeEyeProcessing());
+      import('./eye/processor.js').then(module => {
+        module.resumeProcessing();
+        publish('biometrics:eye:resumed');
+      });
     }
 
     isProcessing = true;

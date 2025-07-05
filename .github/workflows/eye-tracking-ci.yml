@@ -1,0 +1,237 @@
+name: Eye Tracking CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/biometrics/eye/**'
+      - 'tests/biometrics/eye*'
+      - 'demos/eye-tracking*'
+      - '.github/workflows/eye-tracking-ci.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/biometrics/eye/**'
+      - 'tests/biometrics/eye*'
+      - 'demos/eye-tracking*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint eye tracking modules
+        run: npx eslint src/biometrics/eye/ --ext .js
+
+  test:
+    name: Run Tests
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run eye tracking unit tests
+        run: npm run test:eye-tracking
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 7
+
+  security-scan:
+    name: Security Scan
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run security scanner
+        run: node tools/alejo_security_scanner.py --target src/biometrics/eye
+      - name: Upload security scan results
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-scan-results
+          path: security-scan-results/
+          retention-days: 7
+
+  performance-test:
+    name: Performance Test
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run performance tests
+        run: node tools/alejo_performance_tester.py --component eye-tracking
+      - name: Upload performance results
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-results
+          path: performance-results/
+          retention-days: 7
+
+  accessibility-test:
+    name: Accessibility Test
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run accessibility tests
+        run: npm run test:accessibility -- --component eye-tracking
+      - name: Upload accessibility results
+        uses: actions/upload-artifact@v3
+        with:
+          name: accessibility-results
+          path: accessibility-results/
+          retention-days: 7
+
+  build-demo:
+    name: Build Demo
+    needs: [security-scan, performance-test, accessibility-test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build demo
+        run: |
+          mkdir -p dist/demos
+          cp demos/eye-tracking-demo.html dist/demos/
+          cp demos/eye-tracking-demo.css dist/demos/
+          cp demos/eye-tracking-demo.js dist/demos/
+          cp demos/server.js dist/
+      - name: Upload demo build
+        uses: actions/upload-artifact@v3
+        with:
+          name: eye-tracking-demo
+          path: dist/
+          retention-days: 7
+
+  deploy-staging:
+    name: Deploy to Staging
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    needs: build-demo
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.deployment-url }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download demo build
+        uses: actions/download-artifact@v3
+        with:
+          name: eye-tracking-demo
+          path: dist
+      - name: Deploy to staging
+        id: deploy
+        uses: netlify/actions/cli@master
+        with:
+          args: deploy --dir=dist --prod
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
+  deploy-production:
+    name: Deploy to Production
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
+    needs: build-demo
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.deployment-url }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download demo build
+        uses: actions/download-artifact@v3
+        with:
+          name: eye-tracking-demo
+          path: dist
+      - name: Deploy to production
+        id: deploy
+        uses: netlify/actions/cli@master
+        with:
+          args: deploy --dir=dist --prod
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_PRODUCTION_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      
+  create-release:
+    name: Create GitHub Release
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [deploy-staging]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Generate release notes
+        run: |
+          python tools/tag_major_update.py \
+            --tag "[MAJOR FEATURE]" \
+            --message "Add eye tracking modules to biometrics system" \
+            --generate-notes
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            RELEASE_NOTES.md
+          body_path: RELEASE_NOTES.md
+          tag_name: v${{ env.NEW_VERSION }}
+          name: ALEJO v${{ env.NEW_VERSION }} - Eye Tracking
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
