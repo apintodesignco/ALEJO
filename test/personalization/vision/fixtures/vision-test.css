@@ -119,6 +119,11 @@ input, select, textarea {
     --border-color: #ffffff;
 }
 
+/* Focus indicator test elements */
+.no-outline {
+    outline: none;
+}
+
 .alejo-high-contrast body {
     background-color: #000000;
     color: #ffffff;
