@@ -64,7 +64,7 @@ You can manually run most of these workflows:
 
 If you want to use SonarCloud:
 
-1. Sign up at https://sonarcloud.io/ using your GitHub account
+1. Sign up at [https://sonarcloud.io/](https://sonarcloud.io/) using your GitHub account
 2. Set up your organization
 3. Add your repository
 4. Get your SONAR_TOKEN and add it to your GitHub secrets

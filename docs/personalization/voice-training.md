@@ -181,6 +181,7 @@ The Voice Training System requires the following browser features:
 - WebAssembly (for optimal TensorFlow.js performance)
 
 Supported browsers:
+
 - Chrome 74+
 - Firefox 71+
 - Safari 14.1+

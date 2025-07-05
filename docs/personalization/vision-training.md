@@ -11,6 +11,7 @@ The vision system consists of several interconnected modules:
 ### 1. Training Module (`training.js`)
 
 The core module responsible for:
+
 - Capturing and processing facial data samples
 - Creating and managing facial recognition models
 - Handling training sessions with multiple samples
@@ -20,6 +21,7 @@ The core module responsible for:
 ### 2. Recognition Module (`recognition.js`)
 
 Provides real-time facial recognition capabilities:
+
 - Face identification against trained models
 - Verification of claimed identity
 - Confidence scoring for recognition results
@@ -29,6 +31,7 @@ Provides real-time facial recognition capabilities:
 ### 3. Face Model (`face-model.js`)
 
 Handles the underlying face detection and modeling:
+
 - Face detection and landmark extraction
 - Descriptor generation for facial recognition
 - Model management and persistence
@@ -37,6 +40,7 @@ Handles the underlying face detection and modeling:
 ### 4. Expression Detection (`expression.js`)
 
 Analyzes facial expressions to detect emotional states:
+
 - Real-time expression classification
 - Dominant emotion detection
 - Expression intensity measurement
@@ -45,6 +49,7 @@ Analyzes facial expressions to detect emotional states:
 ### 5. Training UI (`training-ui.js`)
 
 Provides a guided user interface for vision training:
+
 - Multi-step training process
 - Camera setup and management
 - Sample quality verification
@@ -61,13 +66,13 @@ All vision operations are protected by role-based access control:
 
 | Operation | Required Permission | Description |
 |-----------|---------------------|-------------|
-| `vision:training:initialize` | Allows initialization of the vision training system |
-| `vision:training:create` | Permits creation of new vision models |
-| `vision:training:update` | Allows updating existing vision models |
-| `vision:training:delete` | Permits deletion of vision models |
-| `vision:recognition:identify` | Allows identification against trained models |
-| `vision:recognition:verify` | Permits verification of claimed identity |
-| `vision:expression:analyze` | Allows analysis of facial expressions |
+| `vision:training:initialize` | `personalization.vision.train.init` | Allows initialization of the vision training system |
+| `vision:training:create` | `personalization.vision.train.create` | Permits creation of new vision models |
+| `vision:training:update` | `personalization.vision.train.update` | Allows updating existing vision models |
+| `vision:training:delete` | `personalization.vision.train.delete` | Permits deletion of vision models |
+| `vision:recognition:identify` | `personalization.vision.recognize.identify` | Allows identification against trained models |
+| `vision:recognition:verify` | `personalization.vision.recognize.verify` | Permits verification of claimed identity |
+| `vision:expression:analyze` | `personalization.vision.expression.analyze` | Allows analysis of facial expressions |
 
 ### Audit Logging
 
@@ -303,17 +308,20 @@ document.getElementById('next-button').addEventListener('click', async () => {
 ## Browser Compatibility
 
 The vision system requires:
+
 - WebRTC support for camera access
 - Canvas API for image processing
 - WebGL for optimal performance (falls back to CPU)
 
 Supported browsers:
+
 - Chrome 76+
 - Firefox 90+
 - Safari 14.1+
 - Edge 79+
 
 Mobile support:
+
 - iOS Safari 14.5+
 - Chrome for Android 76+
 

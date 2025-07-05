@@ -89,6 +89,7 @@ The Personalization Module integrates with ALEJO's security systems:
 ### RBAC Integration
 
 All personalization operations check appropriate permissions:
+
 - `personalization:process` - Required to process user messages
 - `personalization:read` - Required to read personalization profiles
 - `personalization:reset` - Required to reset personalization data
@@ -98,6 +99,7 @@ All personalization operations check appropriate permissions:
 ### Consent Management
 
 Personalization features require explicit user consent:
+
 - `personalization` - General personalization consent
 - `behaviorAnalysis` - Consent for analyzing communication patterns
 - `preferenceTracking` - Consent for tracking preferences
@@ -105,6 +107,7 @@ Personalization features require explicit user consent:
 ### Privacy Protection
 
 All personalization data is:
+
 - Encrypted at rest
 - Processed locally by default
 - Subject to data retention policies
@@ -135,9 +138,11 @@ await personalization.initialize({
 ### Core Functions
 
 #### `initialize(options)`
+
 Initializes the personalization module and all its components.
 
 **Parameters:**
+
 - `options` (Object): Initialization options
   - `userId` (string): User identifier
   - `enableVoice` (boolean): Whether to enable voice personalization
@@ -152,15 +157,18 @@ Initializes the personalization module and all its components.
   - `duration` (number): Initialization time in milliseconds
 
 #### `shutdown()`
+
 Shuts down the personalization module and all its components.
 
 **Returns:**
 - Promise resolving to a boolean indicating success
 
 #### `processUserMessage(userId, message, context)`
+
 Processes a user message through all personalization components.
 
 **Parameters:**
+
 - `userId` (string): User identifier
 - `message` (string): Message content
 - `context` (Object): Optional context information
@@ -173,33 +181,41 @@ Processes a user message through all personalization components.
   - `results` (Object): Results from each component
 
 #### `adaptResponse(userId, response, context)`
+
 Adapts a response based on user's personalization profile.
 
 **Parameters:**
+
 - `userId` (string): User identifier
 - `response` (string): Original response
 - `context` (Object): Optional context information
   - `synthesisParams` (Object): Voice synthesis parameters
 
 **Returns:**
+
 - Promise resolving to the adapted response string
 
 #### `getPersonalizationProfile(userId, options)`
+
 Gets a user's personalization profile.
 
 **Parameters:**
+
 - `userId` (string): User identifier
 - `options` (Object): Additional options
   - `includeVoice` (boolean): Whether to include voice profile
   - `includeVision` (boolean): Whether to include vision profile
 
 **Returns:**
+
 - Promise resolving to the user's personalization profile object
 
 #### `resetPersonalizationData(userId, options)`
+
 Resets a user's personalization data.
 
 **Parameters:**
+
 - `userId` (string): User identifier
 - `options` (Object): Reset options
   - `excludeBehavior` (boolean): Whether to exclude behavior data

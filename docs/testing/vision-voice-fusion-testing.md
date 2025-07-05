@@ -18,6 +18,7 @@ This document provides comprehensive guidance for testing the Vision-Voice Fusio
 The Vision-Voice Fusion module is a critical component of ALEJO's multimodal understanding system. It combines inputs from the vision system (facial expressions, identity) and voice system (speech emotion, commands, verification) to provide enhanced understanding of user intent and emotional state.
 
 Testing this module requires verifying:
+
 - Proper event handling and subscription
 - Accurate fusion of multimodal inputs
 - Temporal alignment of inputs
@@ -169,6 +170,7 @@ Performance testing ensures the Vision-Voice Fusion module operates efficiently.
 ### Performance Test Script
 
 A performance test script is available at `test/performance/fusion-performance.js` that:
+
 - Simulates high-frequency events
 - Measures processing time and resource usage
 - Reports on performance metrics
@@ -198,6 +200,7 @@ Common issues and their solutions:
 ### Missing Events
 
 If fusion events are not being emitted:
+
 1. Check that both vision and voice systems are initialized
 2. Verify that events are being emitted within the temporal window
 3. Ensure confidence values exceed the configured threshold
@@ -205,6 +208,7 @@ If fusion events are not being emitted:
 ### Incorrect Fusion Results
 
 If fusion results are inaccurate:
+
 1. Check the modality weights in the configuration
 2. Verify the mapping functions for emotions and expressions
 3. Ensure the input data is correctly formatted
@@ -212,6 +216,7 @@ If fusion results are inaccurate:
 ### Performance Issues
 
 If fusion is slow or resource-intensive:
+
 1. Reduce the buffer size
 2. Increase the temporal window
 3. Adjust the processing frequency
@@ -221,6 +226,7 @@ If fusion is slow or resource-intensive:
 The Vision-Voice Fusion module is automatically tested on each pull request and push to main branches using GitHub Actions.
 
 The workflow configuration is in `.github/workflows/fusion-integration-tests.yml` and includes:
+
 1. Running all fusion-related tests
 2. Generating coverage reports
 3. Uploading test artifacts for review

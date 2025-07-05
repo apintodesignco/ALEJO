@@ -4,7 +4,7 @@ This directory contains fixed versions of GitHub workflow files to address all f
 
 ## Issues Identified
 
-1. Deprecated `actions/upload-artifact@v1` 
+1. Deprecated `actions/upload-artifact@v1`
 2. Potential other deprecated actions
 3. Configuration inconsistencies
 

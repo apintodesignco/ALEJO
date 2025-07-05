@@ -38,7 +38,7 @@ For production deployments, the security headers are configured based on the hos
 
 Create a `_headers` file in the `public` directory with the following content:
 
-```
+```text
 /*
   Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'self'; object-src 'none'; child-src 'self'; frame-ancestors 'self'; form-action 'self'; base-uri 'self'; upgrade-insecure-requests;
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload

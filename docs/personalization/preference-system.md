@@ -13,7 +13,7 @@ The ALEJO Preference System is a robust personalization engine that learns user 
 
 The preference system consists of the following key components:
 
-```
+```text
 src/personalization/behavior/
 ├── preference-model.js           # Core preference learning and storage
 ├── preference-relationship-integration.js  # Integration with relationship memory

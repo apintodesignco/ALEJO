@@ -105,18 +105,28 @@ jobs:
         with:
           fetch-depth: 0
           
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Note: You'll need to add the SONAR_TOKEN secret in your GitHub repository settings
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=apintodesignco_ALEJO
-            -Dsonar.organization=apintodesignco
-            -Dsonar.sources=src,alejo
-            -Dsonar.tests=tests
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.python.coverage.reportPaths=coverage.xml
-        continue-on-error: true
+      # Note: The IDE may show a warning about SONAR_TOKEN. This is expected and can be ignored if you're not using SonarCloud.
+      # To resolve this warning, add a SONAR_TOKEN secret in your GitHub repository settings:
+      #   1. Go to repository Settings > Secrets and variables > Actions > New repository secret
+      #   2. Name: SONAR_TOKEN
+      #   3. Value: Get token from https://sonarcloud.io/account/security/
+      
+      # ===== SONARCLOUD CONFIGURATION =====
+      # This section is commented out to avoid IDE warnings about SONAR_TOKEN
+      # To use SonarCloud, uncomment this section and add the SONAR_TOKEN secret
+      # in your GitHub repository settings.
+      #
+      # - name: SonarCloud Scan
+      #   continue-on-error: true
+      #   uses: SonarSource/sonarcloud-github-action@master
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   with:
+      #     args: >
+      #       -Dsonar.projectKey=apintodesignco_ALEJO
+      #       -Dsonar.organization=apintodesignco
+      #       -Dsonar.sources=src,alejo
+      #       -Dsonar.tests=tests
+      #       -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+      #       -Dsonar.python.coverage.reportPaths=coverage.xml

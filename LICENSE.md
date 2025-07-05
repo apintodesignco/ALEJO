@@ -1,6 +1,6 @@
 # MIT License with ALEJO-Specific Terms
 
-Copyright (c) 2025 Alejandro Pinto (al.pintoemail@gmail.com)
+Copyright (c) 2025 Alejandro Pinto ([al.pintoemail@gmail.com](mailto:al.pintoemail@gmail.com))
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ In addition to the MIT License terms above, the following ALEJO-specific terms a
 
 3. **Attribution**: Any use of the Software must maintain attribution to Alejandro Pinto as the original creator and acknowledge the assistance of AI in its development.
 
-4. **Commercial Use**: While the MIT License permits commercial use, any commercial implementation of ALEJO should notify Alejandro Pinto at al.pintoemail@gmail.com.
+4. **Commercial Use**: While the MIT License permits commercial use, any commercial implementation of ALEJO should notify Alejandro Pinto at [al.pintoemail@gmail.com](mailto:al.pintoemail@gmail.com).
 
 5. **Free Access for Accessibility Needs**: The Software is freely available to persons with disabilities or accessibility needs.
 
