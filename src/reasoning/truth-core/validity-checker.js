@@ -5,6 +5,10 @@
  * and detects logical inconsistencies. It ensures that ALEJO's reasoning
  * remains consistent with established foundational knowledge.
  * 
+ * The validity checker serves as a cornerstone of ALEJO's reasoning engine,
+ * preventing logical inconsistencies and ensuring all reasoning follows sound
+ * principles backed by foundation facts.
+ * 
  * Based on MIT Media Lab research (2025) on logical consistency validation
  * for AI reasoning systems.
  */
@@ -15,10 +19,20 @@ import {
   checkContradiction, 
   getFactsByCategory,
   searchFacts,
+  checkAdvancedContradiction,
   CONFIDENCE, 
   CATEGORIES 
 } from './foundation-facts.js';
 import { resolveConflict } from '../correction/conflict-resolver.js';
+import * as security from '../../security/index.js';
+import * as feedback from '../correction/feedback-loop.js';
+
+// Constants for security permissions
+const PERMISSIONS = {
+  USE_VALIDATOR: 'reasoning:use-validator',
+  VIEW_VALIDATION_LOGS: 'reasoning:view-validation-logs',
+  OVERRIDE_VALIDATION: 'reasoning:override-validation'
+};
 
 /**
  * Validation result levels
@@ -41,6 +55,26 @@ const LOGICAL_RELATIONS = {
   INDEPENDENT: 'independent',         // Statements are logically independent
   IMPLICATION: 'implication',         // One statement implies the other
   PROBABILISTIC: 'probabilistic'      // Statements have probabilistic relationship
+};
+
+/**
+ * Common logical fallacies that can be detected
+ */
+const FALLACIES = {
+  AD_HOMINEM: 'ad_hominem',          // Attacking the person instead of the argument
+  APPEAL_TO_AUTHORITY: 'appeal_to_authority', // Using authority as the primary evidence
+  APPEAL_TO_EMOTION: 'appeal_to_emotion',  // Using emotions as the primary argument
+  APPEAL_TO_NATURE: 'appeal_to_nature',  // Assuming natural is automatically good
+  BANDWAGON: 'bandwagon',           // Arguing something is right because it's popular
+  BEGGING_QUESTION: 'begging_question', // Circular reasoning
+  FALSE_DICHOTOMY: 'false_dichotomy', // Presenting only two options when more exist
+  HASTY_GENERALIZATION: 'hasty_generalization', // Drawing conclusions from insufficient data
+  POST_HOC: 'post_hoc',             // Assuming correlation implies causation
+  SLIPPERY_SLOPE: 'slippery_slope',  // Arguing that one small step leads to extreme consequences
+  STRAW_MAN: 'straw_man',           // Misrepresenting an argument to make it easier to attack
+  NO_TRUE_SCOTSMAN: 'no_true_scotsman', // Modifying a generalization to avoid counterexamples
+  RED_HERRING: 'red_herring',       // Introducing irrelevant topics to distract
+  MIDDLE_GROUND: 'middle_ground'    // Assuming the middle position is always correct
 };
 
 // Initialize validation cache to improve performance
@@ -82,35 +116,141 @@ function addToCache(key, value) {
  * @param {Object} [options] - Validation options
  * @param {boolean} [options.useCache=true] - Whether to use cache
  * @param {boolean} [options.resolveConflicts=true] - Whether to attempt conflict resolution
+ * @param {boolean} [options.checkFallacies=true] - Whether to check for logical fallacies
+ * @param {boolean} [options.useAdvancedCheck=true] - Whether to use advanced contradiction detection
+ * @param {string} [options.requestedBy] - User ID or system component requesting validation
+ * @param {Object} [options.context] - Additional context for advanced validation
  * @returns {Object} - { validity: string, confidence: number, details: Object }
  */
-export function validateStatement(statement, options = {}) {
-  const { useCache = true, resolveConflicts = true } = options;
+export async function validateStatement(statement, options = {}) {
+  const { 
+    useCache = true, 
+    resolveConflicts = true, 
+    checkFallacies = true,
+    useAdvancedCheck = true,
+    requestedBy = 'system',
+    context = {}
+  } = options;
+  
+  // Security check - requires permission to use validator
+  if (!await security.checkPermission(PERMISSIONS.USE_VALIDATOR)) {
+    security.auditLog({
+      action: 'validity-checker:unauthorized-validation-attempt',
+      details: { statement, requestedBy },
+      outcome: 'denied'
+    });
+    
+    publish('reasoning:unauthorized-operation', { 
+      operation: 'validate-statement', 
+      statement: statement.key 
+    });
+    
+    throw new Error('Permission denied: reasoning:use-validator required');
+  }
   
   // Check cache first if enabled
   if (useCache) {
     const cacheKey = getCacheKey(statement);
     const cachedResult = validationCache.get(cacheKey);
     if (cachedResult) {
+      // Log cache hit
+      security.auditLog({
+        action: 'validity-checker:cache-hit',
+        details: { statement: statement.key, requestedBy },
+        outcome: 'success'
+      });
       return cachedResult;
     }
   }
   
-  // Check direct contradiction with foundation facts
-  const contradictionResult = checkContradiction(statement.key, statement.value);
+  // Log the validation attempt
+  security.auditLog({
+    action: 'validity-checker:validation-request',
+    details: { statement, requestedBy },
+    outcome: 'processing'
+  });
+  
+  // Check for potential fallacies first if enabled
+  if (checkFallacies) {
+    const fallacyResult = checkForFallacies(statement);
+    if (fallacyResult.hasFallacy) {
+      const result = {
+        validity: VALIDITY.FALLACIOUS,
+        confidence: fallacyResult.confidence,
+        details: {
+          statement,
+          fallacyType: fallacyResult.fallacyType,
+          reason: fallacyResult.reason,
+          explanation: fallacyResult.explanation
+        }
+      };
+      
+      if (useCache) {
+        addToCache(getCacheKey(statement), result);
+      }
+      
+      // Log the fallacy detection
+      security.auditLog({
+        action: 'validity-checker:fallacy-detected',
+        details: { statement: statement.key, fallacy: fallacyResult.fallacyType, requestedBy },
+        outcome: 'rejected'
+      });
+      
+      publish('reasoning:validation-result', result);
+      
+      // Record feedback for fallacy detection
+      feedback.recordFeedback({
+        category: 'logical_fallacy',
+        targetId: statement.key,
+        targetType: 'statement',
+        description: `Detected ${fallacyResult.fallacyType} fallacy: ${fallacyResult.explanation}`,
+        impactLevel: 'medium',
+        confidence: fallacyResult.confidence,
+        source: 'validity_checker',
+        metadata: {
+          statement: statement,
+          fallacyDetails: fallacyResult
+        }
+      });
+      
+      return result;
+    }
+  }
+  
+  // Use advanced contradiction check if enabled
+  let contradictionResult;
+  if (useAdvancedCheck && context) {
+    contradictionResult = checkAdvancedContradiction({
+      key: statement.key,
+      value: statement.value,
+      category: statement.category,
+      description: statement.description
+    }, context);
+  } else {
+    // Use standard contradiction check
+    contradictionResult = checkContradiction(statement.key, statement.value);
+  }
   
   if (contradictionResult) {
     // If conflict resolution is enabled, try to resolve the conflict
     if (resolveConflicts) {
       const resolution = resolveConflict({
+        id: `validation_${statement.key}_${Date.now()}`,
         key: statement.key,
-        value: statement.value,
-        conflictType: 'factual',
-        conflictingFact: contradictionResult.fact
+        existing: contradictionResult.fact.value,
+        proposed: statement.value,
+        metadata: {
+          conflictType: 'factual',
+          existingSource: 'foundation-facts',
+          proposedSource: statement.source || 'unknown',
+          existingConfidence: contradictionResult.fact.confidence,
+          proposedConfidence: statement.confidence || 0.5
+        }
       });
       
       // If resolution was successful and favors the new statement
-      if (resolution && resolution.resolution === 'accept_new') {
+      if (resolution && resolution.resolution && 
+          JSON.stringify(resolution.resolution) === JSON.stringify(statement.value)) {
         const result = {
           validity: VALIDITY.VALID,
           confidence: resolution.confidence,
@@ -124,6 +264,18 @@ export function validateStatement(statement, options = {}) {
         if (useCache) {
           addToCache(getCacheKey(statement), result);
         }
+        
+        // Log the conflict resolution
+        security.auditLog({
+          action: 'validity-checker:conflict-resolved',
+          details: { 
+            statement: statement.key, 
+            conflictedFact: contradictionResult.factId,
+            resolution: 'accepted_new',
+            requestedBy 
+          },
+          outcome: 'accepted'
+        });
         
         publish('reasoning:validation-result', result);
         return result;
@@ -146,6 +298,32 @@ export function validateStatement(statement, options = {}) {
       addToCache(getCacheKey(statement), result);
     }
     
+    // Log the contradiction
+    security.auditLog({
+      action: 'validity-checker:contradiction-detected',
+      details: { 
+        statement: statement.key, 
+        contradictedFact: contradictionResult.factId,
+        requestedBy 
+      },
+      outcome: 'rejected'
+    });
+    
+    // Record feedback for contradiction
+    feedback.recordFeedback({
+      category: 'factual_error',
+      targetId: statement.key,
+      targetType: 'statement',
+      description: `Statement contradicts foundation fact: ${contradictionResult.fact.description}`,
+      impactLevel: 'high',
+      confidence: contradictionResult.fact.confidence,
+      source: 'validity_checker',
+      metadata: {
+        statement: statement,
+        contradictedFact: contradictionResult.fact
+      }
+    });
+    
     publish('reasoning:validation-result', result);
     return result;
   }
@@ -166,6 +344,32 @@ export function validateStatement(statement, options = {}) {
       addToCache(getCacheKey(statement), result);
     }
     
+    // Log the inconsistency
+    security.auditLog({
+      action: 'validity-checker:internal-inconsistency',
+      details: { 
+        statement: statement.key, 
+        reason: internalConsistencyResult.reason,
+        requestedBy 
+      },
+      outcome: 'rejected'
+    });
+    
+    // Record feedback for logical inconsistency
+    feedback.recordFeedback({
+      category: 'logical_inconsistency',
+      targetId: statement.key,
+      targetType: 'statement',
+      description: internalConsistencyResult.reason,
+      impactLevel: 'medium',
+      confidence: internalConsistencyResult.confidence,
+      source: 'validity_checker',
+      metadata: {
+        statement: statement,
+        inconsistencyDetails: internalConsistencyResult
+      }
+    });
+    
     publish('reasoning:validation-result', result);
     return result;
   }
@@ -184,8 +388,180 @@ export function validateStatement(statement, options = {}) {
     addToCache(getCacheKey(statement), result);
   }
   
+  // Log the successful validation
+  security.auditLog({
+    action: 'validity-checker:validation-success',
+    details: { statement: statement.key, requestedBy },
+    outcome: 'success'
+  });
+  
   publish('reasoning:validation-result', result);
   return result;
+}
+
+/**
+ * Check for logical fallacies in a statement
+ * @private
+ * @param {Object} statement - { key: string, value: any }
+ * @returns {Object} - { hasFallacy: boolean, fallacyType: string, confidence: number, reason: string, explanation: string }
+ */
+function checkForFallacies(statement) {
+  // Default response for no fallacy detected
+  const defaultResponse = {
+    hasFallacy: false,
+    fallacyType: null,
+    confidence: 0,
+    reason: '',
+    explanation: ''
+  };
+  
+  // Only check string values for fallacies
+  if (typeof statement.value !== 'string') {
+    return defaultResponse;
+  }
+  
+  const value = statement.value.toLowerCase();
+  
+  // Array of fallacy pattern checks - each returns null or a fallacy detection result
+  const fallacyChecks = [
+    // Ad Hominem detection
+    () => {
+      const patterns = [
+        /\b(?:because|since)\s+(?:(?:he|she|they)\s+(?:is|are)|someone\s+is)\s+(?:a|an)\s+[\w\s]*(?:idiot|stupid|dumb|fool|ignorant|corrupt|biased|evil)/i,
+        /\b(?:don't|do not)\s+(?:listen to|believe|trust)\s+[\w\s]+\s+(?:because|as)\s+(?:(?:he|she|they)\s+(?:is|are)|someone\s+is)/i,
+        /\b(?:argument|statement|claim|opinion)\s+is\s+(?:invalid|wrong|false|incorrect)\s+because\s+(?:(?:he|she|they)\s+(?:is|are)|someone\s+is)/i
+      ];
+      
+      for (const pattern of patterns) {
+        if (pattern.test(value)) {
+          return {
+            hasFallacy: true,
+            fallacyType: FALLACIES.AD_HOMINEM,
+            confidence: 0.85,
+            reason: 'Statement attacks the person rather than addressing their argument',
+            explanation: 'The statement dismisses an argument based on a characteristic or perceived flaw of the person making it, rather than addressing the argument itself.'
+          };
+        }
+      }
+      return null;
+    },
+    
+    // Appeal to Authority detection
+    () => {
+      const patterns = [
+        /\b(?:because|since)\s+(?:Dr|Professor|Prof|expert|scientist|researcher|authority|specialist)\s+[\w\s]+\s+(?:says|said|believes|claims|states)/i,
+        /\b(?:according to|as per)\s+(?:famous|respected|renowned|leading|top)\s+[\w\s]+,/i,
+        /\b(?:must|should)\s+be\s+(?:true|right|correct|valid)\s+(?:because|since)\s+[\w\s]+\s+(?:says|said|believes|claims)/i
+      ];
+      
+      for (const pattern of patterns) {
+        if (pattern.test(value)) {
+          // Check if there's actual evidence or reasoning provided
+          if (!/(evidence|data|experiment|study|research|because|since)\s+(shows|indicates|demonstrates|proves|supports)/i.test(value)) {
+            return {
+              hasFallacy: true,
+              fallacyType: FALLACIES.APPEAL_TO_AUTHORITY,
+              confidence: 0.75, // Lower confidence as some appeals to experts are valid
+              reason: 'Statement relies primarily on authority rather than evidence',
+              explanation: 'The statement uses authority as the primary basis for an argument without providing supporting evidence or reasoning.'
+            };
+          }
+        }
+      }
+      return null;
+    },
+    
+    // False Dichotomy detection
+    () => {
+      const patterns = [
+        /\b(?:either|it's either|it is either)\s+[\w\s,]+\s+or\s+[\w\s,]+$/i,
+        /\bthere\s+(?:are|is)\s+only\s+(?:two|2)\s+(?:options|choices|possibilities|alternatives)/i,
+        /\b(?:if not|if it's not|if it is not)\s+[\w\s,]+,\s+(?:then|it must be|it has to be)\s+[\w\s,]+$/i
+      ];
+      
+      for (const pattern of patterns) {
+        if (pattern.test(value)) {
+          // Check if the statement is about a genuinely binary situation
+          const genuinelyBinary = [
+            /\b(?:true|false)\s+in\s+formal\s+logic\b/i,
+            /\b(?:alive|dead)\s+in\s+biological\s+terms\b/i,
+            /\b(?:even|odd)\s+(?:number|integer)\b/i
+          ];
+          
+          if (!genuinelyBinary.some(pattern => pattern.test(value))) {
+            return {
+              hasFallacy: true,
+              fallacyType: FALLACIES.FALSE_DICHOTOMY,
+              confidence: 0.8,
+              reason: 'Statement presents a false choice between only two alternatives',
+              explanation: 'The statement artificially restricts possibilities to only two options when other alternatives may exist.'
+            };
+          }
+        }
+      }
+      return null;
+    },
+    
+    // Slippery Slope detection
+    () => {
+      const patterns = [
+        /\bif\s+(?:we|you|they)\s+(?:allow|permit|accept|do)\s+[\w\s,]+,\s+(?:next|then|eventually)\s+[\w\s,]+\s+(?:will|would|could)\s+(?:happen|occur|follow|result)/i,
+        /\b(?:leads|lead|leading)\s+to\s+a\s+slippery\s+slope\b/i,
+        /\b(?:first step|gateway|opens the door)\s+to\s+[\w\s,]+$/i,
+        /\b(?:today|now)\s+[\w\s,]+,\s+(?:tomorrow|next)\s+[\w\s,]+$/i
+      ];
+      
+      for (const pattern of patterns) {
+        if (pattern.test(value)) {
+          // Check if there's evidence for the causal chain
+          if (!/(evidence|data|history|research|studies)\s+(shows|indicates|demonstrates|proves|supports)\s+this\s+(progression|sequence|chain\s+of\s+events)/i.test(value)) {
+            return {
+              hasFallacy: true,
+              fallacyType: FALLACIES.SLIPPERY_SLOPE,
+              confidence: 0.8,
+              reason: 'Statement claims one event will inevitably lead to extreme consequences',
+              explanation: 'The statement argues that a relatively small first step inevitably leads to significant negative consequences without adequate justification for this chain of causation.'
+            };
+          }
+        }
+      }
+      return null;
+    },
+    
+    // Post Hoc Fallacy detection
+    () => {
+      const patterns = [
+        /\b(?:because|since)\s+[\w\s,]+\s+(?:happened|occurred)\s+(?:before|prior to)\s+[\w\s,]+,\s+(?:it|the former)\s+(?:caused|created|led to|resulted in)\s+(?:it|the latter)/i,
+        /\b(?:after|following)\s+[\w\s,]+,\s+[\w\s,]+\s+(?:happened|occurred|began|started|appeared|emerged)/i
+      ];
+      
+      for (const pattern of patterns) {
+        if (pattern.test(value)) {
+          // Check if there's evidence for causation beyond timing
+          if (!/(controlled|experimental|statistical|analysis|mechanism|pathway)\s+(shows|indicates|demonstrates|proves|supports|explains)\s+causation/i.test(value)) {
+            return {
+              hasFallacy: true,
+              fallacyType: FALLACIES.POST_HOC,
+              confidence: 0.8,
+              reason: 'Statement assumes causation from mere temporal sequence',
+              explanation: 'The statement assumes that because one event followed another, the first event caused the second, without sufficient evidence of a causal relationship.'
+            };
+          }
+        }
+      }
+      return null;
+    }
+  ];
+  
+  // Run through all fallacy checks
+  for (const check of fallacyChecks) {
+    const result = check();
+    if (result) {
+      return result;
+    }
+  }
+  
+  return defaultResponse;
 }
 
 /**
@@ -312,12 +688,48 @@ function determineLogicalRelation(statement1, statement2) {
  * @param {Object} [options] - Validation options
  * @param {boolean} [options.useCache=true] - Whether to use cache
  * @param {boolean} [options.resolveConflicts=true] - Whether to attempt conflict resolution
+ * @param {boolean} [options.checkFallacies=true] - Whether to check for logical fallacies
+ * @param {boolean} [options.useAdvancedCheck=true] - Whether to use advanced contradiction detection
+ * @param {string} [options.requestedBy] - User ID or system component requesting validation
+ * @param {Object} [options.context] - Additional context for advanced validation
  * @returns {Object} - { validity: string, confidence: number, details: Object }
  */
-export function validateConsistency(statements, options = {}) {
+export async function validateConsistency(statements, options = {}) {
+  const { 
+    useCache = true, 
+    resolveConflicts = true,
+    checkFallacies = true,
+    useAdvancedCheck = true,
+    requestedBy = 'system',
+    context = {}
+  } = options;
+  
+  // Security check - requires permission to use validator
+  if (!await security.checkPermission(PERMISSIONS.USE_VALIDATOR)) {
+    security.auditLog({
+      action: 'validity-checker:unauthorized-consistency-check-attempt',
+      details: { statementCount: statements?.length || 0, requestedBy },
+      outcome: 'denied'
+    });
+    
+    publish('reasoning:unauthorized-operation', { 
+      operation: 'validate-consistency', 
+      statementCount: statements?.length || 0
+    });
+    
+    throw new Error('Permission denied: reasoning:use-validator required');
+  }
+  
+  // Log the validation attempt
+  security.auditLog({
+    action: 'validity-checker:consistency-check-request',
+    details: { statementCount: statements?.length || 0, requestedBy },
+    outcome: 'processing'
+  });
+  
   // If no statements or only one statement, delegate to validateStatement
   if (!statements || statements.length === 0) {
-    return {
+    const result = {
       validity: VALIDITY.VALID,
       confidence: 1.0,
       details: {
@@ -325,79 +737,217 @@ export function validateConsistency(statements, options = {}) {
         reason: 'No statements to validate'
       }
     };
+    
+    publish('reasoning:consistency-result', result);
+    return result;
   }
   
   if (statements.length === 1) {
     return validateStatement(statements[0], options);
   }
   
-  // Check each statement against foundation facts
-  const individualResults = statements.map(stmt => validateStatement(stmt, options));
-  
-  // If any statement contradicts foundation facts, the set is inconsistent
-  const contradictions = individualResults.filter(r => r.validity === VALIDITY.CONTRADICTS_FOUNDATION);
-  if (contradictions.length > 0) {
-    const result = {
-      validity: VALIDITY.CONTRADICTS_FOUNDATION,
-      confidence: Math.max(...contradictions.map(r => r.confidence)),
-      details: {
-        statements,
-        contradictions: contradictions.map(r => r.details),
-        reason: 'One or more statements contradict foundation facts'
-      }
-    };
+  try {
+    // Check each statement against foundation facts
+    const individualResults = await Promise.all(
+      statements.map(stmt => validateStatement(stmt, options))
+    );
     
-    publish('reasoning:consistency-result', result);
-    return result;
-  }
-  
-  // Check for logical inconsistencies between statements
-  const inconsistencies = [];
-  
-  // Compare each pair of statements
-  for (let i = 0; i < statements.length; i++) {
-    for (let j = i + 1; j < statements.length; j++) {
-      const relation = determineLogicalRelation(statements[i], statements[j]);
+    // If any statement contradicts foundation facts, the set is inconsistent
+    const contradictions = individualResults.filter(r => r.validity === VALIDITY.CONTRADICTS_FOUNDATION);
+    if (contradictions.length > 0) {
+      const result = {
+        validity: VALIDITY.CONTRADICTS_FOUNDATION,
+        confidence: Math.max(...contradictions.map(r => r.confidence)),
+        details: {
+          statements,
+          contradictions: contradictions.map(r => r.details),
+          reason: 'One or more statements contradict foundation facts'
+        }
+      };
       
-      // If statements are contradictory, the set is inconsistent
-      if (relation.relation === LOGICAL_RELATIONS.CONTRADICTORY) {
-        inconsistencies.push({
-          statement1: statements[i],
-          statement2: statements[j],
-          relation
+      security.auditLog({
+        action: 'validity-checker:consistency-check-result',
+        details: { 
+          statementCount: statements.length, 
+          result: 'contradicts_foundation',
+          contradictionCount: contradictions.length,
+          requestedBy 
+        },
+        outcome: 'completed'
+      });
+      
+      // Record feedback for contradictions
+      feedback.recordFeedback({
+        category: 'factual_error',
+        targetId: `consistency_check_${Date.now()}`,
+        targetType: 'statement_set',
+        description: `${contradictions.length} statements contradict foundation facts`,
+        impactLevel: 'high',
+        confidence: result.confidence,
+        source: 'validity_checker',
+        metadata: {
+          statements: statements.map(s => s.key),
+          contradictionDetails: contradictions.map(c => c.details)
+        }
+      });
+      
+      publish('reasoning:consistency-result', result);
+      return result;
+    }
+    
+    // Check for fallacies in each statement if enabled
+    if (checkFallacies) {
+      const fallacies = [];
+      
+      for (const statement of statements) {
+        const fallacyResult = checkForFallacies(statement);
+        if (fallacyResult.hasFallacy) {
+          fallacies.push({
+            statement,
+            fallacyResult
+          });
+        }
+      }
+      
+      if (fallacies.length > 0) {
+        const result = {
+          validity: VALIDITY.FALLACIOUS,
+          confidence: Math.max(...fallacies.map(f => f.fallacyResult.confidence)),
+          details: {
+            statements,
+            fallacies,
+            reason: `Found ${fallacies.length} logical fallacies in statements`
+          }
+        };
+        
+        security.auditLog({
+          action: 'validity-checker:fallacies-in-statement-set',
+          details: { 
+            statementCount: statements.length,
+            fallacyCount: fallacies.length,
+            fallacyTypes: fallacies.map(f => f.fallacyResult.fallacyType),
+            requestedBy 
+          },
+          outcome: 'rejected'
         });
+        
+        publish('reasoning:consistency-result', result);
+        return result;
       }
     }
-  }
-  
-  // If inconsistencies were found, return them
-  if (inconsistencies.length > 0) {
+    
+    // Check for logical inconsistencies between statements
+    const inconsistencies = [];
+    
+    // Compare each pair of statements
+    for (let i = 0; i < statements.length; i++) {
+      for (let j = i + 1; j < statements.length; j++) {
+        const relation = determineLogicalRelation(statements[i], statements[j]);
+        
+        // If statements are contradictory, the set is inconsistent
+        if (relation.relation === LOGICAL_RELATIONS.CONTRADICTORY) {
+          inconsistencies.push({
+            statement1: statements[i],
+            statement2: statements[j],
+            relation
+          });
+        }
+      }
+    }
+    
+    // If inconsistencies were found, return them
+    if (inconsistencies.length > 0) {
+      const result = {
+        validity: VALIDITY.LOGICALLY_INCONSISTENT,
+        confidence: Math.max(...inconsistencies.map(i => i.relation.confidence)),
+        details: {
+          statements,
+          inconsistencies,
+          reason: `Found ${inconsistencies.length} logical inconsistencies between statements`
+        }
+      };
+      
+      security.auditLog({
+        action: 'validity-checker:logical-inconsistencies',
+        details: { 
+          statementCount: statements.length,
+          inconsistencyCount: inconsistencies.length,
+          requestedBy 
+        },
+        outcome: 'rejected'
+      });
+      
+      // Record feedback for inconsistencies
+      feedback.recordFeedback({
+        category: 'logical_inconsistency',
+        targetId: `consistency_check_${Date.now()}`,
+        targetType: 'statement_set',
+        description: `Found ${inconsistencies.length} logical inconsistencies between statements`,
+        impactLevel: 'medium',
+        confidence: result.confidence,
+        source: 'validity_checker',
+        metadata: {
+          statements: statements.map(s => s.key),
+          inconsistencyDetails: inconsistencies
+        }
+      });
+      
+      publish('reasoning:consistency-result', result);
+      return result;
+    }
+    
+    // If no inconsistencies were found, the set is valid
     const result = {
-      validity: VALIDITY.LOGICALLY_INCONSISTENT,
-      confidence: Math.max(...inconsistencies.map(i => i.relation.confidence)),
+      validity: VALIDITY.VALID,
+      confidence: 1.0,
       details: {
         statements,
-        inconsistencies,
-        reason: `Found ${inconsistencies.length} logical inconsistencies between statements`
+        reason: 'No inconsistencies detected between statements'
       }
     };
     
+    security.auditLog({
+      action: 'validity-checker:consistency-check-result',
+      details: { 
+        statementCount: statements.length, 
+        result: 'valid',
+        requestedBy 
+      },
+      outcome: 'success'
+    });
+    
     publish('reasoning:consistency-result', result);
     return result;
+  } catch (error) {
+    // Handle errors during validation
+    const result = {
+      validity: VALIDITY.UNCERTAIN,
+      confidence: 0.5,
+      details: {
+        statements,
+        error: error.message,
+        reason: 'Error occurred during consistency validation'
+      }
+    };
+    
+    security.auditLog({
+      action: 'validity-checker:consistency-check-error',
+      details: { 
+        statementCount: statements?.length || 0, 
+        error: error.message,
+        requestedBy 
+      },
+      outcome: 'error'
+    });
+    
+    publish('reasoning:validation-error', {
+      operation: 'validateConsistency',
+      error: error.message,
+      statementCount: statements?.length || 0
+    });
+    
+    return result;
   }
-  
-  // If no inconsistencies were found, the set is valid
-  const result = {
-    validity: VALIDITY.VALID,
-    confidence: 1.0,
-    details: {
-      statements,
-      reason: 'No inconsistencies detected between statements'
-    }
-  };
-  
-  publish('reasoning:consistency-result', result);
-  return result;
 }
 
 /**
@@ -542,102 +1092,286 @@ function checkDisjunctiveSyllogism(premises, conclusion) {
  * @param {Object} [options] - Validation options
  * @param {boolean} [options.useCache=true] - Whether to use cache
  * @param {boolean} [options.resolveConflicts=true] - Whether to attempt conflict resolution
+ * @param {boolean} [options.checkFallacies=true] - Whether to check for logical fallacies
+ * @param {string} [options.requestedBy] - User ID or system component requesting validation
+ * @param {Object} [options.context] - Additional context for advanced validation
  * @returns {Object} - { valid: boolean, confidence: number, details: Object }
  */
-export function validateInference(premises, conclusion, options = {}) {
-  // First check if all premises and the conclusion are individually valid
-  const premiseResults = premises.map(p => validateStatement(p, options));
-  const conclusionResult = validateStatement(conclusion, options);
+export async function validateInference(premises, conclusion, options = {}) {
+  const { 
+    useCache = true, 
+    resolveConflicts = true,
+    checkFallacies = true,
+    requestedBy = 'system',
+    context = {}
+  } = options;
   
-  // If any premise or the conclusion contradicts foundation facts, the inference is invalid
-  if (premiseResults.some(r => r.validity !== VALIDITY.VALID) || 
-      conclusionResult.validity !== VALIDITY.VALID) {
-    const invalidPremises = premiseResults
-      .map((r, i) => ({ index: i, result: r }))
-      .filter(item => item.result.validity !== VALIDITY.VALID);
+  // Security check - requires permission to use validator
+  if (!await security.checkPermission(PERMISSIONS.USE_VALIDATOR)) {
+    security.auditLog({
+      action: 'validity-checker:unauthorized-inference-validation-attempt',
+      details: { 
+        premiseCount: premises?.length || 0,
+        conclusion: conclusion?.key,
+        requestedBy 
+      },
+      outcome: 'denied'
+    });
     
+    publish('reasoning:unauthorized-operation', { 
+      operation: 'validate-inference', 
+      requestedBy
+    });
+    
+    throw new Error('Permission denied: reasoning:use-validator required');
+  }
+  
+  // Log the inference validation attempt
+  security.auditLog({
+    action: 'validity-checker:inference-validation-request',
+    details: { 
+      premiseCount: premises?.length || 0,
+      conclusion: conclusion?.key,
+      requestedBy 
+    },
+    outcome: 'processing'
+  });
+  
+  try {
+    // Validate each premise first
+    const premiseValidations = await Promise.all(
+      premises.map(premise => validateStatement(premise, options))
+    );
+    
+    // If any premise is invalid, the inference is invalid
+    const invalidPremises = premiseValidations.filter(p => p.validity !== VALIDITY.VALID);
+    if (invalidPremises.length > 0) {
+      const result = {
+        valid: false,
+        confidence: Math.max(...invalidPremises.map(p => p.confidence)),
+        details: {
+          premises,
+          conclusion,
+          invalidPremises,
+          reason: 'One or more premises are invalid'
+        }
+      };
+      
+      security.auditLog({
+        action: 'validity-checker:inference-validation-result',
+        details: { 
+          premiseCount: premises.length,
+          conclusion: conclusion.key,
+          result: 'invalid_premises',
+          invalidCount: invalidPremises.length,
+          requestedBy 
+        },
+        outcome: 'rejected'
+      });
+      
+      // Record feedback for invalid premises
+      feedback.recordFeedback({
+        category: 'reasoning_error',
+        targetId: `inference_${conclusion.key}_${Date.now()}`,
+        targetType: 'inference',
+        description: `Invalid premises used in reasoning attempt: ${invalidPremises.map(p => p.details?.statement?.key || 'unknown').join(', ')}`,
+        impactLevel: 'medium',
+        confidence: result.confidence,
+        source: 'validity_checker',
+        metadata: {
+          premises: premises.map(p => p.key),
+          conclusion: conclusion.key,
+          invalidPremises: invalidPremises.map(p => p.details)
+        }
+      });
+      
+      publish('reasoning:inference-result', result);
+      return result;
+    }
+    
+    // Check if conclusion has fallacies (if enabled)
+    if (checkFallacies) {
+      const fallacyResult = checkForFallacies(conclusion);
+      if (fallacyResult.hasFallacy) {
+        const result = {
+          valid: false,
+          confidence: fallacyResult.confidence,
+          details: {
+            premises,
+            conclusion,
+            fallacyType: fallacyResult.fallacyType,
+            reason: `Conclusion contains logical fallacy: ${fallacyResult.reason}`,
+            explanation: fallacyResult.explanation
+          }
+        };
+        
+        security.auditLog({
+          action: 'validity-checker:fallacy-in-conclusion',
+          details: { 
+            premiseCount: premises.length,
+            conclusion: conclusion.key,
+            fallacyType: fallacyResult.fallacyType,
+            requestedBy 
+          },
+          outcome: 'rejected'
+        });
+        
+        // Record feedback for fallacious conclusion
+        feedback.recordFeedback({
+          category: 'logical_fallacy',
+          targetId: `inference_${conclusion.key}_${Date.now()}`,
+          targetType: 'inference',
+          description: `Conclusion contains ${fallacyResult.fallacyType} fallacy: ${fallacyResult.explanation}`,
+          impactLevel: 'high',
+          confidence: fallacyResult.confidence,
+          source: 'validity_checker',
+          metadata: {
+            premises: premises.map(p => p.key),
+            conclusion: conclusion,
+            fallacyDetails: fallacyResult
+          }
+        });
+        
+        publish('reasoning:inference-result', result);
+        return result;
+      }
+    }
+    
+    // Check various inference patterns
+    const inferenceChecks = [
+      checkModusPonens(premises, conclusion),
+      checkModusTollens(premises, conclusion),
+      checkHypotheticalSyllogism(premises, conclusion),
+      checkDisjunctiveSyllogism(premises, conclusion)
+    ];
+    
+    // Find the first valid inference pattern
+    const validInference = inferenceChecks.find(check => check.valid);
+    
+    if (validInference) {
+      const result = {
+        valid: true,
+        confidence: validInference.confidence,
+        details: {
+          premises,
+          conclusion,
+          inferencePattern: validInference.explanation,
+          reason: `Valid inference: ${validInference.explanation}`
+        }
+      };
+      
+      security.auditLog({
+        action: 'validity-checker:valid-inference',
+        details: { 
+          premiseCount: premises.length,
+          conclusion: conclusion.key,
+          inferenceRule: validInference.explanation,
+          requestedBy 
+        },
+        outcome: 'success'
+      });
+      
+      publish('reasoning:inference-result', result);
+      return result;
+    }
+    
+    // If no formal inference pattern was found, check if the conclusion is one of the premises
+    const isPremise = premises.some(p => 
+      p.key === conclusion.key && JSON.stringify(p.value) === JSON.stringify(conclusion.value));
+    
+    if (isPremise) {
+      const result = {
+        valid: true,
+        confidence: 1.0,
+        details: {
+          premises,
+          conclusion,
+          reason: 'Conclusion is directly stated in the premises'
+        }
+      };
+      
+      security.auditLog({
+        action: 'validity-checker:direct-premise',
+        details: { 
+          premiseCount: premises.length,
+          conclusion: conclusion.key,
+          requestedBy 
+        },
+        outcome: 'success'
+      });
+      
+      publish('reasoning:inference-result', result);
+      return result;
+    }
+    
+    // If we reach here, the inference is invalid
     const result = {
       valid: false,
-      confidence: 1.0,
+      confidence: 0.8,
       details: {
         premises,
         conclusion,
-        invalidPremises: invalidPremises.map(item => ({
-          premise: premises[item.index],
-          reason: item.result.details.reason
-        })),
-        invalidConclusion: conclusionResult.validity !== VALIDITY.VALID ? {
-          reason: conclusionResult.details.reason
-        } : null,
-        reason: 'One or more statements contradict foundation facts or are logically inconsistent'
+        reason: 'No valid inference pattern found to derive conclusion from premises',
+        fallacy: 'non_sequitur'
       }
     };
     
+    security.auditLog({
+      action: 'validity-checker:invalid-inference',
+      details: { 
+        premiseCount: premises.length,
+        conclusion: conclusion.key,
+        requestedBy 
+      },
+      outcome: 'rejected'
+    });
+    
+    // Record feedback for invalid inference
+    feedback.recordFeedback({
+      category: 'logical_error',
+      targetId: `inference_${conclusion.key}_${Date.now()}`,
+      targetType: 'inference',
+      description: 'No valid logical path from premises to conclusion',
+      impactLevel: 'medium',
+      confidence: result.confidence,
+      source: 'validity_checker',
+      metadata: {
+        premises: premises.map(p => p.key),
+        conclusion: conclusion.key
+      }
+    });
+    
     publish('reasoning:inference-result', result);
     return result;
-  }
-  
-  // Check if the premises are consistent with each other
-  const consistencyResult = validateConsistency(premises, options);
-  if (consistencyResult.validity !== VALIDITY.VALID) {
+  } catch (error) {
+    // Handle any errors during inference validation
     const result = {
       valid: false,
-      confidence: consistencyResult.confidence,
+      confidence: 0.5,
       details: {
         premises,
         conclusion,
-        consistencyIssue: consistencyResult.details,
-        reason: 'Premises are inconsistent with each other'
+        error: error.message,
+        reason: 'Error occurred during inference validation'
       }
     };
     
-    publish('reasoning:inference-result', result);
-    return result;
-  }
-  
-  // Check various inference patterns
-  const inferenceChecks = [
-    checkModusPonens(premises, conclusion),
-    checkModusTollens(premises, conclusion),
-    checkHypotheticalSyllogism(premises, conclusion),
-    checkDisjunctiveSyllogism(premises, conclusion)
-  ];
-  
-  // Find the first valid inference pattern
-  const validInference = inferenceChecks.find(check => check.valid);
-  
-  if (validInference) {
-    const result = {
-      valid: true,
-      confidence: validInference.confidence,
-      details: {
-        premises,
-        conclusion,
-        inferencePattern: validInference.explanation,
-        reason: `Valid inference: ${validInference.explanation}`
-      }
-    };
+    security.auditLog({
+      action: 'validity-checker:inference-validation-error',
+      details: { 
+        premiseCount: premises?.length || 0,
+        conclusion: conclusion?.key,
+        error: error.message,
+        requestedBy 
+      },
+      outcome: 'error'
+    });
     
-    publish('reasoning:inference-result', result);
-    return result;
-  }
-  
-  // If no formal inference pattern was found, check if the conclusion is one of the premises
-  const isPremise = premises.some(p => 
-    p.key === conclusion.key && JSON.stringify(p.value) === JSON.stringify(conclusion.value));
-  
-  if (isPremise) {
-    const result = {
-      valid: true,
-      confidence: 1.0,
-      details: {
-        premises,
-        conclusion,
-        reason: 'Conclusion is directly stated in the premises'
-      }
-    };
+    publish('reasoning:validation-error', {
+      operation: 'validateInference',
+      error: error.message
+    });
     
-    publish('reasoning:inference-result', result);
     return result;
   }
   
@@ -657,5 +1391,57 @@ export function validateInference(premises, conclusion, options = {}) {
   return result;
 }
 
-// Export validity constants
-export { VALIDITY };
+/**
+ * Initialize the validity checker module.
+ * Sets up event subscriptions and prepares the module for use.
+ */
+export function initialize() {
+  // Subscribe to foundation fact changes to clear cache
+  subscribe('reasoning:foundation-facts-updated', () => {
+    validationCache.clear();
+    security.auditLog({
+      action: 'validity-checker:cache-cleared',
+      details: { reason: 'foundation facts updated' },
+      outcome: 'success'
+    });
+  });
+  
+  // Subscribe to conflict resolution events
+  subscribe('reasoning:conflict-resolved', (data) => {
+    validationCache.clear();
+    security.auditLog({
+      action: 'validity-checker:cache-cleared',
+      details: { reason: 'conflict resolved', conflictId: data.id },
+      outcome: 'success'
+    });
+  });
+  
+  // Subscribe to feedback events that might affect validation
+  subscribe('feedback:correction-submitted', (data) => {
+    if (data.category === 'factual_error' || data.category === 'logical_inconsistency') {
+      validationCache.clear();
+      security.auditLog({
+        action: 'validity-checker:cache-cleared',
+        details: { reason: 'correction received', feedbackId: data.id },
+        outcome: 'success'
+      });
+    }
+  });
+  
+  // Log initialization
+  security.auditLog({
+    action: 'validity-checker:initialized',
+    details: {},
+    outcome: 'success'
+  });
+  
+  publish('reasoning:validity-checker-initialized', { timestamp: Date.now() });
+}
+
+// Export constants and functions
+export { 
+  VALIDITY,
+  LOGICAL_RELATIONS,
+  FALLACIES,
+  PERMISSIONS 
+};

@@ -1,0 +1,70 @@
+name: Fusion Integration Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/integration/fusion/**'
+      - 'test/integration/fusion/**'
+      - '.github/workflows/fusion-integration-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/integration/fusion/**'
+      - 'test/integration/fusion/**'
+  workflow_dispatch:
+    inputs:
+      debug:
+        type: boolean
+        description: 'Run with debug logging'
+        required: false
+        default: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Download face-api.js models
+        run: |
+          mkdir -p public/models
+          curl -L https://github.com/justadudewhohacks/face-api.js-models/archive/refs/heads/master.zip -o models.zip
+          unzip models.zip -d temp
+          mv temp/face-api.js-models-master/weights/* public/models/
+          rm -rf temp models.zip
+      
+      - name: Run fusion integration tests
+        run: npm test -- --dir=test/integration/fusion
+        env:
+          DEBUG: ${{ github.event.inputs.debug == 'true' && '*' || '' }}
+      
+      - name: Generate test coverage report
+        run: npm run coverage -- --dir=test/integration/fusion
+      
+      - name: Upload test coverage
+        uses: codecov/codecov-action@v3
+        with:
+          directory: ./coverage/
+          flags: fusion-integration
+          name: fusion-integration-coverage
+      
+      - name: Archive test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: fusion-test-results
+          path: |
+            coverage/
+            test-results/
+          retention-days: 7

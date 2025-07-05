@@ -2,9 +2,11 @@
  * ALEJO Vision Training UI Module
  * 
  * This module provides a guided interface for training the vision system,
- * including face recognition and expression detection.
+ * including face recognition and expression detection with comprehensive 
+ * accessibility features for blind and visually impaired users.
  * 
- * Uses a multi-step process similar to the gesture calibration system.
+ * Uses a multi-step process similar to the gesture calibration system with
+ * audio guidance, haptic feedback, and screen reader support.
  */
 
 import { faceModel } from './face-model';
@@ -13,10 +15,24 @@ import { consentManager } from '../../security/consent-manager';
 import { privacyGuard } from '../../security/privacy-guard';
 import { auditTrail } from '../../security/audit-trail';
 import { EventEmitter } from '../../core/events';
+import accessibilityHelpers from './accessibility-helpers';
+import { visualImpairmentDetection } from './visual-impairment-detection';
 
 class TrainingUI extends EventEmitter {
-  constructor() {
+  constructor(options = {}) {
     super();
+    
+    // Configuration with defaults
+    this.config = {
+      accessibilityEnabled: options.accessibilityEnabled !== false,
+      audioFeedback: options.audioFeedback !== false,
+      hapticFeedback: options.hapticFeedback !== false,
+      autoDetectImpairments: options.autoDetectImpairments !== false,
+      adaptInterfaceAutomatically: options.adaptInterfaceAutomatically === true,
+      ...options
+    };
+    
+    // Training state
     this.isInitialized = false;
     this.currentStep = 0;
     this.steps = [
@@ -67,20 +83,56 @@ class TrainingUI extends EventEmitter {
   /**
    * Initialize the training UI
    * @param {string} userId - User ID
+   * @param {HTMLElement} container - Container element for the UI
    * @param {HTMLVideoElement} videoElement - Video element for camera feed
    * @param {HTMLCanvasElement} canvasElement - Canvas element for capturing frames
+   * @param {Object} options - Additional options
    */
-  async initialize(userId, videoElement, canvasElement) {
+  async initialize(userId, container, videoElement, canvasElement, options = {}) {
     if (this.isInitialized) return true;
 
     try {
+      // Update configuration with any runtime options
+      this.config = {
+        ...this.config,
+        ...options
+      };
+      
       this.userId = userId;
       this.videoElement = videoElement;
       this.canvasElement = canvasElement;
       
+      // Store UI container reference
+      this.elements.container = container;
+      this.elements.video = videoElement;
+      this.elements.canvas = canvasElement;
+      
       // Initialize face model and expression detection
       await faceModel.initialize();
       await expressionDetection.initialize();
+      
+      // Initialize accessibility helpers if enabled
+      if (this.config.accessibilityEnabled) {
+        await accessibilityHelpers.initialize({
+          audioFeedback: this.config.audioFeedback,
+          hapticFeedback: this.config.hapticFeedback
+        });
+        
+        // Enhance UI elements with accessibility attributes
+        this.setupAccessibility();
+      }
+      
+      // Initialize visual impairment detection if auto-detection is enabled
+      if (this.config.autoDetectImpairments) {
+        await visualImpairmentDetection.initialize({
+          enabled: true,
+          adaptInterfaceAutomatically: this.config.adaptInterfaceAutomatically,
+          requireExplicitConsent: true
+        });
+        
+        // Listen for impairment detection events
+        visualImpairmentDetection.on('impairment_detected', this.handleVisualImpairmentDetection);
+      }
       
       this.isInitialized = true;
       this.emit('initialized');
@@ -520,6 +572,355 @@ class TrainingUI extends EventEmitter {
       percentComplete: Math.round((this.currentStep / (this.steps.length - 1)) * 100),
       stepsCompleted: this.currentStep
     };
+  }
+  
+  /**
+   * Set up accessibility features for the training UI
+   */
+  setupAccessibility() {
+    if (!this.config.accessibilityEnabled) return;
+    
+    try {
+      // Create progress indicator for screen readers if it doesn't exist
+      if (!document.getElementById('vision-training-progress')) {
+        const progressIndicator = document.createElement('div');
+        progressIndicator.id = 'vision-training-progress';
+        progressIndicator.setAttribute('role', 'progressbar');
+        progressIndicator.setAttribute('aria-valuemin', '0');
+        progressIndicator.setAttribute('aria-valuemax', '100');
+        progressIndicator.setAttribute('aria-valuenow', '0');
+        progressIndicator.classList.add('sr-only');
+        this.elements.container.appendChild(progressIndicator);
+        this.elements.progressIndicator = progressIndicator;
+      }
+      
+      // Add ARIA attributes to video element
+      if (this.elements.video) {
+        this.elements.video.setAttribute('aria-hidden', 'true');
+        
+        // Create accessible description for video feed
+        const videoDescription = document.createElement('div');
+        videoDescription.id = 'video-description';
+        videoDescription.setAttribute('aria-live', 'polite');
+        videoDescription.classList.add('sr-only');
+        this.elements.videoDescription = videoDescription;
+        this.elements.container.appendChild(videoDescription);
+      }
+      
+      // Set up keyboard navigation
+      accessibilityHelpers.setupKeyboardNavigation(this.elements, (event) => {
+        // Custom key handling for training UI
+        if (event.key === 'c' && this.getCurrentStep().id === 'face-capture') {
+          // Capture frame with 'c' key during face capture step
+          this.captureFrame();
+          event.preventDefault();
+        }
+      });
+      
+      // Announce initial state
+      const currentStep = this.getCurrentStep();
+      if (currentStep) {
+        accessibilityHelpers.announceToScreenReader(
+          `ALEJO Vision Training: ${currentStep.title}. ${currentStep.description}`,
+          'assertive'
+        );
+      }
+      
+      // Log accessibility setup
+      auditTrail.log({
+        action: 'accessibility_setup_completed',
+        details: {
+          features: [
+            'screen_reader_support',
+            'keyboard_navigation',
+            'audio_feedback',
+            'haptic_feedback',
+            'visual_impairment_detection'
+          ]
+        },
+        component: 'vision_training',
+        level: 'info'
+      });
+    } catch (error) {
+      console.error('Error setting up accessibility features:', error);
+    }
+  }
+  
+  /**
+   * Handle visual impairment detection from face detection results
+   * @param {Object} faceDetection - Face detection results
+   * @returns {Promise<Object>} Detection results
+   */
+  async handleVisualImpairmentDetection(faceDetection) {
+    if (!this.config.autoDetectImpairments || !faceDetection) {
+      return null;
+    }
+    
+    try {
+      // Analyze eyes for potential visual impairments
+      const detectionResults = await visualImpairmentDetection.analyzeEyes(faceDetection);
+      
+      if (!detectionResults) return null;
+      
+      // Update accessibility state
+      if (detectionResults.confidence > 0.7 && !this.accessibilityState.visualImpairmentDetected) {
+        this.accessibilityState.visualImpairmentDetected = true;
+        this.accessibilityState.detectionConfidence = detectionResults.confidence;
+        this.accessibilityState.recommendedFeatures = detectionResults.recommendations?.features || [];
+        
+        // Log detection
+        auditTrail.log({
+          action: 'visual_impairment_detected',
+          details: {
+            confidence: detectionResults.confidence,
+            impairments: detectionResults.impairments,
+            recommendations: detectionResults.recommendations
+          },
+          component: 'vision_training',
+          level: 'info'
+        });
+        
+        // Announce detection to user if high confidence
+        if (detectionResults.confidence > 0.85) {
+          this.offerAccessibilityAssistance(detectionResults);
+        }
+        
+        // Apply recommendations if configured to do so automatically
+        if (this.config.adaptInterfaceAutomatically && detectionResults.recommendations) {
+          visualImpairmentDetection.applyRecommendations(
+            detectionResults.recommendations,
+            this.accessibilityState.userConfirmedFeatures
+          );
+        }
+      }
+      
+      return detectionResults;
+    } catch (error) {
+      console.error('Error in visual impairment detection:', error);
+      return null;
+    }
+  }
+  
+  /**
+   * Offer accessibility assistance to the user based on detection results
+   * @param {Object} detectionResults - Visual impairment detection results
+   */
+  offerAccessibilityAssistance(detectionResults) {
+    if (!detectionResults || !detectionResults.recommendations) return;
+    
+    // Create accessibility notification if it doesn't exist
+    if (!this.elements.accessibilityNotification) {
+      const notification = document.createElement('div');
+      notification.className = 'accessibility-notification';
+      notification.setAttribute('role', 'alert');
+      notification.setAttribute('aria-live', 'assertive');
+      
+      const message = document.createElement('p');
+      const actionButtons = document.createElement('div');
+      actionButtons.className = 'accessibility-actions';
+      
+      const acceptButton = document.createElement('button');
+      acceptButton.textContent = 'Enable accessibility features';
+      acceptButton.setAttribute('aria-label', 'Enable recommended accessibility features');
+      acceptButton.addEventListener('click', () => {
+        this.accessibilityState.userConfirmedFeatures = true;
+        visualImpairmentDetection.applyRecommendations(detectionResults.recommendations, true);
+        notification.style.display = 'none';
+        
+        // Announce confirmation
+        accessibilityHelpers.announceToScreenReader(
+          'Accessibility features enabled. Training will continue with additional assistance.',
+          'assertive'
+        );
+        
+        // Log user choice
+        auditTrail.log({
+          action: 'accessibility_features_accepted',
+          details: {
+            features: detectionResults.recommendations.features
+          },
+          component: 'vision_training',
+          level: 'info'
+        });
+      });
+      
+      const declineButton = document.createElement('button');
+      declineButton.textContent = 'Continue without changes';
+      declineButton.setAttribute('aria-label', 'Continue without enabling accessibility features');
+      declineButton.addEventListener('click', () => {
+        notification.style.display = 'none';
+        
+        // Log user choice
+        auditTrail.log({
+          action: 'accessibility_features_declined',
+          component: 'vision_training',
+          level: 'info'
+        });
+      });
+      
+      actionButtons.appendChild(acceptButton);
+      actionButtons.appendChild(declineButton);
+      notification.appendChild(message);
+      notification.appendChild(actionButtons);
+      
+      this.elements.accessibilityNotification = notification;
+      this.elements.container.appendChild(notification);
+    }
+    
+    // Update notification message
+    const message = this.elements.accessibilityNotification.querySelector('p');
+    const features = detectionResults.recommendations.features
+      .map(f => f.replace('_', ' '))
+      .join(', ');
+    
+    message.textContent = `ALEJO has detected you may benefit from accessibility features: ${features}. Would you like to enable these features?`;
+    
+    // Show notification
+    this.elements.accessibilityNotification.style.display = 'block';
+    
+    // Also announce to screen reader
+    accessibilityHelpers.announceToScreenReader(
+      `ALEJO has detected you may benefit from accessibility features: ${features}. Use the buttons below to enable or decline these features.`,
+      'assertive'
+    );
+  }
+  
+  /**
+   * Provide accessible feedback during face detection and training
+   * @param {Object} detectionData - Face detection data
+   * @param {string} feedbackType - Type of feedback ('position', 'expression', 'capture', etc.)
+   */
+  provideAccessibleFeedback(detectionData, feedbackType) {
+    if (!this.config.accessibilityEnabled) return;
+    
+    const now = Date.now();
+    const minAnnouncementInterval = 2000; // Minimum time between announcements (ms)
+    
+    // Don't provide feedback too frequently
+    if (now - this.accessibilityState.lastAnnouncementTime < minAnnouncementInterval) {
+      return;
+    }
+    
+    try {
+      switch (feedbackType) {
+        case 'position':
+          if (detectionData) {
+            // Generate position guidance
+            const guidance = accessibilityHelpers.generatePositionGuidance(detectionData);
+            
+            // Only announce if different from last announcement or high priority
+            if (guidance.message !== this.accessibilityState.lastAnnouncement || 
+                guidance.feedbackType === 'no_face' || 
+                guidance.feedbackType === 'good_position') {
+              
+              // Provide audio feedback
+              if (this.config.audioFeedback) {
+                accessibilityHelpers.playFaceDetectionFeedback(guidance.feedbackType);
+                accessibilityHelpers.playPositionFeedbackTone(guidance.confidence);
+              }
+              
+              // Provide haptic feedback
+              if (this.config.hapticFeedback) {
+                accessibilityHelpers.provideHapticFeedback(guidance.feedbackType === 'good_position' ? 'success' : 'position');
+              }
+              
+              // Announce to screen reader if significant change
+              accessibilityHelpers.announceToScreenReader(guidance.message, 'polite');
+              
+              // Update state
+              this.accessibilityState.lastAnnouncement = guidance.message;
+              this.accessibilityState.lastAnnouncementTime = now;
+            }
+          }
+          break;
+          
+        case 'expression':
+          if (detectionData && detectionData.expressions) {
+            const targetExpression = this.getCurrentStep().targetExpression;
+            const guidance = accessibilityHelpers.getExpressionGuidance(
+              targetExpression, 
+              detectionData.expressions
+            );
+            
+            // Only announce if different from last announcement
+            if (guidance.message !== this.accessibilityState.lastAnnouncement) {
+              // Provide audio feedback
+              if (this.config.audioFeedback) {
+                accessibilityHelpers.playExpressionFeedback(targetExpression, guidance.confidence);
+              }
+              
+              // Provide haptic feedback
+              if (this.config.hapticFeedback && guidance.match) {
+                accessibilityHelpers.provideHapticFeedback('success');
+              }
+              
+              // Announce to screen reader
+              accessibilityHelpers.announceToScreenReader(guidance.message, guidance.match ? 'assertive' : 'polite');
+              
+              // Update state
+              this.accessibilityState.lastAnnouncement = guidance.message;
+              this.accessibilityState.lastAnnouncementTime = now;
+            }
+          }
+          break;
+          
+        case 'capture':
+          // Provide audio feedback for capture
+          if (this.config.audioFeedback) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.value = 880; // A5
+            gainNode.gain.value = 0.3;
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.start();
+            setTimeout(() => oscillator.stop(), 200);
+          }
+          
+          // Provide haptic feedback
+          if (this.config.hapticFeedback) {
+            accessibilityHelpers.provideHapticFeedback('capture');
+          }
+          
+          // Announce to screen reader
+          accessibilityHelpers.announceToScreenReader('Image captured', 'assertive');
+          
+          // Update state
+          this.accessibilityState.lastAnnouncement = 'Image captured';
+          this.accessibilityState.lastAnnouncementTime = now;
+          break;
+          
+        case 'step_change':
+          const currentStep = this.getCurrentStep();
+          const progress = this.getTrainingProgress();
+          
+          // Update progress announcement for screen readers
+          accessibilityHelpers.updateProgressAnnouncement({
+            currentStep: progress.currentStep,
+            totalSteps: progress.totalSteps,
+            percentComplete: progress.percentComplete,
+            currentStepName: currentStep.title
+          });
+          
+          // Announce step change
+          accessibilityHelpers.announceToScreenReader(
+            `Step ${progress.currentStep + 1} of ${progress.totalSteps}: ${currentStep.title}. ${currentStep.description}`,
+            'assertive'
+          );
+          
+          // Update state
+          this.accessibilityState.lastAnnouncement = currentStep.title;
+          this.accessibilityState.lastAnnouncementTime = now;
+          break;
+      }
+    } catch (error) {
+      console.error('Error providing accessible feedback:', error);
+    }
   }
 }
 

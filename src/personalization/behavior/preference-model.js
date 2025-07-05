@@ -13,9 +13,11 @@
  * - Contextual preference application
  * - Integration with memory system for long-term preference storage
  */
-import { subscribe, publish } from '../../core/events.js';
-import * as privacyGuard from '../../security/privacy-guard.js';
-import * as auditTrail from '../../security/audit-trail.js';
+import { PREFERENCE_CATEGORIES, CONFIDENCE_LEVELS, DECAY_RATES, CONTEXT_FACTORS } from '../constants/preference-constants.js';
+import { publish } from '../../core/event-bus.js';
+import { auditTrail } from '../../utils/audit-trail.js';
+import { preferenceCache } from '../../utils/cache-manager.js';
+import { normalizePreferenceStrength } from './preference-normalization.js';
 import * as memoryCurator from '../memory/memory-curator.js';
 import * as personalGraph from '../memory/personal-graph.js';
 
@@ -72,16 +74,34 @@ const preferenceHistory = new Map(); // userId -> preference history
 /**
  * Initialize or retrieve preference model for a user.
  * @param {string} userId - User identifier
+ * @param {Object} options - Additional options
+ * @param {boolean} options.bypassCache - Whether to bypass the cache
  * @returns {Promise<Object>} User's preference model
  */
-async function getPreferenceModel(userId) {
+async function getPreferenceModel(userId, options = { bypassCache: false }) {
   try {
+    const startTime = performance.now();
+    const cacheKey = `preference_model:${userId}`;
+    
+    // Check cache first if not bypassing
+    if (!options.bypassCache) {
+      const cachedModel = preferenceCache.get(cacheKey);
+      if (cachedModel) {
+        const duration = performance.now() - startTime;
+        auditTrail.log('preferences:cache:hit', { userId, duration });
+        return { ...cachedModel }; // Return a copy to prevent unintended mutations
+      }
+    }
+    
+    // Not in cache or bypassing cache, check in-memory map
     if (!userPreferences.has(userId)) {
       // Load from secure storage or initialize
       const storedModel = await loadPreferenceModel(userId);
       
       if (storedModel) {
         userPreferences.set(userId, storedModel);
+        // Also update cache
+        preferenceCache.set(cacheKey, storedModel);
       } else {
         // Initialize new preference model
         const initialModel = {
@@ -91,6 +111,7 @@ async function getPreferenceModel(userId) {
         };
         
         userPreferences.set(userId, initialModel);
+        preferenceCache.set(cacheKey, initialModel);
         await savePreferenceModel(userId, initialModel);
       }
       
@@ -98,7 +119,17 @@ async function getPreferenceModel(userId) {
       preferenceHistory.set(userId, await loadPreferenceHistory(userId) || []);
     }
     
-    return { ...userPreferences.get(userId) };
+    const model = { ...userPreferences.get(userId) };
+    
+    // Log cache miss metrics
+    const duration = performance.now() - startTime;
+    auditTrail.log('preferences:cache:miss', { 
+      userId, 
+      duration,
+      cacheStats: preferenceCache.getStats()
+    });
+    
+    return model;
   } catch (error) {
     console.error('Error getting preference model:', error);
     auditTrail.log('preferences:model:error', { userId, error: error.message });
@@ -117,18 +148,58 @@ async function getPreferenceModel(userId) {
  * @param {string} userId - User identifier
  * @param {string} key - Preference key
  * @param {*} defaultValue - Default value if preference not found
+ * @param {Object} options - Additional options
+ * @param {boolean} options.bypassCache - Whether to bypass the cache
  * @returns {Promise<*>} Preference value
  */
-export async function getPreference(userId, key, defaultValue = null) {
+export async function getPreference(userId, key, defaultValue = null, options = { bypassCache: false }) {
   try {
-    const model = await getPreferenceModel(userId);
+    const startTime = performance.now();
+    const cacheKey = `preference:${userId}:${key}`;
+    
+    // Check specific preference cache first if not bypassing
+    if (!options.bypassCache) {
+      const cachedPreference = preferenceCache.get(cacheKey);
+      if (cachedPreference !== undefined) {
+        const duration = performance.now() - startTime;
+        auditTrail.log('preferences:item:cache:hit', { userId, key, duration });
+        return cachedPreference;
+      }
+    }
+    
+    // Get the full model (which may come from cache)
+    const model = await getPreferenceModel(userId, options);
+    let result = defaultValue;
+    let found = false;
     
     // Return preference if it exists and has sufficient confidence
     if (model.preferences[key] && model.preferences[key].confidence > 0.3) {
-      return model.preferences[key].value;
+      result = model.preferences[key].value;
+      found = true;
+    } else {
+      // Check if preference exists in any category
+      for (const category in model.preferences) {
+        if (model.preferences[category][key] && model.preferences[category][key].confidence > 0.3) {
+          result = model.preferences[category][key].value;
+          found = true;
+          break;
+        }
+      }
     }
     
-    return defaultValue;
+    // Cache the result for future lookups
+    preferenceCache.set(cacheKey, result);
+    
+    // Log metrics
+    const duration = performance.now() - startTime;
+    auditTrail.log(found ? 'preferences:item:found' : 'preferences:item:default', { 
+      userId, 
+      key, 
+      duration,
+      fromCache: options.bypassCache ? false : !!preferenceCache.get(`preference_model:${userId}`)
+    });
+    
+    return result;
   } catch (error) {
     console.error(`Error getting preference ${key}:`, error);
     auditTrail.log('preferences:get:error', { userId, key, error: error.message });
@@ -223,8 +294,35 @@ export async function setPreference(userId, key, value, category = PREFERENCE_CA
  */
 export async function observePreference(userId, key, value, category = PREFERENCE_CATEGORIES.CONTENT, source = 'interaction', strength = 0.5, decayRate = DECAY_RATES.STANDARD, context = {}) {
   try {
-    // Get current preference model
-    const model = await getPreferenceModel(userId);
+    // Start performance measurement
+    const startTime = performance.now();
+    let performanceMetrics = {
+      totalTime: 0,
+      relationshipLookupTime: 0,
+      decayCalculationTime: 0,
+      normalizationTime: 0,
+      dbOperationsTime: 0,
+      cacheOperations: 0
+    };
+    
+    // Generate cache key for this user's preference model
+    const cacheKey = `preference_model:${userId}`;
+    
+    // Try to get model from cache first
+    let model = preferenceCache.get(cacheKey);
+    let cacheHit = !!model;
+    
+    // If not in cache, load from storage
+    if (!model) {
+      model = await getPreferenceModel(userId);
+      // Store in cache for future use
+      if (model) {
+        preferenceCache.set(cacheKey, model);
+        performanceMetrics.cacheOperations++;
+      }
+    } else {
+      performanceMetrics.cacheOperations++;
+    }
     
     // Initialize category if needed
     if (!model.preferences[category]) {
@@ -245,14 +343,20 @@ export async function observePreference(userId, key, value, category = PREFERENC
     
     // Apply temporal decay to existing preference strength if it exists
     if (preference.value !== null) {
+      const decayStartTime = performance.now();
+      
       const timeSinceLastUpdate = now - preference.lastUpdated;
       const decayFactor = Math.exp(-preference.decayRate * (timeSinceLastUpdate / (1000 * 60 * 60 * 24))); // Convert to days
       preference.strength *= decayFactor;
+      
+      performanceMetrics.decayCalculationTime = performance.now() - decayStartTime;
     }
     
     // If we have relationship context, adjust preference strength
     if (context.entityId) {
       try {
+        const relationshipStartTime = performance.now();
+        
         // Import the relationship integration module
         const { adjustPreferenceByRelationship, updateRelationshipFromPreference } = await import('./preference-relationship-integration.js');
         
@@ -262,6 +366,8 @@ export async function observePreference(userId, key, value, category = PREFERENC
         
         // Update relationship memory with this preference
         await updateRelationshipFromPreference(userId, context.entityId, key, value, strength);
+        
+        performanceMetrics.relationshipLookupTime = performance.now() - relationshipStartTime;
       } catch (err) {
         console.warn('Failed to integrate with relationship memory:', err);
         // Continue with original strength if relationship integration fails
@@ -278,11 +384,26 @@ export async function observePreference(userId, key, value, category = PREFERENC
       preference.contextSnapshot = { ...context, timestamp: now };
     }
     
+    // Get existing preferences in this category for normalization context
+    const existingPreferences = Object.entries(model.preferences[category] || {})
+      .filter(([existingKey]) => existingKey !== key)
+      .map(([, pref]) => pref);
+    
+    // Apply normalization to prevent preference drift
+    const normalizationStartTime = performance.now();
+    const normalizedStrength = normalizePreferenceStrength(
+      strength, 
+      category, 
+      existingPreferences
+    );
+    
     // Update value and strength conservatively based on confidence and new strength
-    if (preference.value === null || strength > preference.strength) {
+    if (preference.value === null || normalizedStrength > preference.strength) {
       preference.value = value;
-      preference.strength = Math.min(1.0, preference.strength + (strength * 0.5)); // Conservative update
+      preference.strength = Math.min(1.0, preference.strength + (normalizedStrength * 0.5)); // Conservative update
     }
+    
+    performanceMetrics.normalizationTime = performance.now() - normalizationStartTime;
     
     // Update confidence based on observations and strength
     if (preference.observations >= 3 && preference.strength >= 0.6) {
@@ -298,11 +419,17 @@ export async function observePreference(userId, key, value, category = PREFERENC
     model.lastUpdated = now;
     model.version = (model.version || 0) + 1;
     
+    // Update cache with the modified model
+    preferenceCache.set(cacheKey, model);
+    performanceMetrics.cacheOperations++;
+    
     // Save updated model
+    const dbStartTime = performance.now();
     await savePreferenceModel(userId, model);
     
     // Record preference change in history
-    await recordPreferenceChange(userId, key, value, source, category, strength);
+    await recordPreferenceChange(userId, key, value, source, category, normalizedStrength);
+    performanceMetrics.dbOperationsTime = performance.now() - dbStartTime;
     
     // Publish event if confidence is sufficient
     if (preference.confidence >= CONFIDENCE_LEVELS.OBSERVED) {
@@ -316,6 +443,30 @@ export async function observePreference(userId, key, value, category = PREFERENC
         source
       });
     }
+    
+    // Calculate and log total performance metrics
+    performanceMetrics.totalTime = performance.now() - startTime;
+    
+    // Log performance metrics for monitoring
+    if (performanceMetrics.totalTime > 100) { // Only log slow operations
+      console.debug('Preference observation performance metrics:', {
+        userId,
+        key,
+        hasRelationshipContext: !!context.entityId,
+        metrics: performanceMetrics
+      });
+    }
+    
+    // Add telemetry for performance monitoring
+    auditTrail.log('preferences:performance', {
+      userId,
+      key,
+      category,
+      totalTime: performanceMetrics.totalTime,
+      relationshipLookupTime: performanceMetrics.relationshipLookupTime,
+      decayCalculationTime: performanceMetrics.decayCalculationTime,
+      dbOperationsTime: performanceMetrics.dbOperationsTime
+    });
     
     return true;
   } catch (error) {

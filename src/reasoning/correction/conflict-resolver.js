@@ -10,6 +10,7 @@
  */
 import { publish, subscribe } from '../../core/events.js';
 import { getFact, checkContradiction } from '../truth-core/foundation-facts.js';
+import * as security from '../../security/index.js';
 
 // Resolution strategies for handling conflicts
 const RESOLUTION_STRATEGY = {
@@ -552,4 +553,176 @@ export function resolveConflicts(conflicts, options = {}) {
 }
 
 // Export constants and functions for use in other modules
+/**
+ * Handle updates to foundation facts and check for any conflicts with existing knowledge.
+ * @param {string} factId - ID of the foundation fact that was updated
+ * @param {Object} updatedFact - The updated fact data
+ */
+export function handleFoundationFactUpdate(factId, updatedFact) {
+  // Log the foundation fact update in the audit trail
+  security.auditLog({
+    action: 'conflict-resolver:foundation-fact-update',
+    details: { factId, updatedFact },
+    outcome: 'processing'
+  });
+  
+  // Get potentially affected knowledge items that might conflict with this foundation fact
+  const potentialConflicts = findPotentialConflicts(factId, updatedFact);
+  
+  if (potentialConflicts.length > 0) {
+    // Process each potential conflict
+    const conflicts = potentialConflicts.map(item => ({
+      id: `foundation_update_${factId}_${Date.now()}`,
+      key: item.key,
+      existing: item.value,
+      proposed: updatedFact.value,
+      metadata: {
+        existingSource: item.source || 'unknown',
+        proposedSource: updatedFact.source || 'foundation-facts',
+        existingConfidence: item.confidence || 0.5,
+        proposedConfidence: updatedFact.confidence || 0.95,
+        conflictType: CONFLICT_TYPE.FACTUAL,
+        foundationFactId: factId
+      }
+    }));
+    
+    // Resolve the conflicts with foundation facts as highest priority
+    const resolutions = resolveConflicts(conflicts, {
+      strategies: [
+        RESOLUTION_STRATEGY.FOUNDATION_FACTS,
+        RESOLUTION_STRATEGY.SOURCE_RELIABILITY,
+        RESOLUTION_STRATEGY.USER_FEEDBACK,
+        RESOLUTION_STRATEGY.CONSISTENCY,
+        RESOLUTION_STRATEGY.RECENCY
+      ]
+    });
+    
+    // Log the resolutions
+    security.auditLog({
+      action: 'conflict-resolver:foundation-conflicts-resolved',
+      details: { factId, conflicts: conflicts.length, resolutions },
+      outcome: 'processed'
+    });
+    
+    // Publish an event with the resolutions
+    publish('conflict:resolution-applied', {
+      conflictSource: 'foundation-fact-update',
+      factId,
+      resolutions,
+      involvedFacts: [factId]
+    });
+  } else {
+    // No conflicts found
+    security.auditLog({
+      action: 'conflict-resolver:foundation-fact-update',
+      details: { factId },
+      outcome: 'no-conflicts-found'
+    });
+  }
+}
+
+/**
+ * Handle removal of foundation facts and check for any dependent knowledge.
+ * @param {string} factId - ID of the foundation fact that was removed
+ */
+export function handleFoundationFactRemoval(factId) {
+  // Log the foundation fact removal in the audit trail
+  security.auditLog({
+    action: 'conflict-resolver:foundation-fact-removal',
+    details: { factId },
+    outcome: 'processing'
+  });
+  
+  // Find knowledge that depends on this foundation fact
+  const dependentKnowledge = findDependentKnowledge(factId);
+  
+  if (dependentKnowledge.length > 0) {
+    // Mark dependent knowledge as potentially unreliable
+    dependentKnowledge.forEach(item => {
+      // Reduce confidence in this knowledge since its foundation is gone
+      updateKnowledgeConfidence(item.id, Math.max(0.3, item.confidence * 0.6));
+      
+      // Add a note that this knowledge may need verification
+      flagKnowledgeForVerification(item.id, {
+        reason: `Foundation fact ${factId} was removed`,
+        severity: 'high',
+        timestamp: new Date().toISOString()
+      });
+    });
+    
+    // Log the dependent knowledge processing
+    security.auditLog({
+      action: 'conflict-resolver:dependent-knowledge-flagged',
+      details: { factId, dependentItems: dependentKnowledge.length },
+      outcome: 'processed'
+    });
+    
+    // Publish an event about the dependent knowledge
+    publish('conflict:dependent-knowledge-flagged', {
+      factId,
+      dependentItems: dependentKnowledge.length,
+      verificationNeeded: true
+    });
+  } else {
+    // No dependent knowledge found
+    security.auditLog({
+      action: 'conflict-resolver:foundation-fact-removal',
+      details: { factId },
+      outcome: 'no-dependencies-found'
+    });
+  }
+}
+
+/**
+ * Find knowledge items that might conflict with an updated foundation fact.
+ * @param {string} factId - Foundation fact ID
+ * @param {Object} fact - Foundation fact data
+ * @returns {Array<Object>} Potentially conflicting knowledge items
+ * @private
+ */
+function findPotentialConflicts(factId, fact) {
+  // This would normally query the knowledge store for potentially conflicting items
+  // For now, we'll return an empty array as a placeholder
+  // In a real implementation, we would search for knowledge related to this fact
+  return [];
+}
+
+/**
+ * Find knowledge items that depend on a particular foundation fact.
+ * @param {string} factId - Foundation fact ID
+ * @returns {Array<Object>} Dependent knowledge items
+ * @private
+ */
+function findDependentKnowledge(factId) {
+  // This would normally query the knowledge store for items that depend on this fact
+  // For now, we'll return an empty array as a placeholder
+  return [];
+}
+
+/**
+ * Update the confidence score for a knowledge item.
+ * @param {string} itemId - Knowledge item ID
+ * @param {number} newConfidence - New confidence value (0-1)
+ * @returns {boolean} Success of the operation
+ * @private
+ */
+function updateKnowledgeConfidence(itemId, newConfidence) {
+  // This would normally update the knowledge store
+  // For now, we'll just return true as a placeholder
+  return true;
+}
+
+/**
+ * Flag a knowledge item as needing verification.
+ * @param {string} itemId - Knowledge item ID
+ * @param {Object} flagData - Flag information
+ * @returns {boolean} Success of the operation
+ * @private
+ */
+function flagKnowledgeForVerification(itemId, flagData) {
+  // This would normally update the knowledge store
+  // For now, we'll just return true as a placeholder
+  return true;
+}
+
 export { RESOLUTION_STRATEGY, CONFLICT_TYPE, CONFIDENCE_THRESHOLD };

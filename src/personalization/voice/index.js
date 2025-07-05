@@ -5,11 +5,13 @@
  * - Training: Voice pattern capture and model creation
  * - Recognition: Voice identification and authentication
  * - Synthesis: Voice output and style adaptation
+ * - Advanced Features: Neural voice embedding, emotion analysis, and adaptive learning
  */
 
 import * as training from './training.js';
 import * as recognition from './recognition.js';
 import * as synthesis from './synthesis.js';
+import * as advancedFeatures from './advanced-features.js';
 
 /**
  * Initialize the complete voice system
@@ -22,7 +24,8 @@ export async function initialize(options = {}) {
   const results = {
     training: false,
     recognition: false,
-    synthesis: false
+    synthesis: false,
+    advancedFeatures: false
   };
   
   // Initialize training module
@@ -46,8 +49,15 @@ export async function initialize(options = {}) {
     console.error('Failed to initialize voice synthesis:', error);
   }
   
+  // Initialize advanced features module
+  try {
+    results.advancedFeatures = await advancedFeatures.initialize(options);
+  } catch (error) {
+    console.error('Failed to initialize advanced voice features:', error);
+  }
+  
   return {
-    success: results.training || results.recognition || results.synthesis,
+    success: results.training || results.recognition || results.synthesis || results.advancedFeatures,
     results
   };
 }
@@ -56,5 +66,6 @@ export async function initialize(options = {}) {
 export { 
   training,
   recognition,
+  advancedFeatures,
   synthesis
 };

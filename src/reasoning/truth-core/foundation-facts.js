@@ -5,10 +5,23 @@
  * that serve as the basis for ALEJO's reasoning system. These facts are
  * organized by category and cannot be contradicted by learned information.
  * 
+ * The foundation facts system serves as the bedrock of ALEJO's reasoning engine,
+ * providing irrefutable first principles and foundational knowledge that guides
+ * all reasoning processes and conflict resolution.
+ * 
  * Based on MIT Media Lab research (2025) on establishing reliable knowledge
  * foundations for AI systems.
  */
-import { publish } from '../../core/events.js';
+import { publish, subscribe } from '../../core/events.js';
+import * as security from '../../security/index.js';
+import * as conflictResolver from '../correction/conflict-resolver.js';
+
+// Constants for security permissions
+const PERMISSIONS = {
+  VIEW_FACTS: 'reasoning:view-foundation-facts',
+  MODIFY_FACTS: 'reasoning:modify-foundation-facts',
+  VERIFY_FACTS: 'reasoning:verify-foundation-facts'
+};
 
 // Categories of foundational facts
 const CATEGORIES = {
@@ -532,6 +545,403 @@ export function checkStatementContradiction(statement) {
   const contradicts = fact.value.toString() !== statement.value.toString();
   return { contradicts, fact };
 }
+
+/**
+ * Add a new foundational fact to the database.
+ * This operation requires the 'reasoning:modify-foundation-facts' permission.
+ * @param {string} id - Unique identifier for the fact
+ * @param {Object} factData - Fact data object
+ * @param {string} factData.value - The value of the fact
+ * @param {string} factData.category - The category of the fact
+ * @param {number} factData.confidence - Confidence level (0-1)
+ * @param {string} factData.description - Description of the fact
+ * @param {string} factData.source - Source of the fact
+ * @returns {boolean} - Success of the operation
+ */
+export async function addFoundationFact(id, factData) {
+  // Security check - requires special permission
+  if (!await security.checkPermission(PERMISSIONS.MODIFY_FACTS)) {
+    security.auditLog({
+      action: 'foundation-facts:unauthorized-add-attempt',
+      details: { id, factData },
+      outcome: 'denied'
+    });
+    publish('reasoning:unauthorized-operation', { operation: 'add-foundation-fact', id });
+    return false;
+  }
+  
+  // Validate required fields
+  const requiredFields = ['value', 'category', 'confidence', 'description', 'source'];
+  const missingFields = requiredFields.filter(field => !factData[field]);
+  
+  if (missingFields.length > 0) {
+    security.auditLog({
+      action: 'foundation-facts:invalid-fact-data',
+      details: { id, factData, missingFields },
+      outcome: 'rejected'
+    });
+    publish('reasoning:invalid-data', { operation: 'add-foundation-fact', id, missingFields });
+    return false;
+  }
+  
+  // Validate category
+  if (!Object.values(CATEGORIES).includes(factData.category)) {
+    security.auditLog({
+      action: 'foundation-facts:invalid-category',
+      details: { id, category: factData.category },
+      outcome: 'rejected'
+    });
+    publish('reasoning:invalid-data', { operation: 'add-foundation-fact', id, invalidCategory: factData.category });
+    return false;
+  }
+  
+  // Validate confidence
+  if (typeof factData.confidence !== 'number' || factData.confidence < 0 || factData.confidence > 1) {
+    security.auditLog({
+      action: 'foundation-facts:invalid-confidence',
+      details: { id, confidence: factData.confidence },
+      outcome: 'rejected'
+    });
+    publish('reasoning:invalid-data', { operation: 'add-foundation-fact', id, invalidConfidence: factData.confidence });
+    return false;
+  }
+  
+  // Check if fact already exists
+  if (factsDatabase.has(id)) {
+    security.auditLog({
+      action: 'foundation-facts:duplicate-fact',
+      details: { id, factData },
+      outcome: 'rejected'
+    });
+    publish('reasoning:duplicate-data', { operation: 'add-foundation-fact', id });
+    return false;
+  }
+  
+  // Add the fact
+  factsDatabase.set(id, { ...factData });
+  
+  // Log the operation
+  security.auditLog({
+    action: 'foundation-facts:fact-added',
+    details: { id, factData },
+    outcome: 'success'
+  });
+  
+  // Publish event
+  publish('reasoning:foundation-fact-added', { id, fact: factData });
+  
+  return true;
+}
+
+/**
+ * Update an existing foundational fact.
+ * This operation requires the 'reasoning:modify-foundation-facts' permission.
+ * @param {string} id - Fact identifier
+ * @param {Object} updates - Fact data updates
+ * @returns {boolean} - Success of the operation
+ */
+export async function updateFoundationFact(id, updates) {
+  // Security check
+  if (!await security.checkPermission(PERMISSIONS.MODIFY_FACTS)) {
+    security.auditLog({
+      action: 'foundation-facts:unauthorized-update-attempt',
+      details: { id, updates },
+      outcome: 'denied'
+    });
+    publish('reasoning:unauthorized-operation', { operation: 'update-foundation-fact', id });
+    return false;
+  }
+  
+  // Check if fact exists
+  if (!factsDatabase.has(id)) {
+    security.auditLog({
+      action: 'foundation-facts:fact-not-found',
+      details: { id, updates },
+      outcome: 'rejected'
+    });
+    publish('reasoning:not-found', { operation: 'update-foundation-fact', id });
+    return false;
+  }
+  
+  const currentFact = factsDatabase.get(id);
+  const updatedFact = { ...currentFact };
+  
+  // Apply updates
+  Object.keys(updates).forEach(key => {
+    if (key === 'category' && !Object.values(CATEGORIES).includes(updates[key])) {
+      // Skip invalid category
+      publish('reasoning:invalid-data', { operation: 'update-foundation-fact', id, invalidCategory: updates[key] });
+    } else if (key === 'confidence' && 
+              (typeof updates[key] !== 'number' || updates[key] < 0 || updates[key] > 1)) {
+      // Skip invalid confidence
+      publish('reasoning:invalid-data', { operation: 'update-foundation-fact', id, invalidConfidence: updates[key] });
+    } else {
+      updatedFact[key] = updates[key];
+    }
+  });
+  
+  // Update the fact
+  factsDatabase.set(id, updatedFact);
+  
+  // Log the operation
+  security.auditLog({
+    action: 'foundation-facts:fact-updated',
+    details: { id, originalFact: currentFact, updates, updatedFact },
+    outcome: 'success'
+  });
+  
+  // Publish event
+  publish('reasoning:foundation-fact-updated', { 
+    id, 
+    previousValue: currentFact.value,
+    newValue: updatedFact.value,
+    fact: updatedFact 
+  });
+  
+  // Notify the conflict resolver of the update
+  conflictResolver.handleFoundationFactUpdate(id, updatedFact);
+  
+  return true;
+}
+
+/**
+ * Remove a foundational fact from the database.
+ * This operation requires the 'reasoning:modify-foundation-facts' permission.
+ * @param {string} id - Fact identifier
+ * @returns {boolean} - Success of the operation
+ */
+export async function removeFoundationFact(id) {
+  // Security check
+  if (!await security.checkPermission(PERMISSIONS.MODIFY_FACTS)) {
+    security.auditLog({
+      action: 'foundation-facts:unauthorized-remove-attempt',
+      details: { id },
+      outcome: 'denied'
+    });
+    publish('reasoning:unauthorized-operation', { operation: 'remove-foundation-fact', id });
+    return false;
+  }
+  
+  // Check if fact exists
+  if (!factsDatabase.has(id)) {
+    security.auditLog({
+      action: 'foundation-facts:fact-not-found',
+      details: { id },
+      outcome: 'rejected'
+    });
+    publish('reasoning:not-found', { operation: 'remove-foundation-fact', id });
+    return false;
+  }
+  
+  const fact = factsDatabase.get(id);
+  
+  // Remove the fact
+  factsDatabase.delete(id);
+  
+  // Log the operation
+  security.auditLog({
+    action: 'foundation-facts:fact-removed',
+    details: { id, removedFact: fact },
+    outcome: 'success'
+  });
+  
+  // Publish event
+  publish('reasoning:foundation-fact-removed', { id, fact });
+  
+  // Notify the conflict resolver of the removal
+  conflictResolver.handleFoundationFactRemoval(id);
+  
+  return true;
+}
+
+/**
+ * Advanced check for contradictions against foundation facts.
+ * This checks not only direct contradictions but also attempts to detect
+ * indirect contradictions through logical implication.
+ * @param {string} statement - The statement to check
+ * @param {Object} context - Additional context that might be needed
+ * @returns {Object|null} - Returns contradiction info or null if no contradiction
+ */
+export function checkAdvancedContradiction(statement, context = {}) {
+  // First check for direct contradiction
+  const directContradiction = checkContradiction(statement.key, statement.value);
+  if (directContradiction) {
+    return {
+      ...directContradiction,
+      type: 'direct',
+      conflictSeverity: 'critical'
+    };
+  }
+  
+  // Check for category-specific contradictions
+  // For example, mathematical and logical contradictions
+  
+  // Mathematical contradictions
+  if (statement.category === CATEGORIES.MATHEMATICS) {
+    // Example: checking if a statement contradicts the pythagorean theorem
+    if (statement.key.includes('pythagorean') || 
+        (statement.description && statement.description.includes('right triangle'))) {
+      // Run specialized mathematical validation
+      const mathContradiction = validateMathematicalConsistency(statement, context);
+      if (mathContradiction) {
+        return {
+          ...mathContradiction,
+          type: 'mathematical',
+          conflictSeverity: 'high'
+        };
+      }
+    }
+  }
+  
+  // Logical contradictions
+  if (statement.category === CATEGORIES.LOGIC) {
+    // Example: checking if a statement violates the law of non-contradiction
+    const logicalContradiction = validateLogicalConsistency(statement, context);
+    if (logicalContradiction) {
+      return {
+        ...logicalContradiction,
+        type: 'logical',
+        conflictSeverity: 'critical'
+      };
+    }
+  }
+  
+  // Physical law contradictions
+  if (statement.category === CATEGORIES.PHYSICS) {
+    // Check for violations of physical laws
+    const physicalContradiction = validatePhysicalConsistency(statement, context);
+    if (physicalContradiction) {
+      return {
+        ...physicalContradiction,
+        type: 'physical',
+        conflictSeverity: 'high'
+      };
+    }
+  }
+  
+  // No contradiction detected
+  return null;
+}
+
+// Helper function for mathematical consistency checking
+function validateMathematicalConsistency(statement, context) {
+  // This would contain specialized mathematical validation logic
+  // For now, we'll return null (no contradiction)
+  return null;
+}
+
+// Helper function for logical consistency checking
+function validateLogicalConsistency(statement, context) {
+  // This would contain specialized logical validation logic
+  // For now, we'll return null (no contradiction)
+  return null;
+}
+
+// Helper function for physical law consistency checking
+function validatePhysicalConsistency(statement, context) {
+  // This would contain specialized physical validation logic
+  // For now, we'll return null (no contradiction)
+  return null;
+}
+
+/**
+ * Initialize the foundation facts module and set up event listeners.
+ */
+export function initialize() {
+  // Subscribe to feedback events
+  subscribe('feedback:high-impact-recorded', handleHighImpactFeedback);
+  subscribe('feedback:correction-applied', handleCorrectionApplied);
+  
+  // Subscribe to conflict resolution events
+  subscribe('conflict:resolution-applied', handleConflictResolution);
+  
+  // Log initialization
+  security.auditLog({
+    action: 'foundation-facts:initialized',
+    details: { factCount: factsDatabase.size },
+    outcome: 'success'
+  });
+  
+  // Publish initialization event
+  publish('reasoning:foundation-facts-initialized', { 
+    factCount: factsDatabase.size,
+    categories: Object.values(CATEGORIES)
+  });
+  
+  return true;
+}
+
+/**
+ * Handle high impact feedback that might affect foundation facts.
+ * @param {Object} event - Feedback event data
+ */
+async function handleHighImpactFeedback(event) {
+  const { feedback } = event;
+  
+  // Check if this feedback concerns a foundation fact
+  if (feedback.targetType === 'foundation-fact' && feedback.impactLevel === 'critical') {
+    // Log the feedback review
+    security.auditLog({
+      action: 'foundation-facts:high-impact-feedback-received',
+      details: { feedbackId: feedback.id, factId: feedback.targetId },
+      outcome: 'pending-review'
+    });
+    
+    // Notify administrators for review
+    publish('reasoning:foundation-fact-feedback', { 
+      feedbackId: feedback.id,
+      factId: feedback.targetId,
+      urgency: 'high'
+    });
+  }
+}
+
+/**
+ * Handle applied corrections that might affect foundation facts.
+ * @param {Object} event - Correction event data
+ */
+async function handleCorrectionApplied(event) {
+  const { correction, targetId } = event;
+  
+  // If the correction applies to a foundation fact, update our verification status
+  if (correction.targetType === 'foundation-fact' && factsDatabase.has(targetId)) {
+    // Update verification metadata
+    const fact = factsDatabase.get(targetId);
+    fact.lastVerified = new Date().toISOString();
+    fact.verificationSource = correction.source || 'feedback-correction';
+    factsDatabase.set(targetId, fact);
+    
+    // Log the verification
+    security.auditLog({
+      action: 'foundation-facts:fact-verified',
+      details: { factId: targetId, verificationSource: fact.verificationSource },
+      outcome: 'success'
+    });
+  }
+}
+
+/**
+ * Handle conflict resolutions that might affect foundation facts.
+ * @param {Object} event - Conflict resolution event data
+ */
+async function handleConflictResolution(event) {
+  const { conflictId, resolution, involvedFacts } = event;
+  
+  // Check if any foundation facts were involved
+  if (involvedFacts && involvedFacts.some(factId => factsDatabase.has(factId))) {
+    // Log the conflict resolution
+    security.auditLog({
+      action: 'foundation-facts:conflict-resolution-processed',
+      details: { conflictId, resolution, involvedFacts },
+      outcome: 'processed'
+    });
+  }
+}
+
+/**
+ * Export the security permissions for foundation facts.
+ */
+export const factPermissions = PERMISSIONS;
 
 // Export categories and confidence levels for use in other modules
 export { CATEGORIES, CONFIDENCE };

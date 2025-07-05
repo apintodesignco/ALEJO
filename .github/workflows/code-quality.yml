@@ -110,7 +110,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Note: You'll need to add the SONAR_TOKEN secret in your GitHub repository settings
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN || '' }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
             -Dsonar.projectKey=apintodesignco_ALEJO

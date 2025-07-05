@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Behavior Personalization Demo</title>
+  <style>
+    :root {
+      --primary-color: #3a86ff;
+      --secondary-color: #8338ec;
+      --accent-color: #ff006e;
+      --background-color: #f8f9fa;
+      --card-background: #ffffff;
+      --text-color: #212529;
+      --border-color: #dee2e6;
+      --success-color: #38b000;
+      --warning-color: #ffbe0b;
+      --error-color: #d90429;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--background-color);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: var(--secondary-color);
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .privacy-notice {
+      background-color: var(--warning-color);
+      color: #333;
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+
+    .demo-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .demo-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background-color: var(--card-background);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      color: var(--primary-color);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      margin-top: 0;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #2a75e6;
+    }
+
+    button.secondary {
+      background-color: var(--secondary-color);
+    }
+
+    button.secondary:hover {
+      background-color: #7028d7;
+    }
+
+    .metrics-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .metric {
+      background-color: #f1f3f5;
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .metric-name {
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .metric-value {
+      display: flex;
+      align-items: center;
+    }
+
+    .progress-bar {
+      flex-grow: 1;
+      height: 8px;
+      background-color: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-right: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary-color);
+    }
+
+    .response-container {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f1f3f5;
+      border-radius: 4px;
+      white-space: pre-wrap;
+    }
+
+    .preferences-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .preference-item {
+      padding: 10px;
+      margin-bottom: 5px;
+      background-color: #f1f3f5;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .preference-key {
+      font-weight: 500;
+    }
+
+    .preference-value {
+      color: var(--secondary-color);
+    }
+
+    .confidence-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    .high-confidence {
+      background-color: var(--success-color);
+    }
+
+    .medium-confidence {
+      background-color: var(--warning-color);
+    }
+
+    .low-confidence {
+      background-color: var(--error-color);
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab.active {
+      border-bottom: 2px solid var(--primary-color);
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+      margin-left: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .hidden {
+      display: none;
+    }
+    
+    /* Default styling for progress bars */
+    .progress-fill {
+      width: 0%; /* Default width, will be updated by JS */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>ALEJO Behavior Personalization Demo</h1>
+      <div class="subtitle">Experience how ALEJO learns and adapts to your communication style</div>
+    </header>
+
+    <div class="privacy-notice">
+      <strong>Privacy Notice:</strong> This demo uses local storage to save your interaction data. No data is sent to any server. All processing happens in your browser.
+    </div>
+
+    <div class="demo-container">
+      <!-- User Input Section -->
+      <div class="card">
+        <h2>Your Messages</h2>
+        <p>Type messages to help ALEJO learn your communication style. The more you interact, the better ALEJO will understand your preferences.</p>
+        
+        <div class="input-group">
+          <label for="user-id">Your User ID:</label>
+          <input type="text" id="user-id" placeholder="Enter a unique identifier" value="demo-user-123">
+        </div>
+        
+        <div class="input-group">
+          <label for="message-input">Your Message:</label>
+          <textarea id="message-input" rows="4" placeholder="Type your message here..."></textarea>
+        </div>
+        
+        <div class="input-group">
+          <label for="context-input">Context (optional):</label>
+          <select id="context-input">
+            <option value="casual">Casual Conversation</option>
+            <option value="technical">Technical Discussion</option>
+            <option value="formal">Formal Communication</option>
+            <option value="emotional">Emotional Situation</option>
+          </select>
+        </div>
+        
+        <button id="send-message">Send Message</button>
+        <button id="reset-patterns" class="secondary">Reset Learned Patterns</button>
+      </div>
+
+      <!-- Style Metrics Section -->
+      <div class="card">
+        <h2>Your Communication Style</h2>
+        <p>As you interact, ALEJO builds a model of your communication style across these dimensions:</p>
+        
+        <div class="metrics-container">
+          <div class="metric">
+            <div class="metric-name">Formality</div>
+            <div class="metric-value">
+              <div class="progress-bar">
+                <div class="progress-fill" id="formality-bar"></div>
+              </div>
+              <span id="formality-value">0.0</span>
+            </div>
+          </div>
+          
+          <div class="metric">
+            <div class="metric-name">Verbosity</div>
+            <div class="metric-value">
+              <div class="progress-bar">
+                <div class="progress-fill" id="verbosity-bar"></div>
+              </div>
+              <span id="verbosity-value">0.0</span>
+            </div>
+          </div>
+          
+          <div class="metric">
+            <div class="metric-name">Emotionality</div>
+            <div class="metric-value">
+              <div class="progress-bar">
+                <div class="progress-fill" id="emotionality-bar"></div>
+              </div>
+              <span id="emotionality-value">0.0</span>
+            </div>
+          </div>
+          
+          <div class="metric">
+            <div class="metric-name">Complexity</div>
+            <div class="metric-value">
+              <div class="progress-bar">
+                <div class="progress-fill" id="complexity-bar"></div>
+              </div>
+              <span id="complexity-value">0.0</span>
+            </div>
+          </div>
+          
+          <div class="metric">
+            <div class="metric-name">Directness</div>
+            <div class="metric-value">
+              <div class="progress-bar">
+                <div class="progress-fill" id="directness-bar"></div>
+              </div>
+              <span id="directness-value">0.0</span>
+            </div>
+          </div>
+          
+          <div class="metric">
+            <div class="metric-name">Politeness</div>
+            <div class="metric-value">
+              <div class="progress-bar">
+                <div class="progress-fill" id="politeness-bar"></div>
+              </div>
+              <span id="politeness-value">0.0</span>
+            </div>
+          </div>
+          
+          <div class="metric">
+            <div class="metric-name">Humor</div>
+            <div class="metric-value">
+              <div class="progress-bar">
+                <div class="progress-fill" id="humor-bar"></div>
+              </div>
+              <span id="humor-value">0.0</span>
+            </div>
+          </div>
+          
+          <div class="metric">
+            <div class="metric-name">Question Frequency</div>
+            <div class="metric-value">
+              <div class="progress-bar">
+                <div class="progress-fill" id="question-frequency-bar"></div>
+              </div>
+              <span id="question-frequency-value">0.0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Response Adaptation Section -->
+      <div class="card">
+        <h2>Response Adaptation</h2>
+        <p>See how ALEJO adapts responses based on your communication style:</p>
+        
+        <div class="tabs">
+          <div class="tab active" data-tab="original">Original Response</div>
+          <div class="tab" data-tab="adapted">Adapted Response</div>
+        </div>
+        
+        <div class="tab-content active" id="original-content">
+          <div class="input-group">
+            <label for="original-response">Original Response:</label>
+            <textarea id="original-response" rows="4" placeholder="Enter a response to adapt...">Thank you for your message. I've analyzed the data you provided and found several interesting patterns. The first pattern shows a correlation between user engagement and content relevance. The second pattern indicates that response time significantly impacts user satisfaction. Would you like me to elaborate on these findings or provide specific recommendations based on this analysis?</textarea>
+          </div>
+          
+          <button id="adapt-response">Adapt Response</button>
+          <span id="adaptation-loading" class="loading hidden"></span>
+        </div>
+        
+        <div class="tab-content" id="adapted-content">
+          <div class="response-container" id="adapted-response">
+            Adapted response will appear here...
+          </div>
+        </div>
+      </div>
+
+      <!-- Preferences Section -->
+      <div class="card">
+        <h2>Detected Preferences</h2>
+        <p>ALEJO automatically detects your preferences from your messages:</p>
+        
+        <div class="tabs">
+          <div class="tab active" data-tab="detected">Detected Preferences</div>
+          <div class="tab" data-tab="set">Set Preference</div>
+        </div>
+        
+        <div class="tab-content active" id="detected-content">
+          <ul class="preferences-list" id="preferences-list">
+            <li class="preference-item">
+              <span class="preference-key"><span class="confidence-indicator medium-confidence"></span> No preferences detected yet</span>
+              <span class="preference-value">-</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="tab-content" id="set-content">
+          <div class="input-group">
+            <label for="preference-key">Preference Key:</label>
+            <input type="text" id="preference-key" placeholder="e.g., interface:theme">
+          </div>
+          
+          <div class="input-group">
+            <label for="preference-value">Preference Value:</label>
+            <input type="text" id="preference-value" placeholder="e.g., dark">
+          </div>
+          
+          <div class="input-group">
+            <label for="preference-category">Category:</label>
+            <select id="preference-category">
+              <option value="INTERFACE">Interface</option>
+              <option value="CONTENT">Content</option>
+              <option value="NOTIFICATION">Notification</option>
+              <option value="PRIVACY">Privacy</option>
+              <option value="SOCIAL">Social</option>
+            </select>
+          </div>
+          
+          <button id="set-preference">Set Preference</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // Import the behavior module
+    import * as behaviorModule from '../src/personalization/behavior/index.js';
+    
+    // DOM Elements
+    const userIdInput = document.getElementById('user-id');
+    const messageInput = document.getElementById('message-input');
+    const contextInput = document.getElementById('context-input');
+    const sendMessageButton = document.getElementById('send-message');
+    const resetPatternsButton = document.getElementById('reset-patterns');
+    const originalResponseInput = document.getElementById('original-response');
+    const adaptResponseButton = document.getElementById('adapt-response');
+    const adaptedResponseElement = document.getElementById('adapted-response');
+    const adaptationLoadingElement = document.getElementById('adaptation-loading');
+    const preferencesListElement = document.getElementById('preferences-list');
+    const preferenceKeyInput = document.getElementById('preference-key');
+    const preferenceValueInput = document.getElementById('preference-value');
+    const preferenceCategoryInput = document.getElementById('preference-category');
+    const setPreferenceButton = document.getElementById('set-preference');
+    const tabs = document.querySelectorAll('.tab');
+    
+    // Style metrics elements
+    const metricElements = {
+      formality: {
+        bar: document.getElementById('formality-bar'),
+        value: document.getElementById('formality-value')
+      },
+      verbosity: {
+        bar: document.getElementById('verbosity-bar'),
+        value: document.getElementById('verbosity-value')
+      },
+      emotionality: {
+        bar: document.getElementById('emotionality-bar'),
+        value: document.getElementById('emotionality-value')
+      },
+      complexity: {
+        bar: document.getElementById('complexity-bar'),
+        value: document.getElementById('complexity-value')
+      },
+      directness: {
+        bar: document.getElementById('directness-bar'),
+        value: document.getElementById('directness-value')
+      },
+      politeness: {
+        bar: document.getElementById('politeness-bar'),
+        value: document.getElementById('politeness-value')
+      },
+      humor: {
+        bar: document.getElementById('humor-bar'),
+        value: document.getElementById('humor-value')
+      },
+      questionFrequency: {
+        bar: document.getElementById('question-frequency-bar'),
+        value: document.getElementById('question-frequency-value')
+      }
+    };
+    
+    // Initialize the behavior module
+    async function initializeBehaviorModule() {
+      try {
+        const result = await behaviorModule.initialize();
+        console.log('Behavior module initialized:', result);
+        
+        // Load initial data
+        await updateStyleMetrics();
+        await updatePreferences();
+      } catch (error) {
+        console.error('Failed to initialize behavior module:', error);
+        alert('Failed to initialize behavior module. See console for details.');
+      }
+    }
+    
+    // Update style metrics display
+    async function updateStyleMetrics() {
+      try {
+        const userId = userIdInput.value;
+        const metrics = await behaviorModule.getStyleMetrics(userId);
+        
+        // Update UI with metrics
+        for (const [metric, value] of Object.entries(metrics)) {
+          if (metricElements[metric]) {
+            const percentage = Math.round(value * 100);
+            metricElements[metric].bar.style.width = `${percentage}%`;
+            metricElements[metric].value.textContent = value.toFixed(2);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to update style metrics:', error);
+      }
+    }
+    
+    // Update preferences display
+    async function updatePreferences() {
+      try {
+        const userId = userIdInput.value;
+        const model = await behaviorModule.getPreferenceModel(userId);
+        
+        // Clear current list
+        preferencesListElement.innerHTML = '';
+        
+        // Check if there are preferences
+        let hasPreferences = false;
+        
+        // Add preferences to the list
+        for (const category in model.preferences) {
+          for (const key in model.preferences[category]) {
+            hasPreferences = true;
+            const pref = model.preferences[category][key];
+            
+            // Create preference item
+            const item = document.createElement('li');
+            item.className = 'preference-item';
+            
+            // Determine confidence class
+            let confidenceClass = 'low-confidence';
+            if (pref.confidence > 0.7) {
+              confidenceClass = 'high-confidence';
+            } else if (pref.confidence > 0.4) {
+              confidenceClass = 'medium-confidence';
+            }
+            
+            // Create preference key element
+            const keyElement = document.createElement('span');
+            keyElement.className = 'preference-key';
+            keyElement.innerHTML = `<span class="confidence-indicator ${confidenceClass}"></span> ${key}`;
+            
+            // Create preference value element
+            const valueElement = document.createElement('span');
+            valueElement.className = 'preference-value';
+            valueElement.textContent = typeof pref.value === 'object' ? 
+              JSON.stringify(pref.value) : pref.value;
+            
+            // Add elements to item
+            item.appendChild(keyElement);
+            item.appendChild(valueElement);
+            
+            // Add item to list
+            preferencesListElement.appendChild(item);
+          }
+        }
+        
+        // Show message if no preferences
+        if (!hasPreferences) {
+          const item = document.createElement('li');
+          item.className = 'preference-item';
+          item.innerHTML = `
+            <span class="preference-key">
+              <span class="confidence-indicator medium-confidence"></span> 
+              No preferences detected yet
+            </span>
+            <span class="preference-value">-</span>
+          `;
+          preferencesListElement.appendChild(item);
+        }
+      } catch (error) {
+        console.error('Failed to update preferences:', error);
+      }
+    }
+    
+    // Send a message
+    async function sendMessage() {
+      const userId = userIdInput.value;
+      const message = messageInput.value;
+      const context = { type: contextInput.value };
+      
+      if (!userId || !message) {
+        alert('Please enter both a user ID and a message.');
+        return;
+      }
+      
+      try {
+        // Record the message
+        await behaviorModule.recordUserMessage(userId, message, context);
+        
+        // Update UI
+        await updateStyleMetrics();
+        await updatePreferences();
+        
+        // Clear message input
+        messageInput.value = '';
+        
+        // Show success message
+        alert('Message recorded successfully!');
+      } catch (error) {
+        console.error('Failed to record message:', error);
+        alert('Failed to record message. See console for details.');
+      }
+    }
+    
+    // Reset patterns
+    async function resetPatterns() {
+      const userId = userIdInput.value;
+      
+      if (!userId) {
+        alert('Please enter a user ID.');
+        return;
+      }
+      
+      if (!confirm('Are you sure you want to reset all learned patterns? This cannot be undone.')) {
+        return;
+      }
+      
+      try {
+        // Reset patterns
+        await behaviorModule.resetPatterns(userId);
+        
+        // Update UI
+        await updateStyleMetrics();
+        
+        // Show success message
+        alert('Patterns reset successfully!');
+      } catch (error) {
+        console.error('Failed to reset patterns:', error);
+        alert('Failed to reset patterns. See console for details.');
+      }
+    }
+    
+    // Adapt response
+    async function adaptResponse() {
+      const userId = userIdInput.value;
+      const originalResponse = originalResponseInput.value;
+      
+      if (!userId || !originalResponse) {
+        alert('Please enter both a user ID and an original response.');
+        return;
+      }
+      
+      try {
+        // Show loading indicator
+        adaptationLoadingElement.classList.remove('hidden');
+        
+        // Adapt the response
+        const adaptedResponse = await behaviorModule.adaptResponse(userId, originalResponse, {
+          type: contextInput.value
+        });
+        
+        // Update UI
+        adaptedResponseElement.textContent = adaptedResponse;
+        
+        // Switch to adapted tab
+        switchTab('adapted');
+      } catch (error) {
+        console.error('Failed to adapt response:', error);
+        alert('Failed to adapt response. See console for details.');
+      } finally {
+        // Hide loading indicator
+        adaptationLoadingElement.classList.add('hidden');
+      }
+    }
+    
+    // Set preference
+    async function setPreference() {
+      const userId = userIdInput.value;
+      const key = preferenceKeyInput.value;
+      const value = preferenceValueInput.value;
+      const category = preferenceCategoryInput.value;
+      
+      if (!userId || !key || !value || !category) {
+        alert('Please fill in all preference fields.');
+        return;
+      }
+      
+      try {
+        // Set the preference
+        await behaviorModule.setPreference(userId, key, value, category);
+        
+        // Update UI
+        await updatePreferences();
+        
+        // Clear inputs
+        preferenceKeyInput.value = '';
+        preferenceValueInput.value = '';
+        
+        // Switch to detected tab
+        switchTab('detected');
+        
+        // Show success message
+        alert('Preference set successfully!');
+      } catch (error) {
+        console.error('Failed to set preference:', error);
+        alert('Failed to set preference. See console for details.');
+      }
+    }
+    
+    // Switch tabs
+    function switchTab(tabId) {
+      // Update tab buttons
+      tabs.forEach(tab => {
+        if (tab.dataset.tab === tabId) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+      
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => {
+        if (content.id === `${tabId}-content`) {
+          content.classList.add('active');
+        } else {
+          content.classList.remove('active');
+        }
+      });
+    }
+    
+    // Event listeners
+    sendMessageButton.addEventListener('click', sendMessage);
+    resetPatternsButton.addEventListener('click', resetPatterns);
+    adaptResponseButton.addEventListener('click', adaptResponse);
+    setPreferenceButton.addEventListener('click', setPreference);
+    
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        switchTab(tab.dataset.tab);
+      });
+    });
+    
+    // Initialize the demo
+    initializeBehaviorModule();
+  </script>
+</body>
+</html>

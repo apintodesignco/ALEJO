@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Vision-Voice Fusion Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    
+    .description {
+      background-color: #fff;
+      padding: 1.5rem;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+    
+    footer {
+      background-color: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ALEJO Vision-Voice Fusion Demo</h1>
+  </header>
+  
+  <div class="container">
+    <div class="description">
+      <h2>About This Demo</h2>
+      <p>
+        This demo showcases ALEJO's multimodal fusion capabilities, combining vision and voice inputs
+        for enhanced understanding of user intent and emotional state.
+      </p>
+      <p>
+        <strong>How it works:</strong> The system will analyze your facial expressions through the camera
+        and your voice through the microphone. It will then combine these inputs to provide a more
+        accurate understanding of your emotional state and enhance command recognition.
+      </p>
+      <p>
+        <strong>Privacy note:</strong> All processing happens locally in your browser.
+        No data is sent to any server or stored permanently.
+      </p>
+    </div>
+    
+    <div id="demo-container">
+      <!-- The demo will be inserted here by the JavaScript -->
+    </div>
+  </div>
+  
+  <footer>
+    <p>© 2025 ALEJO - Apinto Design Co.</p>
+  </footer>
+  
+  <!-- Import the demo as a module -->
+  <script type="module">
+    import { initializeDemo } from './vision-voice-fusion-demo.js';
+    
+    // Initialize the demo when the page loads
+    window.addEventListener('DOMContentLoaded', () => {
+      // Create a container for the demo
+      const demoContainer = document.getElementById('demo-container');
+      
+      // Initialize the demo
+      initializeDemo(demoContainer);
+    });
+  </script>
+</body>
+</html>

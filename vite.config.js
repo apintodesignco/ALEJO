@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import legacy from '@vitejs/plugin-legacy';
 import { splitVendorChunkPlugin } from 'vite';
 import { resolve } from 'path';
+import { securityHeaders } from './src/security/vite-security-headers.js';
 
 /**
  * ALEJO Vite Configuration
@@ -92,6 +93,12 @@ export default defineConfig({
     // Add legacy browser support
     legacy({
       targets: ['defaults', 'not IE 11']
+    }),
+    
+    // Add security headers
+    securityHeaders({
+      development: process.env.NODE_ENV !== 'production',
+      reportOnly: process.env.NODE_ENV !== 'production'
     })
   ],
   

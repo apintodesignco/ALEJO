@@ -4,34 +4,132 @@
  * This module integrates the preference model with the relationship memory system,
  * allowing preferences to be contextualized based on relationship data.
  */
-
-const { getPreferenceModel, savePreferenceModel } = require('./preference-persistence');
-const { PREFERENCE_CATEGORIES, CONFIDENCE_LEVELS, DECAY_RATES, CONTEXT_FACTORS } = require('./preference-model');
-
 /**
- * Python interop for relationship memory access
+ * Integration between preference model and relationship memory system
+ * @module preference-relationship-integration
  */
-const { PythonBridge } = require('../../core/integrations/python-bridge');
+
+// Import dependencies consistently using ES modules syntax
+import { PythonBridge } from '../../core/integrations/python-bridge.js';
+import { PREFERENCE_CATEGORIES, CONFIDENCE_LEVELS, DECAY_RATES, CONTEXT_FACTORS } from '../constants/preference-constants.js';
+import { auditTrail } from '../../utils/audit-trail.js';
+import { queueManager } from '../../utils/queue-manager.js';
+import { relationshipCircuitBreaker } from '../../utils/circuit-breaker.js';
+import { enqueueFailedRelationshipUpdate } from './relationship-update-queue.js';
+import { relationshipCache } from '../../utils/cache-manager.js';
+import { normalizePreferenceStrength } from './preference-normalization.js';
+
+// Initialize services
 const pythonBridge = new PythonBridge();
+
+// Constants
+const RETRY_QUEUE_NAME = 'relationship_updates';
 
 /**
  * Get relationship context for an entity to inform preference adjustments
  * @param {string} userId - User identifier
  * @param {string} entityId - Entity identifier
+ * @param {Object} options - Additional options
+ * @param {number} options.maxRetries - Maximum number of retry attempts
+ * @param {number} options.retryDelay - Delay between retries in ms
+ * @param {boolean} options.bypassCache - Whether to bypass the cache
  * @returns {Promise<Object>} Relationship context data
  */
-async function getRelationshipContext(userId, entityId) {
+async function getRelationshipContext(userId, entityId, options = { maxRetries: 2, retryDelay: 300, bypassCache: false }) {
+  const startTime = performance.now();
+  const { maxRetries, retryDelay, bypassCache } = options;
+  
+  // Generate cache key
+  const cacheKey = `${userId}:${entityId}`;
+  
+  // Check cache first unless bypassing
+  if (!bypassCache) {
+    const cachedContext = relationshipCache.get(cacheKey);
+    if (cachedContext) {
+      const duration = performance.now() - startTime;
+      auditTrail.log('relationship:cache:hit', { userId, entityId, duration });
+      return cachedContext;
+    }
+  }
+  
+  // Check if circuit breaker is open
+  if (relationshipCircuitBreaker.isOpen()) {
+    console.warn(`Circuit breaker open for relationship memory, using empty context for ${userId}:${entityId}`);
+    auditTrail.log('relationship:circuit_breaker:skip', { userId, entityId });
+    return {};
+  }
+  
+  let attempts = 0;
+  
   try {
-    // Call Python relationship memory system
-    const result = await pythonBridge.callPython(
-      'alejo.cognitive.memory.relationship_memory',
-      'get_relationship_context',
-      [userId, entityId]
-    );
+    // Use circuit breaker to protect the call
+    const result = await relationshipCircuitBreaker.execute(async () => {
+      while (attempts <= maxRetries) {
+        try {
+          attempts++;
+          
+          // Call Python relationship memory system
+          const result = await pythonBridge.callPython(
+            'alejo.cognitive.memory.relationship_memory',
+            'get_relationship_context',
+            [userId, entityId]
+          );
+          
+          // Log success metrics for monitoring
+          if (attempts > 1) {
+            console.info(`Retrieved relationship context after ${attempts} attempts`);
+            auditTrail.log('relationship:retry:success', { userId, entityId, attempts });
+          }
+          
+          return result || {};
+        } catch (error) {
+          const isLastAttempt = attempts > maxRetries;
+          const logLevel = isLastAttempt ? 'error' : 'warn';
+          console[logLevel](`Error getting relationship context (attempt ${attempts}/${maxRetries + 1}):`, error);
+          
+          // Add telemetry for errors
+          auditTrail.log('relationship:error', { 
+            userId, 
+            entityId, 
+            attempt: attempts,
+            error: error.message,
+            stack: error.stack
+          });
+          
+          if (isLastAttempt) {
+            throw error; // Let circuit breaker handle the failure
+          }
+          
+          // Wait before retrying
+          await new Promise(resolve => setTimeout(resolve, retryDelay * attempts));
+        }
+      }
+      
+      throw new Error('Maximum retry attempts reached');
+    });
     
-    return result || {};
+    // Cache the successful result
+    if (Object.keys(result).length > 0) {
+      relationshipCache.set(cacheKey, result);
+      
+      // Log cache metrics
+      const duration = performance.now() - startTime;
+      auditTrail.log('relationship:cache:store', { 
+        userId, 
+        entityId, 
+        duration,
+        cacheStats: relationshipCache.getStats()
+      });
+    }
+    
+    return result;
   } catch (error) {
-    console.error('Error getting relationship context:', error);
+    console.error('Circuit breaker prevented relationship context lookup:', error);
+    auditTrail.log('relationship:circuit_breaker:open', { 
+      userId, 
+      entityId,
+      error: error.message 
+    });
     return {};
   }
 }
@@ -188,40 +286,125 @@ async function detectPreferencesFromRelationship(userId, entityId) {
  * @param {string} key - Preference key
  * @param {*} value - Preference value
  * @param {number} strength - Preference strength
+ * @param {Object} options - Additional options
+ * @param {number} options.maxRetries - Maximum number of retry attempts
+ * @param {boolean} options.criticalUpdate - Whether this update is critical
  * @returns {Promise<boolean>} Success status
  */
-async function updateRelationshipFromPreference(userId, entityId, key, value, strength) {
+async function updateRelationshipFromPreference(userId, entityId, key, value, strength, options = { maxRetries: 1, criticalUpdate: false }) {
+  const startTime = performance.now();
+  const { maxRetries, criticalUpdate } = options;
+  
+  if (!entityId) {
+    return false;
+  }
+  
+  // Determine sentiment from key if possible
+  let sentimentValue = strength;
+  const entityMatch = key.match(/relationship:(liked|disliked):(\w+):(.+)/);
+  if (entityMatch) {
+    const [, sentiment] = entityMatch;
+    sentimentValue = sentiment === 'liked' ? strength : -strength;
+  }
+  
+  // Check if circuit breaker is open
+  if (relationshipCircuitBreaker.isOpen()) {
+    console.warn(`Circuit breaker open for relationship memory, skipping update for ${userId}:${entityId}:${key}`);
+    auditTrail.log('relationship:update:circuit_breaker:skip', { userId, entityId, key });
+    
+    // Queue critical updates even when circuit is open
+    if (criticalUpdate) {
+      console.info('Circuit open but queueing critical relationship update for later retry');
+      try {
+        await enqueueFailedRelationshipUpdate(userId, entityId, key, value, strength);
+        auditTrail.log('relationship:update:queued', { userId, entityId, key, reason: 'circuit_open' });
+      } catch (queueError) {
+        console.error('Failed to enqueue relationship update:', queueError);
+      }
+    }
+    
+    return false;
+  }
+  
   try {
-    if (!entityId) {
-      return false;
-    }
-    
-    // Determine sentiment from key if possible
-    let sentimentValue = strength;
-    const entityMatch = key.match(/relationship:(liked|disliked):(\w+):(.+)/);
-    if (entityMatch) {
-      const [, sentiment] = entityMatch;
-      sentimentValue = sentiment === 'liked' ? strength : -strength;
-    }
-    
-    // Record interaction in relationship memory
-    await pythonBridge.callPython(
-      'alejo.cognitive.memory.relationship_memory',
-      'record_preference_interaction',
-      [
-        userId,
-        entityId,
-        'preference_update',
-        `Preference update: ${key} = ${value}`,
-        sentimentValue,
-        strength,
-        { preference_key: key, preference_value: value, preference_category: category }
-      ]
-    );
-    
-    return true;
+    // Use circuit breaker to protect the call
+    return await relationshipCircuitBreaker.execute(async () => {
+      let attempts = 0;
+      
+      while (attempts <= maxRetries) {
+        try {
+          attempts++;
+          
+          // Record interaction in relationship memory
+          await pythonBridge.callPython(
+            'alejo.cognitive.memory.relationship_memory',
+            'record_preference_interaction',
+            [
+              userId,
+              entityId,
+              'preference_update',
+              `User ${sentimentValue > 0 ? 'likes' : 'dislikes'} ${key}`,
+              sentimentValue,
+              0.7,  // Medium-high importance
+              { preference_key: key, preference_value: value }
+            ]
+          );
+          
+          // Log performance data
+          const duration = performance.now() - startTime;
+          auditTrail.log('relationship:update:success', {
+            userId,
+            entityId,
+            key,
+            attempts,
+            duration
+          });
+          
+          return true;
+        } catch (error) {
+          const isLastAttempt = attempts > maxRetries;
+          console.error(`Error updating relationship (attempt ${attempts}/${maxRetries + 1}):`, error);
+          
+          // Log the error for monitoring
+          auditTrail.log('relationship:update:error', {
+            userId,
+            entityId,
+            key,
+            attempts,
+            error: error.message
+          });
+          
+          if (isLastAttempt) {
+            throw error; // Let circuit breaker handle the failure
+          }
+          
+          // Exponential backoff before retrying
+          await new Promise(resolve => setTimeout(resolve, 250 * Math.pow(2, attempts - 1)));
+        }
+      }
+      
+      throw new Error('Maximum retry attempts reached');
+    });
   } catch (error) {
-    console.error('Error updating relationship from preference:', error);
+    console.error('Circuit breaker prevented relationship update:', error);
+    auditTrail.log('relationship:update:circuit_breaker:open', { 
+      userId, 
+      entityId,
+      key,
+      error: error.message 
+    });
+    
+    // For critical updates, enqueue for later retry with a background worker
+    if (criticalUpdate) {
+      try {
+        // Queue the failed update for later processing
+        await enqueueFailedRelationshipUpdate(userId, entityId, key, value, strength);
+        auditTrail.log('relationship:update:queued', { userId, entityId, key, reason: 'circuit_failure' });
+      } catch (queueError) {
+        console.error('Failed to enqueue relationship update:', queueError);
+      }
+    }
+    
     return false;
   }
 }

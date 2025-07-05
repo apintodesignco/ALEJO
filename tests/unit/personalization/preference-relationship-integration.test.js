@@ -19,6 +19,10 @@ describe('Preference-Relationship Integration', () => {
   });
 
   describe('getRelationshipContext', () => {
+    beforeEach(() => {
+      pythonBridge.callPython.mockReset();
+    });
+
     it('should return relationship context data when available', async () => {
       // Mock data
       const mockRelationshipData = {
@@ -56,6 +60,49 @@ describe('Preference-Relationship Integration', () => {
       const result = await preferenceRelationshipIntegration.getRelationshipContext('user123', 'entity123');
 
       // Assertions
+      expect(result).toEqual({});
+    });
+
+    test('should retry on failure before returning empty object', async () => {
+      // Arrange
+      const userId = 'user123';
+      const entityId = 'entity456';
+      const expectedResult = { strength: 0.8, familiarity: 0.6 };
+      
+      // Mock failure on first attempt, success on second attempt
+      pythonBridge.callPython
+        .mockRejectedValueOnce(new Error('Connection failed'))
+        .mockResolvedValueOnce(expectedResult);
+        
+      // Use a shorter retry delay for testing
+      const options = { maxRetries: 1, retryDelay: 10 };
+      
+      // Act
+      const result = await preferenceRelationshipIntegration.getRelationshipContext(userId, entityId, options);
+      
+      // Assert
+      expect(pythonBridge.callPython).toHaveBeenCalledTimes(2);
+      expect(result).toEqual(expectedResult);
+    });
+
+    test('should return empty object after all retries fail', async () => {
+      // Arrange
+      const userId = 'user123';
+      const entityId = 'entity456';
+      
+      // Mock multiple failures
+      pythonBridge.callPython
+        .mockRejectedValueOnce(new Error('Connection failed'))
+        .mockRejectedValueOnce(new Error('Connection failed again'));
+      
+      // Use a shorter retry delay for testing
+      const options = { maxRetries: 1, retryDelay: 10 };
+      
+      // Act
+      const result = await preferenceRelationshipIntegration.getRelationshipContext(userId, entityId, options);
+      
+      // Assert
+      expect(pythonBridge.callPython).toHaveBeenCalledTimes(2);
       expect(result).toEqual({});
     });
   });
@@ -105,58 +152,133 @@ describe('Preference-Relationship Integration', () => {
   });
 
   describe('updateRelationshipFromPreference', () => {
-    it('should update relationship data based on preference changes', async () => {
-      // Setup mock
-      pythonBridge.callPython.mockResolvedValue('memory123');
-
-      // Call function
-      const result = await preferenceRelationshipIntegration.updateRelationshipFromPreference(
-        'user123', 
-        'entity123', 
-        'relationship:liked:person:John', 
-        true, 
-        0.8
-      );
-
-      // Assertions
+    beforeEach(() => {
+      pythonBridge.callPython.mockReset();
+      jest.spyOn(global, 'setTimeout').mockImplementation(callback => callback());
+    });
+    
+    afterEach(() => {
+      global.setTimeout.mockRestore();
+    });
+    
+    it('should update relationship based on preference', async () => {
+      // Arrange
+      const userId = 'user123';
+      const entityId = 'entity456';
+      const key = 'content:topic:science';
+      const value = true;
+      const strength = 0.7;
+      
+      pythonBridge.callPython.mockResolvedValue(true);
+      
+      // Act
+      const result = await preferenceRelationshipIntegration.updateRelationshipFromPreference(userId, entityId, key, value, strength);
+      
+      // Assert
       expect(pythonBridge.callPython).toHaveBeenCalledWith(
         'alejo.cognitive.memory.relationship_memory',
         'record_preference_interaction',
-        expect.arrayContaining(['user123', 'entity123'])
+        expect.arrayContaining([userId, entityId])
       );
       expect(result).toBe(true);
     });
-
-    it('should handle missing entity ID', async () => {
-      // Call function with null entity ID
-      const result = await preferenceRelationshipIntegration.updateRelationshipFromPreference(
-        'user123', 
-        null, 
-        'relationship:liked:person:John', 
-        true, 
-        0.8
-      );
-
-      // Assertions
+    
+    it('should return false when entityId is missing', async () => {
+      // Arrange
+      const userId = 'user123';
+      const entityId = null;
+      const key = 'content:topic:science';
+      const value = true;
+      const strength = 0.7;
+      
+      // Act
+      const result = await preferenceRelationshipIntegration.updateRelationshipFromPreference(userId, entityId, key, value, strength);
+      
+      // Assert
       expect(pythonBridge.callPython).not.toHaveBeenCalled();
       expect(result).toBe(false);
     });
-
-    it('should handle errors gracefully', async () => {
-      // Setup mock to throw error
-      pythonBridge.callPython.mockRejectedValue(new Error('Connection failed'));
-
-      // Call function
+    
+    it('should retry on temporary failure', async () => {
+      // Arrange
+      const userId = 'user123';
+      const entityId = 'entity456';
+      const key = 'content:topic:science';
+      const value = true;
+      const strength = 0.7;
+      
+      // Mock failure on first attempt, success on second attempt
+      pythonBridge.callPython
+        .mockRejectedValueOnce(new Error('Temporary failure'))
+        .mockResolvedValueOnce(true);
+      
+      // Act - use custom options for faster testing
+      const options = { maxRetries: 1, criticalUpdate: false };
       const result = await preferenceRelationshipIntegration.updateRelationshipFromPreference(
-        'user123', 
-        'entity123', 
-        'relationship:liked:person:John', 
-        true, 
-        0.8
+        userId, entityId, key, value, strength, options
       );
-
-      // Assertions
+      
+      // Assert
+      expect(pythonBridge.callPython).toHaveBeenCalledTimes(2);
+      expect(result).toBe(true);
+    });
+    
+    it('should handle errors from Python bridge after max retries', async () => {
+      // Arrange
+      const userId = 'user123';
+      const entityId = 'entity456';
+      const key = 'content:topic:science';
+      const value = true;
+      const strength = 0.7;
+      
+      // Mock multiple failures
+      pythonBridge.callPython
+        .mockRejectedValueOnce(new Error('Python error'))
+        .mockRejectedValueOnce(new Error('Python error again'));
+      
+      // Act - use custom options for faster testing
+      const options = { maxRetries: 1, criticalUpdate: false };
+      const result = await preferenceRelationshipIntegration.updateRelationshipFromPreference(
+        userId, entityId, key, value, strength, options
+      );
+      
+      // Assert
+      expect(pythonBridge.callPython).toHaveBeenCalledTimes(2);
       expect(result).toBe(false);
+    });
+    
+    it('should attempt to queue critical updates when they fail', async () => {
+      // Arrange
+      const userId = 'user123';
+      const entityId = 'entity456';
+      const key = 'relationship:liked:person:entity456';
+      const value = true;
+      const strength = 0.8;
+      
+      // Mock the enqueue function
+      const enqueueFailedRelationshipUpdateMock = jest.spyOn(
+        preferenceRelationshipIntegration, 
+        'enqueueFailedRelationshipUpdate'
+      ).mockResolvedValue(true);
+      
+      // Ensure Python bridge always fails
+      pythonBridge.callPython.mockRejectedValue(new Error('Persistent failure'));
+      
+      // Act - set as critical update
+      const options = { maxRetries: 1, criticalUpdate: true };
+      const result = await preferenceRelationshipIntegration.updateRelationshipFromPreference(
+        userId, entityId, key, value, strength, options
+      );
+      
+      // Assert
+      expect(pythonBridge.callPython).toHaveBeenCalledTimes(2); // Original + 1 retry
+      expect(result).toBe(false); // Still returns false as the immediate operation failed
+      expect(enqueueFailedRelationshipUpdateMock).toHaveBeenCalledWith(
+        userId, entityId, key, value, strength
+      );
+      
+      // Clean up mock
+      enqueueFailedRelationshipUpdateMock.mockRestore();
     });
   });
 });

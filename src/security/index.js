@@ -3,12 +3,14 @@
  * 
  * Main entry point for the ALEJO security layer. Coordinates and initializes all 
  * security-related components, providing a unified interface for data protection,
- * audit logging, and consent management.
+ * audit logging, consent management, and role-based access control.
  */
 
 import * as privacyGuard from './privacy-guard.js';
 import * as auditTrail from './audit-trail.js';
 import * as consentManager from './consent-manager.js';
+import * as rbac from './rbac.js';
+import * as rbacMiddleware from './rbac-middleware.js';
 import { publish, subscribe } from '../core/events.js';
 
 // State management
@@ -76,6 +78,20 @@ export async function initialize(options = {}) {
       });
     }
     
+    // Initialize RBAC (role-based access control)
+    const rbacInitialized = await rbac.initialize({
+      userId: options.userId || 'anonymous',
+      securityLevel
+    });
+    
+    if (!rbacInitialized) {
+      console.error('Failed to initialize RBAC');
+      publish('security:error', { 
+        component: 'rbac',
+        message: 'Initialization failed' 
+      });
+    }
+    
     // Register for global events
     subscribe('user:login', handleUserLogin);
     subscribe('user:logout', handleUserLogout);
@@ -87,7 +103,8 @@ export async function initialize(options = {}) {
       components: {
         privacyGuard: privacyInitialized,
         auditTrail: auditInitialized,
-        consentManager: consentInitialized
+        consentManager: consentInitialized,
+        rbac: rbacInitialized
       }
     });
     
@@ -97,7 +114,8 @@ export async function initialize(options = {}) {
       components: {
         privacyGuard: privacyInitialized,
         auditTrail: auditInitialized,
-        consentManager: consentInitialized
+        consentManager: consentInitialized,
+        rbac: rbacInitialized
       }
     });
     
@@ -171,6 +189,49 @@ export function isFeatureAllowed(featureId) {
   }
   
   return consentManager.hasConsent(featureId);
+}
+
+/**
+ * Check if a user has permission to perform an action
+ * @param {string} userId - User identifier
+ * @param {string} permission - Permission to check
+ * @returns {boolean} Whether user has permission
+ */
+export function hasPermission(userId, permission) {
+  if (!initialized) {
+    console.warn('Security Module not initialized, denying permission');
+    return false;
+  }
+  
+  return rbac.hasPermission(userId, permission);
+}
+
+/**
+ * Get all permissions for a user
+ * @param {string} userId - User identifier
+ * @returns {Array<string>} User permissions
+ */
+export function getUserPermissions(userId) {
+  if (!initialized) {
+    console.warn('Security Module not initialized');
+    return [];
+  }
+  
+  return rbac.getUserPermissions(userId);
+}
+
+/**
+ * Get all roles for a user
+ * @param {string} userId - User identifier
+ * @returns {Array<string>} User roles
+ */
+export function getUserRoles(userId) {
+  if (!initialized) {
+    console.warn('Security Module not initialized');
+    return [];
+  }
+  
+  return rbac.getUserRoles(userId);
 }
 
 /**
@@ -352,5 +413,7 @@ function handleSecurityLevelChange(data) {
 export {
   privacyGuard,
   auditTrail,
-  consentManager
+  consentManager,
+  rbac,
+  rbacMiddleware
 };
