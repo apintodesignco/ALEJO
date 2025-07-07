@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Adaptive Memory Integration Test</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 20px;
+    }
+    
+    .panel {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      color: #0078d4;
+      margin-top: 0;
+    }
+    
+    h2 {
+      color: #0078d4;
+      margin-top: 0;
+      font-size: 1.2em;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    
+    .control-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    input[type="checkbox"], input[type="radio"] {
+      margin-right: 8px;
+    }
+    
+    button {
+      background-color: #0078d4;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    
+    button:hover {
+      background-color: #106ebe;
+    }
+    
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .button-group {
+      margin-top: 15px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+    .status {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    
+    .status.active {
+      background-color: #107c10;
+    }
+    
+    .status.inactive {
+      background-color: #d83b01;
+    }
+    
+    .status.partial {
+      background-color: #ffaa44;
+    }
+    
+    .log-panel {
+      grid-column: 1 / -1;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      background-color: #252525;
+      color: #eee;
+      padding: 15px;
+      border-radius: 4px;
+    }
+    
+    .log-entry {
+      margin-bottom: 5px;
+      border-bottom: 1px solid #444;
+      padding-bottom: 5px;
+    }
+    
+    .log-entry.event {
+      color: #4cc9f0;
+    }
+    
+    .log-entry.adaptation {
+      color: #f72585;
+    }
+    
+    .log-entry.memory {
+      color: #7209b7;
+    }
+    
+    .log-entry.context {
+      color: #4ade80;
+    }
+    
+    .log-entry.error {
+      color: #f43f5e;
+    }
+    
+    .visualization {
+      width: 100%;
+      height: 200px;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .visualization-item {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .visualization-item.eye {
+      background-color: #3a86ff;
+    }
+    
+    .visualization-item.voice {
+      background-color: #ff006e;
+    }
+    
+    .visualization-item.gesture {
+      background-color: #8338ec;
+    }
+    
+    .visualization-item.switch {
+      background-color: #fb5607;
+    }
+    
+    .visualization-item.touch {
+      background-color: #ffbe0b;
+    }
+    
+    .context-item {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .context-item .key {
+      font-weight: 500;
+      width: 40%;
+    }
+    
+    .context-item .value {
+      width: 60%;
+    }
+    
+    .memory-item {
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #f0f8ff;
+      border-left: 4px solid #0078d4;
+      border-radius: 4px;
+    }
+    
+    .memory-item .feature {
+      font-weight: 500;
+    }
+    
+    .memory-item .modality {
+      color: #666;
+      font-size: 0.9em;
+    }
+    
+    .memory-item .effectiveness {
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .memory-item .effectiveness-bar {
+      height: 8px;
+      background-color: #eee;
+      border-radius: 4px;
+      width: 100px;
+      margin-left: 10px;
+      overflow: hidden;
+    }
+    
+    .memory-item .effectiveness-fill {
+      height: 100%;
+      background-color: #0078d4;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="panel">
+      <h1>ALEJO Adaptive Memory Integration Test</h1>
+      <p>This test page demonstrates the integration of ALEJO's accessibility memory system with the multimodal fusion system.</p>
+      
+      <div class="control-group">
+        <h2>System Status</h2>
+        <div>
+          <span class="status inactive" id="memory-bridge-status"></span>
+          <span>Memory Bridge</span>
+        </div>
+        <div>
+          <span class="status inactive" id="adaptive-integration-status"></span>
+          <span>Adaptive Integration</span>
+        </div>
+        <div>
+          <span class="status inactive" id="fusion-system-status"></span>
+          <span>Fusion System</span>
+        </div>
+      </div>
+      
+      <div class="button-group">
+        <button id="start-system">Start System</button>
+        <button id="stop-system" disabled>Stop System</button>
+        <button id="check-adaptations">Check for Adaptations</button>
+      </div>
+    </div>
+    
+    <div class="panel">
+      <h2>Input Modality Controls</h2>
+      
+      <div class="control-group">
+        <label>
+          <input type="checkbox" id="eye-tracking-toggle" checked>
+          Eye Tracking
+        </label>
+        
+        <label>
+          <input type="checkbox" id="voice-toggle" checked>
+          Voice Commands
+        </label>
+        
+        <label>
+          <input type="checkbox" id="gesture-toggle" checked>
+          Gesture Recognition
+        </label>
+        
+        <label>
+          <input type="checkbox" id="switch-toggle" checked>
+          Switch Access
+        </label>
+        
+        <label>
+          <input type="checkbox" id="touch-toggle" checked>
+          Touch Input
+        </label>
+      </div>
+      
+      <h2>User Profile</h2>
+      
+      <div class="control-group">
+        <label>Mobility Profile:</label>
+        <label>
+          <input type="radio" name="mobility" value="full" checked>
+          Full Mobility
+        </label>
+        <label>
+          <input type="radio" name="mobility" value="limited">
+          Limited Mobility
+        </label>
+        <label>
+          <input type="radio" name="mobility" value="very-limited">
+          Very Limited Mobility
+        </label>
+      </div>
+      
+      <div class="control-group">
+        <label>Preferences:</label>
+        <label>
+          <input type="checkbox" id="high-contrast">
+          High Contrast
+        </label>
+        <label>
+          <input type="checkbox" id="large-text">
+          Large Text
+        </label>
+        <label>
+          <input type="checkbox" id="reduced-motion">
+          Reduced Motion
+        </label>
+      </div>
+      
+      <button id="update-profile">Update Profile</button>
+    </div>
+    
+    <div class="panel">
+      <h2>Environment Simulation</h2>
+      
+      <div class="control-group">
+        <label>Lighting:</label>
+        <select id="lighting">
+          <option value="bright">Bright</option>
+          <option value="normal" selected>Normal</option>
+          <option value="dim">Dim</option>
+          <option value="dark">Dark</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <label>Noise Level:</label>
+        <select id="noise">
+          <option value="quiet">Quiet</option>
+          <option value="normal" selected>Normal</option>
+          <option value="loud">Loud</option>
+          <option value="very-loud">Very Loud</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <label>
+          <input type="checkbox" id="simulate-fatigue">
+          Simulate User Fatigue
+        </label>
+      </div>
+      
+      <button id="update-environment">Update Environment</button>
+    </div>
+    
+    <div class="panel">
+      <h2>Memory Visualization</h2>
+      
+      <div class="visualization" id="memory-visualization">
+        <!-- Memory visualization will be rendered here -->
+      </div>
+      
+      <h3>Recent Memories</h3>
+      <div id="memory-list">
+        <!-- Memory items will be displayed here -->
+      </div>
+    </div>
+    
+    <div class="panel">
+      <h2>Current Context</h2>
+      <div id="context-display">
+        <!-- Context items will be displayed here -->
+      </div>
+    </div>
+    
+    <div class="panel">
+      <h2>Adaptation History</h2>
+      <div id="adaptation-history">
+        <!-- Adaptation history will be displayed here -->
+      </div>
+    </div>
+    
+    <div class="log-panel" id="event-log">
+      <div class="log-entry">System initialized. Waiting to start...</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { getAccessibilityMemoryBridge } from '../src/personalization/accessibility/accessibility-memory-bridge.js';
+    import { getAdaptiveMemoryIntegration } from '../src/personalization/accessibility/adaptive-memory-integration.js';
+    import { MultimodalFusionSystem } from '../src/personalization/accessibility/multimodal-fusion.js';
+    import { publish, subscribe } from '../src/core/events.js';
+    
+    // Mock data for visualization
+    const mockMemories = [
+      {
+        feature_id: 'dwell_click',
+        modality: 'visual',
+        effectiveness: 0.8,
+        usage_count: 15,
+        last_used: Date.now() - 3600000
+      },
+      {
+        feature_id: 'voice_commands',
+        modality: 'auditory',
+        effectiveness: 0.6,
+        usage_count: 8,
+        last_used: Date.now() - 7200000
+      },
+      {
+        feature_id: 'switch_access',
+        modality: 'motor',
+        effectiveness: 0.9,
+        usage_count: 20,
+        last_used: Date.now() - 1800000
+      }
+    ];
+    
+    const mockAdaptations = [
+      {
+        featureId: 'dwell_click',
+        modality: 'visual',
+        settings: { dwell_time: 1200 },
+        context: { lighting: 'dim' },
+        timestamp: Date.now() - 3600000
+      },
+      {
+        featureId: 'voice_commands',
+        modality: 'auditory',
+        settings: { sensitivity: 0.8 },
+        context: { noise_level: 'loud' },
+        timestamp: Date.now() - 7200000
+      }
+    ];
+    
+    // System components
+    let memoryBridge;
+    let adaptiveIntegration;
+    let fusionSystem;
+    let systemRunning = false;
+    
+    // DOM elements
+    const startButton = document.getElementById('start-system');
+    const stopButton = document.getElementById('stop-system');
+    const checkAdaptationsButton = document.getElementById('check-adaptations');
+    const updateProfileButton = document.getElementById('update-profile');
+    const updateEnvironmentButton = document.getElementById('update-environment');
+    const eventLog = document.getElementById('event-log');
+    const memoryBridgeStatus = document.getElementById('memory-bridge-status');
+    const adaptiveIntegrationStatus = document.getElementById('adaptive-integration-status');
+    const fusionSystemStatus = document.getElementById('fusion-system-status');
+    
+    // Modality toggles
+    const eyeTrackingToggle = document.getElementById('eye-tracking-toggle');
+    const voiceToggle = document.getElementById('voice-toggle');
+    const gestureToggle = document.getElementById('gesture-toggle');
+    const switchToggle = document.getElementById('switch-toggle');
+    const touchToggle = document.getElementById('touch-toggle');
+    
+    // Initialize the system
+    async function initializeSystem() {
+      try {
+        // Initialize memory bridge
+        memoryBridge = getAccessibilityMemoryBridge();
+        await memoryBridge.initialize();
+        memoryBridgeStatus.classList.replace('inactive', 'active');
+        logEvent('Memory bridge initialized', 'memory');
+        
+        // Initialize fusion system
+        fusionSystem = MultimodalFusionSystem.getInstance();
+        await fusionSystem.initialize();
+        fusionSystemStatus.classList.replace('inactive', 'active');
+        logEvent('Fusion system initialized', 'event');
+        
+        // Initialize adaptive integration
+        adaptiveIntegration = getAdaptiveMemoryIntegration({
+          fusionSystem,
+          adaptationInterval: 10000, // 10 seconds for demo
+          contextUpdateInterval: 5000 // 5 seconds for demo
+        });
+        await adaptiveIntegration.start();
+        adaptiveIntegrationStatus.classList.replace('inactive', 'active');
+        logEvent('Adaptive integration started', 'adaptation');
+        
+        // Update UI
+        startButton.disabled = true;
+        stopButton.disabled = false;
+        systemRunning = true;
+        
+        // Set up event listeners
+        setupEventListeners();
+        
+        // Initial UI updates
+        updateMemoryVisualization();
+        updateContextDisplay();
+        updateAdaptationHistory();
+        
+        return true;
+      } catch (error) {
+        logEvent(`Error initializing system: ${error.message}`, 'error');
+        return false;
+      }
+    }
+    
+    // Shutdown the system
+    async function shutdownSystem() {
+      try {
+        // Stop adaptive integration
+        if (adaptiveIntegration) {
+          await adaptiveIntegration.stop();
+          adaptiveIntegrationStatus.classList.replace('active', 'inactive');
+          logEvent('Adaptive integration stopped', 'adaptation');
+        }
+        
+        // Shutdown memory bridge
+        if (memoryBridge) {
+          await memoryBridge.shutdown();
+          memoryBridgeStatus.classList.replace('active', 'inactive');
+          logEvent('Memory bridge shut down', 'memory');
+        }
+        
+        // Update UI
+        startButton.disabled = false;
+        stopButton.disabled = true;
+        systemRunning = false;
+        
+        return true;
+      } catch (error) {
+        logEvent(`Error shutting down system: ${error.message}`, 'error');
+        return false;
+      }
+    }
+    
+    // Set up event listeners
+    function setupEventListeners() {
+      // System events
+      subscribe('accessibility:memory:initialized', (event) => {
+        logEvent(`Memory system initialized: ${event.success ? 'success' : 'failed'}`, 'memory');
+      });
+      
+      subscribe('accessibility:adaptive-memory:started', (event) => {
+        logEvent(`Adaptive memory integration started: ${event.success ? 'success' : 'failed'}`, 'adaptation');
+      });
+      
+      subscribe('accessibility:feature:used', (event) => {
+        logEvent(`Feature used: ${event.feature_id} with ${event.modality} modality`, 'event');
+      });
+      
+      subscribe('accessibility:adaptation:requested', (event) => {
+        logEvent(`Adaptation requested for ${event.feature_id} with ${event.modality} modality`, 'adaptation');
+        
+        // Simulate adaptation application
+        setTimeout(() => {
+          publish('accessibility:adaptation:applied', {
+            ...event,
+            success: Math.random() > 0.2 // 80% success rate
+          });
+        }, 1000);
+      });
+      
+      subscribe('user:context:changed', (event) => {
+        logEvent('User context updated', 'context');
+        updateContextDisplay();
+      });
+      
+      subscribe('user:fatigue:detected', (event) => {
+        logEvent(`User fatigue detected: level ${event.level}`, 'context');
+      });
+    }
+    
+    // Log events to the UI
+    function logEvent(message, type = 'event') {
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      eventLog.insertBefore(entry, eventLog.firstChild);
+      
+      // Limit log size
+      if (eventLog.children.length > 100) {
+        eventLog.removeChild(eventLog.lastChild);
+      }
+    }
+    
+    // Update memory visualization
+    function updateMemoryVisualization() {
+      const container = document.getElementById('memory-visualization');
+      const memoryList = document.getElementById('memory-list');
+      
+      // Clear existing content
+      container.innerHTML = '';
+      memoryList.innerHTML = '';
+      
+      // Add memory items to visualization
+      mockMemories.forEach((memory, index) => {
+        // Create visualization item
+        const item = document.createElement('div');
+        item.className = `visualization-item ${memory.modality}`;
+        item.style.width = `${40 + memory.usage_count * 2}px`;
+        item.style.height = `${40 + memory.usage_count * 2}px`;
+        item.style.left = `${50 + (index * 120)}px`;
+        item.style.top = `${100 - memory.effectiveness * 50}px`;
+        item.textContent = memory.feature_id.charAt(0).toUpperCase();
+        container.appendChild(item);
+        
+        // Create memory list item
+        const memoryItem = document.createElement('div');
+        memoryItem.className = 'memory-item';
+        memoryItem.innerHTML = `
+          <div class="feature">${memory.feature_id.replace('_', ' ')}</div>
+          <div class="modality">Modality: ${memory.modality}</div>
+          <div class="effectiveness">
+            Effectiveness: 
+            <div class="effectiveness-bar">
+              <div class="effectiveness-fill" style="width: ${memory.effectiveness * 100}%"></div>
+            </div>
+          </div>
+          <div>Usage count: ${memory.usage_count}</div>
+        `;
+        memoryList.appendChild(memoryItem);
+      });
+    }
+    
+    // Update context display
+    function updateContextDisplay() {
+      const container = document.getElementById('context-display');
+      container.innerHTML = '';
+      
+      // Get current context
+      const context = adaptiveIntegration ? adaptiveIntegration.getCurrentContext() : {};
+      
+      // If no context available, use mock data
+      const contextData = Object.keys(context).length > 0 ? context : {
+        time_of_day: 'afternoon',
+        device_type: 'desktop',
+        screen_size: 'large',
+        mobility_profile: document.querySelector('input[name="mobility"]:checked').value,
+        environment_lighting: document.getElementById('lighting').value,
+        environment_noise_level: document.getElementById('noise').value
+      };
+      
+      // Display context items
+      Object.entries(contextData).forEach(([key, value]) => {
+        const item = document.createElement('div');
+        item.className = 'context-item';
+        item.innerHTML = `
+          <div class="key">${key.replace(/_/g, ' ')}:</div>
+          <div class="value">${value}</div>
+        `;
+        container.appendChild(item);
+      });
+    }
+    
+    // Update adaptation history
+    function updateAdaptationHistory() {
+      const container = document.getElementById('adaptation-history');
+      container.innerHTML = '';
+      
+      // Get adaptation history
+      const history = adaptiveIntegration ? adaptiveIntegration.getAdaptationHistory() : mockAdaptations;
+      
+      if (history.length === 0) {
+        container.innerHTML = '<p>No adaptations yet</p>';
+        return;
+      }
+      
+      // Display adaptation items
+      history.forEach(adaptation => {
+        const item = document.createElement('div');
+        item.className = 'memory-item';
+        
+        const timestamp = new Date(adaptation.timestamp).toLocaleTimeString();
+        const contextStr = Object.entries(adaptation.context || {})
+          .map(([key, value]) => `${key}: ${value}`)
+          .join(', ');
+        
+        item.innerHTML = `
+          <div class="feature">${adaptation.featureId.replace('_', ' ')}</div>
+          <div class="modality">Modality: ${adaptation.modality}</div>
+          <div>Time: ${timestamp}</div>
+          <div>Context: ${contextStr || 'None'}</div>
+        `;
+        container.appendChild(item);
+      });
+    }
+    
+    // Update user profile
+    function updateUserProfile() {
+      const mobilityProfile = document.querySelector('input[name="mobility"]:checked').value;
+      const highContrast = document.getElementById('high-contrast').checked;
+      const largeText = document.getElementById('large-text').checked;
+      const reducedMotion = document.getElementById('reduced-motion').checked;
+      
+      const profile = {
+        mobility: mobilityProfile,
+        preferences: {
+          high_contrast: highContrast,
+          large_text: largeText,
+          reduced_motion: reducedMotion
+        }
+      };
+      
+      publish('user:profile:updated', { profile });
+      logEvent(`User profile updated: ${mobilityProfile} mobility`, 'context');
+    }
+    
+    // Update environment
+    function updateEnvironment() {
+      const lighting = document.getElementById('lighting').value;
+      const noise = document.getElementById('noise').value;
+      const fatigue = document.getElementById('simulate-fatigue').checked;
+      
+      const environment = {
+        lighting,
+        noise_level: noise
+      };
+      
+      publish('system:environment:change', { environment });
+      logEvent(`Environment updated: ${lighting} lighting, ${noise} noise`, 'context');
+      
+      if (fatigue) {
+        publish('user:fatigue:detected', { level: 0.7 });
+      }
+    }
+    
+    // Update modality status
+    function updateModalityStatus(modality, available) {
+      publish('modality:status:changed', {
+        modality,
+        status: available ? 'available' : 'unavailable',
+        confidence: available ? 0.9 : 0.1
+      });
+      
+      logEvent(`${modality} modality ${available ? 'enabled' : 'disabled'}`, 'event');
+    }
+    
+    // Button event listeners
+    startButton.addEventListener('click', initializeSystem);
+    stopButton.addEventListener('click', shutdownSystem);
+    checkAdaptationsButton.addEventListener('click', () => {
+      if (adaptiveIntegration && systemRunning) {
+        adaptiveIntegration.forceAdaptationCheck();
+        logEvent('Manual adaptation check requested', 'adaptation');
+      } else {
+        logEvent('System not running, cannot check adaptations', 'error');
+      }
+    });
+    
+    updateProfileButton.addEventListener('click', updateUserProfile);
+    updateEnvironmentButton.addEventListener('click', updateEnvironment);
+    
+    // Modality toggle event listeners
+    eyeTrackingToggle.addEventListener('change', () => {
+      updateModalityStatus('visual', eyeTrackingToggle.checked);
+    });
+    
+    voiceToggle.addEventListener('change', () => {
+      updateModalityStatus('auditory', voiceToggle.checked);
+    });
+    
+    gestureToggle.addEventListener('change', () => {
+      updateModalityStatus('gesture', gestureToggle.checked);
+    });
+    
+    switchToggle.addEventListener('change', () => {
+      updateModalityStatus('switch', switchToggle.checked);
+    });
+    
+    touchToggle.addEventListener('change', () => {
+      updateModalityStatus('touch', touchToggle.checked);
+    });
+    
+    // Update UI periodically
+    setInterval(() => {
+      if (systemRunning) {
+        updateMemoryVisualization();
+        updateAdaptationHistory();
+      }
+    }, 5000);
+    
+    // Initial log message
+    logEvent('Test page loaded. Click "Start System" to begin.', 'event');
+  </script>
+</body>
+</html>
