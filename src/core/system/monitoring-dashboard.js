@@ -6,8 +6,11 @@
  */
 
 import { getComponentStatus, getErrorLog } from './error-handler.js';
-import { getInitializationStatus } from './initialization-manager.js';
-import { getCurrentResourceMode } from '../../performance/resource-allocation-manager.js';
+import { 
+  getInitializationStatus, 
+  isInitializationSuccessful 
+} from './initialization-manager.js';
+import { generateRegistrationReport } from './component-registration-validator.js';
 
 // Dashboard state
 let dashboardElement = null;
@@ -19,7 +22,9 @@ const sections = {
   overview: true,
   components: true,
   resources: true,
-  errors: true
+  errors: true,
+  registration: true,
+  settings: true
 };
 
 /**
@@ -97,7 +102,9 @@ export function initDashboard(options = {}) {
       </div>
       <div class="alejo-dashboard-content" style="padding: 12px;">
         <div id="alejo-dashboard-overview" class="alejo-dashboard-section" style="margin-bottom: 16px;"></div>
-        <div id="alejo-dashboard-components" class="alejo-dashboard-section" style="margin-bottom: 16px;"></div>
+        <div id="alejo-dashboard-components" class="dashboard-section"></div>
+        <div id="alejo-dashboard-registration" class="dashboard-section"></div>
+        <div id="alejo-dashboard-settings" class="dashboard-section"></div>
         <div id="alejo-dashboard-resources" class="alejo-dashboard-section" style="margin-bottom: 16px;"></div>
         <div id="alejo-dashboard-errors" class="alejo-dashboard-section"></div>
       </div>
@@ -128,9 +135,9 @@ export function initDashboard(options = {}) {
   }
   
   updateInterval = setInterval(() => {
-    if (isVisible) {
-      updateDashboard();
-    }
+    updateOverviewSection();
+    updateComponentsSection();
+    updateRegistrationValidationSection();
   }, interval);
   
   return dashboardElement;
@@ -200,8 +207,12 @@ export function updateDashboard() {
     updateComponentsSection();
   }
   
-  if (sections.resources) {
-    updateResourcesSection();
+  if (sections.registration) {
+    updateRegistrationValidationSection();
+  }
+  
+  if (sections.settings) {
+    updateSettingsSection();
   }
   
   if (sections.errors) {
@@ -216,34 +227,171 @@ function updateOverviewSection() {
   const overviewSection = dashboardElement.querySelector('#alejo-dashboard-overview');
   if (!overviewSection) return;
   
+  // Get initialization status
   const initStatus = getInitializationStatus();
-  const resourceMode = getCurrentResourceMode();
   
+  // Get resource mode
+  let resourceMode, resourceUsage;
+  try {
+    // Use dynamic import to avoid circular dependencies
+    import('../../performance/resource-allocation-manager.js').then(module => {
+      const resourceManager = module.getResourceAllocationManager();
+      resourceMode = resourceManager.getCurrentMode();
+      resourceUsage = resourceManager.getResourceUsage();
+      updateOverviewDisplay(overviewSection, initStatus, resourceMode, resourceUsage);
+    }).catch(err => {
+      console.error('Failed to import resource manager:', err);
+      updateOverviewDisplay(overviewSection, initStatus, 'Unknown', null);
+    });
+  } catch (err) {
+    console.error('Failed to import resource manager:', err);
+    updateOverviewDisplay(overviewSection, initStatus, 'Unknown', null);
+  }
+}
+
+/**
+ * Update overview display with system status information
+ * @param {HTMLElement} overviewSection - The overview section element
+ * @param {Object} initStatus - Initialization status
+ * @param {string} resourceMode - Current resource mode
+ * @param {Object} resourceUsage - Resource usage information
+ */
+function updateOverviewDisplay(overviewSection, initStatus, resourceMode, resourceUsage) {
+  // Determine system status
   let statusClass = 'status-normal';
   let statusText = 'Normal';
+  let statusDetails = [];
   
-  if (initStatus.failedComponents.length > 0) {
-    statusClass = 'status-error';
-    statusText = 'Error';
-  } else if (initStatus.isInitializing) {
-    statusClass = 'status-warning';
-    statusText = 'Initializing';
+  // Check initialization status
+  const initializationSuccessful = isInitializationSuccessful();
+  
+  // Check for critical errors
+  const hasEssentialFailures = initStatus.failedComponents.some(comp => 
+    comp.isEssential || comp.accessibility
+  );
+  
+  // Check for accessibility component failures
+  const hasAccessibilityFailures = initStatus.failedComponents.some(comp => 
+    comp.accessibility
+  );
+  
+  // Check if initialization is still in progress
+  const isInitializing = initStatus.isInitializing;
+  
+  // Check resource status
+  const highCpuUsage = resourceUsage && resourceUsage.cpu && resourceUsage.cpu >= 80;
+  const highMemoryUsage = resourceUsage && resourceUsage.memory && resourceUsage.memory >= 85;
+  const highTemperature = resourceUsage && resourceUsage.temperature && resourceUsage.temperature >= 80;
+  const lowBattery = resourceUsage && resourceUsage.batteryLevel && resourceUsage.batteryLevel <= 15 && !resourceUsage.isCharging;
+  
+  // Check if user has manually set a resource mode
+  let userConfiguredMode = null;
+  try {
+    const savedSettings = JSON.parse(localStorage.getItem('alejo_resource_thresholds'));
+    if (savedSettings && savedSettings.resourceMode && savedSettings.resourceMode !== 'auto') {
+      userConfiguredMode = savedSettings.resourceMode;
+    }
+  } catch (e) {
+    console.warn('Failed to load resource mode from settings:', e);
   }
+  
+  // Use user-configured mode if available
+  const effectiveResourceMode = userConfiguredMode || resourceMode;
+  
+  // Calculate accessibility status
+  const totalAccessibilityComponents = initStatus.accessibilityComponents?.length || 0;
+  const activeAccessibilityComponents = initStatus.accessibilityComponents?.filter(
+    comp => comp.status === 'initialized' || comp.status === 'fallback'
+  ).length || 0;
+  
+  const accessibilityPercentage = totalAccessibilityComponents > 0 ?
+    Math.round((activeAccessibilityComponents / totalAccessibilityComponents) * 100) : 100;
+  
+  const accessibilityStatus = hasAccessibilityFailures ? 'Degraded' : 
+    (accessibilityPercentage === 100 ? 'Fully Available' : 'Partially Available');
+  
+  const accessibilityStatusClass = hasAccessibilityFailures ? 'status-error' : 
+    (accessibilityPercentage === 100 ? 'status-normal' : 'status-warning');
+    
+  // Determine overall status
+  if (isInitializing) {
+    statusClass = 'status-info';
+    statusText = 'Initializing';
+    statusDetails.push(`Initializing components (${initStatus.completedComponents.length}/${initStatus.completedComponents.length + initStatus.pendingComponents.length})`);
+  } else if (hasEssentialFailures) {
+    statusClass = 'status-error';
+    statusText = 'Critical Error';
+    statusDetails.push('Essential components failed');
+  } else if (hasAccessibilityFailures) {
+    statusClass = 'status-error';
+    statusText = 'Accessibility Error';
+    statusDetails.push('Accessibility components failed');
+  } else if (highTemperature) {
+    statusClass = 'status-error';
+    statusText = 'Overheating';
+    statusDetails.push('System temperature critical');
+  } else if (initStatus.failedComponents.length > 0) {
+    statusClass = 'status-warning';
+    statusText = 'Degraded';
+    statusDetails.push(`${initStatus.failedComponents.length} components failed`);
+  } else if (highCpuUsage || highMemoryUsage) {
+    statusClass = 'status-warning';
+    statusText = 'High Resource Usage';
+    if (highCpuUsage) statusDetails.push('CPU usage high');
+    if (highMemoryUsage) statusDetails.push('Memory usage high');
+  } else if (lowBattery) {
+    statusClass = 'status-warning';
+    statusText = 'Low Battery';
+    statusDetails.push('Battery level low');
+  } else if (effectiveResourceMode === 'conservative' || effectiveResourceMode === 'minimal') {
+    statusClass = 'status-warning';
+    statusText = 'Limited Resources';
+    statusDetails.push(`Running in ${effectiveResourceMode} mode`);
+  } else if (!initializationSuccessful) {
+    statusClass = 'status-warning';
+    statusText = 'Initialization Issues';
+    statusDetails.push('Some components failed to initialize');
+  } else {
+    statusClass = 'status-normal';
+    statusText = 'Normal';
+    statusDetails.push('All systems operational');
+  }
+  
+  // Format last updated time
+  const now = new Date();
+  const timeString = now.toLocaleTimeString();
   
   overviewSection.innerHTML = `
     <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">System Overview</h3>
-    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-      <div>Status:</div>
-      <div class="${statusClass}" style="font-weight: 500;">${statusText}</div>
+    
+    <div style="margin-bottom: 12px; padding: 8px; border-radius: 4px;" class="${statusClass === 'status-error' ? 'status-error-bg' : statusClass === 'status-warning' ? 'status-warning-bg' : 'status-normal-bg'}" style="opacity: 0.15;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <div style="font-weight: 500; color: white;">Status:</div>
+        <div style="font-weight: 600; color: white;">${statusText}</div>
+      </div>
+      ${statusDetails.length > 0 ? 
+        `<div style="font-size: 11px; color: white;">${statusDetails.join(', ')}</div>` : 
+        ''}
     </div>
+    
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
       <div>Resource Mode:</div>
-      <div>${resourceMode || 'Unknown'}</div>
+      <div>
+        <strong>${effectiveResourceMode || 'Unknown'}</strong>
+        ${userConfiguredMode ? '<span style="font-size: 10px; color: #666; margin-left: 4px;">(User configured)</span>' : ''}
+      </div>
     </div>
+    
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+      <div>Accessibility:</div>
+      <div class="${accessibilityStatusClass}">${accessibilityStatus} (${accessibilityPercentage}%)</div>
+    </div>
+    
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
       <div>Components:</div>
-      <div>${initStatus.completedComponents.length} active / ${initStatus.failedComponents.length} failed</div>
+      <div>${initStatus.completedComponents.length} active / ${initStatus.failedComponents.length} failed / ${initStatus.pendingComponents.length} pending</div>
     </div>
+    
     <div style="display: flex; justify-content: space-between;">
       <div>Last Updated:</div>
       <div>${new Date().toLocaleTimeString()}</div>
@@ -267,30 +415,172 @@ function updateComponentsSection() {
   const componentsSection = dashboardElement.querySelector('#alejo-dashboard-components');
   if (!componentsSection) return;
   
+  // Get component status from error handler
   const componentStatus = getComponentStatus();
-  const statusEntries = Object.entries(componentStatus);
+  
+  // Get initialization status directly from imported function
+  const initStatus = getInitializationStatus();
+  
+  // Update the component display
+  updateComponentDisplay(componentsSection, componentStatus, initStatus);
+}
+
+/**
+ * Update component display with status information
+ * @param {HTMLElement} componentsSection - The components section element
+ * @param {Object} componentStatus - Component status from error handler
+ * @param {Object} initStatus - Initialization status from initialization manager
+ */
+function updateComponentDisplay(componentsSection, componentStatus, initStatus) {
+  // Merge status information from both sources
+  const mergedStatus = {};
+  
+  // Process component status
+  Object.entries(componentStatus).forEach(([id, status]) => {
+    mergedStatus[id] = {
+      ...status,
+      initProgress: initStatus[id]?.progress || 0,
+      initPhase: initStatus[id]?.phase || 'unknown',
+      dependencies: initStatus[id]?.dependencies || [],
+      isAccessibility: status.accessibility || false,
+      isEssential: status.isEssential || false
+    };
+  });
+  
+  // Add any components from init status that aren't in component status
+  Object.entries(initStatus).forEach(([id, status]) => {
+    if (!mergedStatus[id]) {
+      mergedStatus[id] = {
+        status: status.status || 'unknown',
+        initProgress: status.progress || 0,
+        initPhase: status.phase || 'unknown',
+        dependencies: status.dependencies || [],
+        isAccessibility: status.accessibility || false,
+        isEssential: status.isEssential || false,
+        startTime: status.startTime || null,
+        endTime: status.endTime || null,
+        usingFallback: status.usingFallback || false
+      };
+    }
+  });
+  
+  // Sort components: accessibility first, then essential, then by status (failed first), then alphabetically
+  const sortedEntries = Object.entries(mergedStatus).sort((a, b) => {
+    // Accessibility components first
+    if (a[1].isAccessibility && !b[1].isAccessibility) return -1;
+    if (!a[1].isAccessibility && b[1].isAccessibility) return 1;
+    
+    // Then essential components
+    if (a[1].isEssential && !b[1].isEssential) return -1;
+    if (!a[1].isEssential && b[1].isEssential) return 1;
+    
+    // Then failed components
+    if (a[1].status === 'failed' && b[1].status !== 'failed') return -1;
+    if (a[1].status !== 'failed' && b[1].status === 'failed') return 1;
+    
+    // Then initializing components
+    if (a[1].status === 'initializing' && b[1].status !== 'initializing') return -1;
+    if (a[1].status !== 'initializing' && b[1].status === 'initializing') return 1;
+    
+    // Then alphabetically
+    return a[0].localeCompare(b[0]);
+  });
+  
+  // Calculate overall initialization progress
+  const totalComponents = sortedEntries.length;
+  const initializedComponents = sortedEntries.filter(([_, status]) => 
+    status.status === 'initialized' || status.status === 'fallback'
+  ).length;
+  const failedComponents = sortedEntries.filter(([_, status]) => 
+    status.status === 'failed'
+  ).length;
+  
+  const overallProgress = totalComponents > 0 ? 
+    Math.round((initializedComponents / totalComponents) * 100) : 0;
   
   componentsSection.innerHTML = `
     <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Component Status</h3>
+    
+    <div style="margin-bottom: 12px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <div>Initialization Progress:</div>
+        <div>${initializedComponents}/${totalComponents} (${overallProgress}%)</div>
+      </div>
+      ${createProgressBar(overallProgress, failedComponents > 0 ? 'status-warning' : 'status-normal')}
+    </div>
+    
     <div style="max-height: 200px; overflow-y: auto;">
-      <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 12px;" aria-label="Component status table">
         <thead>
           <tr>
             <th style="text-align: left; padding: 4px; border-bottom: 1px solid #eee;">Component</th>
             <th style="text-align: left; padding: 4px; border-bottom: 1px solid #eee;">Status</th>
+            <th style="text-align: left; padding: 4px; border-bottom: 1px solid #eee;">Details</th>
           </tr>
         </thead>
         <tbody>
-          ${statusEntries.length === 0 ? 
-            '<tr><td colspan="2" style="text-align: center; padding: 8px;">No components registered</td></tr>' : 
-            statusEntries.map(([id, status]) => `
-              <tr>
-                <td style="padding: 4px; border-bottom: 1px solid #eee;">${id}</td>
-                <td style="padding: 4px; border-bottom: 1px solid #eee;">
-                  <span class="status-${getStatusClass(status.status)}">${status.status}</span>
-                </td>
-              </tr>
-            `).join('')
+          ${sortedEntries.length === 0 ? 
+            '<tr><td colspan="3" style="text-align: center; padding: 8px;">No components registered</td></tr>' : 
+            sortedEntries.map(([id, status]) => {
+              const statusClass = getStatusClass(status.status);
+              const accessibilityBadge = status.isAccessibility ? 
+                '<span class="badge badge-a11y" aria-label="Accessibility component">A11Y</span>' : '';
+              const essentialBadge = status.isEssential ? 
+                '<span class="badge badge-core" aria-label="Core component">CORE</span>' : '';
+              const fallbackBadge = status.usingFallback ? 
+                '<span class="badge badge-fallback" aria-label="Using fallback implementation">FALLBACK</span>' : '';
+              
+              // Format initialization time if available
+              let timeInfo = '';
+              if (status.endTime) {
+                const duration = status.endTime - status.startTime;
+                timeInfo = `<div class="component-time">Initialized in ${duration}ms</div>`;
+              } else if (status.startTime) {
+                const elapsed = Date.now() - status.startTime;
+                timeInfo = `<div class="component-time">Initializing for ${elapsed}ms</div>`;
+              }
+              
+              // Show dependency info for waiting components
+              let dependencyInfo = '';
+              if (status.status === 'initializing' && status.dependencies && status.dependencies.length > 0) {
+                const pendingDeps = status.dependencies.filter(dep => 
+                  !mergedStatus[dep] || mergedStatus[dep].status !== 'initialized'
+                );
+                if (pendingDeps.length > 0) {
+                  dependencyInfo = `<div class="component-deps">Waiting for: ${pendingDeps.join(', ')}</div>`;
+                }
+              }
+              
+              // Show detailed phase info
+              let phaseInfo = '';
+              if (status.initPhase && status.initPhase !== 'unknown') {
+                phaseInfo = `<div class="component-phase">${status.initPhase}</div>`;
+              }
+              
+              // Progress indicator
+              let progressIndicator = '';
+              if (status.status === 'initializing' && status.initProgress) {
+                progressIndicator = `<div class="progress-mini">${createProgressBar(status.initProgress, 'status-info')}</div>`;
+              }
+              
+              return `
+                <tr>
+                  <td style="padding: 4px; border-bottom: 1px solid #eee;">
+                    <div class="component-name">${id}</div>
+                    <div class="component-badges">${accessibilityBadge} ${essentialBadge} ${fallbackBadge}</div>
+                  </td>
+                  <td style="padding: 4px; border-bottom: 1px solid #eee;">
+                    <span class="status-${statusClass}" aria-label="Component status: ${status.status}">${status.status}</span>
+                    ${progressIndicator}
+                  </td>
+                  <td style="padding: 4px; border-bottom: 1px solid #eee;">
+                    ${phaseInfo}
+                    ${dependencyInfo}
+                    ${timeInfo}
+                  </td>
+                </tr>
+              `;
+            }).join('')
           }
         </tbody>
       </table>
@@ -300,12 +590,166 @@ function updateComponentsSection() {
   // Add status styles
   const style = document.createElement('style');
   style.textContent = `
+    /* Status colors */
     .status-initialized { color: #2e7d32; }
     .status-fallback { color: #f57c00; }
     .status-failed { color: #d32f2f; }
     .status-initializing { color: #1976d2; }
+    
+    /* Component badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-size: 10px;
+      margin-left: 4px;
+      font-weight: 500;
+    }
+    .badge-a11y {
+      background: #e3f2fd;
+      color: #0d47a1;
+    }
+    .badge-core {
+      background: #fce4ec;
+      color: #c2185b;
+    }
+    .badge-fallback {
+      background: #fff3e0;
+      color: #e65100;
+    }
+    
+    /* Component details */
+    .component-name {
+      font-weight: 500;
+    }
+    .component-badges {
+      margin-top: 2px;
+    }
+    .component-time {
+      font-size: 10px;
+      color: #666;
+      margin-top: 2px;
+    }
+    .component-deps {
+      font-size: 10px;
+      color: #d32f2f;
+      margin-top: 2px;
+    }
+    .component-phase {
+      font-size: 10px;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    .progress-mini {
+      margin-top: 4px;
+      height: 4px;
+    }
+    
+    /* High contrast mode support */
+    @media (forced-colors: active) {
+      .badge {
+        border: 1px solid currentColor;
+      }
+      .status-error {
+        border: 1px solid currentColor;
+      }
+      .status-warning {
+        border: 1px solid currentColor;
+      }
+      .status-normal {
+        border: 1px solid currentColor;
+      }
+    }
   `;
   componentsSection.appendChild(style);
+}
+
+/**
+ * Update the registration validation section of the dashboard
+ */
+function updateRegistrationValidationSection() {
+  const registrationSection = dashboardElement.querySelector('#alejo-dashboard-registration');
+  if (!registrationSection) return;
+  
+  // Show loading state
+  registrationSection.innerHTML = `
+    <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Component Registration</h3>
+    <div style="padding: 8px 0;">Loading registration data...</div>
+  `;
+  
+  // Generate registration report
+  generateRegistrationReport().then(report => {
+    const registrationRate = report.registrationRate;
+    const statusClass = registrationRate === 100 ? 'status-normal' : 
+                        registrationRate >= 80 ? 'status-warning' : 'status-error';
+    
+    // Create missing components list
+    const missingComponentsList = report.details.missing.length > 0 ?
+      `<div style="margin-top: 8px;">
+        <div style="font-weight: 500; margin-bottom: 4px;">Unregistered Components:</div>
+        <ul style="margin: 0; padding-left: 20px; font-size: 12px;">
+          ${report.details.missing.map(id => `<li>${id}</li>`).join('')}
+        </ul>
+      </div>` : '';
+    
+    registrationSection.innerHTML = `
+      <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Component Registration</h3>
+      
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <div>Registration Rate:</div>
+        <div class="${statusClass}">${report.registrationRate}%</div>
+      </div>
+      ${createProgressBar(report.registrationRate, statusClass)}
+      
+      <div style="margin-top: 12px; font-size: 12px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+          <div>Total Components:</div>
+          <div>${report.totalComponents}</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+          <div>Registered:</div>
+          <div>${report.registeredCount}</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+          <div>Unregistered:</div>
+          <div>${report.missingCount}</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+          <div>Accessibility Components:</div>
+          <div>${report.accessibilityCount}</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+          <div>Essential Components:</div>
+          <div>${report.essentialCount}</div>
+        </div>
+      </div>
+      
+      ${missingComponentsList}
+      
+      <div style="margin-top: 12px;">
+        <button id="validate-components-btn" class="dashboard-button">
+          Validate Components
+        </button>
+      </div>
+    `;
+    
+    // Add event listener for validate button
+    const validateBtn = registrationSection.querySelector('#validate-components-btn');
+    validateBtn.addEventListener('click', () => {
+      validateBtn.textContent = 'Validating...';
+      validateBtn.disabled = true;
+      
+      setTimeout(() => {
+        updateRegistrationValidationSection();
+      }, 1000);
+    });
+  }).catch(error => {
+    console.error('Error generating registration report:', error);
+    registrationSection.innerHTML = `
+      <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Component Registration</h3>
+      <div class="status-error">Error loading registration data</div>
+    `;
+  });
 }
 
 /**
@@ -328,7 +772,120 @@ function updateResourcesSection() {
   const resourcesSection = dashboardElement.querySelector('#alejo-dashboard-resources');
   if (!resourcesSection) return;
   
-  // Get memory usage
+  // Import resource manager dynamically if needed
+  try {
+    // Use dynamic import to avoid circular dependencies
+    import('../../performance/resource-allocation-manager.js').then(module => {
+      const resourceManager = module.getResourceAllocationManager();
+      updateResourceDisplay(resourcesSection, resourceManager);
+    }).catch(err => {
+      console.error('Failed to import resource manager:', err);
+      updateResourceDisplayFallback(resourcesSection);
+    });
+  } catch (err) {
+    console.error('Failed to import resource manager:', err);
+    updateResourceDisplayFallback(resourcesSection);
+  }
+}
+
+/**
+ * Update resource display with data from resource manager
+ * @param {HTMLElement} resourcesSection - The resources section element
+ * @param {Object} resourceManager - The resource manager instance
+ */
+function updateResourceDisplay(resourcesSection, resourceManager) {
+  // Get resource usage from the resource manager
+  const resourceUsage = resourceManager.getResourceUsage();
+  const currentMode = resourceManager.getCurrentMode();
+  
+  // Get memory usage from browser API as fallback
+  const memoryUsage = window.performance && window.performance.memory ? 
+    window.performance.memory : null;
+  
+  let memoryInfo = resourceUsage.memory ? 
+    `${resourceUsage.memory.toFixed(1)}%` : 
+    'Not available';
+    
+  // Add detailed memory info if available from browser
+  if (memoryUsage) {
+    const usedHeap = Math.round(memoryUsage.usedJSHeapSize / (1024 * 1024));
+    const totalHeap = Math.round(memoryUsage.totalJSHeapSize / (1024 * 1024));
+    const heapLimit = Math.round(memoryUsage.jsHeapSizeLimit / (1024 * 1024));
+    memoryInfo += ` (${usedHeap}MB / ${totalHeap}MB, Limit: ${heapLimit}MB)`;
+  }
+  
+  // Determine status classes based on resource usage
+  const cpuClass = getCpuStatusClass(resourceUsage.cpu);
+  const memoryClass = getMemoryStatusClass(resourceUsage.memory);
+  const temperatureClass = getTemperatureStatusClass(resourceUsage.temperature);
+  
+  resourcesSection.innerHTML = `
+    <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Resource Usage</h3>
+    
+    <div style="margin-bottom: 12px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <div>CPU Usage:</div>
+        <div class="${cpuClass}">${resourceUsage.cpu ? resourceUsage.cpu.toFixed(1) + '%' : 'N/A'}</div>
+      </div>
+      ${resourceUsage.cpu ? createProgressBar(resourceUsage.cpu, cpuClass) : ''}
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <div>Memory:</div>
+        <div class="${memoryClass}">${memoryInfo}</div>
+      </div>
+      ${resourceUsage.memory ? createProgressBar(resourceUsage.memory, memoryClass) : ''}
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <div>Temperature:</div>
+        <div class="${temperatureClass}">${resourceUsage.temperature ? resourceUsage.temperature.toFixed(1) + '°C' : 'N/A'}</div>
+      </div>
+      ${resourceUsage.temperature ? createProgressBar((resourceUsage.temperature / 100) * 100, temperatureClass) : ''}
+    </div>
+    
+    <div style="margin-bottom: 12px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <div>Battery:</div>
+        <div>${resourceUsage.batteryLevel ? resourceUsage.batteryLevel.toFixed(0) + '%' + (resourceUsage.isCharging ? ' (Charging)' : '') : 'N/A'}</div>
+      </div>
+      ${resourceUsage.batteryLevel ? createProgressBar(resourceUsage.batteryLevel, 'status-normal') : ''}
+    </div>
+    
+    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+      <div>Resource Mode:</div>
+      <div><strong>${currentMode || 'Unknown'}</strong></div>
+    </div>
+    
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+      <div>Network:</div>
+      <div>${navigator.onLine ? 'Online' : 'Offline'}</div>
+    </div>
+    
+    <div>
+      <button id="alejo-resource-settings" style="margin-top: 8px; padding: 4px 8px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 12px;">
+        Configure Resource Thresholds
+      </button>
+    </div>
+  `;
+  
+  // Add event listener for resource settings button
+  const settingsButton = resourcesSection.querySelector('#alejo-resource-settings');
+  if (settingsButton) {
+    settingsButton.addEventListener('click', () => {
+      showResourceSettingsModal();
+    });
+  }
+}
+
+/**
+ * Update resource display with fallback data when resource manager is unavailable
+ * @param {HTMLElement} resourcesSection - The resources section element
+ */
+function updateResourceDisplayFallback(resourcesSection) {
+  // Get memory usage from browser API
   const memoryUsage = window.performance && window.performance.memory ? 
     window.performance.memory : null;
   
@@ -350,6 +907,9 @@ function updateResourcesSection() {
       <div>Network:</div>
       <div>${navigator.onLine ? 'Online' : 'Offline'}</div>
     </div>
+    <div style="padding: 8px; background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px; margin-bottom: 8px;">
+      <p style="margin: 0; font-size: 12px;">Resource manager not available. Using limited resource information.</p>
+    </div>
     <div>
       <button id="alejo-resource-settings" style="margin-top: 8px; padding: 4px 8px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 12px;">
         Configure Resource Thresholds
@@ -367,6 +927,59 @@ function updateResourcesSection() {
 }
 
 /**
+ * Create a visual progress bar
+ * @param {number} percentage - Percentage value (0-100)
+ * @param {string} statusClass - CSS class for status color
+ * @returns {string} - HTML for progress bar
+ */
+function createProgressBar(percentage, statusClass) {
+  // Ensure percentage is within bounds
+  const value = Math.max(0, Math.min(100, percentage));
+  
+  return `
+    <div style="width: 100%; height: 8px; background-color: #e9ecef; border-radius: 4px; overflow: hidden;" role="progressbar" aria-valuenow="${value}" aria-valuemin="0" aria-valuemax="100">
+      <div class="${statusClass}-bg" style="width: ${value}%; height: 100%; transition: width 0.3s ease;"></div>
+    </div>
+  `;
+}
+
+/**
+ * Get CSS class for CPU usage status
+ * @param {number} cpuUsage - CPU usage percentage
+ * @returns {string} - CSS status class
+ */
+function getCpuStatusClass(cpuUsage) {
+  if (!cpuUsage && cpuUsage !== 0) return '';
+  if (cpuUsage >= 80) return 'status-error';
+  if (cpuUsage >= 60) return 'status-warning';
+  return 'status-normal';
+}
+
+/**
+ * Get CSS class for memory usage status
+ * @param {number} memoryUsage - Memory usage percentage
+ * @returns {string} - CSS status class
+ */
+function getMemoryStatusClass(memoryUsage) {
+  if (!memoryUsage && memoryUsage !== 0) return '';
+  if (memoryUsage >= 85) return 'status-error';
+  if (memoryUsage >= 70) return 'status-warning';
+  return 'status-normal';
+}
+
+/**
+ * Get CSS class for temperature status
+ * @param {number} temperature - Temperature in Celsius
+ * @returns {string} - CSS status class
+ */
+function getTemperatureStatusClass(temperature) {
+  if (!temperature && temperature !== 0) return '';
+  if (temperature >= 80) return 'status-error';
+  if (temperature >= 70) return 'status-warning';
+  return 'status-normal';
+}
+
+/**
  * Show resource settings modal
  */
 function showResourceSettingsModal() {
@@ -379,6 +992,36 @@ function showResourceSettingsModal() {
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-labelledby', 'resource-settings-title');
     modal.setAttribute('aria-modal', 'true');
+    
+    // Add screen reader only class if it doesn't exist
+    if (!document.getElementById('alejo-sr-styles')) {
+      const srStyles = document.createElement('style');
+      srStyles.id = 'alejo-sr-styles';
+      srStyles.textContent = `
+        .sr-only {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border: 0;
+        }
+        
+        /* High contrast mode support */
+        @media (forced-colors: active) {
+          .status-normal { color: CanvasText; }
+          .status-warning { color: CanvasText; }
+          .status-error { color: CanvasText; }
+          .status-normal-bg { background-color: Canvas; border: 1px solid CanvasText; }
+          .status-warning-bg { background-color: Canvas; border: 1px solid CanvasText; }
+          .status-error-bg { background-color: Canvas; border: 1px solid CanvasText; }
+        }
+      `;
+      document.head.appendChild(srStyles);
+    }
     
     modal.style.cssText = `
       position: fixed;
@@ -393,6 +1036,34 @@ function showResourceSettingsModal() {
       z-index: 10001;
     `;
     
+    // Add keyboard trap for modal
+    modal.addEventListener('keydown', function(e) {
+      // Close on escape key
+      if (e.key === 'Escape') {
+        document.body.removeChild(modal);
+        return;
+      }
+      
+      // Trap focus inside modal
+      if (e.key === 'Tab') {
+        const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+        
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+          }
+        }
+      }
+    });
+    
     const modalContent = document.createElement('div');
     modalContent.style.cssText = `
       background: white;
@@ -403,38 +1074,70 @@ function showResourceSettingsModal() {
     `;
     
     modalContent.innerHTML = `
-      <h2 id="resource-settings-title" style="margin-top: 0;">Resource Thresholds</h2>
-      <p>Configure when ALEJO should adapt to different resource modes.</p>
+      <h2 id="resource-settings-title" style="margin-top: 0;">Resource Settings</h2>
+      <p>Configure how ALEJO manages system resources.</p>
       
       <div style="margin-bottom: 16px;">
-        <label for="memory-threshold" style="display: block; margin-bottom: 4px;">Memory Usage Threshold (%)</label>
-        <input type="range" id="memory-threshold" min="50" max="90" value="75" style="width: 100%;">
-        <div style="display: flex; justify-content: space-between;">
-          <span>50%</span>
-          <span id="memory-threshold-value">75%</span>
-          <span>90%</span>
+        <label for="resource-mode" style="display: block; margin-bottom: 4px;">Resource Mode</label>
+        <select id="resource-mode" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" aria-describedby="resource-mode-desc">
+          <option value="auto">Automatic (Default)</option>
+          <option value="full">Full Performance</option>
+          <option value="balanced">Balanced</option>
+          <option value="conservative">Conservative</option>
+          <option value="minimal">Minimal (Accessibility Only)</option>
+        </select>
+        <div id="resource-mode-desc" class="sr-only">Select how ALEJO should balance performance and resource usage</div>
+        <div style="margin-top: 4px; font-size: 11px; color: #666;">
+          <span id="mode-description">Automatic: ALEJO will adjust resource usage based on system conditions</span>
         </div>
       </div>
       
-      <div style="margin-bottom: 16px;">
-        <label for="cpu-threshold" style="display: block; margin-bottom: 4px;">CPU Usage Threshold (%)</label>
-        <input type="range" id="cpu-threshold" min="50" max="90" value="70" style="width: 100%;">
-        <div style="display: flex; justify-content: space-between;">
-          <span>50%</span>
-          <span id="cpu-threshold-value">70%</span>
-          <span>90%</span>
+      <section id="threshold-section">
+        <h3 style="margin: 16px 0 8px 0; font-size: 14px;">Automatic Mode Thresholds</h3>
+        <p style="margin-top: 0; font-size: 12px;">Configure when ALEJO should adapt to different resource modes.</p>
+        
+        <div style="margin-bottom: 16px;">
+          <label for="memory-threshold" style="display: block; margin-bottom: 4px;">Memory Usage Threshold (%)</label>
+          <input type="range" id="memory-threshold" min="50" max="90" value="75" style="width: 100%;">
+          <div style="display: flex; justify-content: space-between;">
+            <span>50%</span>
+            <span id="memory-threshold-value">75%</span>
+            <span>90%</span>
+          </div>
         </div>
-      </div>
-      
-      <div style="margin-bottom: 16px;">
-        <label for="battery-threshold" style="display: block; margin-bottom: 4px;">Battery Threshold (%)</label>
-        <input type="range" id="battery-threshold" min="10" max="50" value="20" style="width: 100%;">
-        <div style="display: flex; justify-content: space-between;">
-          <span>10%</span>
-          <span id="battery-threshold-value">20%</span>
-          <span>50%</span>
+        
+        <div style="margin-bottom: 16px;">
+          <label for="cpu-threshold" style="display: block; margin-bottom: 4px;">CPU Usage Threshold (%)</label>
+          <input type="range" id="cpu-threshold" min="50" max="90" value="70" style="width: 100%;">
+          <div style="display: flex; justify-content: space-between;">
+            <span>50%</span>
+            <span id="cpu-threshold-value">70%</span>
+            <span>90%</span>
+          </div>
         </div>
-      </div>
+        
+        <div style="margin-bottom: 16px;">
+          <label for="battery-threshold" style="display: block; margin-bottom: 4px;">Battery Threshold (%)</label>
+          <input type="range" id="battery-threshold" min="10" max="50" value="20" style="width: 100%;" aria-describedby="battery-threshold-desc">
+          <div style="display: flex; justify-content: space-between;">
+            <span>10%</span>
+            <span id="battery-threshold-value">20%</span>
+            <span>50%</span>
+          </div>
+          <div id="battery-threshold-desc" class="sr-only">When battery falls below this level, ALEJO will switch to conservative mode</div>
+        </div>
+        
+        <div style="margin-bottom: 16px;">
+          <label for="temperature-threshold" style="display: block; margin-bottom: 4px;">Temperature Threshold (°C)</label>
+          <input type="range" id="temperature-threshold" min="60" max="90" value="75" style="width: 100%;" aria-describedby="temperature-threshold-desc">
+          <div style="display: flex; justify-content: space-between;">
+            <span>60°C</span>
+            <span id="temperature-threshold-value">75°C</span>
+            <span>90°C</span>
+          </div>
+          <div id="temperature-threshold-desc" class="sr-only">When system temperature exceeds this level, ALEJO will reduce resource usage</div>
+        </div>
+      </section>
       
       <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
         <button id="resource-settings-cancel" style="padding: 8px 16px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
@@ -449,47 +1152,106 @@ function showResourceSettingsModal() {
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
     
-    // Add event listeners
+    // Add event listeners for mode selection
+    const modeSelect = modal.querySelector('#resource-mode');
+    const modeDescription = modal.querySelector('#mode-description');
+    
+    // Mode descriptions
+    const modeDescriptions = {
+      'auto': 'Automatic: ALEJO will adjust resource usage based on system conditions',
+      'full': 'Full Performance: Maximum capabilities with highest resource usage',
+      'balanced': 'Balanced: Good performance while managing resource consumption',
+      'conservative': 'Conservative: Reduced features to minimize resource usage',
+      'minimal': 'Minimal: Only essential and accessibility features enabled'
+    };
+    
+    modeSelect.addEventListener('change', () => {
+      const selectedMode = modeSelect.value;
+      modeDescription.textContent = modeDescriptions[selectedMode] || modeDescriptions['auto'];
+      announceChange(`Resource mode set to ${selectedMode}`);
+      
+      // Show/hide threshold settings based on mode
+      const thresholdSection = modal.querySelector('#threshold-section');
+      if (selectedMode === 'auto') {
+        thresholdSection.style.display = 'block';
+      } else {
+        thresholdSection.style.display = 'none';
+      }
+    });
+    
+    // Add event listeners for sliders
     const memorySlider = modal.querySelector('#memory-threshold');
     const memoryValue = modal.querySelector('#memory-threshold-value');
     memorySlider.addEventListener('input', () => {
       memoryValue.textContent = `${memorySlider.value}%`;
+      announceChange(`Memory threshold set to ${memorySlider.value} percent`);
     });
     
     const cpuSlider = modal.querySelector('#cpu-threshold');
     const cpuValue = modal.querySelector('#cpu-threshold-value');
     cpuSlider.addEventListener('input', () => {
       cpuValue.textContent = `${cpuSlider.value}%`;
+      announceChange(`CPU threshold set to ${cpuSlider.value} percent`);
     });
     
     const batterySlider = modal.querySelector('#battery-threshold');
     const batteryValue = modal.querySelector('#battery-threshold-value');
     batterySlider.addEventListener('input', () => {
       batteryValue.textContent = `${batterySlider.value}%`;
+      announceChange(`Battery threshold set to ${batterySlider.value} percent`);
     });
+    
+    const temperatureSlider = modal.querySelector('#temperature-threshold');
+    const temperatureValue = modal.querySelector('#temperature-threshold-value');
+    temperatureSlider.addEventListener('input', () => {
+      temperatureValue.textContent = `${temperatureSlider.value}°C`;
+      announceChange(`Temperature threshold set to ${temperatureSlider.value} degrees`);
+    });
+    
+    // Function to announce changes for screen readers
+    function announceChange(message) {
+      const announcer = document.getElementById('alejo-sr-announcer') || (() => {
+        const el = document.createElement('div');
+        el.id = 'alejo-sr-announcer';
+        el.setAttribute('aria-live', 'polite');
+        el.setAttribute('aria-atomic', 'true');
+        el.className = 'sr-only';
+        document.body.appendChild(el);
+        return el;
+      })();
+      announcer.textContent = message;
+    }
     
     modal.querySelector('#resource-settings-cancel').addEventListener('click', () => {
       document.body.removeChild(modal);
     });
     
     modal.querySelector('#resource-settings-save').addEventListener('click', () => {
-      // Save settings
       const settings = {
+        resourceMode: modeSelect.value,
         memoryThreshold: parseInt(memorySlider.value, 10),
         cpuThreshold: parseInt(cpuSlider.value, 10),
-        batteryThreshold: parseInt(batterySlider.value, 10)
+        batteryThreshold: parseInt(batterySlider.value, 10),
+        temperatureThreshold: parseInt(temperatureSlider.value, 10)
       };
       
       try {
         localStorage.setItem('alejo_resource_thresholds', JSON.stringify(settings));
-        // Publish event for resource manager to pick up
-        const event = new CustomEvent('alejo:resource:thresholds:updated', { detail: settings });
-        window.dispatchEvent(event);
+        
+        // Dispatch event for resource manager to pick up
+        const event = new CustomEvent('alejo:resource:thresholds:updated', {
+          detail: settings
+        });
+        document.dispatchEvent(event);
+        
+        // Announce success to screen readers
+        announceChange('Resource settings saved successfully');
+        
+        document.body.removeChild(modal);
       } catch (e) {
-        console.warn('Failed to save resource thresholds:', e);
+        console.error('Failed to save resource thresholds:', e);
+        announceChange('Failed to save resource settings');
       }
-      
-      document.body.removeChild(modal);
     });
   } else {
     // Show existing modal
@@ -500,6 +1262,20 @@ function showResourceSettingsModal() {
   try {
     const savedSettings = JSON.parse(localStorage.getItem('alejo_resource_thresholds'));
     if (savedSettings) {
+      // Load resource mode if available
+      if (savedSettings.resourceMode) {
+        modeSelect.value = savedSettings.resourceMode;
+        modeDescription.textContent = modeDescriptions[savedSettings.resourceMode] || modeDescriptions['auto'];
+        
+        // Show/hide threshold section based on mode
+        const thresholdSection = modal.querySelector('#threshold-section');
+        if (savedSettings.resourceMode === 'auto') {
+          thresholdSection.style.display = 'block';
+        } else {
+          thresholdSection.style.display = 'none';
+        }
+      }
+      
       const memorySlider = modal.querySelector('#memory-threshold');
       const memoryValue = modal.querySelector('#memory-threshold-value');
       memorySlider.value = savedSettings.memoryThreshold;
@@ -514,6 +1290,14 @@ function showResourceSettingsModal() {
       const batteryValue = modal.querySelector('#battery-threshold-value');
       batterySlider.value = savedSettings.batteryThreshold;
       batteryValue.textContent = `${savedSettings.batteryThreshold}%`;
+      
+      // Load temperature threshold if available
+      if (savedSettings.temperatureThreshold) {
+        const temperatureSlider = modal.querySelector('#temperature-threshold');
+        const temperatureValue = modal.querySelector('#temperature-threshold-value');
+        temperatureSlider.value = savedSettings.temperatureThreshold;
+        temperatureValue.textContent = `${savedSettings.temperatureThreshold}°C`;
+      }
     }
   } catch (e) {
     console.warn('Failed to load resource thresholds:', e);
