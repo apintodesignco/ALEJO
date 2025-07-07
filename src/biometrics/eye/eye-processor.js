@@ -40,6 +40,15 @@ let config = {
     slowerAnimations: false,
     voicePrompts: false,
     extraTime: false
+  },
+  mobility: {
+    adaptToLimitedMobility: false,
+    isEyeControlPrimary: false,     // Whether eye control is the primary input method
+    dwellClickEnabled: false,        // Enable clicking by dwelling gaze on a target
+    dwellTime: 1000,                // Time in ms to trigger a dwell click
+    enhancedPrecision: false,       // Enhanced precision mode for users relying on eye control
+    sensitivityLevel: 'medium',     // low, medium, high
+    autoCalibration: false          // Automatically recalibrate for users with limited mobility
   }
 };
 
@@ -83,6 +92,12 @@ export async function initialize(options = {}) {
     
     // Subscribe to calibration events
     subscribe('eye:calibration:point:complete', handleCalibrationPointComplete);
+    
+    // Subscribe to mobility assistance events
+    subscribe('accessibility:mobility:profile_updated', handleMobilityProfileUpdate);
+    subscribe('accessibility:mobility:eye_control', handleEyeControlToggle);
+    subscribe('accessibility:mobility:dwell_click', handleDwellClickToggle);
+    subscribe('accessibility:mobility:adaptive_mode', handleAdaptiveModeChange);
     
     // Subscribe to system events
     window.addEventListener('memory-pressure', handleMemoryPressure);
@@ -301,6 +316,11 @@ export async function processEyeData(data) {
       y: gazePoint.y,
       confidence: gazePoint.confidence
     });
+    
+    // Process dwell detection for eye-controlled clicking if enabled
+    if (config.mobility.dwellClickEnabled) {
+      processDwellDetection(gazePoint, timestamp);
+    }
     
     // Handle calibration if active
     if (calibrating && calibrationData) {
@@ -775,34 +795,246 @@ function handleMemoryPressure(event) {
 }
 
 /**
- * Clean up resources
+ * Handle mobility profile updates
+ * @param {Object} data - Mobility profile data
  */
-export function cleanup() {
-  // Stop processing
-  stopProcessing();
-  
-  // Unsubscribe from events
-  unsubscribe('face:detected', handleFaceDetected);
-  unsubscribe('face:lost', handleFaceLost);
-  unsubscribe('eye:calibration:point:complete', handleCalibrationPointComplete);
-  
-  // Remove event listeners
-  window.removeEventListener('memory-pressure', handleMemoryPressure);
-  
-  // Reset state
-  initialized = false;
-  processing = false;
-  calibrating = false;
-  calibrationData = null;
-  lastGazePoint = null;
-  lastBlinkState = false;
-  blinkStartTime = null;
-  gazeHistory = [];
-  
-  logger.info('Eye tracking system cleaned up');
+function handleMobilityProfileUpdate(data) {
+  if (data && data.profile) {
+    // Adapt eye tracking based on mobility profile
+    const { hasLimitedMobility, canUseHands, preferredInputMethod } = data.profile;
+    
+    // Update configuration based on mobility profile
+    config.mobility.adaptToLimitedMobility = hasLimitedMobility;
+    config.mobility.isEyeControlPrimary = preferredInputMethod === 'eye' || !canUseHands;
+    
+    // Apply more sensitive settings for users who rely on eye control
+    if (hasLimitedMobility && !canUseHands) {
+      // For users who can't use hands at all, optimize for eye control
+      config.mobility.enhancedPrecision = true;
+      config.mobility.sensitivityLevel = 'high';
+      config.mobility.dwellClickEnabled = true;
+      config.mobility.dwellTime = 800; // Faster dwell time for experienced users
+      
+      // Update processing interval for more responsive eye tracking
+      processingInterval = 30; // ~33fps
+      
+      // Enable accessibility features that help with eye control
+      updateAccessibilitySettings({
+        largerTargets: true,
+        slowerAnimations: true,
+        extraTime: true
+      });
+      
+      logger.info('Eye tracking optimized for primary eye control');
+    } else if (hasLimitedMobility) {
+      // For users with limited mobility but some hand control
+      config.mobility.enhancedPrecision = true;
+      config.mobility.sensitivityLevel = 'medium-high';
+      config.mobility.dwellClickEnabled = preferredInputMethod === 'eye';
+      config.mobility.dwellTime = 1000; // Standard dwell time
+      
+      // Standard processing interval
+      processingInterval = 50; // 20fps
+      
+      logger.info('Eye tracking adapted for limited mobility');
+    } else {
+      // For users with full mobility
+      config.mobility.enhancedPrecision = false;
+      config.mobility.sensitivityLevel = 'medium';
+      config.mobility.dwellClickEnabled = false;
+      
+      // Standard processing interval
+      processingInterval = 50; // 20fps
+      
+      logger.info('Eye tracking using standard settings');
+    }
+    
+    // If processing is active, update the processing interval
+    if (processing) {
+      stopProcessing();
+      startProcessing();
+    }
+    
+    // Publish updated configuration
+    publish('eye:config:updated', { 
+      mobility: config.mobility,
+      processingInterval
+    });
+  }
 }
 
-// Export additional functions for testing and advanced usage
+/**
+ * Handle eye control toggle
+ * @param {Object} data - Eye control data
+ */
+function handleEyeControlToggle(data) {
+  if (data && typeof data.enabled === 'boolean') {
+    if (data.enabled && !processing) {
+      // Start eye tracking if not already started
+      startProcessing();
+      
+      // Enable enhanced precision for eye control
+      config.mobility.enhancedPrecision = true;
+      
+      logger.info('Eye control enabled');
+    } else if (!data.enabled && processing && !config.mobility.adaptToLimitedMobility) {
+      // Only stop processing if we're not in adaptive mode for limited mobility
+      // (in adaptive mode, we keep eye tracking running for other features)
+      stopProcessing();
+      
+      logger.info('Eye control disabled');
+    }
+  }
+}
+
+/**
+ * Handle dwell click toggle
+ * @param {Object} data - Dwell click data
+ */
+function handleDwellClickToggle(data) {
+  if (data && typeof data.enabled === 'boolean') {
+    config.mobility.dwellClickEnabled = data.enabled;
+    
+    if (data.enabled) {
+      // Make sure eye tracking is active when dwell clicks are enabled
+      if (!processing) {
+        startProcessing();
+      }
+      
+      logger.info('Dwell clicks enabled');
+    } else {
+      logger.info('Dwell clicks disabled');
+    }
+    
+    // Publish updated configuration
+    publish('eye:config:updated', { 
+      mobility: config.mobility 
+    });
+  }
+}
+
+/**
+ * Handle adaptive mode changes
+ * @param {Object} data - Adaptive mode data
+ */
+function handleAdaptiveModeChange(data) {
+  if (data && typeof data.enabled === 'boolean') {
+    // Request current mobility profile to adapt accordingly
+    if (data.enabled) {
+      publish('settings:request', { 
+        category: 'accessibility',
+        key: 'mobilityProfile',
+        callback: (profile) => {
+          if (profile) {
+            handleMobilityProfileUpdate({ profile });
+          }
+        }
+      });
+    } else {
+      // Reset to standard configuration
+      config.mobility.enhancedPrecision = false;
+      config.mobility.sensitivityLevel = 'medium';
+      config.mobility.dwellClickEnabled = false;
+      processingInterval = 50; // 20fps
+      
+      // If processing is active, update the processing interval
+      if (processing) {
+        stopProcessing();
+        startProcessing();
+      }
+      
+      logger.info('Eye tracking reset to standard settings');
+    }
+  }
+}
+
+// Variables for dwell detection (module scope to persist between calls)
+let dwellStartTime = 0;
+let dwellPosition = null;
+let isDwelling = false;
+const DWELL_RADIUS = 30; // pixels
+
+/**
+ * Process dwell detection for eye-controlled clicking
+ * @param {Object} gazePoint - Current gaze point
+ * @param {number} timestamp - Current timestamp
+ */
+function processDwellDetection(gazePoint, timestamp) {
+  // Skip if dwell clicks are not enabled
+  if (!config.mobility.dwellClickEnabled || !gazePoint) return;
+  
+  // Check if gaze is within dwell radius of the dwell position
+  const isWithinDwellRadius = (pos1, pos2) => {
+    if (!pos1 || !pos2) return false;
+    const dx = pos1.x - pos2.x;
+    const dy = pos1.y - pos2.y;
+    return Math.sqrt(dx * dx + dy * dy) <= DWELL_RADIUS;
+  };
+  
+  if (!isDwelling) {
+    // Start a new dwell
+    dwellStartTime = timestamp;
+    dwellPosition = { ...gazePoint };
+    isDwelling = true;
+  } else if (!isWithinDwellRadius(gazePoint, dwellPosition)) {
+    // Reset dwell if gaze moved outside radius
+    isDwelling = false;
+  } else if (timestamp - dwellStartTime >= config.mobility.dwellTime) {
+    // Dwell completed, trigger click event
+    publish('eye:dwell:completed', {
+      x: dwellPosition.x,
+      y: dwellPosition.y,
+      timestamp
+    });
+    
+    // Reset dwell state
+    isDwelling = false;
+    
+    logger.debug('Dwell click triggered at', dwellPosition);
+  }
+}
+
+/**
+ * Clean up resources
+ */
+function cleanup() {
+  try {
+    // Stop processing
+    stopProcessing();
+    
+    // Unsubscribe from events
+    unsubscribe('face:detected', handleFaceDetected);
+    unsubscribe('face:lost', handleFaceLost);
+    unsubscribe('eye:calibration:point:complete', handleCalibrationPointComplete);
+    unsubscribe('accessibility:mobility:profile_updated', handleMobilityProfileUpdate);
+    unsubscribe('accessibility:mobility:eye_control', handleEyeControlToggle);
+    unsubscribe('accessibility:mobility:dwell_click', handleDwellClickToggle);
+    unsubscribe('accessibility:mobility:adaptive_mode', handleAdaptiveModeChange);
+    
+    // Remove event listeners
+    window.removeEventListener('memory-pressure', handleMemoryPressure);
+    
+    // Clear data
+    gazeHistory = [];
+    calibrationData = null;
+    lastGazePoint = null;
+    
+    // Reset state
+    initialized = false;
+    processing = false;
+    calibrating = false;
+    
+    logger.info('Eye tracking system cleaned up');
+    return true;
+  } catch (error) {
+    logger.error('Failed to clean up eye tracking system', error);
+    return false;
+  }
+}
+
+/**
+ * Export additional functions for testing and advanced usage
+ */
 export default {
   initialize,
   startProcessing,
@@ -818,5 +1050,11 @@ export default {
   cancelCalibration,
   updateAccessibilitySettings,
   setPrivacyMode,
+  // Mobility assistance functions
+  handleMobilityProfileUpdate,
+  handleEyeControlToggle,
+  handleDwellClickToggle,
+  handleAdaptiveModeChange,
+  processDwellDetection,
   cleanup
 };

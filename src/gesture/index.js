@@ -14,6 +14,9 @@ let isActive = false;
 // MediaPipe Hands model
 let handsModel = null;
 
+// Enhanced recognition flag
+let useEnhancedRecognition = true;
+
 /**
  * Initialize the gesture recognition system
  * This is called only when the user activates the gesture feature
@@ -65,8 +68,21 @@ export async function initializeGesture() {
     }
     
     // Initialize the gesture recognition system
-    const { setupGestureRecognition } = await import('./recognition.js');
-    await setupGestureRecognition(handsModel);
+    if (useEnhancedRecognition) {
+      // Use enhanced gesture recognition with custom ML model
+      const { setupEnhancedGestureRecognition } = await import('./enhanced_recognition.js');
+      await setupEnhancedGestureRecognition(handsModel, {
+        dynamicGesturesEnabled: true,
+        adaptiveProcessing: true,
+        modelConfidence: 0.7
+      });
+      
+      console.log('Enhanced gesture recognition activated');
+    } else {
+      // Use basic gesture recognition (fallback)
+      const { setupGestureRecognition } = await import('./recognition.js');
+      await setupGestureRecognition(handsModel);
+    }
     
     // Set up WebSocket connection to the gesture backend
     const { connectToGestureBackend } = await import('./connection.js');
@@ -127,6 +143,28 @@ function setupGestureSystemEvents() {
   
   // Handle calibration requests
   subscribe('gesture:calibrate', () => calibrateGesture());
+  
+  // Handle gesture training requests
+  subscribe('gesture:training', handleTrainingRequest);
+  
+  // Handle enhanced recognition toggle
+  subscribe('gesture:config', (config) => {
+    if (config.hasOwnProperty('enhancedRecognition')) {
+      const newValue = Boolean(config.enhancedRecognition);
+      
+      // Only restart if the value changed and we're already initialized
+      if (newValue !== useEnhancedRecognition && isInitialized) {
+        useEnhancedRecognition = newValue;
+        
+        // Restart the gesture system to apply the change
+        stopGestureProcessing();
+        isInitialized = false;
+        initializeGesture();
+      } else {
+        useEnhancedRecognition = newValue;
+      }
+    }
+  });
 }
 
 /**
@@ -252,6 +290,50 @@ export async function calibrateGesture() {
 export function getGestureSystemState() {
   return {
     initialized: isInitialized,
-    active: isActive
+    active: isActive,
+    enhancedRecognition: useEnhancedRecognition
   };
+}
+
+/**
+ * Handle requests to open/close the gesture training interface
+ * @param {Object} action - Action details
+ */
+async function handleTrainingRequest(action) {
+  if (!isInitialized || !useEnhancedRecognition) {
+    publish('gesture:status', { 
+      state: 'error', 
+      message: 'Enhanced gesture recognition must be active to use training interface'
+    });
+    return;
+  }
+  
+  try {
+    // Dynamically import the training interface
+    const { showTrainingInterface, hideTrainingInterface } = await import('./training-interface.js');
+    
+    if (action.show) {
+      showTrainingInterface();
+    } else {
+      hideTrainingInterface();
+    }
+  } catch (error) {
+    console.error('Error handling training interface request:', error);
+    publish('gesture:status', { 
+      state: 'error', 
+      message: `Training interface error: ${error.message}`
+    });
+  }
+}
+
+/**
+ * Show the gesture training interface
+ * This is a convenience method for external modules
+ */
+export async function showGestureTraining() {
+  if (!isInitialized) {
+    await initializeGesture();
+  }
+  
+  publish('gesture:training', { show: true });
 }

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEJO Multimodal Fusion Test</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --tertiary-color: #e74c3c;
+            --background-color: #f5f5f5;
+            --panel-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #dddddd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            grid-template-rows: auto 1fr auto;
+            grid-template-areas:
+                "header header"
+                "sidebar main"
+                "footer footer";
+            height: 100vh;
+            max-height: 100vh;
+        }
+
+        header {
+            grid-area: header;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar {
+            grid-area: sidebar;
+            background-color: var(--panel-color);
+            border-right: 1px solid var(--border-color);
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        main {
+            grid-area: main;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        footer {
+            grid-area: footer;
+            background-color: var(--panel-color);
+            border-top: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            text-align: center;
+        }
+
+        .panel {
+            background-color: var(--panel-color);
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .panel-title {
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .panel-body {
+            margin-top: 0.5rem;
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .flex-row {
+            display: flex;
+            align-items: center;
+        }
+
+        .flex-row > * + * {
+            margin-left: 1rem;
+        }
+
+        .flex-space-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-danger {
+            background-color: var(--tertiary-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .visualization {
+            flex: 1;
+            background-color: var(--panel-color);
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+        }
+
+        .modality-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+            background-color: #ccc;
+        }
+
+        .modality-active {
+            background-color: var(--secondary-color);
+        }
+
+        .log-container {
+            height: 200px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.5rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px 5px;
+            border-left: 3px solid #ccc;
+        }
+
+        .log-entry.eye {
+            border-left-color: #3498db;
+        }
+
+        .log-entry.gesture {
+            border-left-color: #2ecc71;
+        }
+
+        .log-entry.voice {
+            border-left-color: #e74c3c;
+        }
+
+        .log-entry.fusion {
+            border-left-color: #9b59b6;
+        }
+
+        .gaze-point {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: rgba(52, 152, 219, 0.5);
+            border: 2px solid rgba(52, 152, 219, 0.8);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .gesture-indicator {
+            position: absolute;
+            padding: 5px 10px;
+            background-color: rgba(46, 204, 113, 0.8);
+            color: white;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .voice-indicator {
+            position: absolute;
+            padding: 5px 10px;
+            background-color: rgba(231, 76, 60, 0.8);
+            color: white;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .fusion-indicator {
+            position: absolute;
+            padding: 5px 10px;
+            background-color: rgba(155, 89, 182, 0.8);
+            color: white;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .target {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            background-color: rgba(52, 152, 219, 0.2);
+            border: 2px solid rgba(52, 152, 219, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .target.active {
+            background-color: rgba(46, 204, 113, 0.3);
+            border-color: rgba(46, 204, 113, 0.8);
+        }
+
+        .context-selector {
+            margin-top: 1rem;
+        }
+
+        .context-selector select {
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            width: 100%;
+        }
+
+        .video-container {
+            position: relative;
+            width: 320px;
+            height: 240px;
+            background-color: #000;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        #videoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ALEJO Multimodal Fusion Test</h1>
+            <div class="flex-row">
+                <button id="resetBtn" class="btn btn-danger">Reset</button>
+            </div>
+        </header>
+
+        <div class="sidebar">
+            <!-- Control Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Input Modalities</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="control-group flex-space-between">
+                        <label>Eye Tracking</label>
+                        <div class="flex-row">
+                            <span class="modality-indicator" id="eyeIndicator"></span>
+                            <label class="switch">
+                                <input type="checkbox" id="eyeToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="control-group flex-space-between">
+                        <label>Gesture Recognition</label>
+                        <div class="flex-row">
+                            <span class="modality-indicator" id="gestureIndicator"></span>
+                            <label class="switch">
+                                <input type="checkbox" id="gestureToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="control-group flex-space-between">
+                        <label>Voice Commands</label>
+                        <div class="flex-row">
+                            <span class="modality-indicator" id="voiceIndicator"></span>
+                            <label class="switch">
+                                <input type="checkbox" id="voiceToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="control-group flex-space-between">
+                        <label>Dwell Click</label>
+                        <div class="flex-row">
+                            <span class="modality-indicator" id="dwellIndicator"></span>
+                            <label class="switch">
+                                <input type="checkbox" id="dwellToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobility Profile -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Mobility Profile</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="control-group flex-space-between">
+                        <label>Limited Mobility</label>
+                        <label class="switch">
+                            <input type="checkbox" id="limitedMobilityToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="control-group flex-space-between">
+                        <label>Can Use Hands</label>
+                        <label class="switch">
+                            <input type="checkbox" id="canUseHandsToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="control-group flex-space-between">
+                        <label>Can Use Voice</label>
+                        <label class="switch">
+                            <input type="checkbox" id="canUseVoiceToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="control-group">
+                        <label>Preferred Input Method</label>
+                        <select id="preferredInputSelect">
+                            <option value="gesture">Gesture</option>
+                            <option value="eye">Eye Tracking</option>
+                            <option value="voice">Voice</option>
+                            <option value="touch">Touch</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <button id="updateProfileBtn" class="btn btn-secondary">Update Profile</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Context Selector -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Context</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="control-group">
+                        <label>Current Context</label>
+                        <select id="contextSelect">
+                            <option value="home">Home</option>
+                            <option value="driving">Driving</option>
+                            <option value="meeting">Meeting</option>
+                            <option value="public">Public Space</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Adaptive Mode</label>
+                        <div class="flex-row">
+                            <span class="modality-indicator" id="adaptiveIndicator"></span>
+                            <label class="switch">
+                                <input type="checkbox" id="adaptiveToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main>
+            <!-- Visualization Area -->
+            <div class="visualization" id="visualizationArea">
+                <!-- Targets will be added here dynamically -->
+                <div class="target" style="top: 100px; left: 200px;">Target 1</div>
+                <div class="target" style="top: 200px; left: 400px;">Target 2</div>
+                <div class="target" style="top: 300px; left: 300px;">Target 3</div>
+            </div>
+
+            <!-- Camera Feed -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Camera Feed</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="video-container">
+                        <video id="videoElement" autoplay playsinline></video>
+                        <canvas id="overlayCanvas" class="overlay-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Log -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Event Log</h2>
+                    <button id="clearLogBtn" class="btn btn-secondary">Clear</button>
+                </div>
+                <div class="panel-body">
+                    <div class="log-container" id="logContainer">
+                        <!-- Log entries will be added here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>ALEJO Accessibility Framework - Multimodal Fusion Test</p>
+        </footer>
+    </div>
+
+    <!-- Scripts will be added in the next part -->
+</body>
+</html>
