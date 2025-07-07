@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Initialization System Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+    
+    .description {
+      color: #7f8c8d;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    
+    .controls {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 10px;
+      transition: background-color 0.2s;
+    }
+    
+    button:hover {
+      background-color: #2980b9;
+    }
+    
+    button:disabled {
+      background-color: #bdc3c7;
+      cursor: not-allowed;
+    }
+    
+    .status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+      border-left: 4px solid #3498db;
+    }
+    
+    .status.success {
+      border-left-color: #2ecc71;
+    }
+    
+    .status.error {
+      border-left-color: #e74c3c;
+    }
+    
+    .status.warning {
+      border-left-color: #f39c12;
+    }
+    
+    .log-container {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .log-entry {
+      margin-bottom: 5px;
+      padding: 5px;
+      border-bottom: 1px solid #eee;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+    
+    .log-entry.info {
+      color: #2980b9;
+    }
+    
+    .log-entry.success {
+      color: #27ae60;
+    }
+    
+    .log-entry.error {
+      color: #c0392b;
+    }
+    
+    .log-entry.warning {
+      color: #d35400;
+    }
+    
+    /* High contrast mode support */
+    @media (forced-colors: active) {
+      button {
+        border: 1px solid ButtonText;
+      }
+      
+      .status {
+        border: 1px solid ButtonText;
+      }
+      
+      .log-entry {
+        border-bottom: 1px solid ButtonText;
+      }
+    }
+    
+    /* Accessibility focus styles */
+    button:focus {
+      outline: 2px solid #3498db;
+      outline-offset: 2px;
+    }
+    
+    /* Screen reader only class */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>ALEJO Initialization System Test</h1>
+      <p class="description">
+        This page tests the ALEJO initialization system, including the progressive loading sequence, 
+        fallback mechanisms, and monitoring dashboard. It demonstrates how components are initialized 
+        in order of priority, with accessibility components given the highest priority.
+      </p>
+    </header>
+    
+    <div class="controls">
+      <button id="run-test-btn" aria-label="Run initialization test">Run Test</button>
+      <button id="open-dashboard-btn" aria-label="Open monitoring dashboard">Open Dashboard</button>
+      <button id="reset-btn" aria-label="Reset test">Reset</button>
+      
+      <div class="status" id="status-container">
+        Ready to run initialization test.
+      </div>
+    </div>
+    
+    <div class="log-container" id="log-container">
+      <div class="log-entry info">Initialization test ready. Click "Run Test" to begin.</div>
+    </div>
+  </div>
+  
+  <script type="module">
+    import { runInitializationTest } from './initialization-test.js';
+    import { openMonitoringDashboard } from './monitoring-dashboard.js';
+    
+    // Elements
+    const runTestBtn = document.getElementById('run-test-btn');
+    const openDashboardBtn = document.getElementById('open-dashboard-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const statusContainer = document.getElementById('status-container');
+    const logContainer = document.getElementById('log-container');
+    
+    // Disable dashboard button initially
+    openDashboardBtn.disabled = true;
+    
+    // Override console methods to capture logs
+    const originalConsole = {
+      log: console.log,
+      error: console.error,
+      warn: console.warn,
+      info: console.info
+    };
+    
+    function addLogEntry(message, type = 'info') {
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.textContent = typeof message === 'object' ? JSON.stringify(message, null, 2) : message;
+      logContainer.appendChild(entry);
+      logContainer.scrollTop = logContainer.scrollHeight;
+      
+      // Also log to original console
+      originalConsole[type](message);
+    }
+    
+    console.log = (message) => addLogEntry(message, 'info');
+    console.error = (message) => addLogEntry(message, 'error');
+    console.warn = (message) => addLogEntry(message, 'warning');
+    console.info = (message) => addLogEntry(message, 'info');
+    
+    // Run test button
+    runTestBtn.addEventListener('click', async () => {
+      try {
+        // Update UI
+        runTestBtn.disabled = true;
+        statusContainer.textContent = 'Running initialization test...';
+        statusContainer.className = 'status';
+        
+        // Clear log
+        logContainer.innerHTML = '';
+        addLogEntry('Starting initialization test...', 'info');
+        
+        // Run test
+        const result = await runInitializationTest();
+        
+        // Update UI based on result
+        const successfulInit = result.completedComponents.length === result.componentCount;
+        const hasFailures = result.failedComponents.length > 0;
+        
+        if (successfulInit && !hasFailures) {
+          statusContainer.textContent = 'Initialization completed successfully!';
+          statusContainer.className = 'status success';
+        } else if (hasFailures) {
+          statusContainer.textContent = `Initialization completed with ${result.failedComponents.length} failures.`;
+          statusContainer.className = 'status error';
+        } else {
+          statusContainer.textContent = 'Initialization completed with warnings.';
+          statusContainer.className = 'status warning';
+        }
+        
+        // Enable dashboard button
+        openDashboardBtn.disabled = false;
+        
+        // Log final status
+        addLogEntry('Initialization complete. Final status:', 'info');
+        addLogEntry(result, 'info');
+      } catch (error) {
+        statusContainer.textContent = `Error: ${error.message}`;
+        statusContainer.className = 'status error';
+        addLogEntry(`Error running test: ${error.message}`, 'error');
+        console.error(error);
+      }
+    });
+    
+    // Open dashboard button
+    openDashboardBtn.addEventListener('click', () => {
+      openMonitoringDashboard();
+      addLogEntry('Opened monitoring dashboard', 'info');
+    });
+    
+    // Reset button
+    resetBtn.addEventListener('click', () => {
+      // Reload the page
+      window.location.reload();
+    });
+    
+    // Announce page loaded for screen readers
+    window.addEventListener('load', () => {
+      const announcement = document.createElement('div');
+      announcement.setAttribute('aria-live', 'polite');
+      announcement.classList.add('sr-only');
+      document.body.appendChild(announcement);
+      
+      setTimeout(() => {
+        announcement.textContent = 'ALEJO initialization test page loaded and ready.';
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

@@ -12,17 +12,22 @@ import { getErrorLog } from './error-handler.js';
 // Store initialization logs
 const initLogs = [];
 const MAX_LOG_ENTRIES = 1000;
+let nextLogId = 1;
 
 /**
  * Log an initialization event
  * 
- * @param {string} type - Event type (start, success, failure, retry, fallback)
- * @param {string} componentId - Component ID
- * @param {Object} details - Additional details
+ * @param {Object} event - Event object
+ * @param {string} event.type - Event type (start, success, error, progress, retry, fallback)
+ * @param {string} event.componentId - Component ID
+ * @param {number} event.timestamp - Event timestamp
+ * @param {Object} event.details - Additional details
  */
-export function logInitEvent(type, componentId, details = {}) {
-  const timestamp = Date.now();
+export function logInitEvent(event) {
+  const { type, componentId, timestamp = Date.now(), details = {} } = event;
+  
   const logEntry = {
+    id: nextLogId++,
     timestamp,
     type,
     componentId,
@@ -43,16 +48,27 @@ export function logInitEvent(type, componentId, details = {}) {
 }
 
 /**
- * Get initialization logs
+ * Get all initialization logs
  * 
- * @param {Object} options - Filter options
- * @param {string} options.componentId - Filter by component ID
- * @param {string} options.type - Filter by event type
- * @param {number} options.limit - Limit number of results
+ * @returns {Array} - All logs
+ */
+export function getInitLogs() {
+  return [...initLogs];
+}
+
+/**
+ * Get filtered initialization logs
+ * 
+ * @param {Object} filters - Filter options
+ * @param {string} [filters.componentId] - Filter by component ID
+ * @param {string} [filters.type] - Filter by event type
+ * @param {number} [filters.startTime] - Filter by start time
+ * @param {number} [filters.endTime] - Filter by end time
+ * @param {number} [filters.limit] - Limit number of results
  * @returns {Array} - Filtered logs
  */
-export function getInitLogs(options = {}) {
-  const { componentId, type, limit = 100 } = options;
+export function getFilteredLogs(filters = {}) {
+  const { componentId, type, startTime, endTime, limit = 100 } = filters;
   
   let filtered = [...initLogs];
   
@@ -64,15 +80,23 @@ export function getInitLogs(options = {}) {
     filtered = filtered.filter(log => log.type === type);
   }
   
+  if (startTime) {
+    filtered = filtered.filter(log => log.timestamp >= startTime);
+  }
+  
+  if (endTime) {
+    filtered = filtered.filter(log => log.timestamp <= endTime);
+  }
+  
   return filtered.slice(0, limit);
 }
 
 /**
- * Get initialization timeline data
+ * Generate timeline data from logs
  * 
- * @returns {Object} - Timeline data
+ * @returns {Array} - Timeline data by component
  */
-export function getInitializationTimeline() {
+export function generateTimelineData() {
   const initStatus = getInitializationStatus();
   const errorLog = getErrorLog();
   
@@ -126,32 +150,29 @@ export function getInitializationTimeline() {
     componentDependencies[id] = status.dependencies || [];
   });
   
-  // Build timeline data
-  return {
-    startTime: initStatus.startTime,
-    endTime: initStatus.endTime,
-    totalDuration: initStatus.endTime ? initStatus.endTime - initStatus.startTime : null,
-    components: Object.values(componentTimes),
-    dependencies: componentDependencies,
-    errors: errorLog.filter(error => error.context?.includes('initialization')),
-    isComplete: !initStatus.isInitializing
-  };
+  // Build timeline data array
+  return Object.values(componentTimes);
 }
 
 /**
  * Generate an HTML visualization of the initialization timeline
  * 
+ * @param {Array} timelineData - Timeline data from generateTimelineData
  * @returns {string} - HTML content
  */
-export function generateTimelineVisualization() {
-  const timeline = getInitializationTimeline();
+export function generateTimelineVisualization(timelineData = []) {
+  if (!timelineData || timelineData.length === 0) {
+    timelineData = generateTimelineData();
+  }
   
-  if (!timeline.startTime) {
+  const initStatus = getInitializationStatus();
+  
+  if (timelineData.length === 0 || !initStatus.startTime) {
     return '<div class="init-timeline-empty">No initialization data available</div>';
   }
   
   // Sort components by start time
-  const sortedComponents = [...timeline.components].sort((a, b) => {
+  const sortedComponents = [...timelineData].sort((a, b) => {
     // Components with no start time go last
     if (!a.startTime) return 1;
     if (!b.startTime) return -1;
@@ -159,8 +180,8 @@ export function generateTimelineVisualization() {
   });
   
   // Calculate timeline scale
-  const timelineStart = timeline.startTime;
-  const timelineEnd = timeline.endTime || Date.now();
+  const timelineStart = initStatus.startTime;
+  const timelineEnd = initStatus.endTime || Date.now();
   const timelineDuration = timelineEnd - timelineStart;
   
   // Generate component rows
@@ -233,9 +254,9 @@ export function generateTimelineVisualization() {
       </div>
       
       <div class="timeline-summary">
-        <div>Total Duration: ${timeline.totalDuration ? `${timeline.totalDuration}ms` : 'In progress'}</div>
-        <div>Components: ${timeline.components.length}</div>
-        <div>Errors: ${timeline.errors.length}</div>
+        <div>Total Duration: ${initStatus.endTime ? `${initStatus.endTime - initStatus.startTime}ms` : 'In progress'}</div>
+        <div>Components: ${timelineData.length}</div>
+        <div>Errors: ${getErrorLog().filter(error => error.context?.includes('initialization')).length}</div>
       </div>
     </div>
   `;
