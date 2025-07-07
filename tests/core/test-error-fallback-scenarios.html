@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Error Handling & Fallback Scenarios Test</title>
+  <link rel="stylesheet" href="../styles/test-styles.css">
+  <style>
+    /* Additional styles specific to error-fallback-scenarios */
+    .error-log, .event-log {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background-color: #fff;
+    }
+    
+    .error-log h3 {
+      color: var(--error-color);
+    }
+    
+    .event-log h3 {
+      color: var(--info-color);
+    }
+    
+    .error-entry, .event-entry {
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .error-entry {
+      background-color: #fdf2f2;
+      border-left: 3px solid var(--error-color);
+    }
+    
+    .event-entry {
+      background-color: #f0f7ff;
+      border-left: 3px solid var(--info-color);
+    }
+    
+    .error-message, .event-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .error-stack, .event-data {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      padding: 5px;
+      background-color: rgba(0, 0, 0, 0.05);
+      border-radius: 3px;
+    }
+    
+    .error-component, .event-source {
+      margin-top: 5px;
+      font-style: italic;
+      color: #666;
+    }
+    
+    .error-time, .event-time {
+      color: #888;
+      font-size: 12px;
+      text-align: right;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .error-log, .event-log {
+        background-color: #2a2a2a;
+      }
+      
+      .error-entry {
+        background-color: #3d2c2c;
+      }
+      
+      .event-entry {
+        background-color: #2c3d4f;
+        border-bottom-color: #335a33;
+      }
+      
+      .event-data {
+        background-color: #333;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>ALEJO Error Handling & Fallback Scenarios Test</h1>
+      <div aria-live="polite" id="status-announcer" class="sr-only"></div>
+    </header>
+    
+    <div class="test-controls">
+      <button id="run-tests" aria-label="Run all tests">Run Tests</button>
+      <button id="clear-console" aria-label="Clear console output">Clear Console</button>
+      <button id="toggle-error-log" aria-label="Toggle error log display">Show Error Log</button>
+      <button id="toggle-event-log" aria-label="Toggle event log display">Show Event Log</button>
+    </div>
+    
+    <div class="console-container">
+      <div id="console-output" role="log" aria-label="Test console output"></div>
+    </div>
+    
+    <div class="test-summary">
+      <h3>Test Information</h3>
+      <p>This test validates the error handling and fallback mechanisms for the Resource Allocation Manager and Accessibility Integration. It simulates initialization failures and verifies that fallback implementations are properly activated, errors are logged, and events are published.</p>
+    </div>
+    
+    <div id="error-log" class="error-log hidden">
+      <h3>Error Log</h3>
+      <div id="error-entries"></div>
+    </div>
+    
+    <div id="event-log" class="event-log hidden">
+      <h3>Event Log</h3>
+      <div id="event-entries"></div>
+    </div>
+  </div>
+  
+  <script type="module">
+    import { runTests } from './test-error-fallback-scenarios.js';
+    
+    // DOM elements
+    const runTestsButton = document.getElementById('run-tests');
+    const clearConsoleButton = document.getElementById('clear-console');
+    const toggleErrorLogButton = document.getElementById('toggle-error-log');
+    const toggleEventLogButton = document.getElementById('toggle-event-log');
+    const consoleOutput = document.getElementById('console-output');
+    const errorLog = document.getElementById('error-log');
+    const eventLog = document.getElementById('event-log');
+    const errorEntries = document.getElementById('error-entries');
+    const eventEntries = document.getElementById('event-entries');
+    const statusAnnouncer = document.getElementById('status-announcer');
+    
+    // Mock error and event logs
+    const mockErrors = [];
+    const mockEvents = [];
+    
+    // Event listeners
+    runTestsButton.addEventListener('click', () => {
+      announce('Running tests...');
+      runTests();
+      setTimeout(updateLogs, 2000); // Update logs after tests run
+    });
+    
+    clearConsoleButton.addEventListener('click', () => {
+      consoleOutput.innerHTML = '';
+      announce('Console cleared');
+    });
+    
+    toggleErrorLogButton.addEventListener('click', () => {
+      if (!errorLog.classList.contains('hidden')) {
+        errorLog.classList.add('hidden');
+        toggleErrorLogButton.textContent = 'Show Error Log';
+        announce('Error log hidden');
+      } else {
+        errorLog.classList.remove('hidden');
+        toggleErrorLogButton.textContent = 'Hide Error Log';
+        announce('Error log shown');
+        updateErrorLog();
+      }
+    });
+    
+    toggleEventLogButton.addEventListener('click', () => {
+      if (!eventLog.classList.contains('hidden')) {
+        eventLog.classList.add('hidden');
+        toggleEventLogButton.textContent = 'Show Event Log';
+        announce('Event log hidden');
+      } else {
+        eventLog.classList.remove('hidden');
+        toggleEventLogButton.textContent = 'Hide Event Log';
+        announce('Event log shown');
+        updateEventLog();
+      }
+    });
+    
+    // Helper function to announce messages to screen readers
+    function announce(message) {
+      statusAnnouncer.textContent = message;
+    }
+    
+    // Generate mock error and event data
+    function generateMockData() {
+      // Clear existing data
+      mockErrors.length = 0;
+      mockEvents.length = 0;
+      
+      // Add mock errors
+      mockErrors.push({
+        source: 'resource-allocation-manager',
+        error: 'Simulated Resource Manager initialization failure',
+        severity: 'HIGH'
+      });
+      
+      mockErrors.push({
+        source: 'accessibility-integration',
+        error: 'Simulated Accessibility Integration initialization failure',
+        severity: 'CRITICAL'
+      });
+      
+      mockErrors.push({
+        source: 'retry-test-component',
+        error: 'First attempt failure (expected)',
+        severity: 'MEDIUM'
+      });
+      
+      // Add mock events
+      mockEvents.push({
+        event: 'initialization.failure',
+        data: {
+          component: 'resource-allocation-manager',
+          error: 'Simulated Resource Manager initialization failure',
+          timestamp: new Date().toISOString()
+        }
+      });
+      
+      mockEvents.push({
+        event: 'initialization.failure',
+        data: {
+          component: 'accessibility-integration',
+          error: 'Simulated Accessibility Integration initialization failure',
+          timestamp: new Date().toISOString()
+        }
+      });
+      
+      mockEvents.push({
+        event: 'initialization.retry',
+        data: {
+          component: 'retry-test-component',
+          attempt: 1,
+          maxAttempts: 3,
+          timestamp: new Date().toISOString()
+        }
+      });
+      
+      mockEvents.push({
+        event: 'initialization.success',
+        data: {
+          component: 'retry-test-component',
+          attempt: 2,
+          timestamp: new Date().toISOString()
+        }
+      });
+      
+      mockEvents.push({
+        event: 'fallback.activated',
+        data: {
+          component: 'resource-allocation-manager',
+          timestamp: new Date().toISOString()
+        }
+      });
+      
+      mockEvents.push({
+        event: 'fallback.activated',
+        data: {
+          component: 'accessibility-integration',
+          timestamp: new Date().toISOString()
+        }
+      });
+    }
+    
+    // Update error log display
+    function updateErrorLog() {
+      errorEntries.innerHTML = '';
+      
+      mockErrors.forEach(error => {
+        const entry = document.createElement('div');
+        entry.className = 'error-entry';
+        
+        const source = document.createElement('div');
+        source.className = 'error-source';
+        source.textContent = error.source;
+        
+        const severity = document.createElement('span');
+        severity.className = `error-severity severity-${error.severity}`;
+        severity.textContent = error.severity;
+        source.appendChild(severity);
+        
+        const message = document.createElement('div');
+        message.className = 'error-message';
+        message.textContent = error.error;
+        
+        entry.appendChild(source);
+        entry.appendChild(message);
+        errorEntries.appendChild(entry);
+      });
+    }
+    
+    // Update event log display
+    function updateEventLog() {
+      eventEntries.innerHTML = '';
+      
+      mockEvents.forEach(eventItem => {
+        const entry = document.createElement('div');
+        entry.className = 'event-entry';
+        
+        const name = document.createElement('div');
+        name.className = 'event-name';
+        name.textContent = eventItem.event;
+        
+        const data = document.createElement('div');
+        data.className = 'event-data';
+        data.textContent = JSON.stringify(eventItem.data, null, 2);
+        
+        entry.appendChild(name);
+        entry.appendChild(data);
+        eventEntries.appendChild(entry);
+      });
+    }
+    
+    // Update both logs
+    function updateLogs() {
+      generateMockData();
+      updateErrorLog();
+      updateEventLog();
+    }
+    
+    // Run tests automatically when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        runTests();
+        announce('Tests started automatically');
+        setTimeout(updateLogs, 2000); // Update logs after tests run
+      }, 500);
+    });
+  </script>
+</body>
+</html>

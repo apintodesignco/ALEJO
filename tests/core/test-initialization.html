@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Core Initialization Tests</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background-color: #0078d4;
+      color: white;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    
+    .test-output {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 20px;
+      margin-bottom: 20px;
+      overflow: auto;
+      max-height: 600px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+    
+    .success {
+      color: #28a745;
+      font-weight: bold;
+    }
+    
+    .error {
+      color: #dc3545;
+      font-weight: bold;
+    }
+    
+    .warning {
+      color: #ffc107;
+      font-weight: bold;
+    }
+    
+    .info {
+      color: #17a2b8;
+      font-weight: bold;
+    }
+    
+    .dashboard-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>ALEJO Core Initialization Tests</h1>
+    </div>
+  </header>
+  
+  <div class="container">
+    <div id="test-output" class="test-output">
+      Running tests...
+    </div>
+    
+    <div id="dashboard-container" class="dashboard-container">
+      <!-- Dashboard toggle button will be inserted here by the script -->
+    </div>
+  </div>
+  
+  <!-- Mock app container for initialization -->
+  <div id="app"></div>
+  
+  <!-- Import the test script as a module -->
+  <script type="module" src="./test-initialization.js"></script>
+</body>
+</html>

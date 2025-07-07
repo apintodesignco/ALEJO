@@ -14,6 +14,7 @@
 import { initializeCore } from './core/index.js';
 import { initializeSEO } from './seo/index.js';
 import { initializeAccessibility } from './personalization/accessibility/index.js';
+import { initializePerformanceModule } from './performance/index.js';
 
 // Main application state
 const ALEJO = {
@@ -74,6 +75,13 @@ async function initializeApplication(options = {}) {
     ALEJO.modules.accessibility = await initializeAccessibility({
       debug: ALEJO.debug,
       ...options.accessibility
+    });
+    
+    // Initialize performance module (high priority for resource management)
+    console.log('Initializing performance module...');
+    ALEJO.modules.performance = await initializePerformanceModule({
+      debug: ALEJO.debug,
+      ...options.performance
     });
     
     // Register service worker for PWA features (low priority)

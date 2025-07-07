@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Comprehensive Test Suite</title>
+  <link rel="stylesheet" href="./styles/test-styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>ALEJO Comprehensive Test Suite</h1>
+      <div aria-live="polite" id="status-announcer" class="sr-only"></div>
+    </header>
+    
+    <div class="test-controls">
+      <button id="run-all-tests" aria-label="Run all test suites">Run All Tests</button>
+      <button id="clear-console" aria-label="Clear console output">Clear Console</button>
+      <button id="generate-report" aria-label="Generate test report">Generate Report</button>
+      <button id="expand-all" aria-label="Expand all test suites">Expand All</button>
+      <button id="collapse-all" aria-label="Collapse all test suites">Collapse All</button>
+    </div>
+    
+    <div class="results-summary">
+      <div class="result-card passed-card">
+        <h3>Passed</h3>
+        <div class="count" id="passed-count">0</div>
+      </div>
+      <div class="result-card failed-card">
+        <h3>Failed</h3>
+        <div class="count" id="failed-count">0</div>
+      </div>
+      <div class="result-card pending-card">
+        <h3>Pending</h3>
+        <div class="count" id="pending-count">0</div>
+      </div>
+      <div class="result-card total-card">
+        <h3>Total</h3>
+        <div class="count" id="total-count">0</div>
+      </div>
+    </div>
+    
+    <div class="console-container">
+      <div id="console-output" role="log" aria-label="Test console output"></div>
+    </div>
+    
+    <h2>Test Suites</h2>
+    <div id="test-suites-container">
+      <!-- Test suites will be added here dynamically -->
+    </div>
+    
+    <div class="test-summary">
+      <h3>About ALEJO Comprehensive Test Suite</h3>
+      <p>This test runner executes all ALEJO test suites to validate the entire system, with special focus on the core initialization, resource allocation, and accessibility integration. The test suite includes:</p>
+      <ul>
+        <li>Core initialization tests</li>
+        <li>Resource allocation and accessibility integration tests</li>
+        <li>Error handling and fallback scenario tests</li>
+        <li>Performance and resource usage tests</li>
+        <li>Accessibility compliance tests</li>
+      </ul>
+    </div>
+  </div>
+  
+  <script type="module">
+    import { runAllTests, TEST_SUITES } from './run-comprehensive-tests.js';
+    
+    // DOM elements
+    const runAllTestsButton = document.getElementById('run-all-tests');
+    const clearConsoleButton = document.getElementById('clear-console');
+    const generateReportButton = document.getElementById('generate-report');
+    const expandAllButton = document.getElementById('expand-all');
+    const collapseAllButton = document.getElementById('collapse-all');
+    const consoleOutput = document.getElementById('console-output');
+    const testSuitesContainer = document.getElementById('test-suites-container');
+    const statusAnnouncer = document.getElementById('status-announcer');
+    const passedCount = document.getElementById('passed-count');
+    const failedCount = document.getElementById('failed-count');
+    const pendingCount = document.getElementById('pending-count');
+    const totalCount = document.getElementById('total-count');
+    
+    // Test results tracking
+    const testResults = {
+      passed: 0,
+      failed: 0,
+      pending: TEST_SUITES.length,
+      total: TEST_SUITES.length,
+      suiteResults: []
+    };
+    
+    // Override console methods to display in the UI
+    const originalConsole = {
+      log: console.log,
+      error: console.error,
+      warn: console.warn,
+      info: console.info
+    };
+    
+    console.log = function(...args) {
+      originalConsole.log(...args);
+      appendToConsole('log', ...args);
+    };
+    
+    console.error = function(...args) {
+      originalConsole.error(...args);
+      appendToConsole('error', ...args);
+    };
+    
+    console.warn = function(...args) {
+      originalConsole.warn(...args);
+      appendToConsole('warn', ...args);
+    };
+    
+    console.info = function(...args) {
+      originalConsole.info(...args);
+      appendToConsole('info', ...args);
+    };
+    
+    // Helper function to append console output to the UI
+    function appendToConsole(type, ...args) {
+      const line = document.createElement('div');
+      line.className = `console-line ${type}`;
+      
+      const timestamp = document.createElement('span');
+      timestamp.className = 'timestamp';
+      timestamp.textContent = new Date().toISOString().substr(11, 8) + ' ';
+      line.appendChild(timestamp);
+      
+      const typeIndicator = document.createElement('span');
+      typeIndicator.className = 'type';
+      typeIndicator.textContent = `[${type.toUpperCase()}] `;
+      line.appendChild(typeIndicator);
+      
+      const content = document.createElement('span');
+      content.className = 'content';
+      content.textContent = args.map(arg => {
+        if (typeof arg === 'object') {
+          try {
+            return JSON.stringify(arg);
+          } catch (e) {
+            return String(arg);
+          }
+        }
+        return String(arg);
+      }).join(' ');
+      line.appendChild(content);
+      
+      consoleOutput.appendChild(line);
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    }
+    
+    // Helper function to announce messages to screen readers
+    function announce(message) {
+      statusAnnouncer.textContent = message;
+    }
+    
+    // Create test suite elements
+    function createTestSuites() {
+      testSuitesContainer.innerHTML = '';
+      
+      TEST_SUITES.forEach((suite, index) => {
+        const suiteElement = document.createElement('div');
+        suiteElement.className = 'test-suite';
+        suiteElement.id = `suite-${index}`;
+        
+        const header = document.createElement('div');
+        header.className = 'test-suite-header';
+        header.onclick = () => toggleSuite(suiteElement);
+        
+        const title = document.createElement('h3');
+        title.textContent = suite.name;
+        
+        const status = document.createElement('span');
+        status.className = 'test-suite-status status-pending';
+        status.textContent = 'Pending';
+        
+        header.appendChild(title);
+        header.appendChild(status);
+        
+        const description = document.createElement('div');
+        description.className = 'test-suite-description';
+        description.textContent = `Category: ${suite.category}, Priority: ${suite.priority}`;
+        
+        const content = document.createElement('div');
+        content.className = 'test-suite-content';
+        
+        const actions = document.createElement('div');
+        actions.className = 'test-suite-actions';
+        
+        const runButton = document.createElement('button');
+        runButton.textContent = 'Run Suite';
+        runButton.onclick = (e) => {
+          e.stopPropagation();
+          runSuite(index);
+        };
+        
+        actions.appendChild(runButton);
+        content.appendChild(actions);
+        
+        suiteElement.appendChild(header);
+        suiteElement.appendChild(description);
+        suiteElement.appendChild(content);
+        
+        testSuitesContainer.appendChild(suiteElement);
+      });
+      
+      updateCounters();
+    }
+    
+    // Toggle test suite expansion
+    function toggleSuite(suiteElement) {
+      suiteElement.classList.toggle('expanded');
+    }
+    
+    // Expand all test suites
+    function expandAll() {
+      document.querySelectorAll('.test-suite').forEach(suite => {
+        suite.classList.add('expanded');
+      });
+      announce('All test suites expanded');
+    }
+    
+    // Collapse all test suites
+    function collapseAll() {
+      document.querySelectorAll('.test-suite').forEach(suite => {
+        suite.classList.remove('expanded');
+      });
+      announce('All test suites collapsed');
+    }
+    
+    // Run a specific test suite
+    async function runSuite(index) {
+      const suite = TEST_SUITES[index];
+      const suiteElement = document.getElementById(`suite-${index}`);
+      const statusElement = suiteElement.querySelector('.test-suite-status');
+      
+      statusElement.className = 'test-suite-status';
+      statusElement.textContent = 'Running...';
+      
+      announce(`Running test suite: ${suite.name}`);
+      
+      try {
+        console.log(`Running test suite: ${suite.name}`);
+        
+        const startTime = performance.now();
+        await suite.runner();
+        const endTime = performance.now();
+        const duration = ((endTime - startTime) / 1000).toFixed(2);
+        
+        console.log(`Test suite ${suite.name} completed in ${duration}s`);
+        
+        statusElement.className = 'test-suite-status status-passed';
+        statusElement.textContent = `Passed (${duration}s)`;
+        
+        testResults.passed++;
+        testResults.pending--;
+        
+        testResults.suiteResults[index] = {
+          name: suite.name,
+          status: 'passed',
+          duration: parseFloat(duration)
+        };
+        
+        announce(`Test suite ${suite.name} passed in ${duration} seconds`);
+      } catch (error) {
+        console.error(`Test suite ${suite.name} failed:`, error);
+        
+        statusElement.className = 'test-suite-status status-failed';
+        statusElement.textContent = 'Failed';
+        
+        testResults.failed++;
+        testResults.pending--;
+        
+        testResults.suiteResults[index] = {
+          name: suite.name,
+          status: 'failed',
+          error: error.message
+        };
+        
+        announce(`Test suite ${suite.name} failed: ${error.message}`);
+      }
+      
+      updateCounters();
+    }
+    
+    // Run all test suites
+    async function runAllSuites() {
+      announce('Running all test suites');
+      console.log('Running all test suites...');
+      
+      runAllTestsButton.disabled = true;
+      
+      // Reset results
+      testResults.passed = 0;
+      testResults.failed = 0;
+      testResults.pending = TEST_SUITES.length;
+      testResults.suiteResults = new Array(TEST_SUITES.length);
+      
+      updateCounters();
+      
+      // Run each suite in order
+      for (let i = 0; i < TEST_SUITES.length; i++) {
+        await runSuite(i);
+      }
+      
+      console.log('All test suites completed');
+      console.log(`Results: ${testResults.passed} passed, ${testResults.failed} failed`);
+      
+      runAllTestsButton.disabled = false;
+      announce(`All test suites completed. ${testResults.passed} passed, ${testResults.failed} failed`);
+    }
+    
+    // Generate a test report
+    function generateReport() {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '').slice(0, 15);
+      const reportName = `alejo_test_report_${timestamp}`;
+      
+      console.log(`Generating test report: ${reportName}`);
+      announce('Generating test report');
+      
+      // In a real implementation, this would save a report file
+      // For now, we'll just log the results
+      console.log('Test Results:', testResults);
+      
+      alert(`Test report generated: ${reportName}\nPassed: ${testResults.passed}, Failed: ${testResults.failed}, Total: ${testResults.total}`);
+    }
+    
+    // Update counter displays
+    function updateCounters() {
+      passedCount.textContent = testResults.passed;
+      failedCount.textContent = testResults.failed;
+      pendingCount.textContent = testResults.pending;
+      totalCount.textContent = testResults.total;
+    }
+    
+    // Event listeners
+    runAllTestsButton.addEventListener('click', runAllSuites);
+    
+    clearConsoleButton.addEventListener('click', () => {
+      consoleOutput.innerHTML = '';
+      announce('Console cleared');
+    });
+    
+    generateReportButton.addEventListener('click', generateReport);
+    
+    expandAllButton.addEventListener('click', expandAll);
+    
+    collapseAllButton.addEventListener('click', collapseAll);
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createTestSuites();
+      console.log('ALEJO Comprehensive Test Suite loaded');
+      console.log(`${TEST_SUITES.length} test suites available`);
+    });
+  </script>
+</body>
+</html>

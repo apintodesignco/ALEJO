@@ -6,6 +6,7 @@
  */
 
 import { publish, subscribe } from '../core/events.js';
+import { registerWithResourceManager, unregisterFromResourceManager } from './performance-integration.js';
 
 // Track initialization state
 let isInitialized = false;
@@ -20,8 +21,10 @@ let useEnhancedRecognition = true;
 /**
  * Initialize the gesture recognition system
  * This is called only when the user activates the gesture feature
+ * @param {Object} options - Initialization options
+ * @returns {Promise<Object>} - Initialization result
  */
-export async function initializeGesture() {
+export async function initializeGesture(options = {}) {
   console.log('Initializing ALEJO gesture system...');
   
   // Prevent duplicate initialization
@@ -94,6 +97,11 @@ export async function initializeGesture() {
     
     // Subscribe to system events
     setupGestureSystemEvents();
+    
+    // Register with Resource Allocation Manager
+    registerWithResourceManager({
+      useEnhancedRecognition: useEnhancedRecognition
+    });
     
     // Mark as initialized
     isInitialized = true;
@@ -194,6 +202,9 @@ export function stopGestureProcessing() {
   if (!isInitialized) return false;
   
   isActive = false;
+  
+  // Unregister from Resource Allocation Manager
+  unregisterFromResourceManager();
   
   // Publish status
   publish('gesture:status', { 

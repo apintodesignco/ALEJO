@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO ARIA Manager Tests</title>
+  <link rel="stylesheet" href="../styles/test-styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>ALEJO ARIA Manager Tests</h1>
+      <div>
+        <button id="toggle-contrast" aria-label="Toggle high contrast mode">High Contrast</button>
+      </div>
+    </header>
+    
+    <div aria-live="polite" id="status-announcer" class="sr-only"></div>
+    
+    <div class="test-controls">
+      <button id="run-tests" aria-label="Run all tests">Run Tests</button>
+      <button id="clear-console" aria-label="Clear console output">Clear Console</button>
+      <button id="focus-test" aria-label="Test keyboard focus management">Test Focus Management</button>
+      <button id="announcement-test" aria-label="Test screen reader announcements">Test Announcements</button>
+    </div>
+    
+    <div class="results-summary">
+      <div class="result-card passed-card">
+        <h3>Passed</h3>
+        <div class="count" id="passed-count">0</div>
+      </div>
+      <div class="result-card failed-card">
+        <h3>Failed</h3>
+        <div class="count" id="failed-count">0</div>
+      </div>
+      <div class="result-card total-card">
+        <h3>Total</h3>
+        <div class="count" id="total-count">0</div>
+      </div>
+    </div>
+    
+    <div class="console-container">
+      <div id="console-output" role="log" aria-label="Test console output"></div>
+    </div>
+    
+    <div class="test-summary">
+      <h2>About ARIA Manager Tests</h2>
+      <p>This test suite validates the ARIA Manager component, which is responsible for managing accessibility features across the ALEJO application. The tests cover:</p>
+      <ul>
+        <li>ARIA attribute management</li>
+        <li>Screen reader announcements</li>
+        <li>Keyboard focus management</li>
+        <li>Component registration and tracking</li>
+        <li>Fallback mechanisms for accessibility features</li>
+      </ul>
+    </div>
+    
+    <div class="test-feature-demo">
+      <h2>Interactive Demo</h2>
+      <p>This section demonstrates key features of the ARIA Manager in action.</p>
+      
+      <h3>Dialog Focus Management</h3>
+      <div class="demo-controls">
+        <button id="open-dialog">Open Dialog</button>
+      </div>
+      
+      <div id="test-dialog" role="dialog" aria-labelledby="dialog-title" aria-modal="false" class="dialog hidden">
+        <h3 id="dialog-title">Test Dialog</h3>
+        <p>This dialog demonstrates keyboard focus trapping. Try tabbing through the elements - focus should stay within the dialog.</p>
+        <div class="dialog-buttons">
+          <button id="dialog-button-1">Button 1</button>
+          <button id="dialog-button-2">Button 2</button>
+          <button id="close-dialog">Close Dialog</button>
+        </div>
+      </div>
+      
+      <h3>Live Announcements</h3>
+      <div class="demo-controls">
+        <button id="announce-polite">Polite Announcement</button>
+        <button id="announce-assertive">Assertive Announcement</button>
+      </div>
+      
+      <div class="demo-output" id="announcement-output">
+        <p>Announcements will be logged here and sent to screen readers.</p>
+      </div>
+      
+      <h3>ARIA Attributes</h3>
+      <div class="demo-controls">
+        <button id="toggle-expanded" aria-expanded="false">Toggle Expanded</button>
+        <button id="toggle-pressed" aria-pressed="false">Toggle Pressed</button>
+      </div>
+      
+      <div class="demo-output" id="attributes-output">
+        <p>ARIA attributes will be updated here.</p>
+      </div>
+    </div>
+  </div>
+  
+  <script type="module">
+    import testAriaManager from './test-aria-manager.js';
+    import AriaManager from '../../src/personalization/accessibility/aria-manager.js';
+    
+    // DOM elements
+    const runTestsButton = document.getElementById('run-tests');
+    const clearConsoleButton = document.getElementById('clear-console');
+    const focusTestButton = document.getElementById('focus-test');
+    const announcementTestButton = document.getElementById('announcement-test');
+    const consoleOutput = document.getElementById('console-output');
+    const statusAnnouncer = document.getElementById('status-announcer');
+    const passedCount = document.getElementById('passed-count');
+    const failedCount = document.getElementById('failed-count');
+    const totalCount = document.getElementById('total-count');
+    const toggleContrastButton = document.getElementById('toggle-contrast');
+    
+    // Dialog demo elements
+    const openDialogButton = document.getElementById('open-dialog');
+    const closeDialogButton = document.getElementById('close-dialog');
+    const testDialog = document.getElementById('test-dialog');
+    
+    // Announcement demo elements
+    const announcePoliteButton = document.getElementById('announce-polite');
+    const announceAssertiveButton = document.getElementById('announce-assertive');
+    const announcementOutput = document.getElementById('announcement-output');
+    
+    // ARIA attributes demo elements
+    const toggleExpandedButton = document.getElementById('toggle-expanded');
+    const togglePressedButton = document.getElementById('toggle-pressed');
+    const attributesOutput = document.getElementById('attributes-output');
+    
+    // Override console methods to display in the UI
+    const originalConsole = {
+      log: console.log,
+      error: console.error,
+      warn: console.warn,
+      info: console.info
+    };
+    
+    console.log = function(...args) {
+      originalConsole.log(...args);
+      appendToConsole('log', ...args);
+    };
+    
+    console.error = function(...args) {
+      originalConsole.error(...args);
+      appendToConsole('error', ...args);
+    };
+    
+    console.warn = function(...args) {
+      originalConsole.warn(...args);
+      appendToConsole('warn', ...args);
+    };
+    
+    console.info = function(...args) {
+      originalConsole.info(...args);
+      appendToConsole('info', ...args);
+    };
+    
+    // Helper function to append console output to the UI
+    function appendToConsole(type, ...args) {
+      const line = document.createElement('div');
+      line.className = `console-line ${type}`;
+      
+      const timestamp = document.createElement('span');
+      timestamp.className = 'timestamp';
+      timestamp.textContent = new Date().toISOString().substr(11, 8) + ' ';
+      line.appendChild(timestamp);
+      
+      const typeIndicator = document.createElement('span');
+      typeIndicator.className = 'type';
+      typeIndicator.textContent = `[${type.toUpperCase()}] `;
+      line.appendChild(typeIndicator);
+      
+      const content = document.createElement('span');
+      content.className = 'content';
+      content.textContent = args.map(arg => {
+        if (typeof arg === 'object') {
+          try {
+            return JSON.stringify(arg);
+          } catch (e) {
+            return String(arg);
+          }
+        }
+        return String(arg);
+      }).join(' ');
+      line.appendChild(content);
+      
+      consoleOutput.appendChild(line);
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    }
+    
+    // Helper function to announce messages to screen readers
+    function announce(message) {
+      statusAnnouncer.textContent = message;
+    }
+    
+    // Run all tests
+    async function runTests() {
+      announce('Running ARIA Manager tests');
+      console.log('Running ARIA Manager tests...');
+      
+      runTestsButton.disabled = true;
+      
+      try {
+        const results = await testAriaManager();
+        
+        passedCount.textContent = results.passed;
+        failedCount.textContent = results.failed;
+        totalCount.textContent = results.total;
+        
+        if (results.success) {
+          appendToConsole('success', 'All tests passed successfully!');
+          announce(`All ${results.total} tests passed successfully!`);
+        } else {
+          appendToConsole('error', `${results.failed} of ${results.total} tests failed.`);
+          announce(`${results.failed} of ${results.total} tests failed.`);
+        }
+      } catch (error) {
+        console.error('Error running tests:', error);
+        announce('Error running tests: ' + error.message);
+      } finally {
+        runTestsButton.disabled = false;
+      }
+    }
+    
+    // Clear console output
+    function clearConsole() {
+      consoleOutput.innerHTML = '';
+      announce('Console cleared');
+    }
+    
+    // Test keyboard focus management
+    async function testFocusManagement() {
+      console.log('Testing keyboard focus management...');
+      
+      // Initialize ARIA Manager if needed
+      if (!AriaManager.initialized) {
+        await AriaManager.initialize();
+      }
+      
+      // Create test elements
+      const container = document.createElement('div');
+      container.id = 'focus-test-container';
+      container.style.border = '1px solid var(--border-color)';
+      container.style.padding = '10px';
+      container.style.marginTop = '10px';
+      
+      const heading = document.createElement('h3');
+      heading.textContent = 'Focus Test';
+      container.appendChild(heading);
+      
+      const button1 = document.createElement('button');
+      button1.textContent = 'Button 1';
+      button1.id = 'focus-test-button-1';
+      container.appendChild(button1);
+      
+      const div = document.createElement('div');
+      div.textContent = 'This div is not focusable by default';
+      div.id = 'focus-test-div';
+      container.appendChild(div);
+      
+      const button2 = document.createElement('button');
+      button2.textContent = 'Button 2';
+      button2.id = 'focus-test-button-2';
+      container.appendChild(button2);
+      
+      document.body.appendChild(container);
+      
+      // Make the div keyboard navigable
+      AriaManager.makeKeyboardNavigable(div, {
+        tabIndex: 0,
+        role: 'button',
+        keyHandler: (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            console.log('Div activated via keyboard!');
+            announce('Div activated via keyboard!');
+          }
+        }
+      });
+      
+      console.log('Focus test setup complete. Try tabbing through the elements.');
+      announce('Focus test setup complete. Try tabbing through the elements.');
+      
+      // Clean up after 10 seconds
+      setTimeout(() => {
+        if (container.parentNode) {
+          document.body.removeChild(container);
+          console.log('Focus test elements removed.');
+        }
+      }, 10000);
+    }
+    
+    // Test screen reader announcements
+    async function testAnnouncements() {
+      console.log('Testing screen reader announcements...');
+      
+      // Initialize ARIA Manager if needed
+      if (!AriaManager.initialized) {
+        await AriaManager.initialize();
+      }
+      
+      // Make a series of announcements with different priorities
+      AriaManager.announce('This is a polite announcement', 'polite');
+      console.log('Made polite announcement');
+      
+      setTimeout(() => {
+        AriaManager.announce('This is an assertive announcement', 'assertive');
+        console.log('Made assertive announcement');
+      }, 1000);
+      
+      setTimeout(() => {
+        AriaManager.announce('This is a status update', 'status');
+        console.log('Made status announcement');
+      }, 2000);
+      
+      setTimeout(() => {
+        AriaManager.announce('This is an alert', 'alert');
+        console.log('Made alert announcement');
+      }, 3000);
+      
+      console.log('Announcement test complete. Check screen reader output.');
+    }
+    
+    // Toggle high contrast mode
+    function toggleHighContrast() {
+      document.body.classList.toggle('high-contrast');
+      const isHighContrast = document.body.classList.contains('high-contrast');
+      announce(isHighContrast ? 'High contrast mode enabled' : 'High contrast mode disabled');
+      toggleContrastButton.setAttribute('aria-pressed', isHighContrast ? 'true' : 'false');
+    }
+    
+    // Dialog demo functions
+    function openDialog() {
+      testDialog.classList.remove('hidden');
+      AriaManager.trapFocus(testDialog);
+      testDialog.setAttribute('aria-modal', 'true');
+      announce('Dialog opened');
+    }
+    
+    function closeDialog() {
+      testDialog.classList.add('hidden');
+      AriaManager.releaseFocus(testDialog);
+      testDialog.setAttribute('aria-modal', 'false');
+      announce('Dialog closed');
+    }
+    
+    // Announcement demo functions
+    function makePoliteAnnouncement() {
+      const message = 'This is a polite announcement at ' + new Date().toLocaleTimeString();
+      AriaManager.announce(message, 'polite');
+      
+      const p = document.createElement('p');
+      p.textContent = `Polite: ${message}`;
+      announcementOutput.appendChild(p);
+    }
+    
+    function makeAssertiveAnnouncement() {
+      const message = 'This is an assertive announcement at ' + new Date().toLocaleTimeString();
+      AriaManager.announce(message, 'assertive');
+      
+      const p = document.createElement('p');
+      p.textContent = `Assertive: ${message}`;
+      p.style.fontWeight = 'bold';
+      announcementOutput.appendChild(p);
+    }
+    
+    // ARIA attributes demo functions
+    function toggleExpanded() {
+      const button = toggleExpandedButton;
+      const isExpanded = button.getAttribute('aria-expanded') === 'true';
+      const newState = !isExpanded;
+      
+      AriaManager.updateAriaAttributes('toggle-expanded', {
+        'aria-expanded': String(newState)
+      });
+      
+      const p = document.createElement('p');
+      p.textContent = `aria-expanded changed to: ${newState}`;
+      attributesOutput.appendChild(p);
+    }
+    
+    function togglePressed() {
+      const button = togglePressedButton;
+      const isPressed = button.getAttribute('aria-pressed') === 'true';
+      const newState = !isPressed;
+      
+      AriaManager.updateAriaAttributes('toggle-pressed', {
+        'aria-pressed': String(newState)
+      });
+      
+      const p = document.createElement('p');
+      p.textContent = `aria-pressed changed to: ${newState}`;
+      attributesOutput.appendChild(p);
+    }
+    
+    // Event listeners
+    runTestsButton.addEventListener('click', runTests);
+    clearConsoleButton.addEventListener('click', clearConsole);
+    focusTestButton.addEventListener('click', testFocusManagement);
+    announcementTestButton.addEventListener('click', testAnnouncements);
+    toggleContrastButton.addEventListener('click', toggleHighContrast);
+    
+    // Dialog demo event listeners
+    openDialogButton.addEventListener('click', openDialog);
+    closeDialogButton.addEventListener('click', closeDialog);
+    
+    // Announcement demo event listeners
+    announcePoliteButton.addEventListener('click', makePoliteAnnouncement);
+    announceAssertiveButton.addEventListener('click', makeAssertiveAnnouncement);
+    
+    // ARIA attributes demo event listeners
+    toggleExpandedButton.addEventListener('click', toggleExpanded);
+    togglePressedButton.addEventListener('click', togglePressed);
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('ARIA Manager Test Suite loaded');
+      
+      // Initialize ARIA Manager
+      try {
+        await AriaManager.initialize();
+        console.log('ARIA Manager initialized successfully');
+      } catch (error) {
+        console.error('Failed to initialize ARIA Manager:', error);
+      }
+    });
+  </script>
+</body>
+</html>

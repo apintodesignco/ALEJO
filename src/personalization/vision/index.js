@@ -11,6 +11,7 @@ import * as recognition from './recognition.js';
 import { faceModel } from './face-model.js';
 import { expressionDetection } from './expression.js';
 import { trainingUI } from './training-ui.js';
+import { registerWithResourceManager, unregisterFromResourceManager } from './performance-integration.js';
 
 /**
  * Initialize the ALEJO Vision System
@@ -20,6 +21,8 @@ import { trainingUI } from './training-ui.js';
  * @param {string} options.modelPath - Path to face-api models
  * @param {boolean} options.loadExistingModels - Whether to load existing models
  * @param {Object} options.detectionOptions - Options for face detection
+ * @param {boolean} [options.enableResourceManagement=true] - Whether to register with Resource Allocation Manager
+ * @param {boolean} [options.accessibilityPriority=true] - Whether accessibility components have higher priority
  * @returns {Promise<Object>} - Initialization results
  */
 export async function initialize(options = {}) {
@@ -30,7 +33,8 @@ export async function initialize(options = {}) {
     recognition: false,
     faceModel: false,
     expressionDetection: false,
-    trainingUI: false
+    trainingUI: false,
+    resourceManagement: false
   };
   
   // Initialize training module
@@ -72,10 +76,41 @@ export async function initialize(options = {}) {
     }
   }
   
+  // Register with Resource Allocation Manager if enabled
+  if (options.enableResourceManagement !== false) {
+    try {
+      results.resourceManagement = registerWithResourceManager({
+        accessibilityPriority: options.accessibilityPriority !== false
+      });
+    } catch (error) {
+      console.error('Failed to register vision system with Resource Allocation Manager:', error);
+    }
+  }
+  
   return {
     success: Object.values(results).some(result => result === true),
     results
   };
+}
+
+/**
+ * Shutdown the vision system and release resources
+ */
+export async function shutdown() {
+  console.log('Shutting down ALEJO Vision System');
+  
+  // Unregister from Resource Allocation Manager
+  unregisterFromResourceManager();
+  
+  // Shutdown individual modules
+  try {
+    if (typeof training.shutdown === 'function') await training.shutdown();
+    if (typeof recognition.shutdown === 'function') await recognition.shutdown();
+    if (faceModel && typeof faceModel.shutdown === 'function') await faceModel.shutdown();
+    if (expressionDetection && typeof expressionDetection.shutdown === 'function') await expressionDetection.shutdown();
+  } catch (error) {
+    console.error('Error during vision system shutdown:', error);
+  }
 }
 
 // Export individual modules for direct access
@@ -90,6 +125,7 @@ export {
 // Default export for the entire vision system
 export default {
   initialize,
+  shutdown,
   training,
   recognition,
   faceModel,
