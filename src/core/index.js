@@ -23,10 +23,14 @@ import {
 } from './system/error-handler.js';
 import {
   registerComponent,
-  initializeAllComponents,
   getInitializationStatus,
   isInitializationSuccessful
 } from './system/initialization-manager.js';
+import {
+  startInitializationSequence,
+  getInitializationSequenceState,
+  resetInitializationSequence
+} from './system/initialization-sequence-integrator.js';
 import monitoringDashboard from './system/monitoring-dashboard.js';
 import { publishEvent } from './neural-architecture/neural-event-bus.js';
 
@@ -44,52 +48,42 @@ let initializationError = null;
  * @param {Object} options - Initialization options
  * @param {boolean} options.showDashboard - Whether to show the monitoring dashboard
  * @param {boolean} options.enableFallbacks - Whether to enable fallback mechanisms
+ * @param {string} options.startupMode - Startup mode: 'normal', 'safe', or 'minimal'
+ * @param {boolean} options.prioritizeAccessibility - Whether to prioritize accessibility components
  * @returns {Promise<Object>} - Initialization result
  */
 export async function initializeCore(options = {}) {
   const {
     showDashboard = false,
-    enableFallbacks = true
+    enableFallbacks = true,
+    startupMode = 'normal',
+    prioritizeAccessibility = true
   } = options;
   
-  console.log('Initializing ALEJO Core...');
-  publishEvent('system:initialization:start', { timestamp: Date.now() });
+  console.log(`Initializing ALEJO Core in ${startupMode} mode...`);
   
   try {
-    // Initialize configuration with fallback to defaults
-    const config = await initializeWithFallback(
-      'core:config',
-      async () => await initializeConfig(),
-      async () => ({
-        // Default configuration as fallback
-        theme: 'light',
-        language: 'en',
-        accessibility: {
-          highContrast: false,
-          screenReader: false,
-          reducedMotion: false
-        },
-        performance: {
-          resourceMode: 'balanced'
-        }
-      }),
-      { isEssential: true }
-    );
+    // Register core components first
+    await registerCoreComponents();
     
-    // Set up core event listeners with fallback
-    await initializeWithFallback(
-      'core:events',
-      async () => setupEventListeners(),
-      async () => {
-        // Minimal event setup as fallback
-        console.log('Using minimal event setup as fallback');
-        document.addEventListener('click', () => {});
-        window.addEventListener('error', (e) => {
-          logError('window', e.error || new Error(e.message), ErrorSeverity.HIGH);
-        });
-      },
-      { isEssential: true }
-    );
+    // Use the new Initialization Sequence Integrator for production-ready startup
+    const initResult = await startInitializationSequence({
+      startupMode,
+      prioritizeAccessibility,
+      resourceConservationMode: startupMode !== 'normal',
+      detailedDiagnostics: true,
+      progressCallback: (progress, phase) => {
+        // Report progress to monitoring dashboard
+        if (monitoringDashboard) {
+          monitoringDashboard.updateInitProgress(progress, phase);
+        }
+      }
+    });
+    
+    // Check initialization result
+    if (!initResult.success) {
+      throw new Error(initResult.error || 'Initialization sequence failed');
+    }
     
     // Initialize neural event bus with fallback
     await initializeWithFallback(
@@ -126,35 +120,43 @@ export async function initializeCore(options = {}) {
     if (showDashboard) {
       monitoringDashboard.init({ autoShow: true });
     } else {
-      // Just initialize the dashboard without showing it
-      monitoringDashboard.init({ autoShow: false });
-      // Create a toggle button for easy access
-      monitoringDashboard.createToggle();
+      // Load core resources in parallel
+      loadCoreResources().catch(err => {
+        logError('core:resources', err, ErrorSeverity.MEDIUM);
+      });
+      
+      // Show dashboard if requested
+      if (showDashboard) {
+        monitoringDashboard.show();
+      }
+      
+      // Set initialization status
+      isInitialized = true;
+      
+      return {
+        success: true,
+        healthReport: initResult.healthReport,
+        elapsedTime: initResult.elapsedTime
+      };
     }
-    
-    // Mark initialization as complete
-    isInitialized = true;
-    publishEvent('system:core:initialized', { success: true, timestamp: Date.now() });
-    
-    console.log('ALEJO Core initialized successfully');
-    return { success: true, config };
   } catch (error) {
-    initializationError = error;
-    isInitialized = false;
+    console.error('Core initialization failed:', error);
     
-    // Log the critical error
+    // Log the error
     logError('core:initialization', error, ErrorSeverity.CRITICAL);
     
-    // Publish initialization failure event
-    publishEvent('system:core:initialization:failed', { error, timestamp: Date.now() });
+    // Store initialization error
+    initializationError = error;
     
-    console.error('Failed to initialize ALEJO Core:', error);
+    // Show dashboard on error if enabled
+    if (enableFallbacks) {
+      monitoringDashboard.show();
+    }
     
-    // Show the monitoring dashboard on critical failure for debugging
-    monitoringDashboard.init({ autoShow: true });
-    
-    // Return failure result
-    return { success: false, error };
+    return {
+      success: false,
+      error
+    };
   }
 }
 
@@ -314,6 +316,11 @@ export function getSystemStatus() {
 export { 
   logError, 
   ErrorSeverity,
-  registerComponent,
-  initializeWithFallback
+  getComponentStatus,
+  getMonitoringDashboard,
+  getSystemStatus,
+  hasEssentialFailures,
+  publishEvent,
+  getInitializationSequenceState,
+  resetInitializationSequence
 };

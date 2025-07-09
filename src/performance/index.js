@@ -10,6 +10,7 @@
 import { 
   initializeResourceAllocationManager,
   getResourceAllocationManager,
+  ResourceAllocationManager,
   RESOURCE_MODES,
   RESOURCE_EVENTS
 } from './resource-allocation-manager.js';
@@ -24,6 +25,12 @@ import {
 import {
   createModuleIntegration
 } from './module-integration-helper.js';
+
+import {
+  createAdaptiveIntegration,
+  createAdaptiveOptions,
+  getQualityConfigForMode
+} from './integration-helper.js';
 
 /**
  * Initialize the performance module
@@ -65,9 +72,14 @@ export async function initializePerformanceModule(options = {}) {
 
 export {
   getResourceAllocationManager,
+  ResourceAllocationManager,
   registerComponent,
   registerModule,
   withResourceManagement,
+  createModuleIntegration,
+  createAdaptiveIntegration,
+  createAdaptiveOptions,
+  getQualityConfigForMode,
   COMPONENT_TYPES,
   RESOURCE_MODES,
   RESOURCE_EVENTS
@@ -76,9 +88,14 @@ export {
 export default {
   initialize: initializePerformanceModule,
   getResourceAllocationManager,
+  ResourceAllocationManager,
   registerComponent,
   registerModule,
   withResourceManagement,
+  createModuleIntegration,
+  createAdaptiveIntegration,
+  createAdaptiveOptions,
+  getQualityConfigForMode,
   COMPONENT_TYPES,
   RESOURCE_MODES,
   RESOURCE_EVENTS

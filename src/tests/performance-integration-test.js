@@ -7,10 +7,10 @@
  */
 
 import { initializePerformanceModule, RESOURCE_MODES } from '../performance/index.js';
-import * as voiceIntegration from '../personalization/voice/performance-integration-refactored.js';
-import * as accessibilityIntegration from '../personalization/accessibility/performance-integration-refactored.js';
-import * as visionIntegration from '../personalization/vision/performance-integration-refactored.js';
-import * as reasoningIntegration from '../reasoning/performance-integration-refactored.js';
+import * as voiceIntegration from '../personalization/voice/performance-integration.js';
+import * as accessibilityIntegration from '../personalization/accessibility/performance-integration.js';
+import * as visionIntegration from '../personalization/vision/performance-integration.js';
+import * as reasoningIntegration from '../reasoning/performance-integration.js';
 import { subscribe } from '../core/events.js';
 
 // Initialize the performance module

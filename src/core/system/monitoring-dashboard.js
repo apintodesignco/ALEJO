@@ -1,8 +1,16 @@
 /**
  * ALEJO System Monitoring Dashboard
  * 
- * Provides a visual interface for monitoring system health, component status,
- * resource usage, and error logs. Designed with accessibility as a priority.
+ * This module provides a real-time monitoring dashboard for ALEJO system status,
+ * including initialization sequence progress, component health, resource usage,
+ * and system diagnostics.
+ * 
+ * Features:
+ * - Real-time initialization progress tracking
+ * - Component health status visualization
+ * - Resource usage monitoring with thresholds
+ * - Detailed system diagnostics and logs
+ * - Collapsible/expandable interface
  * 
  * Enhanced with high contrast mode and comprehensive accessibility features.
  * Provides detailed visualization of initialization process, component status,
@@ -10,10 +18,12 @@
  */
 
 import { getComponentStatus, getErrorLog } from './error-handler.js';
-import { 
-  getInitializationStatus, 
-  isInitializationSuccessful 
-} from './initialization-manager.js';
+import {
+  getInitializationSequenceState,
+  isInitializationSuccessful,
+  getInitializationHealth,
+  getStartupMode
+} from './initialization-sequence-integrator.js';
 import { generateRegistrationReport } from './component-registration-validator.js';
 import { generateTimelineVisualization, getTimelineStyles } from './initialization-log-viewer.js';
 import { getLoadingSequenceState, generateLoadingReport } from './progressive-loading-manager.js';
@@ -257,8 +267,14 @@ function updateOverviewSection() {
   const overviewSection = dashboardElement.querySelector('#alejo-dashboard-overview');
   if (!overviewSection) return;
   
-  // Get initialization status
-  const initStatus = getInitializationStatus();
+  // Get initialization sequence state
+  const initState = getInitializationSequenceState();
+  
+  // Get startup mode
+  const startupMode = getStartupMode();
+  
+  // Get system health metrics
+  const healthMetrics = getInitializationHealth();
   
   // Get resource mode
   let resourceMode, resourceUsage;
@@ -268,14 +284,14 @@ function updateOverviewSection() {
       const resourceManager = module.getResourceAllocationManager();
       resourceMode = resourceManager.getCurrentMode();
       resourceUsage = resourceManager.getResourceUsage();
-      updateOverviewDisplay(overviewSection, initStatus, resourceMode, resourceUsage);
+      updateOverviewDisplay(overviewSection, initState, healthMetrics, startupMode, resourceMode, resourceUsage);
     }).catch(err => {
       console.error('Failed to import resource manager:', err);
-      updateOverviewDisplay(overviewSection, initStatus, 'Unknown', null);
+      updateOverviewDisplay(overviewSection, initState, healthMetrics, startupMode, 'Unknown', null);
     });
   } catch (err) {
     console.error('Failed to import resource manager:', err);
-    updateOverviewDisplay(overviewSection, initStatus, 'Unknown', null);
+    updateOverviewDisplay(overviewSection, initState, healthMetrics, startupMode, 'Unknown', null);
   }
 }
 

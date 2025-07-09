@@ -104,37 +104,78 @@ class ResourceAllocationManager {
       this.logger.info('Initializing ResourceAllocationManager - Starting progressive loading sequence');
       
       // Stage 1: Configuration Loading
-      const capabilities = await this._detectSystemCapabilities();
-      this.logger.debug('System capabilities:', capabilities);
+      this.logger.debug('Stage 1/5: Loading configuration and detecting capabilities');
+      try {
+        await this._loadUserPreferences();
+        const capabilities = await this._detectSystemCapabilities();
+        this.logger.debug('System capabilities detected:', capabilities);
+        this.logger.debug('Stage 1/5: Configuration loading complete');
+      } catch (configError) {
+        this.logger.warn('Stage 1/5: Configuration loading issues detected', configError);
+        // Continue with defaults
+      }
       
-      // Initialize resource monitor integration
-      this.resourceMonitor = new ResourceMonitorIntegration(this.eventBus, this.logger);
-      
-      // Initialize monitor with our thresholds
-      const thresholds = {
-        cpu: {
-          warning: this.userPreferences.cpuUsageCeilingPercent - 5,
-          critical: this.userPreferences.cpuUsageCeilingPercent
-        },
-        memory: {
-          warning: this.userPreferences.memoryUsageCeilingPercent - 5,
-          critical: this.userPreferences.memoryUsageCeilingPercent
-        },
-        disk: {
-          warning: 80,
-          critical: 90
+      // Stage 2: Resource Monitor Integration
+      this.logger.debug('Stage 2/5: Initializing resource monitor integration');
+      try {
+        // Initialize resource monitor integration
+        this.resourceMonitor = new ResourceMonitorIntegration(this.eventBus, this.logger);
+        
+        // Get thresholds from user preferences
+        const thresholds = this.userPreferences.thresholds || {
+          cpu: {
+            warning: this.userPreferences.cpuUsageCeilingPercent - 5 || 80,
+            critical: this.userPreferences.cpuUsageCeilingPercent || 85
+          },
+          memory: {
+            warning: this.userPreferences.memoryUsageCeilingPercent - 5 || 85,
+            critical: this.userPreferences.memoryUsageCeilingPercent || 90
+          },
+          disk: {
+            warning: 80,
+            critical: 90
+          },
+          temperature: {
+            warning: this.userPreferences.temperatureCeilingCelsius - 10 || 70,
+            critical: this.userPreferences.temperatureCeilingCelsius || 80
+          }
+        };
+        
+        const monitorInitialized = await this.resourceMonitor.initialize(thresholds);
+        
+        if (!monitorInitialized) {
+          this.logger.warn('Failed to initialize resource monitor integration, falling back to basic monitoring');
+          this._startMonitoring();
+        } else {
+          // Set up event listeners for resource monitor events
+          this.eventBus.on('resource-monitor:measurement', this._handleResourceUpdate.bind(this));
+          this.eventBus.on('resource-monitor:warning', this._handleResourceWarning.bind(this));
+          this.logger.info('Resource monitor integration successfully initialized');
         }
-      };
+        this.logger.debug('Stage 2/5: Resource monitor integration complete');
+      } catch (monitorError) {
+        this.logger.error('Stage 2/5: Failed to initialize resource monitor', monitorError);
+        // Fall back to basic monitoring
+        this._setupFallbackMonitoring();
+      }
       
-      const monitorInitialized = await this.resourceMonitor.initialize(thresholds);
-      
-      if (!monitorInitialized) {
-        this.logger.warn('Failed to initialize resource monitor integration, falling back to basic monitoring');
-        this._startMonitoring();
-      } else {
-        // Set up event listeners for resource monitor events
-        this.eventBus.on('resource-monitor:measurement', this._handleResourceUpdate.bind(this));
-        this.eventBus.on('resource-monitor:warning', this._handleResourceWarning.bind(this));
+      // Stage 3: Component Registry Initialization
+      this.logger.debug('Stage 3/5: Initializing component registry');
+      try {
+        // Initialize the component registry if not already done
+        if (!this.componentRegistry) {
+          this.componentRegistry = new Map();
+        }
+        
+        // Emit an event to request all components to re-register
+        this.eventBus.emit('resource-manager:request-registration', {
+          timestamp: Date.now()
+        });
+        
+        this.logger.debug('Stage 3/5: Component registry initialization complete');
+      } catch (registryError) {
+        this.logger.warn('Stage 3/5: Component registry initialization issues', registryError);
+        // Not critical for basic functionality
       }
       
       // Stage 4: Initial Resource Assessment
@@ -279,26 +320,72 @@ class ResourceAllocationManager {
    * @param {Function} requirements.pauseCallback - Function to call when component should pause
    * @param {Function} requirements.resumeCallback - Function to call when component can resume
    * @param {Function} requirements.reduceResourcesCallback - Function to call when component should reduce resource usage
+   * @param {string} [requirements.category] - Optional category for grouping components (e.g., 'accessibility', 'vision', 'core')
+   * @param {Object} [requirements.adaptiveOptions] - Optional settings for adaptive resource management
    * @returns {boolean} - Whether registration was successful
    */
   registerComponent(componentId, requirements) {
-    if (!componentId || this.componentRegistry.has(componentId)) {
-      this.logger.warn(`Failed to register component: ${componentId}. ID invalid or already registered.`);
+    if (!componentId) {
+      this.logger.warn(`Failed to register component: Component ID is required`);
       return false;
     }
     
+    // If component is already registered, update its configuration instead
+    if (this.componentRegistry.has(componentId)) {
+      const existing = this.componentRegistry.get(componentId);
+      
+      // Update existing registration with new requirements
+      this.componentRegistry.set(componentId, {
+        ...existing,
+        cpuPriority: requirements.cpuPriority || existing.cpuPriority,
+        memoryFootprint: requirements.memoryFootprint || existing.memoryFootprint,
+        isEssential: requirements.isEssential !== undefined ? requirements.isEssential : existing.isEssential,
+        pauseCallback: requirements.pauseCallback || existing.pauseCallback,
+        resumeCallback: requirements.resumeCallback || existing.resumeCallback,
+        reduceResourcesCallback: requirements.reduceResourcesCallback || existing.reduceResourcesCallback,
+        category: requirements.category || existing.category,
+        adaptiveOptions: requirements.adaptiveOptions || existing.adaptiveOptions
+      });
+      
+      this.logger.debug(`Component updated: ${componentId}`);
+      return true;
+    }
+    
+    // For accessibility components, ensure they're marked as essential
+    let isEssential = requirements.isEssential || false;
+    if (requirements.category === 'accessibility') {
+      isEssential = true;
+      this.logger.debug(`Component ${componentId} automatically marked as essential (accessibility category)`);
+    }
+    
+    // Register the component with all its requirements
     this.componentRegistry.set(componentId, {
       id: componentId,
       cpuPriority: requirements.cpuPriority || 5,
       memoryFootprint: requirements.memoryFootprint || 10,
-      isEssential: requirements.isEssential || false,
+      isEssential: isEssential,
+      category: requirements.category || 'general',
       pauseCallback: requirements.pauseCallback || (() => {}),
       resumeCallback: requirements.resumeCallback || (() => {}),
       reduceResourcesCallback: requirements.reduceResourcesCallback || (() => {}),
-      isActive: true
+      adaptiveOptions: requirements.adaptiveOptions || {
+        // Default adaptive options
+        minimalModeOperation: false,     // Whether component can operate in minimal mode
+        degradedOperation: false,        // Whether component can operate in degraded mode
+        resourceScalingFactor: 1.0       // How much resources can be scaled (0.1-1.0)
+      },
+      isActive: true,
+      registeredAt: Date.now()
     });
     
-    this.logger.debug(`Component registered: ${componentId}`);
+    // Emit event for component registration
+    this.eventBus.emit('resource-manager:component-registered', {
+      componentId,
+      isEssential,
+      category: requirements.category || 'general'
+    });
+    
+    this.logger.debug(`Component registered: ${componentId} (${isEssential ? 'essential' : 'non-essential'}, category: ${requirements.category || 'general'})`);
     return true;
   }
   
@@ -624,6 +711,9 @@ class ResourceAllocationManager {
     // Listen for component registration/unregistration
     this.eventBus.on('component:registered', this._handleComponentRegistered.bind(this));
     this.eventBus.on('component:unregistered', this._handleComponentUnregistered.bind(this));
+    
+    // Request for resource recommendations
+    this.eventBus.on('resource-manager:request-recommendations', this._handleResourceRecommendationRequest.bind(this));
   }
   
   /**
@@ -725,42 +815,69 @@ class ResourceAllocationManager {
     }
     
     let newMode = RESOURCE_MODES.FULL;
+    let resourceFactors = [];
+    
+    // Get thresholds from user preferences
+    const thresholds = this.userPreferences.thresholds || {};
     
     // Check temperature
-    if (this.resources.temperature >= this.userPreferences.temperatureCeilingCelsius ||
-        this.resources.temperature >= RESOURCE_THRESHOLDS.TEMPERATURE.CRITICAL) {
-      newMode = RESOURCE_MODES.MINIMAL;
-    } else if (this.resources.temperature >= RESOURCE_THRESHOLDS.TEMPERATURE.HIGH) {
-      newMode = RESOURCE_MODES.CONSERVATIVE;
-    } else if (this.resources.temperature >= RESOURCE_THRESHOLDS.TEMPERATURE.MEDIUM) {
-      newMode = RESOURCE_MODES.BALANCED;
+    if (this.resources.temperature) {
+      if (this.resources.temperature >= (thresholds.temperature?.critical || 80)) {
+        newMode = RESOURCE_MODES.MINIMAL;
+        resourceFactors.push(`temperature critical: ${this.resources.temperature}°C`);
+      } else if (this.resources.temperature >= (thresholds.temperature?.warning || 70)) {
+        newMode = RESOURCE_MODES.CONSERVATIVE;
+        resourceFactors.push(`temperature warning: ${this.resources.temperature}°C`);
+      }
     }
     
     // Check CPU usage
-    if (this.resources.cpu >= this.userPreferences.cpuUsageCeilingPercent ||
-        this.resources.cpu >= RESOURCE_THRESHOLDS.CPU.HIGH) {
+    if (this.resources.cpu >= (thresholds.cpu?.critical || 85)) {
+      newMode = newMode === RESOURCE_MODES.FULL ? RESOURCE_MODES.CONSERVATIVE : newMode;
+      resourceFactors.push(`CPU critical: ${this.resources.cpu}%`);
+    } else if (this.resources.cpu >= (thresholds.cpu?.warning || 80)) {
       newMode = newMode === RESOURCE_MODES.FULL ? RESOURCE_MODES.BALANCED : newMode;
+      resourceFactors.push(`CPU warning: ${this.resources.cpu}%`);
     }
     
     // Check memory usage
-    if (this.resources.memory >= this.userPreferences.memoryUsageCeilingPercent ||
-        this.resources.memory >= RESOURCE_THRESHOLDS.MEMORY.HIGH) {
+    if (this.resources.memory >= (thresholds.memory?.critical || 90)) {
+      newMode = newMode === RESOURCE_MODES.FULL ? RESOURCE_MODES.CONSERVATIVE : newMode;
+      resourceFactors.push(`memory critical: ${this.resources.memory}%`);
+    } else if (this.resources.memory >= (thresholds.memory?.warning || 85)) {
       newMode = newMode === RESOURCE_MODES.FULL ? RESOURCE_MODES.BALANCED : newMode;
+      resourceFactors.push(`memory warning: ${this.resources.memory}%`);
+    }
+    
+    // Check disk usage if available
+    if (this.resources.disk && thresholds.disk) {
+      if (this.resources.disk >= (thresholds.disk.critical || 90)) {
+        resourceFactors.push(`disk critical: ${this.resources.disk}%`);
+        // We don't change mode for disk, but we log it
+      }
     }
     
     // Check battery status
+    const batteryThresholds = this.userPreferences.batteryThresholds || { warning: 20, critical: 10 };
     if (this.userPreferences.batteryPreservationMode && 
         !this.resources.isCharging && 
-        this.resources.batteryLevel < 20) {
+        this.resources.batteryLevel < batteryThresholds.warning) {
       newMode = RESOURCE_MODES.CONSERVATIVE;
+      resourceFactors.push(`battery low: ${this.resources.batteryLevel}%`);
     } else if (this.userPreferences.batteryPreservationMode && 
                !this.resources.isCharging && 
-               this.resources.batteryLevel < 10) {
+               this.resources.batteryLevel < batteryThresholds.critical) {
       newMode = RESOURCE_MODES.MINIMAL;
+      resourceFactors.push(`battery critical: ${this.resources.batteryLevel}%`);
     }
     
     // Update resource mode if needed
     if (newMode !== this.currentMode) {
+      // Log what factors influenced the resource mode change
+      if (resourceFactors.length > 0) {
+        this.logger.info(`Resource mode changing to ${newMode} due to: ${resourceFactors.join(', ')}`);
+      }
+      
       this.setResourceMode(newMode);
     }
   }
@@ -792,21 +909,56 @@ class ResourceAllocationManager {
    * @private
    */
   _applyMinimalMode() {
+    let pausedCount = 0;
+    let reducedCount = 0;
+    
+    // First pass - handle non-essential components
     for (const [id, component] of this.componentRegistry.entries()) {
+      // Skip accessibility components - they should always remain functional
+      if (component.category === 'accessibility') {
+        continue;
+      }
+      
+      // Pause non-essential components that are currently active
       if (!component.isEssential && component.isActive) {
-        this.pauseComponent(id);
-      } else if (component.isEssential && component.isActive) {
-        try {
-          component.reduceResourcesCallback('minimal');
-        } catch (error) {
-          this.logger.error(`Error reducing resources for component ${id}:`, error);
+        if (component.adaptiveOptions?.minimalModeOperation) {
+          // If component can operate in minimal mode, reduce resources instead of pausing
+          try {
+            component.reduceResourcesCallback('minimal');
+            reducedCount++;
+          } catch (error) {
+            this.logger.error(`Error calling reduceResourcesCallback for ${id}:`, error);
+          }
+        } else {
+          // Otherwise, pause the component
+          this.pauseComponent(id);
+          pausedCount++;
         }
       }
     }
     
-    // Emit event for system-wide minimal mode
-    this.eventBus.emit('resource-manager:minimal-mode', {
-      reason: `High resource usage: CPU ${this.resources.cpu}%, Memory ${this.resources.memory}%, Temperature ${this.resources.temperature}°C`
+    // Second pass - handle essential components
+    for (const [id, component] of this.componentRegistry.entries()) {
+      if (component.isEssential && component.isActive) {
+        try {
+          // Even essential components should reduce their resource usage if possible
+          component.reduceResourcesCallback('minimal');
+          reducedCount++;
+        } catch (error) {
+          this.logger.error(`Error calling reduceResourcesCallback for ${id}:`, error);
+        }
+      }
+    }
+    
+    // Log the result of applying minimal mode
+    this.logger.info(`Applied minimal mode: paused ${pausedCount} components, reduced resources for ${reducedCount} components`);
+    
+    this.eventBus.emit('resource-manager:mode-changed', {
+      mode: RESOURCE_MODES.MINIMAL,
+      pausedComponents: pausedCount,
+      reducedComponents: reducedCount,
+      timestamp: Date.now(),
+      reason: 'System resource constraint'
     });
   }
   
@@ -815,26 +967,45 @@ class ResourceAllocationManager {
    * @private
    */
   _applyConservativeMode() {
+    let pausedCount = 0;
+    let reducedCount = 0;
+    
     // Sort components by priority (lower priority first)
     const sortedComponents = Array.from(this.componentRegistry.entries())
       .sort(([, a], [, b]) => a.cpuPriority - b.cpuPriority);
     
-    // Pause low priority, non-essential components
+    // First pass - handle non-essential components with low priority
     for (const [id, component] of sortedComponents) {
-      if (!component.isEssential && component.cpuPriority < 4 && component.isActive) {
+      // Skip accessibility components - they should always remain functional
+      if (component.category === 'accessibility') {
+        continue;
+      }
+      
+      // For conservative mode, we only pause very low priority components
+      // or apply resource reduction to others
+      if (!component.isEssential && component.isActive && component.cpuPriority < 3) {
         this.pauseComponent(id);
+        pausedCount++;
       } else if (component.isActive) {
         try {
           component.reduceResourcesCallback('conservative');
+          reducedCount++;
         } catch (error) {
           this.logger.error(`Error reducing resources for component ${id}:`, error);
         }
       }
     }
     
+    // Log the result
+    this.logger.info(`Applied conservative mode: paused ${pausedCount} components, reduced resources for ${reducedCount} components`);
+    
     // Emit event for system-wide conservative mode
-    this.eventBus.emit('resource-manager:conservative-mode', {
-      reason: `Elevated resource usage: CPU ${this.resources.cpu}%, Memory ${this.resources.memory}%, Temperature ${this.resources.temperature}°C`
+    this.eventBus.emit('resource-manager:mode-changed', {
+      mode: RESOURCE_MODES.CONSERVATIVE,
+      pausedComponents: pausedCount,
+      reducedComponents: reducedCount,
+      timestamp: Date.now(),
+      reason: 'System resource optimization'
     });
   }
   
@@ -843,23 +1014,57 @@ class ResourceAllocationManager {
    * @private
    */
   _applyBalancedMode() {
-    // Resume essential components
+    let resumedCount = 0;
+    let adjustedCount = 0;
+    
+    // First prioritize resuming accessibility-related components
+    for (const [id, component] of this.componentRegistry.entries()) {
+      if (component.category === 'accessibility' && !component.isActive) {
+        this.resumeComponent(id);
+        resumedCount++;
+        this.logger.debug(`Resuming accessibility component: ${id} in balanced mode`);
+      }
+    }
+    
+    // Then resume all essential components
     for (const [id, component] of this.componentRegistry.entries()) {
       if (component.isEssential && !component.isActive) {
         this.resumeComponent(id);
+        resumedCount++;
       }
-      
+    }
+    
+    // Resume medium priority components if they have the ability to run in balanced mode
+    for (const [id, component] of this.componentRegistry.entries()) {
+      if (!component.isEssential && !component.isActive && 
+          component.cpuPriority >= 5 && 
+          component.adaptiveOptions?.degradedOperation) {
+        this.resumeComponent(id);
+        resumedCount++;
+      }
+    }
+    
+    // Apply balanced mode resource adjustments to all active components
+    for (const [id, component] of this.componentRegistry.entries()) {      
       if (component.isActive) {
         try {
           component.reduceResourcesCallback('balanced');
+          adjustedCount++;
         } catch (error) {
-          this.logger.error(`Error reducing resources for component ${id}:`, error);
+          this.logger.error(`Error applying balanced resource settings for component ${id}:`, error);
         }
       }
     }
     
+    // Log the result
+    this.logger.info(`Applied balanced mode: resumed ${resumedCount} components, adjusted resources for ${adjustedCount} components`);
+    
     // Emit event for system-wide balanced mode
-    this.eventBus.emit('resource-manager:balanced-mode', {
+    this.eventBus.emit('resource-manager:mode-changed', {
+      mode: RESOURCE_MODES.BALANCED,
+      resumedComponents: resumedCount,
+      adjustedComponents: adjustedCount,
+      timestamp: Date.now(),
       reason: `Moderate resource usage: CPU ${this.resources.cpu}%, Memory ${this.resources.memory}%, Temperature ${this.resources.temperature}°C`
     });
   }
@@ -869,16 +1074,62 @@ class ResourceAllocationManager {
    * @private
    */
   _applyFullMode() {
-    // Resume all components
+    let resumedCount = 0;
+    let optimizedCount = 0;
+    
+    // First prioritize resuming accessibility-related components
     for (const [id, component] of this.componentRegistry.entries()) {
-      if (!component.isActive) {
+      if (component.category === 'accessibility' && !component.isActive) {
         this.resumeComponent(id);
+        resumedCount++;
+        this.logger.debug(`Resuming accessibility component: ${id} in full mode`);
       }
     }
     
-    // Emit event for system-wide full mode
-    this.eventBus.emit('resource-manager:full-mode', {
-      reason: `Normal resource usage: CPU ${this.resources.cpu}%, Memory ${this.resources.memory}%, Temperature ${this.resources.temperature}°C`
+    // Then resume all essential components
+    for (const [id, component] of this.componentRegistry.entries()) {
+      if (component.isEssential && !component.isActive) {
+        this.resumeComponent(id);
+        resumedCount++;
+      }
+    }
+    
+    // Finally resume all non-essential components
+    for (const [id, component] of this.componentRegistry.entries()) {
+      if (!component.isEssential && !component.isActive) {
+        this.resumeComponent(id);
+        resumedCount++;
+      }
+    }
+    
+    // Apply full mode resource optimizations to all components
+    // Even in full mode, we allow components to optimize their resource usage
+    // based on the actual system capabilities
+    for (const [id, component] of this.componentRegistry.entries()) {
+      if (component.isActive) {
+        try {
+          // Call the reduceResourcesCallback with 'full' to allow components to
+          // optimize based on current system state even in full mode
+          component.reduceResourcesCallback('full');
+          optimizedCount++;
+        } catch (error) {
+          // Non-critical, just log for debugging
+          this.logger.debug(`Note: Component ${id} doesn't support full mode optimization`);
+        }
+      }
+    }
+    
+    // Log the result with all statistics
+    this.logger.info(`Applied full mode: resumed ${resumedCount} components, optimized ${optimizedCount} components`);
+    
+    // Emit consistent event for system-wide mode change
+    this.eventBus.emit('resource-manager:mode-changed', {
+      mode: RESOURCE_MODES.FULL,
+      resumedComponents: resumedCount,
+      optimizedComponents: optimizedCount,
+      timestamp: Date.now(),
+      reason: `Normal resource usage: CPU ${this.resources.cpu}%, Memory ${this.resources.memory}%, Temperature ${this.resources.temperature}°C`,
+      systemCapabilities: this.systemCapabilities
     });
   }
   
