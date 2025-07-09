@@ -122,6 +122,25 @@ services:
       retries: 3
       start_period: 5s
 
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "9000:9000"
+    depends_on:
+      - brain
+      - gesture_websocket
+    environment:
+      - NODE_ENV=production
+      - PORT=9000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
 volumes:
   redis_data:
   emotional_data:

@@ -299,13 +299,13 @@ async function runTests() {
     createTestSection('Accessibility Integration');
     
     // Test 8: Accessibility API
-    const accessibilityComponent = testInitManager.getInitializedComponent('accessibility-integration');
+    const accessibilityIntegration = testInitManager.getInitializedComponent('accessibility-integration');
     
     reportTestResult(
       'Accessibility API', 
-      accessibilityComponent && 
-      typeof accessibilityComponent.toggleFeature === 'function' &&
-      typeof accessibilityComponent.announce === 'function',
+      accessibilityIntegration && 
+      typeof accessibilityIntegration.toggleFeature === 'function' &&
+      typeof accessibilityIntegration.announce === 'function',
       'Accessibility Integration missing expected API methods'
     );
     

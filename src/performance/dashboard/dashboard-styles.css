@@ -1,0 +1,532 @@
+/**
+ * @file dashboard-styles.css
+ * @description Styles for ALEJO performance dashboard and resource thresholds components
+ */
+
+/* Common styles */
+.alejo-component {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Dashboard container */
+.dashboard-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 10px 0;
+  max-width: 800px;
+}
+
+/* Dashboard header */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e1e4e8;
+  padding-bottom: 10px;
+}
+
+.dashboard-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Resource metrics */
+.resource-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.metric-card {
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.metric-title {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.metric-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.metric-unit {
+  font-size: 0.9rem;
+  color: #666;
+  margin-left: 2px;
+}
+
+/* Progress bars */
+.progress-container {
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-low {
+  background-color: #28a745;
+}
+
+.progress-medium {
+  background-color: #ffc107;
+}
+
+.progress-high {
+  background-color: #fd7e14;
+}
+
+.progress-critical {
+  background-color: #dc3545;
+}
+
+/* Resource mode indicator */
+.resource-mode {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: #e9ecef;
+}
+
+.mode-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.mode-full {
+  background-color: #28a745;
+}
+
+.mode-balanced {
+  background-color: #17a2b8;
+}
+
+.mode-conservative {
+  background-color: #ffc107;
+}
+
+.mode-minimal {
+  background-color: #dc3545;
+}
+
+.mode-label {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* Controls */
+.dashboard-controls {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #e1e4e8;
+}
+
+.control-button {
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-right: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.control-button:hover {
+  background-color: #e9ecef;
+}
+
+.control-button:focus {
+  outline: 2px solid #4dabf7;
+  outline-offset: 2px;
+}
+
+.control-button.active {
+  background-color: #4dabf7;
+  border-color: #4dabf7;
+  color: white;
+}
+
+/* Resource thresholds */
+.thresholds-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 10px 0;
+  max-width: 800px;
+}
+
+.thresholds-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e1e4e8;
+  padding-bottom: 10px;
+}
+
+.thresholds-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.thresholds-section {
+  margin-bottom: 25px;
+}
+
+.threshold-category {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #495057;
+}
+
+.threshold-slider-container {
+  margin-bottom: 15px;
+}
+
+.threshold-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.threshold-name {
+  font-weight: 500;
+  color: #495057;
+}
+
+.threshold-value {
+  font-weight: 600;
+  color: #212529;
+}
+
+.threshold-slider {
+  width: 100%;
+  height: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #e9ecef;
+  outline: none;
+  border-radius: 4px;
+}
+
+.threshold-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #4dabf7;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.threshold-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #4dabf7;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.threshold-slider:focus {
+  outline: none;
+}
+
+.threshold-slider:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.3);
+}
+
+.threshold-slider:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.3);
+}
+
+.threshold-critical {
+  background: linear-gradient(to right, #28a745, #ffc107, #fd7e14, #dc3545);
+}
+
+.threshold-high {
+  background: linear-gradient(to right, #28a745, #ffc107, #fd7e14);
+}
+
+.threshold-medium {
+  background: linear-gradient(to right, #28a745, #ffc107);
+}
+
+.threshold-low {
+  background: linear-gradient(to right, #e9ecef, #28a745);
+}
+
+/* Threshold actions */
+.threshold-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #e1e4e8;
+}
+
+.threshold-button {
+  background-color: #4dabf7;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  padding: 8px 16px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.threshold-button:hover {
+  background-color: #3793db;
+}
+
+.threshold-button:focus {
+  outline: 2px solid #4dabf7;
+  outline-offset: 2px;
+}
+
+.threshold-button.secondary {
+  background-color: #6c757d;
+}
+
+.threshold-button.secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Resource simulator */
+.simulator-container {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.simulator-header {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #495057;
+}
+
+.simulator-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.simulator-controls-additional {
+  margin-top: 1rem;
+}
+
+.simulator-control {
+  margin-bottom: 15px;
+}
+
+.charging-control {
+  margin-top: 1rem;
+}
+
+.simulator-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.simulator-name {
+  font-weight: 500;
+  color: #495057;
+}
+
+.simulator-value {
+  font-weight: 600;
+  color: #212529;
+}
+
+/* Status display */
+.status-container {
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  padding: 15px;
+  margin-top: 20px;
+}
+
+.status-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #495057;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.status-item:last-child {
+  border-bottom: none;
+}
+
+.status-label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.status-value {
+  font-weight: 600;
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .resource-metrics {
+    grid-template-columns: 1fr;
+  }
+  
+  .simulator-controls {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-header,
+  .thresholds-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .threshold-actions {
+    flex-direction: column;
+  }
+  
+  .threshold-button {
+    margin-left: 0;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .alejo-component {
+    color: #e1e4e8;
+  }
+  
+  .dashboard-container,
+  .thresholds-container {
+    background-color: #2d333b;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .dashboard-header,
+  .thresholds-header {
+    border-bottom-color: #444c56;
+  }
+  
+  .metric-card {
+    background-color: #22272e;
+  }
+  
+  .metric-title,
+  .metric-unit {
+    color: #adbac7;
+  }
+  
+  .progress-container {
+    background-color: #444c56;
+  }
+  
+  .resource-mode {
+    background-color: #22272e;
+  }
+  
+  .control-button {
+    background-color: #2d333b;
+    border-color: #444c56;
+    color: #adbac7;
+  }
+  
+  .control-button:hover {
+    background-color: #444c56;
+  }
+  
+  .threshold-name,
+  .simulator-name {
+    color: #adbac7;
+  }
+  
+  .threshold-value,
+  .simulator-value,
+  .threshold-category,
+  .simulator-header,
+  .status-header {
+    color: #e1e4e8;
+  }
+  
+  .threshold-slider {
+    background: #444c56;
+  }
+  
+  .threshold-low {
+    background: linear-gradient(to right, #444c56, #28a745);
+  }
+  
+  .status-container {
+    background-color: #22272e;
+  }
+  
+  .status-item {
+    border-bottom-color: #444c56;
+  }
+  
+  .status-label {
+    color: #adbac7;
+  }
+}

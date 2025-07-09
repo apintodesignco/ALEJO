@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Performance Dashboard</title>
+  <link rel="stylesheet" href="./dashboard-styles.css">
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2ecc71;
+      --accent-color: #f39c12;
+      --danger-color: #e74c3c;
+      --text-color: #333;
+      --background-color: #f9f9f9;
+      --card-background: #fff;
+      --border-color: #ddd;
+    }
+    
+    /* Skip link for keyboard navigation */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--primary-color);
+      color: white;
+      padding: 8px;
+      z-index: 100;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <header>
+    <h1>ALEJO Performance Dashboard Demo</h1>
+  </header>
+
+  <main id="main-content">
+    <div class="controls">
+      <div class="control-group">
+        <label for="resource-mode">Resource Mode:</label>
+        <select id="resource-mode">
+          <option value="full">Full</option>
+          <option value="balanced" selected>Balanced</option>
+          <option value="conservative">Conservative</option>
+          <option value="minimal">Minimal</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="update-interval">Update Interval (ms):</label>
+        <select id="update-interval">
+          <option value="1000">1000 (Fast)</option>
+          <option value="2000" selected>2000 (Normal)</option>
+          <option value="5000">5000 (Slow)</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="accessibility-toggle">Accessibility:</label>
+        <select id="accessibility-toggle">
+          <option value="true" selected>Enabled</option>
+          <option value="false">Disabled</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label>&nbsp;</label>
+        <button id="toggle-dashboard">Pause Dashboard</button>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="status-indicator" id="cpu-status"></span>
+        <span>CPU: <span id="cpu-value">0%</span></span>
+      </div>
+      <div class="status-item">
+        <span class="status-indicator" id="memory-status"></span>
+        <span>Memory: <span id="memory-value">0%</span></span>
+      </div>
+      <div class="status-item">
+        <span class="status-indicator" id="temperature-status"></span>
+        <span>Temperature: <span id="temperature-value">0°C</span></span>
+      </div>
+      <div class="status-item">
+        <span>Battery: <span id="battery-value">100%</span></span>
+      </div>
+    </div>
+
+    <div id="alejo-performance-dashboard" class="dashboard-container" aria-live="polite">
+      <!-- Dashboard will be rendered here -->
+    </div>
+
+    <div class="resource-simulator">
+      <h2>Resource Simulator</h2>
+      <p>Adjust the sliders below to simulate different resource usage levels:</p>
+      
+      <div class="simulator-controls">
+        <div class="range-control">
+          <label for="cpu-simulator">
+            CPU Usage
+            <span class="range-value" id="cpu-simulator-value">50%</span>
+          </label>
+          <input type="range" id="cpu-simulator" min="0" max="100" value="50">
+        </div>
+        
+        <div class="range-control">
+          <label for="memory-simulator">
+            Memory Usage
+            <span class="range-value" id="memory-simulator-value">40%</span>
+          </label>
+          <input type="range" id="memory-simulator" min="0" max="100" value="40">
+        </div>
+        
+        <div class="range-control">
+          <label for="temperature-simulator">
+            Temperature
+            <span class="range-value" id="temperature-simulator-value">60°C</span>
+          </label>
+          <input type="range" id="temperature-simulator" min="20" max="100" value="60">
+        </div>
+      </div>
+
+      <div class="simulator-controls simulator-controls-additional">
+        <div class="range-control">
+          <label for="battery-simulator">
+            Battery Level
+            <span class="range-value" id="battery-simulator-value">80%</span>
+          </label>
+          <input type="range" id="battery-simulator" min="0" max="100" value="80">
+        </div>
+        
+        <div class="control-group charging-control">
+          <label for="charging-toggle">Battery Charging:</label>
+          <select id="charging-toggle">
+            <option value="true" selected>Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>ALEJO Performance Monitoring System | Accessibility-First Design</p>
+  </footer>
+
+  <script type="module">
+    import PerformanceDashboard from './performance-dashboard.js';
+    import { registerWithResourceManager, unregisterFromResourceManager } from './performance-integration.js';
+    import { getResourceAllocationManager, RESOURCE_MODES } from '../resource-allocation-manager.js';
+    
+    // Mock the resource manager if it's not available in the demo environment
+    let resourceManager;
+    try {
+      resourceManager = getResourceAllocationManager();
+    } catch (error) {
+      console.warn('Resource manager not available, using mock implementation');
+      resourceManager = createMockResourceManager();
+    }
+    
+    // Dashboard instance
+    let dashboard;
+    let isDashboardPaused = false;
+    
+    // Initialize the dashboard
+    function initializeDashboard() {
+      // Register with resource manager
+      registerWithResourceManager();
+      
+      // Create dashboard
+      dashboard = new PerformanceDashboard({
+        containerId: 'alejo-performance-dashboard',
+        updateInterval: parseInt(document.getElementById('update-interval').value, 10),
+        accessibilityEnabled: document.getElementById('accessibility-toggle').value === 'true'
+      });
+    }
+    
+    // Update status indicators
+    function updateStatusIndicators(resources) {
+      // CPU status
+      const cpuValue = document.getElementById('cpu-value');
+      const cpuStatus = document.getElementById('cpu-status');
+      cpuValue.textContent = `${resources.cpu.toFixed(1)}%`;
+      
+      if (resources.cpu > 80) {
+        cpuStatus.className = 'status-indicator danger';
+      } else if (resources.cpu > 50) {
+        cpuStatus.className = 'status-indicator warning';
+      } else {
+        cpuStatus.className = 'status-indicator';
+      }
+      
+      // Memory status
+      const memoryValue = document.getElementById('memory-value');
+      const memoryStatus = document.getElementById('memory-status');
+      memoryValue.textContent = `${resources.memory.toFixed(1)}%`;
+      
+      if (resources.memory > 85) {
+        memoryStatus.className = 'status-indicator danger';
+      } else if (resources.memory > 60) {
+        memoryStatus.className = 'status-indicator warning';
+      } else {
+        memoryStatus.className = 'status-indicator';
+      }
+      
+      // Temperature status
+      const temperatureValue = document.getElementById('temperature-value');
+      const temperatureStatus = document.getElementById('temperature-status');
+      temperatureValue.textContent = `${resources.temperature.toFixed(1)}°C`;
+      
+      if (resources.temperature > 75) {
+        temperatureStatus.className = 'status-indicator danger';
+      } else if (resources.temperature > 65) {
+        temperatureStatus.className = 'status-indicator warning';
+      } else {
+        temperatureStatus.className = 'status-indicator';
+      }
+      
+      // Battery status
+      const batteryValue = document.getElementById('battery-value');
+      batteryValue.textContent = `${resources.batteryLevel}%${resources.isCharging ? ' (Charging)' : ''}`;
+    }
+    
+    // Toggle dashboard
+    function toggleDashboard() {
+      const toggleButton = document.getElementById('toggle-dashboard');
+      
+      if (isDashboardPaused) {
+        dashboard.startMonitoring();
+        toggleButton.textContent = 'Pause Dashboard';
+        isDashboardPaused = false;
+      } else {
+        dashboard.pauseMonitoring();
+        toggleButton.textContent = 'Resume Dashboard';
+        isDashboardPaused = true;
+      }
+    }
+    
+    // Update resource manager with simulated values
+    function updateResourceManagerWithSimulatedValues() {
+      const cpu = parseFloat(document.getElementById('cpu-simulator').value);
+      const memory = parseFloat(document.getElementById('memory-simulator').value);
+      const temperature = parseFloat(document.getElementById('temperature-simulator').value);
+      const batteryLevel = parseFloat(document.getElementById('battery-simulator').value);
+      const isCharging = document.getElementById('charging-toggle').value === 'true';
+      
+      // Update resource manager
+      resourceManager.resources = {
+        cpu,
+        memory,
+        temperature,
+        batteryLevel,
+        isCharging
+      };
+      
+      // Update status indicators
+      updateStatusIndicators(resourceManager.resources);
+      
+      // Evaluate resource mode based on new values
+      evaluateResourceMode();
+    }
+    
+    // Evaluate resource mode based on current resource usage
+    function evaluateResourceMode() {
+      const resources = resourceManager.resources;
+      let newMode = RESOURCE_MODES.FULL;
+      
+      // Simple logic to determine resource mode based on usage
+      if (resources.temperature > 80 || resources.cpu > 90 || resources.memory > 90) {
+        newMode = RESOURCE_MODES.MINIMAL;
+      } else if (resources.temperature > 70 || resources.cpu > 75 || resources.memory > 80) {
+        newMode = RESOURCE_MODES.CONSERVATIVE;
+      } else if (resources.temperature > 60 || resources.cpu > 50 || resources.memory > 60) {
+        newMode = RESOURCE_MODES.BALANCED;
+      }
+      
+      // Update resource mode if changed
+      if (newMode !== resourceManager.currentMode) {
+        resourceManager.setResourceMode(newMode);
+        document.getElementById('resource-mode').value = newMode;
+      }
+    }
+    
+    // Create a mock resource manager for the demo
+    function createMockResourceManager() {
+      return {
+        resources: {
+          cpu: 50,
+          memory: 40,
+          temperature: 60,
+          batteryLevel: 80,
+          isCharging: true
+        },
+        currentMode: RESOURCE_MODES.BALANCED,
+        componentRegistry: new Map(),
+        
+        getResourceUsage() {
+          return { ...this.resources };
+        },
+        
+        getCurrentMode() {
+          return this.currentMode;
+        },
+        
+        setResourceMode(mode, force = false) {
+          if (!Object.values(RESOURCE_MODES).includes(mode)) {
+            console.warn(`Invalid resource mode: ${mode}`);
+            return false;
+          }
+          
+          const previousMode = this.currentMode;
+          this.currentMode = mode;
+          
+          console.log(`Resource mode changed: ${previousMode} -> ${this.currentMode}`);
+          return true;
+        },
+        
+        registerComponent(componentId, requirements) {
+          if (!componentId || this.componentRegistry.has(componentId)) {
+            console.warn(`Failed to register component: ${componentId}. ID invalid or already registered.`);
+            return false;
+          }
+          
+          this.componentRegistry.set(componentId, {
+            id: componentId,
+            cpuPriority: requirements.cpuPriority || 5,
+            memoryFootprint: requirements.memoryFootprint || 10,
+            isEssential: requirements.isEssential || false,
+            pauseCallback: requirements.pauseCallback || (() => {}),
+            resumeCallback: requirements.resumeCallback || (() => {}),
+            reduceResourcesCallback: requirements.reduceResourcesCallback || (() => {}),
+            isActive: true
+          });
+          
+          console.log(`Component registered: ${componentId}`);
+          return true;
+        },
+        
+        unregisterComponent(componentId) {
+          if (!this.componentRegistry.has(componentId)) {
+            console.warn(`Failed to unregister component: ${componentId}. Not found.`);
+            return false;
+          }
+          
+          this.componentRegistry.delete(componentId);
+          console.log(`Component unregistered: ${componentId}`);
+          return true;
+        }
+      };
+    }
+    
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize dashboard
+      initializeDashboard();
+      
+      // Set initial status indicators
+      updateStatusIndicators(resourceManager.resources);
+      
+      // Resource mode selector
+      document.getElementById('resource-mode').addEventListener('change', (e) => {
+        resourceManager.setResourceMode(e.target.value, true);
+      });
+      
+      // Update interval selector
+      document.getElementById('update-interval').addEventListener('change', (e) => {
+        if (dashboard) {
+          dashboard.config.updateInterval = parseInt(e.target.value, 10);
+          dashboard.pauseMonitoring();
+          dashboard.startMonitoring();
+        }
+      });
+      
+      // Accessibility toggle
+      document.getElementById('accessibility-toggle').addEventListener('change', (e) => {
+        if (dashboard) {
+          dashboard.config.accessibilityEnabled = e.target.value === 'true';
+          // Recreate dashboard to apply accessibility changes
+          dashboard.destroy();
+          dashboard = new PerformanceDashboard({
+            containerId: 'alejo-performance-dashboard',
+            updateInterval: parseInt(document.getElementById('update-interval').value, 10),
+            accessibilityEnabled: e.target.value === 'true'
+          });
+        }
+      });
+      
+      // Toggle dashboard button
+      document.getElementById('toggle-dashboard').addEventListener('click', toggleDashboard);
+      
+      // Resource simulator inputs
+      document.getElementById('cpu-simulator').addEventListener('input', (e) => {
+        document.getElementById('cpu-simulator-value').textContent = `${e.target.value}%`;
+        updateResourceManagerWithSimulatedValues();
+      });
+      
+      document.getElementById('memory-simulator').addEventListener('input', (e) => {
+        document.getElementById('memory-simulator-value').textContent = `${e.target.value}%`;
+        updateResourceManagerWithSimulatedValues();
+      });
+      
+      document.getElementById('temperature-simulator').addEventListener('input', (e) => {
+        document.getElementById('temperature-simulator-value').textContent = `${e.target.value}°C`;
+        updateResourceManagerWithSimulatedValues();
+      });
+      
+      document.getElementById('battery-simulator').addEventListener('input', (e) => {
+        document.getElementById('battery-simulator-value').textContent = `${e.target.value}%`;
+        updateResourceManagerWithSimulatedValues();
+      });
+      
+      document.getElementById('charging-toggle').addEventListener('change', updateResourceManagerWithSimulatedValues);
+      
+      // Cleanup on page unload
+      window.addEventListener('beforeunload', () => {
+        if (dashboard) {
+          dashboard.destroy();
+        }
+        unregisterFromResourceManager();
+      });
+    });
+  </script>
+</body>
+</html>

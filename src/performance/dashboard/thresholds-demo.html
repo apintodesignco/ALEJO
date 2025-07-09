@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Resource Thresholds Configuration</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2ecc71;
+      --background-color: #f9f9f9;
+      --text-color: #333;
+      --border-color: #ddd;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+    
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--primary-color);
+      color: white;
+      padding: 8px;
+      z-index: 100;
+      transition: top 0.3s;
+    }
+    
+    .skip-link:focus {
+      top: 0;
+    }
+    
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    @media (min-width: 768px) {
+      .container {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+    }
+    
+    .card h2 {
+      margin-top: 0;
+      color: var(--primary-color);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+    
+    .resource-simulator {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .resource-control {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .resource-control label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .resource-control-slider {
+      width: 100%;
+      height: 8px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: #ecf0f1;
+      border-radius: 4px;
+      outline: none;
+    }
+    
+    .resource-control-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      cursor: pointer;
+    }
+    
+    .resource-control-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      cursor: pointer;
+      border: none;
+    }
+    
+    .resource-status {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+      border-radius: 4px;
+      background-color: #f8f9fa;
+    }
+    
+    .status-label {
+      font-weight: bold;
+    }
+    
+    .status-value {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .status-high {
+      background-color: #e74c3c;
+      color: white;
+    }
+    
+    .status-medium {
+      background-color: #f39c12;
+      color: white;
+    }
+    
+    .status-low {
+      background-color: #2ecc71;
+      color: white;
+    }
+    
+    .btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+    
+    .btn:hover {
+      background-color: #2980b9;
+    }
+    
+    .btn-secondary {
+      background-color: #95a5a6;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #7f8c8d;
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+    }
+    
+    .accessibility-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .toggle-slider {
+      background-color: var(--primary-color);
+    }
+    
+    input:focus + .toggle-slider {
+      box-shadow: 0 0 1px var(--primary-color);
+    }
+    
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background-color: #1a1a1a;
+        --text-color: #f1f1f1;
+        --border-color: #444;
+      }
+      
+      .card {
+        background-color: #2d2d2d;
+      }
+      
+      .status-item {
+        background-color: #333;
+      }
+      
+      .resource-control-slider {
+        background: #555;
+      }
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  
+  <header>
+    <h1>ALEJO Resource Thresholds Configuration</h1>
+  </header>
+  
+  <main id="main">
+    <div class="container">
+      <div class="card">
+        <h2>Resource Thresholds Configuration</h2>
+        <p>Configure when ALEJO should adjust resource usage based on system conditions.</p>
+        <div id="alejo-resource-thresholds"></div>
+      </div>
+      
+      <div class="card">
+        <h2>Resource Simulator</h2>
+        <p>Simulate system resource levels to see how thresholds are applied.</p>
+        
+        <div class="resource-simulator">
+          <div class="resource-control">
+            <label for="cpu-simulator">
+              CPU Usage
+              <span id="cpu-value">50%</span>
+            </label>
+            <input type="range" id="cpu-simulator" class="resource-control-slider" min="0" max="100" value="50">
+          </div>
+          
+          <div class="resource-control">
+            <label for="memory-simulator">
+              Memory Usage
+              <span id="memory-value">60%</span>
+            </label>
+            <input type="range" id="memory-simulator" class="resource-control-slider" min="0" max="100" value="60">
+          </div>
+          
+          <div class="resource-control">
+            <label for="temperature-simulator">
+              Temperature
+              <span id="temperature-value">65°C</span>
+            </label>
+            <input type="range" id="temperature-simulator" class="resource-control-slider" min="20" max="100" value="65">
+          </div>
+          
+          <div class="resource-control">
+            <label for="battery-simulator">
+              Battery Level
+              <span id="battery-value">80%</span>
+            </label>
+            <input type="range" id="battery-simulator" class="resource-control-slider" min="0" max="100" value="80">
+          </div>
+          
+          <div class="accessibility-toggle">
+            <label for="charging-toggle" class="toggle-label">Device Charging</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="charging-toggle" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="resource-status">
+          <h3>Current Status</h3>
+          
+          <div class="status-item">
+            <span class="status-label">CPU Status:</span>
+            <span id="cpu-status" class="status-value status-medium">MEDIUM</span>
+          </div>
+          
+          <div class="status-item">
+            <span class="status-label">Memory Status:</span>
+            <span id="memory-status" class="status-value status-medium">MEDIUM</span>
+          </div>
+          
+          <div class="status-item">
+            <span class="status-label">Temperature Status:</span>
+            <span id="temperature-status" class="status-value status-medium">MEDIUM</span>
+          </div>
+          
+          <div class="status-item">
+            <span class="status-label">Resource Mode:</span>
+            <span id="resource-mode" class="status-value">BALANCED</span>
+          </div>
+        </div>
+        
+        <div class="controls">
+          <button id="apply-simulation" class="btn">Apply Simulation</button>
+          <button id="reset-simulation" class="btn btn-secondary">Reset</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <script type="module">
+    // Mock resource manager for demo purposes
+    class MockResourceManager {
+      constructor() {
+        this.resources = {
+          cpu: 50,
+          memory: 60,
+          temperature: 65,
+          batteryLevel: 80,
+          isCharging: true
+        };
+        
+        this.userPreferences = {
+          cpuUsageCeilingPercent: 80,
+          cpuMediumThresholdPercent: 50,
+          cpuLowThresholdPercent: 30,
+          memoryUsageCeilingPercent: 85,
+          memoryMediumThresholdPercent: 60,
+          memoryLowThresholdPercent: 40,
+          temperatureCeilingCelsius: 85,
+          temperatureHighThresholdCelsius: 75,
+          temperatureMediumThresholdCelsius: 65,
+          temperatureLowThresholdCelsius: 55
+        };
+        
+        this.currentMode = 'balanced';
+        this.eventListeners = {};
+      }
+      
+      getCurrentResourceUsage() {
+        return { ...this.resources };
+      }
+      
+      getCurrentResourceMode() {
+        return this.currentMode;
+      }
+      
+      updateUserPreferences(preferences) {
+        this.userPreferences = { ...this.userPreferences, ...preferences };
+        console.log('User preferences updated:', this.userPreferences);
+        
+        // Recalculate resource mode based on new thresholds
+        this.updateResourceMode();
+        
+        return Promise.resolve(this.userPreferences);
+      }
+      
+      updateResources(resources) {
+        this.resources = { ...this.resources, ...resources };
+        console.log('Resources updated:', this.resources);
+        
+        // Recalculate resource mode
+        this.updateResourceMode();
+        
+        // Emit resource update event
+        this.emit('resource:update', { resources: this.resources });
+        
+        return this.resources;
+      }
+      
+      updateResourceMode() {
+        const { cpu, memory, temperature, batteryLevel, isCharging } = this.resources;
+        const {
+          cpuUsageCeilingPercent,
+          cpuMediumThresholdPercent,
+          memoryUsageCeilingPercent,
+          memoryMediumThresholdPercent,
+          temperatureCeilingCelsius,
+          temperatureHighThresholdCelsius
+        } = this.userPreferences;
+        
+        let newMode = 'full';
+        
+        // Check for minimal mode conditions
+        if (
+          cpu >= cpuUsageCeilingPercent ||
+          memory >= memoryUsageCeilingPercent ||
+          temperature >= temperatureCeilingCelsius ||
+          (!isCharging && batteryLevel <= 15)
+        ) {
+          newMode = 'minimal';
+        }
+        // Check for conservative mode conditions
+        else if (
+          cpu >= cpuMediumThresholdPercent ||
+          memory >= memoryMediumThresholdPercent ||
+          temperature >= temperatureHighThresholdCelsius ||
+          (!isCharging && batteryLevel <= 30)
+        ) {
+          newMode = 'conservative';
+        }
+        // Check for balanced mode conditions
+        else if (
+          (cpu >= 30 || memory >= 40 || temperature >= 55) ||
+          (!isCharging && batteryLevel <= 50)
+        ) {
+          newMode = 'balanced';
+        }
+        
+        // If mode changed, emit event
+        if (newMode !== this.currentMode) {
+          const oldMode = this.currentMode;
+          this.currentMode = newMode;
+          this.emit('resource:mode-change', { oldMode, newMode });
+        }
+        
+        return newMode;
+      }
+      
+      on(event, callback) {
+        if (!this.eventListeners[event]) {
+          this.eventListeners[event] = [];
+        }
+        this.eventListeners[event].push(callback);
+      }
+      
+      emit(event, data) {
+        if (this.eventListeners[event]) {
+          this.eventListeners[event].forEach(callback => callback(data));
+        }
+      }
+    }
+    
+    // Mock neural event bus
+    const eventBus = {
+      subscribe(event, callback) {
+        console.log(`Subscribed to ${event}`);
+        return { unsubscribe: () => console.log(`Unsubscribed from ${event}`) };
+      },
+      publish(event, data) {
+        console.log(`Event published: ${event}`, data);
+      }
+    };
+    
+    // Mock exports
+    window.getResourceAllocationManager = () => mockResourceManager;
+    window.subscribe = eventBus.subscribe;
+    window.publish = eventBus.publish;
+    
+    // Create mock resource manager
+    const mockResourceManager = new MockResourceManager();
+    
+    // Import the ResourceThresholds class
+    import { ResourceThresholds } from './resource-thresholds.js';
+    
+    // Initialize thresholds component when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      // Create resource thresholds component
+      const thresholds = new ResourceThresholds({
+        containerId: 'alejo-resource-thresholds'
+      });
+      
+      // Set up simulator controls
+      const cpuSimulator = document.getElementById('cpu-simulator');
+      const memorySimulator = document.getElementById('memory-simulator');
+      const temperatureSimulator = document.getElementById('temperature-simulator');
+      const batterySimulator = document.getElementById('battery-simulator');
+      const chargingToggle = document.getElementById('charging-toggle');
+      
+      const cpuValue = document.getElementById('cpu-value');
+      const memoryValue = document.getElementById('memory-value');
+      const temperatureValue = document.getElementById('temperature-value');
+      const batteryValue = document.getElementById('battery-value');
+      
+      const cpuStatus = document.getElementById('cpu-status');
+      const memoryStatus = document.getElementById('memory-status');
+      const temperatureStatus = document.getElementById('temperature-status');
+      const resourceMode = document.getElementById('resource-mode');
+      
+      const applySimulation = document.getElementById('apply-simulation');
+      const resetSimulation = document.getElementById('reset-simulation');
+      
+      // Update value displays on input
+      cpuSimulator.addEventListener('input', () => {
+        cpuValue.textContent = `${cpuSimulator.value}%`;
+      });
+      
+      memorySimulator.addEventListener('input', () => {
+        memoryValue.textContent = `${memorySimulator.value}%`;
+      });
+      
+      temperatureSimulator.addEventListener('input', () => {
+        temperatureValue.textContent = `${temperatureSimulator.value}°C`;
+      });
+      
+      batterySimulator.addEventListener('input', () => {
+        batteryValue.textContent = `${batterySimulator.value}%`;
+      });
+      
+      // Apply simulation button
+      applySimulation.addEventListener('click', () => {
+        // Update resource manager with simulated values
+        mockResourceManager.updateResources({
+          cpu: parseInt(cpuSimulator.value, 10),
+          memory: parseInt(memorySimulator.value, 10),
+          temperature: parseInt(temperatureSimulator.value, 10),
+          batteryLevel: parseInt(batterySimulator.value, 10),
+          isCharging: chargingToggle.checked
+        });
+        
+        // Update status displays
+        updateStatusDisplays();
+      });
+      
+      // Reset simulation button
+      resetSimulation.addEventListener('click', () => {
+        // Reset sliders to default values
+        cpuSimulator.value = 50;
+        memorySimulator.value = 60;
+        temperatureSimulator.value = 65;
+        batterySimulator.value = 80;
+        chargingToggle.checked = true;
+        
+        // Update value displays
+        cpuValue.textContent = '50%';
+        memoryValue.textContent = '60%';
+        temperatureValue.textContent = '65°C';
+        batteryValue.textContent = '80%';
+        
+        // Update resource manager
+        mockResourceManager.updateResources({
+          cpu: 50,
+          memory: 60,
+          temperature: 65,
+          batteryLevel: 80,
+          isCharging: true
+        });
+        
+        // Update status displays
+        updateStatusDisplays();
+      });
+      
+      // Listen for resource updates
+      mockResourceManager.on('resource:update', () => {
+        updateStatusDisplays();
+      });
+      
+      mockResourceManager.on('resource:mode-change', ({ newMode }) => {
+        resourceMode.textContent = newMode.toUpperCase();
+        
+        // Update resource mode styling
+        resourceMode.className = 'status-value';
+        if (newMode === 'minimal') {
+          resourceMode.classList.add('status-high');
+        } else if (newMode === 'conservative') {
+          resourceMode.classList.add('status-medium');
+        } else {
+          resourceMode.classList.add('status-low');
+        }
+      });
+      
+      // Function to update status displays
+      function updateStatusDisplays() {
+        const resources = mockResourceManager.getCurrentResourceUsage();
+        const preferences = mockResourceManager.userPreferences;
+        
+        // Update CPU status
+        updateStatusElement(
+          cpuStatus,
+          resources.cpu,
+          preferences.cpuUsageCeilingPercent,
+          preferences.cpuMediumThresholdPercent,
+          preferences.cpuLowThresholdPercent
+        );
+        
+        // Update memory status
+        updateStatusElement(
+          memoryStatus,
+          resources.memory,
+          preferences.memoryUsageCeilingPercent,
+          preferences.memoryMediumThresholdPercent,
+          preferences.memoryLowThresholdPercent
+        );
+        
+        // Update temperature status
+        updateStatusElement(
+          temperatureStatus,
+          resources.temperature,
+          preferences.temperatureCeilingCelsius,
+          preferences.temperatureHighThresholdCelsius,
+          preferences.temperatureMediumThresholdCelsius
+        );
+        
+        // Update resource mode
+        const mode = mockResourceManager.getCurrentResourceMode();
+        resourceMode.textContent = mode.toUpperCase();
+        
+        // Update resource mode styling
+        resourceMode.className = 'status-value';
+        if (mode === 'minimal') {
+          resourceMode.classList.add('status-high');
+        } else if (mode === 'conservative') {
+          resourceMode.classList.add('status-medium');
+        } else {
+          resourceMode.classList.add('status-low');
+        }
+      }
+      
+      // Function to update a status element
+      function updateStatusElement(element, value, highThreshold, mediumThreshold, lowThreshold) {
+        element.className = 'status-value';
+        
+        if (value >= highThreshold) {
+          element.textContent = 'HIGH';
+          element.classList.add('status-high');
+        } else if (value >= mediumThreshold) {
+          element.textContent = 'MEDIUM';
+          element.classList.add('status-medium');
+        } else {
+          element.textContent = 'LOW';
+          element.classList.add('status-low');
+        }
+      }
+      
+      // Initial status update
+      updateStatusDisplays();
+    });
+  </script>
+</body>
+</html>

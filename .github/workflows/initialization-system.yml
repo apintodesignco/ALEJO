@@ -189,6 +189,6 @@ jobs:
       - name: Send deployment notification
         uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           event-type: initialization-system-deployed
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'

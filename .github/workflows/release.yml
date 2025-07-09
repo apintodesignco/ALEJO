@@ -1,0 +1,123 @@
+name: Package and Release ALEJO
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g. 1.0.0)'
+        required: true
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install -g rimraf
+      
+      - name: Run dependency setup
+        run: node tools/setup-dependencies.js
+      
+      - name: Build ALEJO
+        run: npm run build:prod
+      
+      - name: Create self-contained package
+        run: |
+          mkdir -p release
+          cp -r dist/* release/
+          cd release
+          npm ci --production
+          cd ..
+          tar -czf alejo-release.tar.gz release
+      
+      - name: Determine version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            # Extract version from the tag (e.g., v1.0.0 -> 1.0.0)
+            TAG=${GITHUB_REF#refs/tags/v}
+            echo "VERSION=$TAG" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          name: ALEJO v${{ steps.get_version.outputs.VERSION }}
+          body: |
+            # ALEJO v${{ steps.get_version.outputs.VERSION }}
+            
+            ## One-Click Installation
+            1. Download the release archive
+            2. Extract the contents
+            3. Run `npm start` in the extracted directory
+            
+            ## New in this release:
+            - Improved performance and stability
+            - Enhanced accessibility features
+            - Production-ready deployment
+          files: |
+            alejo-release.tar.gz
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  verify:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Download release
+        run: |
+          RELEASE_URL=$(curl -s https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest | jq -r '.assets[0].browser_download_url')
+          curl -L -o alejo-release.tar.gz $RELEASE_URL
+          mkdir -p verify
+          tar -xzf alejo-release.tar.gz -C verify
+      
+      - name: Verify release
+        run: |
+          cd verify/release
+          
+          # Check if essential files exist
+          ESSENTIAL_FILES=("start-alejo.js" "index.html" "alejo.config.json" "package.json")
+          for file in "${ESSENTIAL_FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Missing essential file: $file"
+              exit 1
+            fi
+          done
+          
+          # Verify package.json has start script
+          if ! grep -q '"start":' package.json; then
+            echo "❌ Missing start script in package.json"
+            exit 1
+          fi
+          
+          echo "✅ Release verification successful"

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Progressive Loading Demo</title>
+  <link rel="stylesheet" href="./dashboard/dashboard-styles.css">
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2ecc71;
+      --warning-color: #f39c12;
+      --error-color: #e74c3c;
+      --text-color: #333;
+      --background-color: #f5f5f5;
+      --card-background: #fff;
+      --border-color: #ddd;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--background-color);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    .demo-description {
+      background-color: var(--card-background);
+      border-left: 4px solid var(--primary-color);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 4px 4px 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .demo-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: var(--card-background);
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    button.warning {
+      background-color: var(--warning-color);
+    }
+
+    button.warning:hover {
+      background-color: #e67e22;
+    }
+
+    button.error {
+      background-color: var(--error-color);
+    }
+
+    button.error:hover {
+      background-color: #c0392b;
+    }
+
+    button:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+    }
+
+    .demo-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .demo-panel {
+      flex: 1;
+      min-width: 300px;
+      background-color: var(--card-background);
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .panel-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin: 0;
+    }
+
+    .initialization-status {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 4px;
+    }
+
+    .status-item {
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+
+    .status-item.error {
+      color: var(--error-color);
+    }
+
+    .component-status {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .component-item {
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 10px;
+      background-color: #f9f9f9;
+    }
+
+    .component-item h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      color: var(--text-color);
+    }
+
+    .component-item.initialized {
+      border-left: 4px solid var(--secondary-color);
+    }
+
+    .component-item.initializing {
+      border-left: 4px solid var(--primary-color);
+    }
+
+    .component-item.pending {
+      border-left: 4px solid var(--border-color);
+    }
+
+    .component-item.fallback {
+      border-left: 4px solid var(--warning-color);
+    }
+
+    .component-item.failed {
+      border-left: 4px solid var(--error-color);
+    }
+
+    .component-error {
+      color: var(--error-color);
+      margin-top: 5px;
+      font-size: 0.9rem;
+    }
+
+    .thresholds-container {
+      margin-top: 20px;
+    }
+
+    .resource-monitor {
+      margin-top: 20px;
+    }
+
+    .resource-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .resource-label {
+      width: 100px;
+      font-weight: 600;
+    }
+
+    .resource-value {
+      width: 60px;
+      text-align: right;
+    }
+
+    .resource-bar {
+      flex: 1;
+      height: 20px;
+      background-color: #ecf0f1;
+      border-radius: 10px;
+      margin: 0 10px;
+      overflow: hidden;
+    }
+
+    .resource-bar-fill {
+      height: 100%;
+      background-color: var(--primary-color);
+      transition: width 0.5s ease;
+    }
+
+    .resource-bar-fill.high {
+      background-color: var(--error-color);
+    }
+
+    .resource-bar-fill.medium {
+      background-color: var(--warning-color);
+    }
+
+    .resource-bar-fill.low {
+      background-color: var(--secondary-color);
+    }
+
+    .mode-indicator {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: white;
+      margin-left: 10px;
+    }
+
+    .mode-full {
+      background-color: var(--primary-color);
+    }
+
+    .mode-balanced {
+      background-color: var(--secondary-color);
+    }
+
+    .mode-conservative {
+      background-color: var(--warning-color);
+    }
+
+    .mode-minimal {
+      background-color: var(--error-color);
+    }
+
+    .system-info {
+      margin-top: 20px;
+      font-size: 0.9rem;
+    }
+
+    .system-info-item {
+      margin-bottom: 5px;
+    }
+
+    .system-info-label {
+      font-weight: 600;
+      display: inline-block;
+      width: 150px;
+    }
+
+    @media (max-width: 768px) {
+      .demo-section {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>ALEJO Progressive Loading Demo</h1>
+      <div class="demo-description">
+        <p>This demo showcases ALEJO's progressive loading sequence and fallback mechanisms for the Resource Allocation Manager. The system initializes components in dependency order, handles failures gracefully, and provides detailed logging of the initialization process.</p>
+      </div>
+    </header>
+
+    <div class="demo-controls">
+      <button id="start-demo" type="button">Start Initialization</button>
+      <button id="simulate-failure" type="button" class="warning" disabled>Simulate Component Failure</button>
+      <button id="force-fallback" type="button" class="warning" disabled>Force Fallback Manager</button>
+      <button id="reset-demo" type="button" disabled>Reset Demo</button>
+    </div>
+
+    <div class="demo-section">
+      <div class="demo-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Initialization Log</h2>
+        </div>
+        <div id="initialization-log" class="initialization-status"></div>
+      </div>
+      
+      <div class="demo-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Component Status</h2>
+        </div>
+        <div id="component-status" class="component-status">
+          <div class="component-item pending">
+            <h3>resourceManager</h3>
+            <div class="component-state">State: pending</div>
+          </div>
+          <div class="component-item pending">
+            <h3>performanceDashboard</h3>
+            <div class="component-state">State: pending</div>
+          </div>
+          <div class="component-item pending">
+            <h3>resourceThresholds</h3>
+            <div class="component-state">State: pending</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <div class="demo-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Resource Thresholds</h2>
+        </div>
+        <div id="resource-thresholds" class="thresholds-container">
+          <!-- Resource thresholds will be rendered here -->
+        </div>
+      </div>
+
+      <div class="demo-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Resource Monitor</h2>
+          <div id="resource-mode" class="mode-indicator mode-balanced">Balanced</div>
+        </div>
+        <div id="resource-monitor" class="resource-monitor">
+          <div class="resource-item">
+            <div class="resource-label">CPU</div>
+            <div class="resource-bar">
+              <div class="resource-bar-fill" style="width: 30%"></div>
+            </div>
+            <div class="resource-value">30%</div>
+          </div>
+          <div class="resource-item">
+            <div class="resource-label">Memory</div>
+            <div class="resource-bar">
+              <div class="resource-bar-fill" style="width: 45%"></div>
+            </div>
+            <div class="resource-value">45%</div>
+          </div>
+          <div class="resource-item">
+            <div class="resource-label">Temperature</div>
+            <div class="resource-bar">
+              <div class="resource-bar-fill" style="width: 40%"></div>
+            </div>
+            <div class="resource-value">40°C</div>
+          </div>
+          <div class="resource-item">
+            <div class="resource-label">Battery</div>
+            <div class="resource-bar">
+              <div class="resource-bar-fill low" style="width: 80%"></div>
+            </div>
+            <div class="resource-value">80%</div>
+          </div>
+        </div>
+
+        <div class="system-info">
+          <div class="system-info-item">
+            <span class="system-info-label">Manager Type:</span>
+            <span id="manager-type">Standard</span>
+          </div>
+          <div class="system-info-item">
+            <span class="system-info-label">Initialization Time:</span>
+            <span id="init-time">N/A</span>
+          </div>
+          <div class="system-info-item">
+            <span class="system-info-label">Components:</span>
+            <span id="component-count">0/0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createProgressiveLoadingDemo } from './resource-initialization-example.js';
+    import { EventBus } from '../core/event-bus.js';
+
+    // Global variables
+    let demoInstance = null;
+    let simulatedFailure = false;
+    let resourceUpdateInterval = null;
+
+    // DOM elements
+    const startButton = document.getElementById('start-demo');
+    const failureButton = document.getElementById('simulate-failure');
+    const fallbackButton = document.getElementById('force-fallback');
+    const resetButton = document.getElementById('reset-demo');
+    const logElement = document.getElementById('initialization-log');
+    const componentStatusElement = document.getElementById('component-status');
+    const resourceMonitorElement = document.getElementById('resource-monitor');
+    const resourceModeElement = document.getElementById('resource-mode');
+    const managerTypeElement = document.getElementById('manager-type');
+    const initTimeElement = document.getElementById('init-time');
+    const componentCountElement = document.getElementById('component-count');
+
+    // Helper functions
+    function updateLog(message, isError = false) {
+      const logItem = document.createElement('div');
+      logItem.className = isError ? 'status-item error' : 'status-item';
+      logItem.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+      logElement.appendChild(logItem);
+      logElement.scrollTop = logElement.scrollHeight;
+    }
+
+    function updateResourceDisplay(resources) {
+      if (!resources) return;
+
+      // Update CPU
+      const cpuBar = resourceMonitorElement.querySelector('.resource-item:nth-child(1) .resource-bar-fill');
+      const cpuValue = resourceMonitorElement.querySelector('.resource-item:nth-child(1) .resource-value');
+      cpuBar.style.width = `${resources.cpu}%`;
+      cpuValue.textContent = `${Math.round(resources.cpu)}%`;
+      updateBarClass(cpuBar, resources.cpu);
+
+      // Update Memory
+      const memoryBar = resourceMonitorElement.querySelector('.resource-item:nth-child(2) .resource-bar-fill');
+      const memoryValue = resourceMonitorElement.querySelector('.resource-item:nth-child(2) .resource-value');
+      memoryBar.style.width = `${resources.memory}%`;
+      memoryValue.textContent = `${Math.round(resources.memory)}%`;
+      updateBarClass(memoryBar, resources.memory);
+
+      // Update Temperature
+      const tempBar = resourceMonitorElement.querySelector('.resource-item:nth-child(3) .resource-bar-fill');
+      const tempValue = resourceMonitorElement.querySelector('.resource-item:nth-child(3) .resource-value');
+      tempBar.style.width = `${resources.temperature}%`;
+      tempValue.textContent = `${Math.round(resources.temperature)}°C`;
+      updateBarClass(tempBar, resources.temperature);
+
+      // Update Battery
+      const batteryBar = resourceMonitorElement.querySelector('.resource-item:nth-child(4) .resource-bar-fill');
+      const batteryValue = resourceMonitorElement.querySelector('.resource-item:nth-child(4) .resource-value');
+      batteryBar.style.width = `${resources.batteryLevel}%`;
+      batteryValue.textContent = `${Math.round(resources.batteryLevel)}%`;
+      updateBarClass(batteryBar, 100 - resources.batteryLevel); // Invert for battery (low is good)
+    }
+
+    function updateBarClass(barElement, value) {
+      barElement.classList.remove('high', 'medium', 'low');
+      if (value > 80) {
+        barElement.classList.add('high');
+      } else if (value > 50) {
+        barElement.classList.add('medium');
+      } else {
+        barElement.classList.add('low');
+      }
+    }
+
+    function updateResourceMode(mode) {
+      resourceModeElement.className = 'mode-indicator mode-' + mode;
+      resourceModeElement.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+    }
+
+    function updateComponentStatus(components) {
+      if (!components) return;
+
+      componentStatusElement.innerHTML = '';
+      
+      for (const [id, status] of Object.entries(components)) {
+        const componentItem = document.createElement('div');
+        componentItem.className = `component-item ${status.state}`;
+        
+        const header = document.createElement('h3');
+        header.textContent = id;
+        componentItem.appendChild(header);
+        
+        const stateElement = document.createElement('div');
+        stateElement.className = 'component-state';
+        stateElement.textContent = `State: ${status.state}`;
+        componentItem.appendChild(stateElement);
+        
+        if (status.duration) {
+          const durationElement = document.createElement('div');
+          durationElement.textContent = `Duration: ${status.duration}ms`;
+          componentItem.appendChild(durationElement);
+        }
+        
+        if (status.error) {
+          const errorElement = document.createElement('div');
+          errorElement.className = 'component-error';
+          errorElement.textContent = `Error: ${status.error}`;
+          componentItem.appendChild(errorElement);
+        }
+        
+        componentStatusElement.appendChild(componentItem);
+      }
+
+      // Update component count
+      const total = Object.keys(components).length;
+      const initialized = Object.values(components).filter(c => 
+        c.state === 'initialized' || c.state === 'fallback').length;
+      componentCountElement.textContent = `${initialized}/${total}`;
+    }
+
+    // Event handlers
+    async function startDemo() {
+      updateLog('Starting demo initialization...');
+      
+      startButton.disabled = true;
+      failureButton.disabled = false;
+      fallbackButton.disabled = false;
+      
+      try {
+        // Create the demo container
+        const demoContainer = document.createElement('div');
+        demoContainer.id = 'demo-container';
+        document.body.appendChild(demoContainer);
+        
+        // Start the progressive loading demo
+        demoInstance = await createProgressiveLoadingDemo(demoContainer);
+        
+        updateLog('Demo initialization complete');
+        resetButton.disabled = false;
+        
+        // Set up resource monitoring
+        const resourceManager = demoInstance.components.get('resourceManager');
+        if (resourceManager) {
+          // Check if using fallback
+          managerTypeElement.textContent = resourceManager.systemCapabilities ? 'Fallback' : 'Standard';
+          
+          // Update initialization time
+          const status = demoInstance.coordinator.getStatus();
+          if (status.stats.endTime && status.stats.startTime) {
+            const duration = status.stats.endTime - status.stats.startTime;
+            initTimeElement.textContent = `${duration}ms`;
+          }
+          
+          // Set up periodic resource updates
+          resourceUpdateInterval = setInterval(() => {
+            const resources = resourceManager.getResourceUsage();
+            const mode = resourceManager.getCurrentMode();
+            
+            updateResourceDisplay(resources);
+            updateResourceMode(mode);
+          }, 1000);
+        }
+      } catch (error) {
+        updateLog(`Error during initialization: ${error.message}`, true);
+        resetButton.disabled = false;
+      }
+    }
+
+    function simulateFailure() {
+      if (!demoInstance) return;
+      
+      updateLog('Simulating component failure...');
+      failureButton.disabled = true;
+      
+      // Get the event bus
+      const eventBus = EventBus.getInstance();
+      
+      // Simulate a component failure
+      eventBus.emit('component:failed', {
+        id: 'performanceDashboard',
+        error: 'Simulated failure for demonstration',
+        duration: 1500,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Update component status
+      const status = demoInstance.coordinator.getStatus();
+      if (status && status.components) {
+        const components = { ...status.components };
+        if (components.performanceDashboard) {
+          components.performanceDashboard.state = 'failed';
+          components.performanceDashboard.error = 'Simulated failure for demonstration';
+        }
+        updateComponentStatus(components);
+      }
+    }
+
+    function forceFallback() {
+      if (!demoInstance) return;
+      
+      updateLog('Forcing fallback resource manager...');
+      fallbackButton.disabled = true;
+      
+      // Get the resource manager
+      const resourceManager = demoInstance.components.get('resourceManager');
+      if (!resourceManager) return;
+      
+      // Force conservative mode (fallback behavior)
+      resourceManager.setResourceMode('conservative', true);
+      
+      // Update UI
+      managerTypeElement.textContent = 'Forced Fallback';
+      updateResourceMode('conservative');
+      
+      // Simulate increasing resource usage
+      let cpuUsage = 30;
+      let memoryUsage = 40;
+      
+      const stressInterval = setInterval(() => {
+        cpuUsage = Math.min(cpuUsage + 5, 90);
+        memoryUsage = Math.min(memoryUsage + 3, 85);
+        
+        const resources = {
+          cpu: cpuUsage,
+          memory: memoryUsage,
+          temperature: 60 + Math.random() * 10,
+          batteryLevel: 70 - (cpuUsage / 10),
+          isCharging: false
+        };
+        
+        updateResourceDisplay(resources);
+        
+        if (cpuUsage >= 90) {
+          clearInterval(stressInterval);
+          updateLog('Resource stress test complete');
+        }
+      }, 1000);
+    }
+
+    function resetDemo() {
+      updateLog('Resetting demo...');
+      
+      // Clear intervals
+      if (resourceUpdateInterval) {
+        clearInterval(resourceUpdateInterval);
+        resourceUpdateInterval = null;
+      }
+      
+      // Clean up demo instance
+      if (demoInstance && demoInstance.cleanup) {
+        demoInstance.cleanup();
+      }
+      
+      // Remove demo container
+      const demoContainer = document.getElementById('demo-container');
+      if (demoContainer) {
+        document.body.removeChild(demoContainer);
+      }
+      
+      // Reset UI
+      componentStatusElement.innerHTML = `
+        <div class="component-item pending">
+          <h3>resourceManager</h3>
+          <div class="component-state">State: pending</div>
+        </div>
+        <div class="component-item pending">
+          <h3>performanceDashboard</h3>
+          <div class="component-state">State: pending</div>
+        </div>
+        <div class="component-item pending">
+          <h3>resourceThresholds</h3>
+          <div class="component-state">State: pending</div>
+        </div>
+      `;
+      
+      // Reset resource display
+      updateResourceDisplay({
+        cpu: 30,
+        memory: 45,
+        temperature: 40,
+        batteryLevel: 80,
+        isCharging: true
+      });
+      
+      updateResourceMode('balanced');
+      managerTypeElement.textContent = 'Standard';
+      initTimeElement.textContent = 'N/A';
+      componentCountElement.textContent = '0/0';
+      
+      // Reset buttons
+      startButton.disabled = false;
+      failureButton.disabled = true;
+      fallbackButton.disabled = true;
+      resetButton.disabled = true;
+      
+      // Reset variables
+      demoInstance = null;
+      simulatedFailure = false;
+      
+      updateLog('Demo reset complete');
+    }
+
+    // Event listeners
+    startButton.addEventListener('click', startDemo);
+    failureButton.addEventListener('click', simulateFailure);
+    fallbackButton.addEventListener('click', forceFallback);
+    resetButton.addEventListener('click', resetDemo);
+
+    // Initial log message
+    updateLog('Demo page loaded. Click "Start Initialization" to begin.');
+  </script>
+</body>
+</html>
