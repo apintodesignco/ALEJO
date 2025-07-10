@@ -1,0 +1,398 @@
+// Blueprint Class: BP_ALEJOAccessibleUI
+// Parent Class: UserWidget
+// This file contains pseudo-code for an accessible UI component in Unreal Engine Blueprint format
+
+// Variables
+- ALEJOSubsystem: Object Reference
+- AccessibilitySettings: ALEJOAccessibilitySettings Object Reference
+- ResponseText: Text
+- IsConnected: Boolean
+- IsListening: Boolean
+- CurrentResourceMode: String
+
+// Event Graph
+
+// Initialize Widget - Called when the widget is constructed
+Event Construct
+{
+    // Get the ALEJO Subsystem
+    Set ALEJOSubsystem = Get Game Instance → Get Subsystem → ALEJO Subsystem
+
+    // Create default accessibility settings
+    Set AccessibilitySettings = Create Accessibility Settings
+
+    // Bind to ALEJO events
+    Bind Event to ALEJOSubsystem → On Connected
+    Bind Event to ALEJOSubsystem → On Disconnected
+    Bind Event to ALEJOSubsystem → On Text Processed
+    Bind Event to ALEJOSubsystem → On Voice Processed
+    Bind Event to ALEJOSubsystem → On ALEJO Event
+    Bind Event to ALEJOSubsystem → On Resource Mode Changed
+    Bind Event to ALEJOSubsystem → On Error
+
+    // Connect to ALEJO bridge
+    ALEJOSubsystem → Connect To ALEJO
+}
+
+// On Connected Event
+Event On Connected
+{
+    Set IsConnected = true
+    Set Text "Connection Status" = "Connected to ALEJO"
+    
+    // Announce connection status to screen readers
+    Announce To Screen Reader("ALEJO connected successfully")
+}
+
+// On Disconnected Event
+Event On Disconnected
+{
+    Set IsConnected = false
+    Set Text "Connection Status" = "Disconnected from ALEJO"
+    
+    // Announce disconnection to screen readers
+    Announce To Screen Reader("ALEJO disconnected")
+}
+
+// On Text Processed Event
+Event On Text Processed(String Response)
+{
+    // Update UI with response
+    Set ResponseText = Response
+    
+    // Announce new response to screen readers
+    Announce To Screen Reader("ALEJO says: " + Response)
+}
+
+// On Voice Processed Event
+Event On Voice Processed(String Response)
+{
+    // Update UI with response
+    Set ResponseText = Response
+    
+    // Announce new response to screen readers
+    Announce To Screen Reader("ALEJO says: " + Response)
+    
+    // If sign language is enabled, show signing avatar
+    If (AccessibilitySettings.SignLanguageEnabled)
+    {
+        Play Sign Language Animation(Response)
+    }
+}
+
+// On Resource Mode Changed Event
+Event On Resource Mode Changed(String NewMode)
+{
+    Set CurrentResourceMode = NewMode
+    
+    // Adapt UI based on resource mode
+    If (NewMode == "low")
+    {
+        Disable Animations
+        Reduce Visual Effects
+        Show Simple UI
+    }
+    Else If (NewMode == "normal")
+    {
+        Enable Standard Animations
+        Enable Standard Visual Effects
+        Show Standard UI
+    }
+    Else If (NewMode == "high")
+    {
+        Enable Advanced Animations
+        Enable Full Visual Effects
+        Show Enhanced UI
+    }
+    
+    // Announce mode change to screen readers
+    Announce To Screen Reader("Resource mode changed to " + NewMode)
+}
+
+// On ALEJO Event
+Event On ALEJO Event(String EventType, String EventData)
+{
+    // Handle accessibility announcements
+    If (EventType == "accessibility.announcement")
+    {
+        Announce To Screen Reader(EventData)
+    }
+    
+    // Handle visual feedback for audio events if visual alternatives are enabled
+    If (AccessibilitySettings.VisualAlternativesToAudio && 
+        (EventType == "voice.synthesis.started" || 
+         EventType == "voice.synthesis.completed"))
+    {
+        Show Visual Feedback Animation(EventType)
+    }
+}
+
+// On Error Event
+Event On Error(String ErrorMessage)
+{
+    // Show error in UI
+    Set Text "Error Text" = ErrorMessage
+    
+    // Announce error to screen readers
+    Announce To Screen Reader("Error: " + ErrorMessage)
+    
+    // Show visual error indicator for hearing impaired users
+    If (AccessibilitySettings.VisualAlternativesToAudio)
+    {
+        Show Error Animation
+    }
+}
+
+// Send Text Input Button Clicked
+Event Button "Send Text" Clicked
+{
+    String Input = Get Text "Input Text Field"
+    
+    // Create empty context map
+    Map<String, String> Context
+    
+    // Send text to ALEJO
+    ALEJOSubsystem → Process Text Input(Input, Context)
+    
+    // Clear input field
+    Set Text "Input Text Field" = ""
+    
+    // Visual feedback that text was sent
+    Play Button Animation
+    
+    // Announce to screen readers
+    Announce To Screen Reader("Text sent to ALEJO")
+}
+
+// Start Voice Input Button Clicked
+Event Button "Voice Input" Clicked
+{
+    If (IsListening == false)
+    {
+        Set IsListening = true
+        Set Text "Voice Button" = "Stop Listening"
+        
+        // Start recording
+        Start Microphone Recording
+        
+        // Provide visual feedback for hearing impaired users
+        If (AccessibilitySettings.VisualAlternativesToAudio)
+        {
+            Start Recording Animation
+        }
+        
+        // Announce to screen readers
+        Announce To Screen Reader("Listening for voice command")
+    }
+    Else
+    {
+        Set IsListening = false
+        Set Text "Voice Button" = "Voice Input"
+        
+        // Stop recording and process voice
+        String VoiceCommand = Stop Microphone Recording
+        
+        // Create empty context map
+        Map<String, String> Context
+        
+        // Send voice command to ALEJO
+        ALEJOSubsystem → Process Voice Command(VoiceCommand, Context)
+        
+        // Stop visual feedback
+        If (AccessibilitySettings.VisualAlternativesToAudio)
+        {
+            Stop Recording Animation
+        }
+        
+        // Announce to screen readers
+        Announce To Screen Reader("Voice command sent to ALEJO")
+    }
+}
+
+// Toggle High Contrast Mode Button Clicked
+Event Button "Toggle High Contrast" Clicked
+{
+    // Toggle high contrast mode
+    AccessibilitySettings.HighContrastMode = !AccessibilitySettings.HighContrastMode
+    
+    // Apply updated settings
+    ALEJOSubsystem → Update Accessibility Settings(AccessibilitySettings)
+    
+    // Update UI appearance
+    If (AccessibilitySettings.HighContrastMode)
+    {
+        Apply High Contrast Theme
+        Announce To Screen Reader("High contrast mode enabled")
+    }
+    Else
+    {
+        Apply Standard Theme
+        Announce To Screen Reader("High contrast mode disabled")
+    }
+}
+
+// Increase Font Size Button Clicked
+Event Button "Increase Font" Clicked
+{
+    // Increase font scale factor (max 3.0)
+    AccessibilitySettings.FontScaleFactor = Min(AccessibilitySettings.FontScaleFactor + 0.1, 3.0)
+    
+    // Apply updated settings
+    ALEJOSubsystem → Update Accessibility Settings(AccessibilitySettings)
+    
+    // Update UI font size
+    Update Font Sizes(AccessibilitySettings.FontScaleFactor)
+    
+    // Announce to screen readers
+    Announce To Screen Reader("Font size increased to " + ToString(AccessibilitySettings.FontScaleFactor))
+}
+
+// Decrease Font Size Button Clicked
+Event Button "Decrease Font" Clicked
+{
+    // Decrease font scale factor (min 0.5)
+    AccessibilitySettings.FontScaleFactor = Max(AccessibilitySettings.FontScaleFactor - 0.1, 0.5)
+    
+    // Apply updated settings
+    ALEJOSubsystem → Update Accessibility Settings(AccessibilitySettings)
+    
+    // Update UI font size
+    Update Font Sizes(AccessibilitySettings.FontScaleFactor)
+    
+    // Announce to screen readers
+    Announce To Screen Reader("Font size decreased to " + ToString(AccessibilitySettings.FontScaleFactor))
+}
+
+// Toggle Screen Reader Button Clicked
+Event Button "Toggle Screen Reader" Clicked
+{
+    // Toggle screen reader mode
+    AccessibilitySettings.ScreenReaderEnabled = !AccessibilitySettings.ScreenReaderEnabled
+    
+    // Apply updated settings
+    ALEJOSubsystem → Update Accessibility Settings(AccessibilitySettings)
+    
+    // Announce change
+    If (AccessibilitySettings.ScreenReaderEnabled)
+    {
+        Announce To Screen Reader("Screen reader mode enabled")
+    }
+    Else
+    {
+        Announce To Screen Reader("Screen reader mode disabled")
+    }
+}
+
+// Helper Function: Announce To Screen Reader
+Function Announce To Screen Reader(String Message)
+{
+    // Only announce if screen reader is enabled
+    If (AccessibilitySettings.ScreenReaderEnabled)
+    {
+        // Use Unreal's accessibility system to announce text
+        Accessibility → Announce Text(Message)
+        
+        // Also send event to ALEJO for coordinated announcement
+        Map<String, String> EventData
+        EventData.Add("message", Message)
+        
+        ALEJOSubsystem → Send Custom Event("ui.screenreader.announce", JsonStringify(EventData))
+    }
+}
+
+// Helper Function: Update Font Sizes
+Function Update Font Sizes(Float ScaleFactor)
+{
+    // Update all text elements in the UI
+    ForEach (TextBlock in Get All Text Blocks)
+    {
+        TextBlock.FontSize = BaseFontSize * ScaleFactor
+    }
+    
+    // Update all button text
+    ForEach (Button in Get All Buttons)
+    {
+        Button.FontSize = BaseButtonFontSize * ScaleFactor
+    }
+    
+    // Update input field font size
+    InputTextField.FontSize = BaseInputFontSize * ScaleFactor
+}
+
+// Helper Function: Apply High Contrast Theme
+Function Apply High Contrast Theme
+{
+    // Set background to black
+    Set Background Color = (0, 0, 0, 1)
+    
+    // Set text to white or yellow
+    ForEach (TextBlock in Get All Text Blocks)
+    {
+        TextBlock.Color = (1, 1, 0, 1) // Yellow
+    }
+    
+    // Set button colors for high visibility
+    ForEach (Button in Get All Buttons)
+    {
+        Button.Background = (0, 0, 0.8, 1) // Dark Blue
+        Button.BorderColor = (1, 1, 1, 1) // White
+        Button.TextColor = (1, 1, 1, 1) // White
+    }
+    
+    // Increase border thickness for better visibility
+    ForEach (Border in Get All Borders)
+    {
+        Border.BorderThickness = 3
+    }
+}
+
+// Helper Function: Apply Standard Theme
+Function Apply Standard Theme
+{
+    // Reset to standard theme colors
+    Set Background Color = (0.1, 0.1, 0.1, 1) // Dark gray
+    
+    ForEach (TextBlock in Get All Text Blocks)
+    {
+        TextBlock.Color = (0.9, 0.9, 0.9, 1) // Light gray
+    }
+    
+    ForEach (Button in Get All Buttons)
+    {
+        Button.Background = (0.2, 0.2, 0.2, 1) // Medium gray
+        Button.BorderColor = (0.3, 0.3, 0.3, 1) // Light gray
+        Button.TextColor = (0.9, 0.9, 0.9, 1) // Light gray
+    }
+    
+    ForEach (Border in Get All Borders)
+    {
+        Border.BorderThickness = 1
+    }
+}
+
+// Widget Designer Layout
+// 
+// +------------------------------------------+
+// | ALEJO Assistant                [Status]  |
+// +------------------------------------------+
+// |                                          |
+// |  [Response Text Area]                    |
+// |                                          |
+// +------------------------------------------+
+// |  [Input Text Field]         [Send Text]  |
+// |                                          |
+// |  [Voice Input]                           |
+// +------------------------------------------+
+// | Accessibility:                           |
+// |  [High Contrast] [Font +] [Font -]       |
+// |  [Screen Reader] [Sign Language]         |
+// +------------------------------------------+
+// |  [Error Text Area]                       |
+// +------------------------------------------+
+//
+// Note: All UI elements have:
+// - Proper tab navigation order
+// - ARIA roles and labels
+// - Keyboard shortcuts
+// - High color contrast options
+// - Scalable fonts

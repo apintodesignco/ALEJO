@@ -15,10 +15,23 @@
  * - Graceful degradation: Core functionality works even without advanced features
  */
 
+import { EventBus } from '../../core/events/event-bus.js';
+import { Logger } from '../../core/logger/logger.js';
+
+// Accessibility Core Components
+import { AriaManager } from './aria-manager.js';
+import { AriaEnhancer } from './aria-enhancer.js';
+import { KeyboardNavigationManager } from './keyboard-navigation.js';
+import { VisualAdaptationsManager } from './visual-adaptations.js';
+import { AccessibilityPanel } from './accessibility-panel.js';
+
+// Legacy Components (for backward compatibility)
 import { adaptiveFeatureManager } from './adaptive-feature-manager.js';
 import { accessibilitySettingsPanel } from './accessibility-settings-panel.js';
-import { eventEmitter } from '../../core/event-emitter.js';
-import { auditTrail } from '../../security/audit-trail.js';
+import { fontScalingManager } from './font-scaling-manager.js';
+import { highContrastManager } from './high-contrast-manager.js';
+import { colorBlindnessManager } from './color-blindness-manager.js';
+import { screenReaderManager } from './screen-reader-manager.js';
 
 /**
  * Initialize the adaptive accessibility system
@@ -26,15 +39,26 @@ import { auditTrail } from '../../security/audit-trail.js';
  * @param {Object} options Configuration options
  * @param {boolean} [options.autoDetect=true] Whether to enable automatic detection
  * @param {boolean} [options.showWelcomeMessage=true] Whether to show an initial welcome message
+ * @param {boolean} [options.enableKeyboardNavigation=true] Whether to enable enhanced keyboard navigation
+ * @param {boolean} [options.enhanceAriaAttributes=true] Whether to auto-enhance ARIA attributes
  * @param {Object} [options.detectionThresholds] Custom thresholds for detection sensitivity
  * @returns {Promise<boolean>} Success status
  */
 async function initializeAccessibilitySystem(options = {}) {
     try {
+        // Set up logging
+        const logger = new Logger('AccessibilitySystem');
+        logger.info('Initializing accessibility system...');
+        
+        // Get event bus
+        const eventBus = EventBus.getInstance();
+        
         // Default options
         const defaultOptions = {
             autoDetect: true,
             showWelcomeMessage: true,
+            enableKeyboardNavigation: true,
+            enhanceAriaAttributes: true,
             detectionThresholds: {
                 vision: 0.7,
                 hearing: 0.7,
@@ -46,32 +70,125 @@ async function initializeAccessibilitySystem(options = {}) {
         // Merge with provided options
         const finalOptions = { ...defaultOptions, ...options };
         
+        // Initialize core accessibility components
+        logger.info('Initializing ARIA Manager...');
+        const ariaInitialized = await AriaManager.initialize({
+            announceInitialization: false
+        }).catch(error => {
+            logger.error('ARIA Manager initialization failed', error);
+            return false;
+        });
+        
+        // Initialize ARIA Enhancer if enabled
+        let ariaEnhancerInitialized = false;
+        if (finalOptions.enhanceAriaAttributes && ariaInitialized) {
+            logger.info('Initializing ARIA Enhancer...');
+            ariaEnhancerInitialized = await AriaEnhancer.initialize({
+                autoEnhance: true,
+                watchDomChanges: true
+            }).catch(error => {
+                logger.error('ARIA Enhancer initialization failed', error);
+                return false;
+            });
+        }
+        
+        // Initialize Keyboard Navigation if enabled
+        let keyboardNavInitialized = false;
+        if (finalOptions.enableKeyboardNavigation) {
+            logger.info('Initializing Keyboard Navigation Manager...');
+            keyboardNavInitialized = await KeyboardNavigationManager.initialize({
+                createSkipLinks: true
+            }).catch(error => {
+                logger.error('Keyboard Navigation initialization failed', error);
+                return false;
+            });
+        }
+        
+        // Initialize Visual Adaptations Manager
+        logger.info('Initializing Visual Adaptations Manager...');
+        const visualAdaptationsInitialized = await VisualAdaptationsManager.initialize({
+            detectOsSettings: finalOptions.autoDetect,
+            applyImmediately: false // Will apply after loading user preferences
+        }).catch(error => {
+            logger.error('Visual Adaptations initialization failed', error);
+            return false;
+        });
+        
+        // Initialize the Accessibility Settings Panel
+        logger.info('Initializing Accessibility Panel...');
+        const accessibilityPanelInitialized = await AccessibilityPanel.initialize({
+            keyboardShortcut: true
+        }).catch(error => {
+            logger.error('Accessibility Panel initialization failed', error);
+            return false;
+        });
+        
+        // Legacy components initialization (for backward compatibility)
         // Initialize the feature manager
         const featureManagerInitialized = await adaptiveFeatureManager.initialize({
             autoDetection: finalOptions.autoDetect,
             thresholds: finalOptions.detectionThresholds
-        });
+        }).catch(() => false);
         
-        // Initialize the settings panel (but don't show it yet)
-        const panelInitialized = await accessibilitySettingsPanel.initialize();
+        // Initialize the legacy settings panel (but don't show it)
+        const legacyPanelInitialized = await accessibilitySettingsPanel.initialize()
+            .catch(() => false);
         
-        // Register keyboard shortcut to open settings panel
-        document.addEventListener('keydown', (event) => {
-            // Alt + A to open accessibility settings
-            if (event.altKey && event.key === 'a') {
-                accessibilitySettingsPanel.showPanel();
-                event.preventDefault();
-            }
-        });
+        // Initialize font scaling manager
+        const fontScalingInitialized = await fontScalingManager.initialize({
+            applyImmediately: false // Visual adaptations will handle this
+        }).catch(() => false);
+        
+        // Initialize high contrast manager if it exists
+        const highContrastInitialized = await highContrastManager.initialize({
+            applyImmediately: false // Visual adaptations will handle this
+        }).catch(() => false);
+        
+        // Initialize color blindness manager
+        const colorBlindnessInitialized = await colorBlindnessManager.initialize({
+            detectSystemPreference: false, // Visual adaptations will handle this
+            applyImmediately: false
+        }).catch(() => false);
+        
+        // Initialize screen reader manager
+        const screenReaderInitialized = await screenReaderManager.initialize({ 
+            detectScreenReader: finalOptions.autoDetect,
+            enableResourceManagement: true
+        }).catch(() => false);
+        
+        // Apply visual adaptations after all components are initialized
+        if (visualAdaptationsInitialized) {
+            await VisualAdaptationsManager.applyAllAdaptations();
+        }
+        
+        // Combine initialization status for core components
+        const coreInitialized = ariaInitialized && 
+                              visualAdaptationsInitialized && 
+                              accessibilityPanelInitialized;
+        
+        // Combine initialization status for legacy components
+        const legacyInitialized = fontScalingInitialized || 
+                                 highContrastInitialized || 
+                                 colorBlindnessInitialized || 
+                                 screenReaderInitialized;
+        
+        // Combined overall status
+        const combinedInitializationStatus = coreInitialized || legacyInitialized;
         
         // Show welcome message if enabled
-        if (finalOptions.showWelcomeMessage && featureManagerInitialized) {
+        if (finalOptions.showWelcomeMessage && combinedInitializationStatus) {
             showAccessibilityWelcomeMessage();
         }
         
         // Emit initialization event
         eventEmitter.emit('accessibility:system:initialized', {
-            success: featureManagerInitialized && panelInitialized
+            success: combinedInitializationStatus && panelInitialized,
+            components: {
+                fontScaling: fontScalingInitialized,
+                highContrast: highContrastInitialized,
+                colorBlindness: colorBlindnessInitialized,
+                screenReader: screenReaderInitialized
+            }
         });
         
         // Log initialization
@@ -79,7 +196,7 @@ async function initializeAccessibilitySystem(options = {}) {
             autoDetection: finalOptions.autoDetect
         });
         
-        return featureManagerInitialized && panelInitialized;
+        return combinedInitializationStatus && panelInitialized;
     } catch (error) {
         console.error('Failed to initialize accessibility system:', error);
         auditTrail.log('error', 'Failed to initialize accessibility system', {
@@ -143,9 +260,23 @@ function showAccessibilityWelcomeMessage() {
 
 /**
  * Show the accessibility settings panel
+ * @returns {boolean} Success status
  */
 function showAccessibilitySettings() {
-    accessibilitySettingsPanel.showPanel();
+    try {
+        // Try modern panel first
+        if (AccessibilityPanel && AccessibilityPanel.initialized) {
+            AccessibilityPanel.show();
+            return true;
+        }
+        
+        // Fall back to legacy panel
+        accessibilitySettingsPanel.showPanel();
+        return true;
+    } catch (error) {
+        console.error('Failed to show accessibility settings', error);
+        return false;
+    }
 }
 
 /**
@@ -181,6 +312,17 @@ export {
     getAccessibilityStatus,
     toggleAccessibilityFeature,
     resetAccessibilityFeatures,
-    adaptiveFeatureManager,
-    accessibilitySettingsPanel
+    
+    // Export component instances for direct access
+    AriaManager,
+    AriaEnhancer,
+    KeyboardNavigationManager,
+    VisualAdaptationsManager,
+    AccessibilityPanel,
+    
+    // Export individual feature managers for direct access
+    fontScalingManager,
+    highContrastManager,
+    colorBlindnessManager,
+    screenReaderManager
 };

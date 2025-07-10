@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Accessibility Features Test</title>
+  <style>
+    :root {
+      --primary-color: #4299e1;
+      --secondary-color: #2b6cb0;
+      --text-color: #2d3748;
+      --background-color: #f7fafc;
+      --card-background: #ffffff;
+      --border-color: #e2e8f0;
+      --success-color: #48bb78;
+      --warning-color: #ed8936;
+      --danger-color: #e53e3e;
+      --focus-color: #4299e1;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      line-height: 1.5;
+      color: var(--text-color);
+      background-color: var(--background-color);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+
+    h1, h2, h3 {
+      margin-top: 0;
+      color: var(--text-color);
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background-color: var(--card-background);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: var(--secondary-color);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .card {
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-demo {
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: var(--card-background);
+      padding: 2rem;
+      border-radius: 8px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tab {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .tab.active {
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      background-color: var(--card-background);
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+
+    .tab-content {
+      padding: 1rem;
+      border: 1px solid var(--border-color);
+      border-top: none;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      background-color: var(--card-background);
+      min-width: 160px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .dropdown-menu a {
+      color: var(--text-color);
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: var(--background-color);
+    }
+
+    .show {
+      display: block;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .status-success {
+      background-color: var(--success-color);
+    }
+
+    .status-warning {
+      background-color: var(--warning-color);
+    }
+
+    .status-danger {
+      background-color: var(--danger-color);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>ALEJO Accessibility Features Test</h1>
+      <p>This page demonstrates and tests the accessibility features implemented in ALEJO.</p>
+      <div class="button-group">
+        <button id="open-settings-btn">Open Accessibility Settings</button>
+        <button id="toggle-high-contrast-btn">Toggle High Contrast</button>
+        <button id="increase-font-btn">Increase Font Size</button>
+        <button id="decrease-font-btn">Decrease Font Size</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="container">
+    <section id="keyboard-section" aria-labelledby="keyboard-heading">
+      <h2 id="keyboard-heading">Keyboard Navigation</h2>
+      <p>Test keyboard navigation and focus management with the following examples:</p>
+
+      <div class="feature-demo">
+        <h3>Focus Trapping in Modal Dialog</h3>
+        <button id="open-modal-btn">Open Modal Dialog</button>
+        <div id="test-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description">
+          <div class="modal-content">
+            <h3 id="modal-title">Modal Dialog</h3>
+            <p id="modal-description">This is a modal dialog that traps keyboard focus. Try tabbing through the elements.</p>
+            <input type="text" placeholder="Text input in modal">
+            <div class="button-group">
+              <button>Action Button</button>
+              <button id="close-modal-btn">Close Modal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-demo">
+        <h3>Accessible Tabs</h3>
+        <div class="tabs" role="tablist">
+          <button id="tab1-btn" class="tab active" role="tab" aria-selected="true" aria-controls="tab1-content">Tab 1</button>
+          <button id="tab2-btn" class="tab" role="tab" aria-selected="false" aria-controls="tab2-content">Tab 2</button>
+          <button id="tab3-btn" class="tab" role="tab" aria-selected="false" aria-controls="tab3-content">Tab 3</button>
+        </div>
+        <div class="tab-content">
+          <div id="tab1-content" class="tab-pane active" role="tabpanel" aria-labelledby="tab1-btn">
+            <p>Content of Tab 1. This demonstrates accessible tabs with keyboard navigation.</p>
+          </div>
+          <div id="tab2-content" class="tab-pane" role="tabpanel" aria-labelledby="tab2-btn">
+            <p>Content of Tab 2. Use arrow keys to navigate between tabs.</p>
+            <button>Tab 2 Button</button>
+          </div>
+          <div id="tab3-content" class="tab-pane" role="tabpanel" aria-labelledby="tab3-btn">
+            <p>Content of Tab 3. Press Space or Enter to select a tab.</p>
+            <input type="text" placeholder="Tab 3 Input">
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-demo">
+        <h3>Dropdown Menu</h3>
+        <div class="dropdown">
+          <button id="dropdown-btn" aria-haspopup="true" aria-expanded="false">Dropdown Menu</button>
+          <div id="dropdown-menu" class="dropdown-menu" role="menu" aria-labelledby="dropdown-btn">
+            <a href="#" role="menuitem">Option 1</a>
+            <a href="#" role="menuitem">Option 2</a>
+            <a href="#" role="menuitem">Option 3</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="visual-section" aria-labelledby="visual-heading">
+      <h2 id="visual-heading">Visual Adaptations</h2>
+      <p>This section demonstrates visual accessibility features including high contrast mode, font scaling, and color blindness accommodations.</p>
+
+      <div class="feature-demo">
+        <h3>Text Readability</h3>
+        <p>This is a standard paragraph with normal text. When font scaling is activated, this text should adjust accordingly while maintaining readability.</p>
+        <p>This text <strong>contains formatting</strong> like <em>italics</em> and <mark>highlighting</mark> to test how it appears in different modes.</p>
+      </div>
+
+      <div class="feature-demo">
+        <h3>Color Contrast</h3>
+        <div class="button-group">
+          <button class="primary-btn">Primary Button</button>
+          <button class="secondary-btn">Secondary Button</button>
+          <button class="danger-btn">Danger Button</button>
+          <button disabled>Disabled Button</button>
+        </div>
+        <p>The buttons above should maintain sufficient contrast in all modes.</p>
+      </div>
+
+      <div class="feature-demo">
+        <h3>Status Indicators</h3>
+        <p>
+          <span class="status-indicator status-success"></span> Success
+          <span class="status-indicator status-warning"></span> Warning
+          <span class="status-indicator status-danger"></span> Error
+        </p>
+        <p>Color blindness modes should make these indicators distinguishable.</p>
+      </div>
+
+      <div class="feature-demo">
+        <h3>Form Elements</h3>
+        <form>
+          <div class="form-element-container">
+            <label for="test-input">Text Input:</label>
+            <input type="text" id="test-input" placeholder="Placeholder text">
+          </div>
+          <div class="form-element-container">
+            <label for="test-select">Select Menu:</label>
+            <select id="test-select">
+              <option>Option 1</option>
+              <option>Option 2</option>
+              <option>Option 3</option>
+            </select>
+          </div>
+          <div class="form-element-container">
+            <label>
+              <input type="checkbox"> Checkbox option
+            </label>
+          </div>
+          <div class="form-element-container">
+            <fieldset>
+              <legend>Radio Options</legend>
+              <label><input type="radio" name="radio-group"> Option A</label>
+              <label><input type="radio" name="radio-group"> Option B</label>
+            </fieldset>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="aria-section" aria-labelledby="aria-heading">
+      <h2 id="aria-heading">ARIA Enhancements</h2>
+      <p>This section demonstrates the ARIA attribute enhancements applied automatically.</p>
+
+      <div class="feature-demo">
+        <h3>Live Regions</h3>
+        <div id="live-region-demo" aria-live="polite" role="status"></div>
+        <button id="announce-btn">Make Announcement</button>
+      </div>
+
+      <div class="feature-demo">
+        <h3>Progress Indicator</h3>
+        <div role="progressbar" id="test-progress" aria-label="Download progress" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" class="progress-bar">
+          <div class="progress-bar-fill"></div>
+        </div>
+        <div class="button-group">
+          <button id="progress-decrease">Decrease</button>
+          <button id="progress-increase">Increase</button>
+        </div>
+      </div>
+
+      <div class="feature-demo">
+        <h3>Accordion</h3>
+        <div class="accordion">
+          <div class="card">
+            <button id="accordion1-header" aria-expanded="false" aria-controls="accordion1-content">
+              Section 1
+            </button>
+            <div id="accordion1-content" role="region" aria-labelledby="accordion1-header" hidden>
+              <p>This is the content for section 1 of the accordion.</p>
+            </div>
+          </div>
+          <div class="card">
+            <button id="accordion2-header" aria-expanded="false" aria-controls="accordion2-content">
+              Section 2
+            </button>
+            <div id="accordion2-content" role="region" aria-labelledby="accordion2-header" hidden>
+              <p>This is the content for section 2 of the accordion.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-reader-section" aria-labelledby="screen-reader-heading">
+      <h2 id="screen-reader-heading">Screen Reader Support</h2>
+      <p>Test screen reader features and announcements.</p>
+
+      <div class="feature-demo">
+        <h3>Hidden Content for Screen Readers</h3>
+        <p>The following text is only announced to screen readers: <span class="sr-only">This text is only visible to screen readers.</span></p>
+      </div>
+
+      <div class="feature-demo">
+        <h3>Data Table</h3>
+        <table aria-describedby="table-caption">
+          <caption id="table-caption">Monthly Resource Usage</caption>
+          <thead>
+            <tr>
+              <th scope="col">Resource</th>
+              <th scope="col">January</th>
+              <th scope="col">February</th>
+              <th scope="col">March</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">CPU</th>
+              <td>45%</td>
+              <td>62%</td>
+              <td>78%</td>
+            </tr>
+            <tr>
+              <th scope="row">Memory</th>
+              <td>30%</td>
+              <td>42%</td>
+              <td>51%</td>
+            </tr>
+            <tr>
+              <th scope="row">Disk</th>
+              <td>25%</td>
+              <td>30%</td>
+              <td>40%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <nav id="main-navigation" aria-label="Main Navigation">
+    <div class="container">
+      <h2>Navigation</h2>
+      <ul>
+        <li><a href="#keyboard-section">Keyboard Navigation</a></li>
+        <li><a href="#visual-section">Visual Adaptations</a></li>
+        <li><a href="#aria-section">ARIA Enhancements</a></li>
+        <li><a href="#screen-reader-section">Screen Reader Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 ALEJO Accessibility System</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    // Import the accessibility components
+    import { 
+      AriaManager, 
+      AriaEnhancer, 
+      KeyboardNavigationManager, 
+      VisualAdaptationsManager, 
+      AccessibilityPanel 
+    } from '../src/personalization/accessibility/index.js';
+
+    // Initialize components
+    async function initializeComponents() {
+      console.log('Initializing accessibility components...');
+      
+      try {
+        // Initialize ARIA Manager
+        await AriaManager.initialize();
+        console.log('ARIA Manager initialized');
+        
+        // Initialize ARIA Enhancer
+        await AriaEnhancer.initialize();
+        console.log('ARIA Enhancer initialized');
+        
+        // Initialize Keyboard Navigation Manager
+        await KeyboardNavigationManager.initialize();
+        console.log('Keyboard Navigation Manager initialized');
+        
+        // Initialize Visual Adaptations Manager
+        await VisualAdaptationsManager.initialize();
+        console.log('Visual Adaptations Manager initialized');
+        
+        // Initialize Accessibility Panel
+        await AccessibilityPanel.initialize();
+        console.log('Accessibility Panel initialized');
+        
+        // Apply visual adaptations
+        await VisualAdaptationsManager.applyAllAdaptations();
+        console.log('Visual adaptations applied');
+        
+        // Setup event listeners
+        setupEventListeners();
+        
+        // Announce initialization completed
+        AriaManager.announceMessage('Accessibility components initialized');
+        
+      } catch (error) {
+        console.error('Error initializing accessibility components:', error);
+      }
+    }
+    
+    // Setup event listeners for interactive elements
+    function setupEventListeners() {
+      // Open accessibility settings
+      document.getElementById('open-settings-btn').addEventListener('click', () => {
+        AccessibilityPanel.show();
+      });
+      
+      // Toggle high contrast
+      document.getElementById('toggle-high-contrast-btn').addEventListener('click', async () => {
+        const settings = VisualAdaptationsManager.getSettings();
+        await VisualAdaptationsManager.updateSetting('highContrast', !settings.highContrast);
+        AriaManager.announceMessage(`High contrast mode ${settings.highContrast ? 'disabled' : 'enabled'}`);
+      });
+      
+      // Font size controls
+      document.getElementById('increase-font-btn').addEventListener('click', async () => {
+        const settings = VisualAdaptationsManager.getSettings();
+        const newSize = Math.min(settings.fontSize + 10, 200);
+        await VisualAdaptationsManager.updateSetting('fontSize', newSize);
+        AriaManager.announceMessage(`Font size increased to ${newSize}%`);
+      });
+      
+      document.getElementById('decrease-font-btn').addEventListener('click', async () => {
+        const settings = VisualAdaptationsManager.getSettings();
+        const newSize = Math.max(settings.fontSize - 10, 75);
+        await VisualAdaptationsManager.updateSetting('fontSize', newSize);
+        AriaManager.announceMessage(`Font size decreased to ${newSize}%`);
+      });
+      
+      // Modal dialog
+      const modal = document.getElementById('test-modal');
+      document.getElementById('open-modal-btn').addEventListener('click', () => {
+        modal.style.display = 'flex';
+        // Create focus trap
+        modal.focusTrapId = KeyboardNavigationManager.createFocusTrap(modal);
+      });
+      
+      document.getElementById('close-modal-btn').addEventListener('click', () => {
+        modal.style.display = 'none';
+        // Remove focus trap
+        if (modal.focusTrapId) {
+          KeyboardNavigationManager.removeFocusTrap(modal.focusTrapId);
+        }
+      });
+      
+      // Tabs
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Deactivate all tabs
+          tabs.forEach(t => {
+            t.classList.remove('active');
+            t.setAttribute('aria-selected', 'false');
+            document.getElementById(t.getAttribute('aria-controls')).classList.remove('active');
+          });
+          
+          // Activate clicked tab
+          tab.classList.add('active');
+          tab.setAttribute('aria-selected', 'true');
+          document.getElementById(tab.getAttribute('aria-controls')).classList.add('active');
+          
+          AriaManager.announceMessage(`${tab.textContent} tab selected`);
+        });
+      });
+      
+      // Keyboard navigation for tabs
+      const tabList = document.querySelector('[role="tablist"]');
+      tabList.addEventListener('keydown', (e) => {
+        // Get all tabs and current tab index
+        const allTabs = Array.from(tabList.querySelectorAll('[role="tab"]'));
+        const currentIndex = allTabs.findIndex(tab => tab === document.activeElement);
+        
+        let nextIndex;
+        
+        switch (e.key) {
+          case 'ArrowRight':
+            nextIndex = (currentIndex + 1) % allTabs.length;
+            e.preventDefault();
+            allTabs[nextIndex].focus();
+            allTabs[nextIndex].click();
+            break;
+            
+          case 'ArrowLeft':
+            nextIndex = (currentIndex - 1 + allTabs.length) % allTabs.length;
+            e.preventDefault();
+            allTabs[nextIndex].focus();
+            allTabs[nextIndex].click();
+            break;
+        }
+      });
+      
+      // Dropdown
+      const dropdownBtn = document.getElementById('dropdown-btn');
+      const dropdownMenu = document.getElementById('dropdown-menu');
+      
+      dropdownBtn.addEventListener('click', () => {
+        const expanded = dropdownBtn.getAttribute('aria-expanded') === 'true';
+        dropdownBtn.setAttribute('aria-expanded', !expanded);
+        dropdownMenu.classList.toggle('show');
+        
+        if (!expanded) {
+          // Create a focus trap for the dropdown menu
+          dropdownMenu.focusTrapId = KeyboardNavigationManager.createFocusTrap(document.querySelector('.dropdown'));
+        } else if (dropdownMenu.focusTrapId) {
+          // Remove the focus trap
+          KeyboardNavigationManager.removeFocusTrap(dropdownMenu.focusTrapId);
+        }
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownBtn.setAttribute('aria-expanded', 'false');
+          dropdownMenu.classList.remove('show');
+          
+          if (dropdownMenu.focusTrapId) {
+            KeyboardNavigationManager.removeFocusTrap(dropdownMenu.focusTrapId);
+          }
+        }
+      });
+      
+      // Live region announcement
+      document.getElementById('announce-btn').addEventListener('click', () => {
+        const messages = [
+          'This is a polite announcement.',
+          'Accessibility feature activated.',
+          'Data has been updated.',
+          'Your changes have been saved.'
+        ];
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        
+        document.getElementById('live-region-demo').textContent = randomMessage;
+        setTimeout(() => {
+          document.getElementById('live-region-demo').textContent = '';
+        }, 3000);
+      });
+      
+      // Progress bar controls
+      let progress = 25;
+      const progressBar = document.getElementById('test-progress');
+      const progressBarFill = progressBar.querySelector('div');
+      
+      document.getElementById('progress-decrease').addEventListener('click', () => {
+        progress = Math.max(0, progress - 10);
+        updateProgress();
+      });
+      
+      document.getElementById('progress-increase').addEventListener('click', () => {
+        progress = Math.min(100, progress + 10);
+        updateProgress();
+      });
+      
+      function updateProgress() {
+        progressBar.setAttribute('aria-valuenow', progress);
+        progressBarFill.style.width = `${progress}%`;
+        AriaManager.announceMessage(`Progress updated to ${progress} percent`);
+      }
+      
+      // Accordion
+      const accordionButtons = document.querySelectorAll('.accordion button');
+      accordionButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const expanded = button.getAttribute('aria-expanded') === 'true';
+          button.setAttribute('aria-expanded', !expanded);
+          
+          const content = document.getElementById(button.getAttribute('aria-controls'));
+          content.hidden = expanded;
+          
+          AriaManager.announceMessage(`Section ${expanded ? 'collapsed' : 'expanded'}`);
+        });
+      });
+    }
+    
+    // Initialize the components when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', initializeComponents);
+  </script>
+</body>
+</html>

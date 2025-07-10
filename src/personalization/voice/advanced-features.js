@@ -16,11 +16,22 @@ import { publish, subscribe } from '../../core/events.js';
 import * as security from '../../security/index.js';
 import * as training from './training.js';
 import * as recognition from './recognition.js';
+// Import resource management utilities
+import { 
+  registerWithResourceManager, 
+  unregisterFromResourceManager, 
+  getCurrentResourceMode,
+  getComponentQualityConfig 
+} from './performance-integration.js';
 
 // TensorFlow.js for neural network processing
 import * as tf from '@tensorflow/tfjs';
-// Optional: Load WASM backend for better performance on devices without WebGL
-// import '@tensorflow/tfjs-backend-wasm';
+// Import WASM backend for devices without WebGL
+import '@tensorflow/tfjs-backend-wasm';
+// Import CPU backend as fallback
+import '@tensorflow/tfjs-backend-cpu';
+// Import WebGL for devices with GPU capabilities
+import '@tensorflow/tfjs-backend-webgl';
 
 // Constants
 const MODEL_VERSION = '1.0.0';
@@ -67,8 +78,20 @@ export async function initialize(options = {}) {
       // Still initialize but with limited functionality
     }
     
+    // Register with Resource Manager
+    await registerWithResourceManager({
+      componentId: 'voice.advancedFeatures',
+      priority: options.highPriority ? 'high' : 'medium',
+      requiresGPU: options.requiresGPU || false
+    });
+    
     // Load required models
-    await loadModels(options);
+    const modelsLoaded = await loadModels(options);
+    
+    if (!modelsLoaded) {
+      console.warn('Advanced voice features will run with limited functionality due to model loading issues');
+      // Continue initialization but with reduced capabilities
+    }
     
     // Subscribe to events
     subscribe('user:login', handleUserLogin);
@@ -76,6 +99,14 @@ export async function initialize(options = {}) {
     subscribe('security:level_changed', handleSecurityLevelChange);
     subscribe('voice:training_completed', handleTrainingCompleted);
     subscribe('voice:recognition_result', handleRecognitionResult);
+    subscribe('resource-manager:mode-changed', handleResourceModeChange);
+    subscribe('accessibility:preferences-changed', handleAccessibilityPreferencesChange);
+    
+    // Announce initialization to screen readers
+    publish('accessibility:announce', {
+      message: 'Advanced voice features initialized',
+      priority: 'polite'
+    });
     
     // Log initialization
     security.auditTrail.log('voice:advanced_features:initialized', { 
@@ -90,49 +121,191 @@ export async function initialize(options = {}) {
     security.auditTrail.log('voice:advanced_features:initialization_failed', { 
       error: error.message 
     });
+    
+    // Announce failure to screen readers
+    publish('accessibility:announce', {
+      message: 'Advanced voice features initialization failed',
+      priority: 'assertive'
+    });
+    
     return false;
   }
 }
 
 /**
- * Load required machine learning models
+ * Load required machine learning models with resource-aware approach
  * @param {Object} options - Loading options
- * @returns {Promise<void>}
+ * @returns {Promise<boolean>} - Success status
  */
 async function loadModels(options = {}) {
   try {
-    // Set backend if specified
-    if (options.tfBackend) {
-      await tf.setBackend(options.tfBackend);
+    // Get current resource mode for adaptive loading decisions
+    const { getCurrentResourceMode } = await import('./performance-integration.js');
+    const resourceMode = getCurrentResourceMode();
+    const { RESOURCE_MODES } = await import('../../performance/index.js');
+    
+    // Set appropriate backend based on resource mode and device capabilities
+    let selectedBackend = options.tfBackend;
+    if (!selectedBackend) {
+      // Choose appropriate backend based on device and resource constraints
+      const { FeatureDetection } = await import('../../core/progressive-enhancement/feature-detection.js');
+      const hasWebGL = await FeatureDetection.checkCapability('webgl');
+      const hasWebGL2 = await FeatureDetection.checkCapability('webgl2');
+      
+      if (resourceMode === RESOURCE_MODES.PERFORMANCE) {
+        // Prioritize GPU for performance mode if available
+        selectedBackend = hasWebGL2 ? 'webgl' : (hasWebGL ? 'webgl' : 'cpu');
+      } else if (resourceMode === RESOURCE_MODES.EFFICIENCY) {
+        // Use WASM or CPU for efficiency mode to save battery
+        selectedBackend = 'wasm';
+      } else {
+        // Balanced mode - use WebGL if available, otherwise fall back to WASM
+        selectedBackend = hasWebGL ? 'webgl' : 'wasm';
+      }
     }
     
-    // Load voice embedding model
-    voiceModel = await tf.loadLayersModel(
-      options.voiceModelPath || 'models/voice/voice_embedding_model'
-    );
+    // Set the selected backend
+    console.log(`Setting TensorFlow.js backend to: ${selectedBackend}`);
+    await tf.setBackend(selectedBackend);
+    await tf.ready();
     
-    // Load emotion detection model if enabled
-    if (options.enableEmotionDetection !== false) {
-      emotionModel = await tf.loadLayersModel(
-        options.emotionModelPath || 'models/voice/emotion_detection_model'
-      );
+    // Determine model complexity based on resource mode
+    const modelSize = getModelSizeForResourceMode(resourceMode);
+    
+    // Define local model paths with fallbacks
+    const localModelPaths = {
+      voice: options.voiceModelPath || `models/voice/voice_embedding_model_${modelSize}`,
+      emotion: options.emotionModelPath || `models/voice/emotion_detection_model_${modelSize}`,
+      speechPattern: options.speechPatternModelPath || `models/voice/speech_pattern_model_${modelSize}`
+    };
+    
+    // Check for model availability and prefer local storage
+    const { StorageManager } = await import('../../core/storage/storage-manager.js');
+    const storageAvailable = await StorageManager.checkAvailability();
+    
+    // Function to load models with progress tracking and accessibility announcements
+    const loadModelWithProgress = async (modelPath, modelType) => {
+      const { publish } = await import('../../core/events.js');
+      
+      // Announce loading start for screen readers
+      publish('accessibility:announce', {
+        message: `Loading ${modelType} model`,
+        priority: 'polite'
+      });
+      
+      // Load model with progress tracking
+      const model = await tf.loadLayersModel(modelPath, {
+        onProgress: (fraction) => {
+          // Report loading progress
+          publish('voice:model_loading_progress', {
+            model: modelType,
+            progress: Math.round(fraction * 100)
+          });
+          
+          // Announce progress milestones for screen readers
+          if (fraction === 1) {
+            publish('accessibility:announce', {
+              message: `${modelType} model loaded successfully`,
+              priority: 'polite'
+            });
+          }
+        }
+      });
+      
+      return model;
+    };
+    
+    // Load voice embedding model - required for core functionality
+    voiceModel = await loadModelWithProgress(localModelPaths.voice, 'Voice embedding');
+    
+    // Load emotion detection model if enabled and resources permit
+    if (options.enableEmotionDetection !== false && resourceMode !== RESOURCE_MODES.MINIMAL) {
+      emotionModel = await loadModelWithProgress(localModelPaths.emotion, 'Emotion detection');
+    } else {
+      console.log('Emotion detection disabled or unavailable in current resource mode');
     }
     
-    // Load speech pattern model if enabled
-    if (options.enableSpeechPatternAnalysis !== false) {
-      speechPatternModel = await tf.loadLayersModel(
-        options.speechPatternModelPath || 'models/voice/speech_pattern_model'
-      );
+    // Load speech pattern model if enabled and resources permit
+    if (options.enableSpeechPatternAnalysis !== false && resourceMode !== RESOURCE_MODES.MINIMAL) {
+      speechPatternModel = await loadModelWithProgress(localModelPaths.speechPattern, 'Speech pattern');
+    } else {
+      console.log('Speech pattern analysis disabled or unavailable in current resource mode');
     }
     
-    // Enable adaptive learning if specified
-    adaptiveModelEnabled = options.adaptiveLearning !== false;
+    // Determine if adaptive learning should be enabled based on resources and storage
+    adaptiveModelEnabled = options.adaptiveLearning !== false && 
+                          resourceMode !== RESOURCE_MODES.MINIMAL && 
+                          storageAvailable;
     
-    console.log('Advanced voice models loaded successfully');
+    // Add model metadata to help with debugging and monitoring
+    const modelMetadata = {
+      voiceModel: voiceModel ? {
+        name: 'Voice Embedding',
+        size: modelSize,
+        backend: selectedBackend
+      } : null,
+      emotionModel: emotionModel ? {
+        name: 'Emotion Detection',
+        size: modelSize,
+        backend: selectedBackend
+      } : null,
+      speechPatternModel: speechPatternModel ? {
+        name: 'Speech Pattern Analysis',
+        size: modelSize,
+        backend: selectedBackend
+      } : null,
+      adaptiveModelEnabled
+    };
+    
+    // Log success with detailed information
+    console.log('Advanced voice models loaded successfully', modelMetadata);
+    
+    // Create audit trail entry
+    const { addAuditEntry } = await import('../../core/audit-trail.js');
+    addAuditEntry('voice:advanced_features:models_loaded', { modelMetadata });
+    
     return true;
   } catch (error) {
     console.error('Failed to load voice models:', error);
-    throw new Error(`Model loading failed: ${error.message}`);
+    
+    // Create audit trail entry for failure
+    const { addAuditEntry } = await import('../../core/audit-trail.js');
+    addAuditEntry('voice:advanced_features:models_load_failed', { 
+      error: error.message,
+      stack: error.stack
+    });
+    
+    // Announce failure for accessibility
+    const { publish } = await import('../../core/events.js');
+    publish('accessibility:announce', {
+      message: 'Voice model loading failed. Falling back to basic voice features.',
+      priority: 'assertive'
+    });
+    
+    // Don't throw - allow graceful degradation
+    return false;
+  }
+}
+
+/**
+ * Get appropriate model size based on current resource mode
+ * @param {string} resourceMode - Current system resource mode
+ * @returns {string} - Model size identifier (tiny, small, medium, full)
+ */
+function getModelSizeForResourceMode(resourceMode) {
+  const { RESOURCE_MODES } = require('../../performance/index.js');
+  
+  switch (resourceMode) {
+    case RESOURCE_MODES.MINIMAL:
+      return 'tiny';  // Smallest model for extreme resource constraints
+    case RESOURCE_MODES.EFFICIENCY:
+      return 'small'; // Small model for battery saving
+    case RESOURCE_MODES.BALANCED:
+      return 'medium'; // Medium model for most devices
+    case RESOURCE_MODES.PERFORMANCE:
+      return 'full';  // Full-size model for high-end devices
+    default:
+      return 'medium'; // Default to medium as a safe choice
   }
 }
 
@@ -691,10 +864,183 @@ function handleRecognitionResult(data) {
   }
 }
 
+/**
+ * Shutdown the advanced voice features
+ * @returns {Promise<boolean>} Success status
+ */
+export async function shutdown() {
+  try {
+    if (!initialized) {
+      console.warn('Advanced Voice Features not initialized or already shut down');
+      return true;
+    }
+    
+    console.log('Shutting down ALEJO Advanced Voice Features');
+    
+    // Unsubscribe from events
+    unsubscribe('user:login', handleUserLogin);
+    unsubscribe('user:logout', handleUserLogout);
+    unsubscribe('security:level_changed', handleSecurityLevelChange);
+    unsubscribe('voice:training_completed', handleTrainingCompleted);
+    unsubscribe('voice:recognition_result', handleRecognitionResult);
+    unsubscribe('resource-manager:mode-changed', handleResourceModeChange);
+    unsubscribe('accessibility:preferences-changed', handleAccessibilityPreferencesChange);
+    
+    // Clean up models to free memory
+    if (voiceModel) {
+      voiceModel.dispose();
+      voiceModel = null;
+    }
+    
+    if (emotionModel) {
+      emotionModel.dispose();
+      emotionModel = null;
+    }
+    
+    if (speechPatternModel) {
+      speechPatternModel.dispose();
+      speechPatternModel = null;
+    }
+    
+    // Clear learning history
+    learningHistory = [];
+    
+    // Unregister from Resource Manager
+    await unregisterFromResourceManager('voice.advancedFeatures');
+    
+    // Log shutdown
+    security.auditTrail.log('voice:advanced_features:shutdown', { success: true });
+    
+    // Announce shutdown for accessibility
+    publish('accessibility:announce', {
+      message: 'Advanced voice features deactivated',
+      priority: 'polite'
+    });
+    
+    initialized = false;
+    return true;
+  } catch (error) {
+    console.error('Error shutting down Advanced Voice Features:', error);
+    security.auditTrail.log('voice:advanced_features:shutdown_failed', { 
+      error: error.message 
+    });
+    return false;
+  }
+}
+
+/**
+ * Handle resource mode changes
+ * @param {Object} data - Event data
+ */
+function handleResourceModeChange(data) {
+  const { mode } = data;
+  console.log(`Resource mode changed to ${mode}, adapting advanced voice features`);
+  
+  // Adjust model usage based on resource mode
+  const { RESOURCE_MODES } = require('../../performance/index.js');
+  
+  switch (mode) {
+    case RESOURCE_MODES.MINIMAL:
+      // Disable advanced features in minimal mode
+      adaptiveModelEnabled = false;
+      // Dispose of non-essential models to free memory
+      if (emotionModel) {
+        emotionModel.dispose();
+        emotionModel = null;
+      }
+      if (speechPatternModel) {
+        speechPatternModel.dispose();
+        speechPatternModel = null;
+      }
+      break;
+      
+    case RESOURCE_MODES.EFFICIENCY:
+      // Limit features in efficiency mode
+      adaptiveModelEnabled = false;
+      // Keep models loaded but reduce update frequency
+      break;
+      
+    case RESOURCE_MODES.BALANCED:
+      // Enable adaptive features in balanced mode if storage is available
+      const { StorageManager } = require('../../core/storage/storage-manager.js');
+      StorageManager.checkAvailability().then(available => {
+        adaptiveModelEnabled = available;
+      });
+      break;
+      
+    case RESOURCE_MODES.PERFORMANCE:
+      // Enable all features in performance mode
+      adaptiveModelEnabled = true;
+      // Reload models at higher quality if they were previously unloaded
+      if (!emotionModel || !speechPatternModel) {
+        loadModels({ 
+          enableEmotionDetection: true,
+          enableSpeechPatternAnalysis: true,
+          adaptiveLearning: true
+        });
+      }
+      break;
+  }
+  
+  // Log the adaptation
+  security.auditTrail.log('voice:advanced_features:resource_adaptation', {
+    mode,
+    adaptiveModelEnabled,
+    emotionDetectionEnabled: !!emotionModel,
+    speechPatternAnalysisEnabled: !!speechPatternModel
+  });
+  
+  // Announce changes to screen readers
+  publish('accessibility:announce', {
+    message: `Voice system adapted to ${mode} resource mode`,
+    priority: 'polite'
+  });
+}
+
+/**
+ * Handle accessibility preference changes
+ * @param {Object} data - Event data
+ */
+function handleAccessibilityPreferencesChange(data) {
+  // Adapt features based on accessibility needs
+  console.log('Adapting advanced voice features to accessibility preferences');
+  
+  // Example: If screen reader is active, enhance vocal feedback
+  if (data.screenReaderActive) {
+    // Enhance vocal feedback for screen reader users
+    publish('voice:configure', {
+      enhancedAudioFeedback: true
+    });
+  }
+  
+  // Example: For users with cognitive disabilities, simplify speech pattern analysis
+  if (data.cognitiveAssistanceEnabled) {
+    // Simplify speech pattern analysis
+    publish('voice:configure', {
+      simplifiedPatternAnalysis: true
+    });
+  }
+}
+
+/**
+ * Handle unsubscribing from events
+ * @param {string} eventName - Event name
+ * @param {Function} handler - Event handler
+ */
+function unsubscribe(eventName, handler) {
+  try {
+    return require('../../core/events.js').unsubscribe(eventName, handler);
+  } catch (error) {
+    console.warn(`Failed to unsubscribe from ${eventName}:`, error);
+  }
+}
+
 // Export testing functions
 export const _testing = {
   preprocessAudio,
   normalizeAudio,
+  getModelSizeForResourceMode,
+  handleResourceModeChange,
   getDominantEmotion,
   getDistinctivePatterns,
   calculatePatternConsistency

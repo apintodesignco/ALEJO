@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Visual Accessibility Adaptations Test</title>
+  <link rel="stylesheet" href="css/accessibility-test-styles.css">
+</head>
+<body>
+  <header>
+    <h1>ALEJO Visual Accessibility Adaptations Test</h1>
+    <p>This page tests the integration of multiple visual accessibility features: font scaling, high contrast, and color blindness accommodations.</p>
+    <div id="initialization-status"></div>
+  </header>
+
+  <section class="controls-section">
+    <!-- Font Scaling Controls -->
+    <div class="control-group">
+      <div class="control-label">Font Scaling</div>
+      <div class="btn-group">
+        <button id="increase-font-btn" class="btn btn-primary" aria-label="Increase font size">
+          <span aria-hidden="true">A+</span>
+        </button>
+        <button id="decrease-font-btn" class="btn btn-primary" aria-label="Decrease font size">
+          <span aria-hidden="true">A-</span>
+        </button>
+        <button id="reset-font-btn" class="btn btn-reset" aria-label="Reset font size">
+          <span aria-hidden="true">A</span>
+        </button>
+      </div>
+      <div id="current-font-size" class="status-display status-off">100%</div>
+    </div>
+
+    <!-- Font Size Presets -->
+    <div class="control-group">
+      <div class="control-label">Font Size Presets</div>
+      <div class="btn-group">
+        <button class="btn btn-secondary font-preset" data-scale="0.85">Small</button>
+        <button class="btn btn-secondary font-preset" data-scale="1">Normal</button>
+        <button class="btn btn-secondary font-preset" data-scale="1.15">Medium</button>
+        <button class="btn btn-secondary font-preset" data-scale="1.5">Large</button>
+        <button class="btn btn-secondary font-preset" data-scale="1.7">X-Large</button>
+      </div>
+    </div>
+    
+    <!-- High Contrast Controls -->
+    <div class="control-group">
+      <div class="control-label">High Contrast</div>
+      <button id="toggle-contrast-btn" class="btn btn-info">Toggle High Contrast</button>
+      <div id="contrast-status" class="status-display status-off">Off</div>
+    </div>
+    
+    <!-- Color Blindness Controls -->
+    <div class="control-group">
+      <div class="control-label">Color Blindness Mode</div>
+      <select id="color-blindness-select" aria-label="Select color blindness mode">
+        <option value="none">None</option>
+        <option value="protanopia">Protanopia (Red-Blind)</option>
+        <option value="deuteranopia">Deuteranopia (Green-Blind)</option>
+        <option value="tritanopia">Tritanopia (Blue-Blind)</option>
+        <option value="achromatopsia">Achromatopsia (Monochromacy)</option>
+      </select>
+      <div class="control-label mt-10">Filter Strength</div>
+      <input type="range" id="color-blindness-strength" min="0.3" max="1" step="0.1" value="0.6" aria-label="Color blindness filter strength">
+      <span id="strength-value">60%</span>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Keyboard Shortcuts</h2>
+    <div class="shortcut-group">
+      <p><span class="keyboard-shortcut">Alt</span> + <span class="keyboard-shortcut">Shift</span> + <span class="keyboard-shortcut">+</span> = Increase font size</p>
+      <p><span class="keyboard-shortcut">Alt</span> + <span class="keyboard-shortcut">Shift</span> + <span class="keyboard-shortcut">-</span> = Decrease font size</p>
+      <p><span class="keyboard-shortcut">Alt</span> + <span class="keyboard-shortcut">Shift</span> + <span class="keyboard-shortcut">0</span> = Reset font size</p>
+      <p><span class="keyboard-shortcut">Alt</span> + <span class="keyboard-shortcut">Shift</span> + <span class="keyboard-shortcut">H</span> = Toggle high contrast</p>
+      <p><span class="keyboard-shortcut">Alt</span> + <span class="keyboard-shortcut">Shift</span> + <span class="keyboard-shortcut">C</span> = Cycle color blindness modes</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Sample Text</h2>
+    <div class="sample-text">
+      <h3>Heading Level 3</h3>
+      <p>This is a paragraph with regular text. The accessibility system includes multiple components to provide comprehensive support for users with various needs.</p>
+      <p>Some words might be <strong>bold</strong> or <em>italicized</em> for emphasis. Links like <a href="#">this example</a> should maintain proper contrast and visibility.</p>
+    </div>
+
+    <div class="sample-text">
+      <h4>Heading Level 4</h4>
+      <p class="highlight">This paragraph has a highlight background to test color adaptations and contrast changes.</p>
+      <p>Font scaling preserves the <span class="text-size-sm">relative size</span> <span class="text-size-md">differences</span> <span class="text-size-lg">between</span> <span class="text-size-xl">elements</span>.</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Color and Contrast Testing</h2>
+    
+    <!-- Color Swatches -->
+    <h3>Color Swatches</h3>
+    <div class="color-swatches">
+      <div class="color-swatch color-swatch-red">Red</div>
+      <div class="color-swatch color-swatch-green">Green</div>
+      <div class="color-swatch color-swatch-blue">Blue</div>
+      <div class="color-swatch color-swatch-orange">Orange</div>
+      <div class="color-swatch color-swatch-purple">Purple</div>
+      <div class="color-swatch color-swatch-teal">Teal</div>
+    </div>
+
+    <!-- Contrast Examples -->
+    <h3>Contrast Examples</h3>
+    <div class="contrast-examples">
+      <div class="contrast-example light-text-dark-bg">
+        Light text on dark background
+      </div>
+      <div class="contrast-example dark-text-light-bg">
+        Dark text on light background
+      </div>
+    </div>
+    
+    <!-- Color Blindness Test -->
+    <h3>Color Blindness Testing</h3>
+    <div class="color-blindness-test">
+      <div class="ishihara-plate plate-1">74</div>
+      <div class="ishihara-plate plate-2">21</div>
+      <div class="ishihara-plate plate-3">8</div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Lists and Forms</h2>
+    
+    <!-- Lists -->
+    <div class="sample-card">
+      <h3 class="sample-card-title">Lists</h3>
+      <h4>Unordered List</h4>
+      <ul class="feature-list">
+        <li>Font scaling accommodations</li>
+        <li>High contrast mode</li>
+        <li>Color blindness accommodations</li>
+        <li>Screen reader support</li>
+        <li>Keyboard navigation improvements</li>
+      </ul>
+
+      <h4>Ordered List</h4>
+      <ol class="numbered-list">
+        <li>Detect user accessibility needs</li>
+        <li>Apply appropriate accommodations</li>
+        <li>Verify user can interact with content</li>
+        <li>Save preferences for future sessions</li>
+      </ol>
+    </div>
+
+    <!-- Form Elements -->
+    <div class="sample-card">
+      <h3 class="sample-card-title">Form Elements</h3>
+      <form>
+        <div class="form-group">
+          <label for="name-input">Name</label>
+          <input type="text" id="name-input" placeholder="Enter your name">
+        </div>
+        <div class="form-group">
+          <label for="email-input">Email</label>
+          <input type="email" id="email-input" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+          <label for="select-input">Preference</label>
+          <select id="select-input">
+            <option value="">Choose an option</option>
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+            <option value="option3">Option 3</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="textarea-input">Comments</label>
+          <textarea id="textarea-input" rows="3" placeholder="Enter your comments"></textarea>
+        </div>
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="reset" class="btn btn-reset">Reset</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>UI Components</h2>
+    
+    <!-- Buttons -->
+    <div class="sample-card">
+      <h3 class="sample-card-title">Button Styles</h3>
+      <div class="btn-group">
+        <button class="btn btn-primary">Primary</button>
+        <button class="btn btn-secondary">Secondary</button>
+        <button class="btn btn-success">Success</button>
+        <button class="btn btn-danger">Danger</button>
+        <button class="btn btn-warning">Warning</button>
+        <button class="btn btn-info">Info</button>
+      </div>
+      <div class="mt-10">
+        <button class="btn btn-small">Small Button</button>
+        <button class="btn">Default Button</button>
+        <button class="btn btn-large">Large Button</button>
+      </div>
+    </div>
+
+    <!-- Dashboard Elements -->
+    <h3>Dashboard Components</h3>
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+        <div class="dashboard-card-header">User Activity</div>
+        <div class="dashboard-card-body">
+          <div class="dashboard-metric">256</div>
+          <div class="text-center">Total Users</div>
+        </div>
+      </div>
+      <div class="dashboard-card">
+        <div class="dashboard-card-header">Performance</div>
+        <div class="dashboard-card-body">
+          <div class="dashboard-metric metric-success">98.5%</div>
+          <div class="text-center">System Uptime</div>
+        </div>
+      </div>
+      <div class="dashboard-card">
+        <div class="dashboard-card-header">Error Rate</div>
+        <div class="dashboard-card-body">
+          <div class="dashboard-metric metric-error">0.2%</div>
+          <div class="text-center">Last 24 Hours</div>
+        </div>
+      </div>
+      <div class="dashboard-card">
+        <div class="dashboard-card-header">Storage</div>
+        <div class="dashboard-card-body">
+          <div class="dashboard-metric metric-warning">64%</div>
+          <div class="text-center">Space Used</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Elements Excluded from Font Scaling</h2>
+    <div class="sample-card">
+      <h3 class="sample-card-title">Excluded Elements</h3>
+      <p>The following elements have the <code>.no-font-scaling</code> class and should not be affected by font scaling:</p>
+      <div class="no-font-scaling no-font-scaling-demo-large">
+        <h4>This heading should maintain its size</h4>
+        <p>This text should keep its original font size regardless of the global font scaling setting.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Integration Tests</h2>
+    <div class="status-box">
+      <h3>Combined Features Test</h3>
+      <p>Try enabling multiple features simultaneously to test their interaction:</p>
+      <ol>
+        <li>Enable high contrast + increase font size</li>
+        <li>Enable color blindness mode + high contrast</li>
+        <li>Increase font size + enable color blindness mode</li>
+        <li>Enable all three features together</li>
+      </ol>
+      <button id="run-tests-btn" class="btn btn-primary">Run Automated Tests</button>
+    </div>
+  </section>
+
+  <div class="test-container">
+    <div class="test-header">Test Results</div>
+    <div id="test-log" class="test-log"></div>
+    <div id="test-results"></div>
+  </div>
+
+  <!-- Script imports using ES modules -->
+  <script type="module">
+    // Import accessibility modules
+    import { eventEmitter } from '../src/core/event-emitter.js';
+    import { fontScalingManager } from '../src/personalization/accessibility/font-scaling-manager.js';
+    import { highContrastManager } from '../src/personalization/accessibility/high-contrast-manager.js';
+    import { colorBlindnessManager } from '../src/personalization/accessibility/color-blindness-manager.js';
+    import { runTests } from './accessibility-integration-test.js';
+    
+    // Status elements
+    const initializationStatus = document.getElementById('initialization-status');
+    const currentFontSize = document.getElementById('current-font-size');
+    const contrastStatus = document.getElementById('contrast-status');
+    const colorBlindnessSelect = document.getElementById('color-blindness-select');
+    const colorBlindnessStrength = document.getElementById('color-blindness-strength');
+    const strengthValue = document.getElementById('strength-value');
+    const testLog = document.getElementById('test-log');
+    
+    // Mock config storage for testing
+    window.mockConfigStorage = function() {
+      // This is a simple mock for testing
+      const storage = {};
+      
+      // Override ConfigManager methods
+      window.ConfigManager = {
+        getInstance: async () => ({
+          get: async (key) => storage[key],
+          set: async (key, value) => {
+            storage[key] = value;
+            return true;
+          }
+        })
+      };
+    };
+    
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Initialize font scaling manager
+        const fontScalingInitialized = await fontScalingManager.initialize({
+          applyImmediately: true,
+          exclusionSelectors: ['.no-font-scaling']
+        });
+        
+        // Initialize high contrast manager
+        const highContrastInitialized = await highContrastManager.initialize({
+          applyImmediately: false
+        });
+        
+        // Initialize color blindness manager
+        const colorBlindnessInitialized = await colorBlindnessManager.initialize({
+          detectSystemPreference: false,
+          applyImmediately: false
+        });
+        
+        // Show success message
+        if (fontScalingInitialized && highContrastInitialized && colorBlindnessInitialized) {
+          initializationStatus.textContent = 'All accessibility components initialized successfully';
+          initializationStatus.style.color = 'green';
+        } else {
+          initializationStatus.textContent = 'Some components failed to initialize';
+          initializationStatus.style.color = 'orange';
+        }
+        
+        // Set up event handlers for font scaling
+        document.getElementById('increase-font-btn').addEventListener('click', () => {
+          fontScalingManager.increaseFontScaling();
+          updateFontSizeDisplay();
+        });
+        
+        document.getElementById('decrease-font-btn').addEventListener('click', () => {
+          fontScalingManager.decreaseFontScaling();
+          updateFontSizeDisplay();
+        });
+        
+        document.getElementById('reset-font-btn').addEventListener('click', () => {
+          fontScalingManager.resetFontScaling();
+          updateFontSizeDisplay();
+        });
+        
+        // Set up font size presets
+        document.querySelectorAll('.font-preset').forEach(button => {
+          button.addEventListener('click', (e) => {
+            const scale = parseFloat(e.target.dataset.scale);
+            fontScalingManager.setFontScaling(scale);
+            updateFontSizeDisplay();
+          });
+        });
+        
+        // Set up high contrast toggle
+        document.getElementById('toggle-contrast-btn').addEventListener('click', () => {
+          highContrastManager.toggleHighContrast();
+          updateContrastDisplay();
+        });
+        
+        // Set up color blindness mode selection
+        colorBlindnessSelect.addEventListener('change', () => {
+          const mode = colorBlindnessSelect.value;
+          colorBlindnessManager.setColorBlindnessMode(mode);
+          updateColorBlindnessDisplay();
+        });
+        
+        // Set up color blindness strength slider
+        colorBlindnessStrength.addEventListener('input', () => {
+          const strength = parseFloat(colorBlindnessStrength.value);
+          colorBlindnessManager.setColorBlindnessStrength(strength);
+          strengthValue.textContent = `${Math.round(strength * 100)}%`;
+        });
+        
+        // Listen for run tests button
+        document.getElementById('run-tests-btn').addEventListener('click', async () => {
+          // Clear test log first
+          testLog.innerHTML = '';
+          // Run the automated tests
+          await runTests();
+        });
+        
+        // Update displays initially
+        updateFontSizeDisplay();
+        updateContrastDisplay();
+        updateColorBlindnessDisplay();
+        
+        // Set up event listeners for changes
+        eventEmitter.on('accessibility:font-scaling:changed', updateFontSizeDisplay);
+        eventEmitter.on('accessibility:high-contrast:changed', updateContrastDisplay);
+        eventEmitter.on('accessibility:color-blindness:changed', updateColorBlindnessDisplay);
+        
+      } catch (error) {
+        console.error('Error initializing accessibility components:', error);
+        initializationStatus.textContent = `Error: ${error.message}`;
+        initializationStatus.style.color = 'red';
+      }
+    });
+    
+    /**
+     * Update font size display
+     */
+    function updateFontSizeDisplay() {
+      const scale = fontScalingManager.getCurrentScalingLevel();
+      const percentage = Math.round(scale * 100);
+      currentFontSize.textContent = `${percentage}%`;
+      
+      if (scale !== 1) {
+        currentFontSize.className = 'status-display status-on';
+      } else {
+        currentFontSize.className = 'status-display status-off';
+      }
+    }
+    
+    /**
+     * Update contrast display
+     */
+    function updateContrastDisplay() {
+      const enabled = highContrastManager.isHighContrastEnabled();
+      contrastStatus.textContent = enabled ? 'On' : 'Off';
+      contrastStatus.className = `status-display ${enabled ? 'status-on' : 'status-off'}`;
+    }
+    
+    /**
+     * Update color blindness display
+     */
+    function updateColorBlindnessDisplay() {
+      const currentMode = colorBlindnessManager.getCurrentMode();
+      const currentStrength = colorBlindnessManager.getCurrentStrength();
+      
+      // Update select value
+      colorBlindnessSelect.value = currentMode;
+      
+      // Update strength slider
+      colorBlindnessStrength.value = currentStrength;
+      strengthValue.textContent = `${Math.round(currentStrength * 100)}%`;
+    }
+  </script>
+</body>
+</html>

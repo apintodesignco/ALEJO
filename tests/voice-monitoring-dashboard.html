@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Voice Monitoring Dashboard Test</title>
+  <style>
+    :root {
+      --primary-color: #0078d7;
+      --secondary-color: #f0f0f0;
+      --text-color: #333;
+      --warning-color: #ffa500;
+      --critical-color: #ff4500;
+      --success-color: #28a745;
+      --inactive-color: #6c757d;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: #fff;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--secondary-color);
+      padding-bottom: 1rem;
+    }
+    
+    h1 {
+      margin-top: 0;
+      color: var(--primary-color);
+    }
+    
+    .dashboard {
+      border: 1px solid var(--secondary-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .info-box {
+      background-color: #e9f5ff;
+      border: 1px solid #b3e0ff;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 4px;
+    }
+    
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    button {
+      padding: 0.5rem 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    button:hover {
+      background-color: #005999;
+    }
+    
+    button:focus {
+      outline: 2px solid #0078d7;
+      outline-offset: 2px;
+    }
+    
+    button.secondary {
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+    }
+    
+    button.secondary:hover {
+      background-color: #e0e0e0;
+    }
+    
+    .section {
+      margin-bottom: 1.5rem;
+    }
+    
+    .status-normal {
+      color: var(--success-color);
+    }
+    
+    .status-warning {
+      color: var(--warning-color);
+    }
+    
+    .status-error {
+      color: var(--critical-color);
+    }
+    
+    .status-inactive {
+      color: var(--inactive-color);
+    }
+    
+    .status-normal-bg {
+      background-color: var(--success-color);
+    }
+    
+    .status-warning-bg {
+      background-color: var(--warning-color);
+    }
+    
+    .status-error-bg {
+      background-color: var(--critical-color);
+    }
+    
+    .status-inactive-bg {
+      background-color: var(--inactive-color);
+    }
+    
+    .mode-normal {
+      color: var(--success-color);
+      font-weight: bold;
+    }
+    
+    .mode-warning {
+      color: var(--warning-color);
+      font-weight: bold;
+    }
+    
+    .mode-error {
+      color: var(--critical-color);
+      font-weight: bold;
+    }
+    
+    /* Accessibility Styles */
+    @media (prefers-reduced-motion) {
+      * {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary-color: #3a96dd;
+        --secondary-color: #2d2d2d;
+        --text-color: #e0e0e0;
+        --warning-color: #ffb74d;
+        --critical-color: #ff7043;
+        --success-color: #4caf50;
+        --inactive-color: #9e9e9e;
+      }
+      
+      body {
+        background-color: #1e1e1e;
+      }
+      
+      .info-box {
+        background-color: #2c3e50;
+        border-color: #34495e;
+        color: #ecf0f1;
+      }
+      
+      .dashboard {
+        background-color: #282828;
+        border-color: #3d3d3d;
+      }
+    }
+    
+    /* High Contrast Mode */
+    .high-contrast {
+      --primary-color: #fff;
+      --secondary-color: #000;
+      --text-color: #fff;
+      --warning-color: #ffff00;
+      --critical-color: #ff0000;
+      --success-color: #00ff00;
+      --inactive-color: #aaa;
+      background-color: #000;
+    }
+    
+    .high-contrast .dashboard {
+      border: 2px solid #fff;
+      background-color: #000;
+    }
+    
+    .high-contrast button {
+      background-color: #000;
+      color: #fff;
+      border: 2px solid #fff;
+      outline: none;
+    }
+    
+    .high-contrast button:focus {
+      background-color: #fff;
+      color: #000;
+      outline: 2px solid #fff;
+    }
+    
+    .high-contrast .info-box {
+      background-color: #000;
+      border: 2px solid #fff;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>ALEJO Voice Monitoring Dashboard</h1>
+      <p>Resource-efficient monitoring of voice system with configurable thresholds</p>
+    </header>
+
+    <div class="info-box">
+      <p><strong>Test Environment:</strong> This page demonstrates the voice system monitoring dashboard with resource threshold integration.</p>
+      <p><strong>Accessibility Features:</strong> Supports high contrast mode, keyboard navigation, and responsive design.</p>
+      <p><strong>Resource Efficiency:</strong> Dashboard updates only when needed and monitors system resource usage.</p>
+    </div>
+
+    <div class="controls">
+      <button id="toggle-dashboard" aria-label="Toggle monitoring dashboard visibility">Toggle Dashboard</button>
+      <button id="high-contrast" aria-label="Toggle high contrast mode">High Contrast Mode</button>
+      <button id="simulate-threshold" aria-label="Simulate threshold crossing">Simulate Threshold Crossing</button>
+      <button id="reset-stats" aria-label="Reset statistics">Reset Statistics</button>
+    </div>
+
+    <div id="alejo-dashboard-container">
+      <!-- Dashboard will be inserted here by the monitoring-dashboard.js module -->
+      <div id="alejo-monitoring-dashboard" class="dashboard">
+        <div class="dashboard-header">
+          <h2>ALEJO System Monitoring</h2>
+          <div class="dashboard-controls">
+            <button id="dashboard-high-contrast" class="dashboard-button" aria-label="Toggle high contrast mode">High Contrast</button>
+            <button id="dashboard-close" class="dashboard-button" aria-label="Close dashboard">Close</button>
+          </div>
+        </div>
+        <div class="dashboard-content">
+          <section id="alejo-dashboard-overview" class="dashboard-section">
+            <h3>System Overview</h3>
+            <div id="system-overview-content">
+              <p>Loading system overview...</p>
+            </div>
+          </section>
+          <section id="alejo-dashboard-voice" class="dashboard-section">
+            <p>Loading voice system data...</p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // Import necessary modules
+    import { EventBus } from '../src/core/event-bus.js';
+    import { initializeResourceThresholdSection } from '../src/core/system/resource-threshold-section.js';
+    import { updateVoiceSection } from '../src/core/system/voice-dashboard-enhanced.js';
+    
+    // Get event bus instance
+    const eventBus = EventBus.getInstance();
+    
+    // Initialize resource threshold section
+    initializeResourceThresholdSection().then(() => {
+      console.log('Resource threshold section initialized');
+      
+      // Update voice section
+      const dashboardElement = document.getElementById('alejo-monitoring-dashboard');
+      if (dashboardElement) {
+        updateVoiceSection(dashboardElement);
+      }
+      
+      // Simulate voice system data
+      simulateVoiceSystemData();
+    }).catch(err => {
+      console.error('Failed to initialize resource threshold section:', err);
+    });
+    
+    // Simulate voice system data
+    function simulateVoiceSystemData() {
+      // Simulate voice status update
+      const voiceStatus = {
+        system: { status: 'active', lastUpdated: Date.now() },
+        recognition: { status: 'active', lastUpdated: Date.now() },
+        synthesis: { status: 'active', lastUpdated: Date.now() },
+        training: { status: 'inactive', lastUpdated: Date.now() },
+        resourceMode: 'normal'
+      };
+      
+      // Simulate performance metrics
+      const performanceMetrics = {
+        recognitionAttempts: 42,
+        recognitionSuccesses: 38,
+        recognitionErrors: 4,
+        synthesisRequests: 67,
+        synthesisCompletions: 67,
+        averageRecognitionTime: 723.5,
+        averageSynthesisTime: 312.8,
+        trainingSessionsStarted: 3,
+        trainingSessionsCompleted: 2
+      };
+      
+      // Simulate resource usage
+      const resourceUsage = {
+        cpu: 32.4,
+        memory: 28.7,
+        temperature: 65.2,
+        timestamp: Date.now()
+      };
+      
+      // Simulate resource thresholds
+      const thresholds = {
+        cpu: { warning: 70, critical: 85 },
+        memory: { warning: 75, critical: 90 },
+        temperature: { warning: 75, critical: 85 }
+      };
+      
+      // Emit events
+      eventBus.emit('voice:status-update', voiceStatus);
+      eventBus.emit('voice:performance-update', performanceMetrics);
+      eventBus.emit('voice:resource-usage', resourceUsage);
+      eventBus.emit('resource-thresholds:update', { thresholds });
+      
+      // Emit dashboard update event
+      setTimeout(() => {
+        eventBus.emit('dashboard:voice-update', {
+          status: voiceStatus,
+          performance: performanceMetrics,
+          resourceUsage,
+          thresholds,
+          errors: [{
+            message: 'Ambient noise level too high',
+            component: 'recognition',
+            code: 'NOISE_HIGH',
+            timestamp: Date.now() - 300000
+          }]
+        });
+      }, 500);
+    }
+    
+    // Setup UI event handlers
+    document.getElementById('toggle-dashboard').addEventListener('click', () => {
+      const dashboard = document.getElementById('alejo-monitoring-dashboard');
+      if (dashboard.style.display === 'none') {
+        dashboard.style.display = 'block';
+      } else {
+        dashboard.style.display = 'none';
+      }
+    });
+    
+    document.getElementById('high-contrast').addEventListener('click', () => {
+      document.body.classList.toggle('high-contrast');
+    });
+    
+    document.getElementById('simulate-threshold').addEventListener('click', () => {
+      // Simulate high CPU usage exceeding threshold
+      const highResourceUsage = {
+        cpu: 82.7, // Above warning threshold
+        memory: 68.3,
+        temperature: 78.5, // Above warning threshold
+        timestamp: Date.now()
+      };
+      
+      // Emit resource usage event
+      eventBus.emit('voice:resource-usage', highResourceUsage);
+      
+      // Emit threshold crossing event
+      eventBus.emit('dashboard:voice-resource-threshold-exceeded', {
+        resource: 'cpu',
+        value: highResourceUsage.cpu,
+        threshold: 70,
+        level: 'warning',
+        timestamp: Date.now()
+      });
+      
+      setTimeout(() => {
+        // Update dashboard
+        eventBus.emit('dashboard:voice-update', {
+          status: {
+            system: { status: 'active', lastUpdated: Date.now() },
+            recognition: { status: 'active', lastUpdated: Date.now() },
+            synthesis: { status: 'active', lastUpdated: Date.now() },
+            training: { status: 'inactive', lastUpdated: Date.now() },
+            resourceMode: 'conservative' // Changed to conservative due to high usage
+          },
+          performance: {
+            recognitionAttempts: 45,
+            recognitionSuccesses: 40,
+            recognitionErrors: 5,
+            synthesisRequests: 70,
+            synthesisCompletions: 70,
+            averageRecognitionTime: 756.2,
+            averageSynthesisTime: 324.5,
+            trainingSessionsStarted: 3,
+            trainingSessionsCompleted: 2
+          },
+          resourceUsage: highResourceUsage,
+          thresholds: {
+            cpu: { warning: 70, critical: 85 },
+            memory: { warning: 75, critical: 90 },
+            temperature: { warning: 75, critical: 85 }
+          },
+          errors: [{
+            message: 'Ambient noise level too high',
+            component: 'recognition',
+            code: 'NOISE_HIGH',
+            timestamp: Date.now() - 300000
+          }, {
+            message: 'CPU usage above warning threshold',
+            component: 'system',
+            code: 'CPU_WARNING',
+            timestamp: Date.now()
+          }]
+        });
+      }, 200);
+    });
+    
+    document.getElementById('reset-stats').addEventListener('click', () => {
+      eventBus.emit('voice:reset-statistics');
+      
+      // Update voice section
+      setTimeout(() => {
+        const dashboardElement = document.getElementById('alejo-monitoring-dashboard');
+        if (dashboardElement) {
+          updateVoiceSection(dashboardElement);
+        }
+      }, 200);
+    });
+  </script>
+</body>
+</html>

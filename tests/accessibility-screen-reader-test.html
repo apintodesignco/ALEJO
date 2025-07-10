@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Screen Reader Integration Test</title>
+  <link rel="stylesheet" href="css/accessibility-test-styles.css">
+</head>
+<body>
+  <header>
+    <h1>ALEJO Screen Reader Integration Test</h1>
+    <p>This page demonstrates and tests the screen reader integration features.</p>
+    <div id="initialization-status"></div>
+  </header>
+
+  <section class="controls-section">
+    <div class="control-group">
+      <div class="control-label">Screen Reader Support</div>
+      <button id="toggle-screen-reader-btn" class="btn btn-primary">Toggle Screen Reader Support</button>
+      <div id="screen-reader-status" class="status-display status-off">Off</div>
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">Announcement Priority</div>
+      <div class="btn-group">
+        <button id="polite-btn" class="btn btn-secondary">Polite</button>
+        <button id="assertive-btn" class="btn btn-secondary">Assertive</button>
+      </div>
+      <div id="priority-status" class="status-display">Polite</div>
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">Voice Integration</div>
+      <div class="toggle-switch">
+        <input type="checkbox" id="voice-integration-toggle" class="toggle-input" aria-label="Enable voice integration">
+        <label for="voice-integration-toggle" class="toggle-label">Enable voice integration</label>
+      </div>
+      <div id="voice-integration-status" class="status-display status-off">Off</div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Keyboard Shortcuts</h2>
+    <div class="shortcut-group">
+      <p><span class="keyboard-shortcut">Alt</span> + <span class="keyboard-shortcut">/</span> = Skip to main content</p>
+      <p><span class="keyboard-shortcut">Alt</span> + <span class="keyboard-shortcut">Shift</span> + <span class="keyboard-shortcut">A</span> = Toggle screen reader</p>
+      <p><span class="keyboard-shortcut">Alt</span> + <span class="keyboard-shortcut">?</span> = Show keyboard shortcuts help</p>
+    </div>
+  </section>
+
+  <main id="main" class="content-section" tabindex="-1">
+    <h2>Screen Reader Testing Section</h2>
+    <p>This section contains various elements to test screen reader functionality.</p>
+    
+    <div class="sample-card">
+      <h3 class="sample-card-title">Announcement Testing</h3>
+      <div class="btn-group">
+        <button id="announce-polite-btn" class="btn btn-primary">Make Polite Announcement</button>
+        <button id="announce-assertive-btn" class="btn btn-danger">Make Assertive Announcement</button>
+        <button id="announce-status-btn" class="btn btn-info">Announce Status</button>
+      </div>
+    </div>
+
+    <div class="sample-card">
+      <h3 class="sample-card-title">Focus Management</h3>
+      <button id="open-dialog-btn" class="btn btn-primary">Open Modal Dialog</button>
+      <p>The modal will trap focus inside it until closed, following accessibility best practices.</p>
+    </div>
+
+    <div class="sample-card">
+      <h3 class="sample-card-title">Live Region Updates</h3>
+      <div class="progress-container">
+        <div id="progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Operation progress" title="Operation progress"></div>
+      </div>
+      <div class="btn-group">
+        <button id="start-progress-btn" class="btn btn-success">Start Progress</button>
+        <button id="reset-progress-btn" class="btn btn-secondary">Reset</button>
+      </div>
+      <div id="progress-status">0%</div>
+    </div>
+  </main>
+
+  <section class="content-section">
+    <h2>ARIA Attribute Testing</h2>
+    
+    <div class="sample-card">
+      <h3 class="sample-card-title">Form with ARIA Labels</h3>
+      <form>
+        <div class="form-group">
+          <label for="name-input">Full Name</label>
+          <input type="text" id="name-input" placeholder="Enter your name">
+        </div>
+        <div class="form-group">
+          <label for="email-input">Email Address</label>
+          <input type="email" id="email-input" placeholder="Enter your email">
+          <div id="email-error" class="form-error" aria-live="assertive"></div>
+        </div>
+        <div class="form-group">
+          <label for="select-input">Preferred Contact Method</label>
+          <select id="select-input">
+            <option value="">Please select...</option>
+            <option value="email">Email</option>
+            <option value="phone">Phone</option>
+            <option value="text">Text Message</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <fieldset>
+            <legend>Notification Preferences</legend>
+            <div class="checkbox-group">
+              <input type="checkbox" id="notify-updates" name="notify" value="updates">
+              <label for="notify-updates">Product Updates</label>
+            </div>
+            <div class="checkbox-group">
+              <input type="checkbox" id="notify-news" name="notify" value="news">
+              <label for="notify-news">Company News</label>
+            </div>
+          </fieldset>
+        </div>
+        <div class="form-group">
+          <button type="button" id="submit-form-btn" class="btn btn-primary">Submit</button>
+          <button type="reset" class="btn btn-reset">Reset</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="sample-card">
+      <h3 class="sample-card-title">Interactive Elements</h3>
+      <div class="tabs-container">
+        <div role="tablist" class="tabs">
+          <button id="tab1" class="tab active" role="tab" aria-selected="true" aria-controls="panel1">Tab 1</button>
+          <button id="tab2" class="tab" role="tab" aria-selected="false" aria-controls="panel2">Tab 2</button>
+          <button id="tab3" class="tab" role="tab" aria-selected="false" aria-controls="panel3">Tab 3</button>
+        </div>
+        <div id="panel1" role="tabpanel" aria-labelledby="tab1" class="tab-panel active">
+          <p>This is the content for Tab 1. It should be announced by screen readers when the tab is activated.</p>
+        </div>
+        <div id="panel2" role="tabpanel" aria-labelledby="tab2" class="tab-panel">
+          <p>Content for Tab 2 is displayed here. Screen readers should announce this content when Tab 2 is selected.</p>
+        </div>
+        <div id="panel3" role="tabpanel" aria-labelledby="tab3" class="tab-panel">
+          <p>Tab 3 content is shown in this panel. Screen readers will announce this when Tab 3 is activated.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="alejo-live-region" class="sr-only" aria-live="polite" aria-relevant="additions text" aria-atomic="true"></div>
+
+  <div class="test-container">
+    <div class="test-header">Test Results</div>
+    <div id="test-log" class="test-log"></div>
+  </div>
+
+  <!-- Script imports using ES modules -->
+  <script type="module">
+    // Import accessibility modules
+    import { eventEmitter } from '../src/core/event-emitter.js';
+    import { screenReaderManager } from '../src/personalization/accessibility/screen-reader-manager.js';
+    
+    // Status elements
+    const initializationStatus = document.getElementById('initialization-status');
+    const screenReaderStatus = document.getElementById('screen-reader-status');
+    const priorityStatus = document.getElementById('priority-status');
+    const voiceIntegrationStatus = document.getElementById('voice-integration-status');
+    const testLog = document.getElementById('test-log');
+    
+    // Progress elements
+    const progressBar = document.getElementById('progress-bar');
+    const progressStatus = document.getElementById('progress-status');
+    
+    // Mock speech synthesis for testing
+    if (!window.speechSynthesis) {
+      window.speechSynthesis = {
+        speak(utterance) {
+          console.log('Speech synthesis:', utterance.text);
+          logMessage(`Speech synthesis: "${utterance.text}"`, 'voice');
+        },
+        cancel() {
+          console.log('Speech synthesis canceled');
+        }
+      };
+      
+      window.SpeechSynthesisUtterance = class SpeechSynthesisUtterance {
+        constructor(text) {
+          this.text = text;
+        }
+      };
+    }
+    
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Initialize screen reader manager
+        const screenReaderInitialized = await screenReaderManager.initialize({
+          detectScreenReader: true,
+          enableResourceManagement: true
+        });
+        
+        // Show success message
+        if (screenReaderInitialized) {
+          initializationStatus.textContent = 'Screen reader manager initialized successfully';
+          initializationStatus.className = 'status-message success';
+          
+          // Update status displays
+          updateScreenReaderStatus();
+          
+          // Set up event handlers
+          setupEventHandlers();
+          
+          // Log initialization success
+          logMessage('Screen reader manager initialized successfully', 'success');
+        } else {
+          initializationStatus.textContent = 'Failed to initialize screen reader manager';
+          initializationStatus.className = 'status-message error';
+          logMessage('Failed to initialize screen reader manager', 'error');
+        }
+        
+        // Register test event listeners
+        registerEventListeners();
+        
+      } catch (error) {
+        console.error('Error initializing screen reader manager:', error);
+        initializationStatus.textContent = `Error: ${error.message}`;
+        initializationStatus.className = 'status-message error';
+        logMessage(`Error initializing: ${error.message}`, 'error');
+      }
+    });
+    
+    /**
+     * Set up event handlers for UI controls
+     */
+    function setupEventHandlers() {
+      // Toggle screen reader support
+      document.getElementById('toggle-screen-reader-btn').addEventListener('click', async () => {
+        await screenReaderManager.toggleEnabled();
+        updateScreenReaderStatus();
+      });
+      
+      // Set announcement priority
+      document.getElementById('polite-btn').addEventListener('click', async () => {
+        const settings = await screenReaderManager.getSettings();
+        settings.announcementPriority = 'polite';
+        await screenReaderManager.applySettings(settings);
+        priorityStatus.textContent = 'Polite';
+        screenReaderManager.announce('Priority set to polite', 'polite');
+      });
+      
+      document.getElementById('assertive-btn').addEventListener('click', async () => {
+        const settings = await screenReaderManager.getSettings();
+        settings.announcementPriority = 'assertive';
+        await screenReaderManager.applySettings(settings);
+        priorityStatus.textContent = 'Assertive';
+        screenReaderManager.announce('Priority set to assertive', 'assertive');
+      });
+      
+      // Toggle voice integration
+      document.getElementById('voice-integration-toggle').addEventListener('change', async (e) => {
+        const settings = await screenReaderManager.getSettings();
+        settings.useVoiceSynthesis = e.target.checked;
+        await screenReaderManager.applySettings(settings);
+        voiceIntegrationStatus.textContent = e.target.checked ? 'On' : 'Off';
+        voiceIntegrationStatus.className = `status-display ${e.target.checked ? 'status-on' : 'status-off'}`;
+        screenReaderManager.announce(`Voice integration ${e.target.checked ? 'enabled' : 'disabled'}`, 'polite');
+      });
+      
+      // Test announcements
+      document.getElementById('announce-polite-btn').addEventListener('click', () => {
+        screenReaderManager.announce('This is a polite announcement', 'polite');
+        logMessage('Made polite announcement', 'info');
+      });
+      
+      document.getElementById('announce-assertive-btn').addEventListener('click', () => {
+        screenReaderManager.announce('This is an assertive announcement', 'assertive');
+        logMessage('Made assertive announcement', 'info');
+      });
+      
+      document.getElementById('announce-status-btn').addEventListener('click', async () => {
+        const status = await screenReaderManager.isScreenReaderEnabled() ? 'enabled' : 'disabled';
+        screenReaderManager.announce(`Screen reader support is currently ${status}`, 'polite');
+        logMessage(`Announced current status: ${status}`, 'info');
+      });
+      
+      // Modal dialog
+      document.getElementById('open-dialog-btn').addEventListener('click', () => {
+        openModalDialog();
+      });
+      
+      // Progress bar
+      document.getElementById('start-progress-btn').addEventListener('click', () => {
+        startProgressDemo();
+      });
+      
+      document.getElementById('reset-progress-btn').addEventListener('click', () => {
+        resetProgressDemo();
+      });
+      
+      // Form validation
+      document.getElementById('email-input').addEventListener('blur', validateEmail);
+      document.getElementById('submit-form-btn').addEventListener('click', validateForm);
+      
+      // Tabs
+      document.querySelectorAll('[role="tab"]').forEach(tab => {
+        tab.addEventListener('click', handleTabClick);
+        tab.addEventListener('keydown', handleTabKeydown);
+      });
+    }
+    
+    /**
+     * Register event listeners for accessibility events
+     */
+    function registerEventListeners() {
+      eventEmitter.on('accessibility:screen-reader:initialized', (data) => {
+        logMessage(`Screen reader initialized event: ${JSON.stringify(data)}`, 'event');
+      });
+      
+      eventEmitter.on('accessibility:screen-reader:settings-changed', (data) => {
+        logMessage(`Settings changed: ${JSON.stringify(data)}`, 'event');
+      });
+    }
+    
+    /**
+     * Update screen reader status display
+     */
+    async function updateScreenReaderStatus() {
+      const enabled = await screenReaderManager.isScreenReaderEnabled();
+      screenReaderStatus.textContent = enabled ? 'On' : 'Off';
+      screenReaderStatus.className = `status-display ${enabled ? 'status-on' : 'status-off'}`;
+      
+      // Update settings displays
+      const settings = await screenReaderManager.getSettings();
+      priorityStatus.textContent = settings.announcementPriority;
+      
+      document.getElementById('voice-integration-toggle').checked = settings.useVoiceSynthesis;
+      voiceIntegrationStatus.textContent = settings.useVoiceSynthesis ? 'On' : 'Off';
+      voiceIntegrationStatus.className = `status-display ${settings.useVoiceSynthesis ? 'status-on' : 'status-off'}`;
+    }
+    
+    /**
+     * Open a test modal dialog with focus trapping
+     */
+    function openModalDialog() {
+      const dialog = document.createElement('div');
+      dialog.setAttribute('role', 'dialog');
+      dialog.setAttribute('aria-modal', 'true');
+      dialog.setAttribute('aria-labelledby', 'dialog-title');
+      dialog.className = 'modal-dialog';
+      
+      dialog.innerHTML = `
+        <div class="modal-content">
+          <h2 id="dialog-title">Test Modal Dialog</h2>
+          <p>This modal demonstrates focus trapping. Try using Tab to navigate.</p>
+          <div class="form-group">
+            <label for="modal-input">Test Input</label>
+            <input type="text" id="modal-input" placeholder="Focus will be trapped in the modal">
+          </div>
+          <div class="btn-group">
+            <button id="modal-action-btn" class="btn btn-primary">Primary Action</button>
+            <button id="modal-close-btn" class="btn btn-secondary">Close</button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(dialog);
+      screenReaderManager.trapFocus(dialog);
+      
+      dialog.querySelector('#modal-close-btn').addEventListener('click', () => {
+        screenReaderManager.releaseFocusTrap();
+        document.body.removeChild(dialog);
+        screenReaderManager.announce('Dialog closed', 'polite');
+      });
+      
+      dialog.querySelector('#modal-action-btn').addEventListener('click', () => {
+        screenReaderManager.announce('Action button clicked', 'polite');
+      });
+      
+      screenReaderManager.announce('Test modal dialog opened', 'polite');
+    }
+    
+    /**
+     * Start progress bar demo
+     */
+    function startProgressDemo() {
+      let progress = 0;
+      progressBar.style.width = '0%';
+      progressBar.setAttribute('aria-valuenow', '0');
+      progressStatus.textContent = '0%';
+      
+      const interval = setInterval(() => {
+        progress += 10;
+        if (progress > 100) {
+          clearInterval(interval);
+          progress = 100;
+          screenReaderManager.announce('Progress complete', 'polite');
+        }
+        
+        progressBar.style.width = `${progress}%`;
+        progressBar.setAttribute('aria-valuenow', progress);
+        progressStatus.textContent = `${progress}%`;
+        
+        if (progress % 20 === 0) {
+          screenReaderManager.announce(`Progress at ${progress} percent`, 'polite');
+        }
+      }, 1000);
+    }
+    
+    /**
+     * Reset progress bar demo
+     */
+    function resetProgressDemo() {
+      progressBar.style.width = '0%';
+      progressBar.setAttribute('aria-valuenow', '0');
+      progressStatus.textContent = '0%';
+      screenReaderManager.announce('Progress reset', 'polite');
+    }
+    
+    /**
+     * Validate email field
+     */
+    function validateEmail(event) {
+      const emailInput = event.target;
+      const emailError = document.getElementById('email-error');
+      const email = emailInput.value.trim();
+      
+      if (email && !isValidEmail(email)) {
+        emailError.textContent = 'Please enter a valid email address';
+        emailInput.setAttribute('aria-invalid', 'true');
+        return false;
+      } else {
+        emailError.textContent = '';
+        emailInput.removeAttribute('aria-invalid');
+        return true;
+      }
+    }
+    
+    /**
+     * Validate form on submit
+     */
+    function validateForm() {
+      const nameInput = document.getElementById('name-input');
+      const emailInput = document.getElementById('email-input');
+      const selectInput = document.getElementById('select-input');
+      let isValid = true;
+      
+      // Validate name
+      if (!nameInput.value.trim()) {
+        isValid = false;
+        nameInput.setAttribute('aria-invalid', 'true');
+        screenReaderManager.announce('Name is required', 'assertive');
+      } else {
+        nameInput.removeAttribute('aria-invalid');
+      }
+      
+      // Validate email
+      const emailValid = validateEmail({ target: emailInput });
+      if (!emailValid) {
+        isValid = false;
+        screenReaderManager.announce('Email is invalid', 'assertive');
+      }
+      
+      // Validate select
+      if (!selectInput.value) {
+        isValid = false;
+        selectInput.setAttribute('aria-invalid', 'true');
+        screenReaderManager.announce('Please select a contact method', 'assertive');
+      } else {
+        selectInput.removeAttribute('aria-invalid');
+      }
+      
+      if (isValid) {
+        screenReaderManager.announce('Form submitted successfully', 'assertive');
+        logMessage('Form validated and submitted', 'success');
+      } else {
+        screenReaderManager.announce('Please fix the form errors', 'assertive');
+        logMessage('Form validation failed', 'error');
+      }
+    }
+    
+    /**
+     * Handle tab click
+     */
+    function handleTabClick(event) {
+      activateTab(event.currentTarget);
+    }
+    
+    /**
+     * Handle tab keyboard navigation
+     */
+    function handleTabKeydown(event) {
+      const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+      const index = tabs.indexOf(event.currentTarget);
+      
+      switch (event.key) {
+        case 'ArrowRight':
+          activateTab(tabs[(index + 1) % tabs.length]);
+          event.preventDefault();
+          break;
+        case 'ArrowLeft':
+          activateTab(tabs[(index - 1 + tabs.length) % tabs.length]);
+          event.preventDefault();
+          break;
+        case 'Home':
+          activateTab(tabs[0]);
+          event.preventDefault();
+          break;
+        case 'End':
+          activateTab(tabs[tabs.length - 1]);
+          event.preventDefault();
+          break;
+      }
+    }
+    
+    /**
+     * Activate a tab
+     */
+    function activateTab(tab) {
+      // Deactivate all tabs
+      document.querySelectorAll('[role="tab"]').forEach(t => {
+        t.setAttribute('aria-selected', 'false');
+        t.classList.remove('active');
+      });
+      
+      // Hide all panels
+      document.querySelectorAll('[role="tabpanel"]').forEach(p => {
+        p.classList.remove('active');
+      });
+      
+      // Activate selected tab
+      tab.setAttribute('aria-selected', 'true');
+      tab.classList.add('active');
+      tab.focus();
+      
+      // Show selected panel
+      const panelId = tab.getAttribute('aria-controls');
+      const panel = document.getElementById(panelId);
+      panel.classList.add('active');
+      
+      // Announce tab change
+      screenReaderManager.announce(`Tab ${tab.textContent} selected`, 'polite');
+    }
+    
+    /**
+     * Check if email is valid
+     */
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+    
+    /**
+     * Log a message to the test log
+     */
+    function logMessage(message, type = 'info') {
+      const log = document.getElementById('test-log');
+      const logItem = document.createElement('div');
+      logItem.className = `log-item log-${type}`;
+      
+      const timestamp = new Date().toLocaleTimeString();
+      logItem.textContent = `[${timestamp}] ${message}`;
+      
+      log.appendChild(logItem);
+      log.scrollTop = log.scrollHeight;
+    }
+  </script>
+</body>
+</html>

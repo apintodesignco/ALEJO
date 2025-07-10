@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Resource Monitoring Dashboard Test</title>
+  <link rel="stylesheet" href="css/accessibility-test-styles.css">
+  <link rel="stylesheet" href="../src/core/system/dashboard/threshold-styles.css">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f2f5;
+      color: #333;
+    }
+
+    .test-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .test-controls {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .test-controls h2 {
+      margin-top: 0;
+    }
+
+    .control-group {
+      margin-bottom: 15px;
+    }
+
+    .control-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      background-color: #4299e1;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn:hover {
+      background-color: #3182ce;
+    }
+
+    .btn.warning {
+      background-color: #f6ad55;
+    }
+
+    .btn.critical {
+      background-color: #f56565;
+    }
+
+    .btn.reset {
+      background-color: #a0aec0;
+    }
+
+    .dashboard-container {
+      margin-top: 30px;
+    }
+
+    .sr-announcer {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    .high-contrast {
+      background-color: #111;
+      color: #fff;
+    }
+
+    .high-contrast .test-controls {
+      background-color: #222;
+      border: 1px solid #555;
+    }
+
+    .high-contrast .btn {
+      border: 1px solid #fff;
+    }
+
+    /* Ensure no font scaling */
+    .no-font-scaling {
+      font-size: 16px !important;
+      line-height: 1.5 !important;
+      transform: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>ALEJO Resource Monitoring Dashboard Test</h1>
+    
+    <div class="test-controls">
+      <h2>Test Controls</h2>
+      
+      <div class="control-group">
+        <label for="resource-select">Select Resource:</label>
+        <select id="resource-select">
+          <option value="cpu">CPU</option>
+          <option value="memory">Memory</option>
+          <option value="temperature">Temperature</option>
+          <option value="disk">Disk</option>
+          <option value="battery">Battery</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <label for="value-slider">Resource Value:</label>
+        <input type="range" id="value-slider" min="0" max="100" value="45">
+        <span id="value-display">45%</span>
+      </div>
+      
+      <div class="btn-group">
+        <button id="update-btn" class="btn">Update Dashboard</button>
+        <button id="simulate-warning-btn" class="btn warning">Simulate Warning</button>
+        <button id="simulate-critical-btn" class="btn critical">Simulate Critical</button>
+        <button id="reset-btn" class="btn reset">Reset</button>
+        <button id="toggle-contrast-btn" class="btn">Toggle High Contrast</button>
+      </div>
+    </div>
+    
+    <div class="dashboard-container" id="dashboard-container">
+      <!-- Dashboard will be inserted here -->
+    </div>
+  </div>
+  
+  <!-- ARIA live region for announcements -->
+  <div id="sr-announcer" class="sr-announcer" aria-live="assertive"></div>
+
+  <script type="module">
+    import { initializeSystemDashboard } from '../src/core/system/dashboard/index.js';
+    import { EventBus } from '../src/core/event-bus.js';
+    
+    // Initialize the dashboard
+    document.addEventListener('DOMContentLoaded', async () => {
+      const dashboardContainer = document.getElementById('dashboard-container');
+      const resourceSelect = document.getElementById('resource-select');
+      const valueSlider = document.getElementById('value-slider');
+      const valueDisplay = document.getElementById('value-display');
+      const updateBtn = document.getElementById('update-btn');
+      const simulateWarningBtn = document.getElementById('simulate-warning-btn');
+      const simulateCriticalBtn = document.getElementById('simulate-critical-btn');
+      const resetBtn = document.getElementById('reset-btn');
+      const toggleContrastBtn = document.getElementById('toggle-contrast-btn');
+      const srAnnouncer = document.getElementById('sr-announcer');
+      
+      // Initialize event bus
+      const eventBus = EventBus.getInstance();
+      
+      // Initialize dashboard with all sections enabled
+      const dashboard = await initializeSystemDashboard({
+        autoShow: true,
+        prioritizeAccessibility: true,
+        sections: {
+          overview: true,
+          resources: true,
+          thresholds: true,
+          voice: true
+        }
+      });
+      
+      // Update value display when slider changes
+      valueSlider.addEventListener('input', () => {
+        const value = valueSlider.value;
+        const resource = resourceSelect.value;
+        let unit = '%';
+        
+        if (resource === 'temperature') {
+          unit = '°C';
+        }
+        
+        valueDisplay.textContent = `${value}${unit}`;
+      });
+      
+      // Update dashboard when button is clicked
+      updateBtn.addEventListener('click', () => {
+        const resource = resourceSelect.value;
+        const value = parseInt(valueSlider.value);
+        
+        // Create resource usage data object
+        const resourceData = {
+          cpu: 30,
+          memory: 45,
+          disk: 60,
+          temperature: 50,
+          battery: 75
+        };
+        
+        // Update the selected resource with slider value
+        resourceData[resource] = value;
+        
+        // Emit resource usage event
+        eventBus.emit('system:resource-usage', resourceData);
+        
+        // Announce to screen reader
+        srAnnouncer.textContent = `Dashboard updated with ${resource} usage at ${value} percent`;
+        
+        // Update dashboard
+        dashboard.update();
+      });
+      
+      // Simulate warning threshold crossing
+      simulateWarningBtn.addEventListener('click', () => {
+        const resource = resourceSelect.value;
+        
+        // Get thresholds
+        const thresholds = dashboard.getResourceThresholds();
+        const warningThreshold = thresholds[resource]?.warning || 80;
+        
+        // Set slider to warning threshold
+        valueSlider.value = warningThreshold;
+        valueDisplay.textContent = `${warningThreshold}%`;
+        
+        // Create resource usage data
+        const resourceData = {
+          cpu: 30,
+          memory: 45,
+          disk: 60,
+          temperature: 50,
+          battery: 75
+        };
+        
+        // Set the resource to warning level
+        resourceData[resource] = warningThreshold;
+        
+        // Emit resource usage event
+        eventBus.emit('system:resource-usage', resourceData);
+        
+        // Emit warning threshold crossing event
+        eventBus.emit('resource-threshold:crossed', {
+          resource,
+          level: 'warning',
+          value: warningThreshold,
+          threshold: warningThreshold
+        });
+        
+        // Announce to screen reader
+        srAnnouncer.textContent = `Warning: ${resource} usage at ${warningThreshold} percent, exceeding warning threshold`;
+        
+        // Update dashboard
+        dashboard.update();
+      });
+      
+      // Simulate critical threshold crossing
+      simulateCriticalBtn.addEventListener('click', () => {
+        const resource = resourceSelect.value;
+        
+        // Get thresholds
+        const thresholds = dashboard.getResourceThresholds();
+        const criticalThreshold = thresholds[resource]?.critical || 90;
+        
+        // Set slider to critical threshold
+        valueSlider.value = criticalThreshold;
+        valueDisplay.textContent = `${criticalThreshold}%`;
+        
+        // Create resource usage data
+        const resourceData = {
+          cpu: 30,
+          memory: 45,
+          disk: 60,
+          temperature: 50,
+          battery: 75
+        };
+        
+        // Set the resource to critical level
+        resourceData[resource] = criticalThreshold;
+        
+        // Emit resource usage event
+        eventBus.emit('system:resource-usage', resourceData);
+        
+        // Emit critical threshold crossing event
+        eventBus.emit('resource-threshold:crossed', {
+          resource,
+          level: 'critical',
+          value: criticalThreshold,
+          threshold: criticalThreshold
+        });
+        
+        // Announce to screen reader
+        srAnnouncer.textContent = `Critical alert: ${resource} usage at ${criticalThreshold} percent, exceeding critical threshold`;
+        
+        // Update dashboard
+        dashboard.update();
+      });
+      
+      // Reset dashboard
+      resetBtn.addEventListener('click', () => {
+        // Reset slider
+        valueSlider.value = 45;
+        valueDisplay.textContent = '45%';
+        
+        // Reset thresholds to defaults
+        dashboard.resetThresholds();
+        
+        // Reset resource usage
+        const resourceData = {
+          cpu: 30,
+          memory: 45,
+          disk: 60,
+          temperature: 50,
+          battery: 75
+        };
+        
+        // Emit resource usage event
+        eventBus.emit('system:resource-usage', resourceData);
+        
+        // Announce to screen reader
+        srAnnouncer.textContent = 'Dashboard reset to default values';
+        
+        // Update dashboard
+        dashboard.update();
+      });
+      
+      // Toggle high contrast mode
+      toggleContrastBtn.addEventListener('click', () => {
+        const isHighContrast = document.body.classList.toggle('high-contrast');
+        
+        // Toggle high contrast in dashboard
+        dashboard.toggleHighContrast(isHighContrast);
+        
+        // Update button text
+        toggleContrastBtn.textContent = isHighContrast ? 'Standard Contrast' : 'High Contrast';
+        
+        // Announce to screen reader
+        srAnnouncer.textContent = `${isHighContrast ? 'High' : 'Standard'} contrast mode activated`;
+      });
+      
+      // Listen for threshold crossing events
+      dashboard.onThresholdCrossing((data) => {
+        console.log('Threshold crossed:', data);
+        
+        const { resource, level, value, threshold } = data;
+        const message = `${level.toUpperCase()} THRESHOLD CROSSED: ${resource} at ${value}% (threshold: ${threshold}%)`;
+        
+        // Display a notification
+        alert(message);
+      });
+      
+      // Initial dashboard update
+      dashboard.update();
+    });
+  </script>
+</body>
+</html>

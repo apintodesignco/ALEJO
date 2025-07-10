@@ -1,0 +1,16 @@
+{
+  "name": "alejo-unreal-bridge-tests",
+  "version": "1.0.0",
+  "description": "Tests for ALEJO Unreal Engine Bridge",
+  "main": "server-bridge-test.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "ws": "^8.13.0"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.11"
+  }
+}

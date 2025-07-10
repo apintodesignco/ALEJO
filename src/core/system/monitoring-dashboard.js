@@ -2,7 +2,7 @@
  * ALEJO System Monitoring Dashboard
  * 
  * This module provides a real-time monitoring dashboard for ALEJO system status,
- * including initialization sequence progress, component health, resource usage,
+ * including initialization sequence progress, component health, resource usage, voice system,
  * and system diagnostics.
  * 
  * Features:
@@ -20,6 +20,13 @@
 import { getComponentStatus, getErrorLog } from './error-handler.js';
 import {
   getInitializationSequenceState,
+  getInitializationHealth,
+  getStartupMode
+} from '../initialization/initialization-sequence-integrator.js';
+import { getInitializationStatus } from '../initialization/initialization-manager.js';
+import { getErrorHandler } from '../error-handling/error-handler.js';
+import { updateVoiceSection } from './voice-dashboard-enhanced.js';
+import {
   isInitializationSuccessful,
   getInitializationHealth,
   getStartupMode
@@ -28,6 +35,7 @@ import { generateRegistrationReport } from './component-registration-validator.j
 import { generateTimelineVisualization, getTimelineStyles } from './initialization-log-viewer.js';
 import { getLoadingSequenceState, generateLoadingReport } from './progressive-loading-manager.js';
 import { getFallbackStatistics } from './fallback-manager.js';
+import { initializeResourceThresholdSection, addResourceThresholdSection, createThresholdConfigButton, updateResourceThresholdSummary } from './resource-threshold-section.js';
 
 // Dashboard state
 let dashboardElement = null;
@@ -39,14 +47,16 @@ let highContrastMode = false;
 const DASHBOARD_CONTAINER_ID = 'alejo-dashboard-container';
 const DASHBOARD_ID = 'alejo-monitoring-dashboard';
 
-// Dashboard sections
-const sections = {
+// Default sections configuration
+const defaultSections = {
   overview: true,
   components: true,
+  loading: true,
+  fallbacks: true,
+  initialization: true,
   resources: true,
-  errors: true,
-  registration: true,
-  settings: true
+  voice: true,
+  errors: true
 };
 
 /**
@@ -68,7 +78,7 @@ export function initDashboard(options = {}) {
   } = options;
   
   // Update section visibility
-  Object.assign(sections, sectionOptions);
+  const sections = Object.assign({}, defaultSections, sectionOptions);
   
   // Create dashboard element if it doesn't exist
   if (!dashboardElement) {
@@ -123,15 +133,14 @@ export function initDashboard(options = {}) {
         </div>
       </div>
       <div class="alejo-dashboard-content" style="padding: 12px;">
-        <div id="alejo-dashboard-overview" class="alejo-dashboard-section" style="margin-bottom: 16px;"></div>
-        <div id="alejo-dashboard-components" class="dashboard-section"></div>
-        <div id="alejo-dashboard-initialization" class="dashboard-section"></div>
-        <div id="alejo-dashboard-loading" class="dashboard-section"></div>
-        <div id="alejo-dashboard-fallbacks" class="dashboard-section"></div>
-        <div id="alejo-dashboard-registration" class="dashboard-section"></div>
-        <div id="alejo-dashboard-settings" class="dashboard-section"></div>
-        <div id="alejo-dashboard-resources" class="alejo-dashboard-section" style="margin-bottom: 16px;"></div>
-        <div id="alejo-dashboard-errors" class="alejo-dashboard-section"></div>
+        ${sections.overview ? '<div id="alejo-dashboard-overview"></div>' : ''}
+        ${sections.components ? '<div id="alejo-dashboard-components"></div>' : ''}
+        ${sections.loading ? '<div id="alejo-dashboard-loading"></div>' : ''}
+        ${sections.fallbacks ? '<div id="alejo-dashboard-fallbacks"></div>' : ''}
+        ${sections.initialization ? '<div id="alejo-dashboard-initialization"></div>' : ''}
+        ${sections.resources ? '<div id="alejo-dashboard-resources"></div>' : ''}
+        ${sections.voice ? '<div id="alejo-dashboard-voice"></div>' : ''}
+        ${sections.errors ? '<div id="alejo-dashboard-errors"></div>' : ''}
       </div>
     `;
     
@@ -160,12 +169,7 @@ export function initDashboard(options = {}) {
   }
   
   updateInterval = setInterval(() => {
-    updateOverviewSection();
-    updateComponentsSection();
-    updateInitializationSection();
-    updateLoadingSection();
-    updateFallbacksSection();
-    updateRegistrationValidationSection();
+    updateDashboard();
   }, interval);
   
   return dashboardElement;
@@ -224,39 +228,45 @@ export function toggleDashboard() {
  * Update the dashboard with current system information
  */
 export function updateDashboard() {
-  if (!dashboardElement || !isVisible) return;
-  
-  // Update each section if visible
-  if (sections.overview) {
-    updateOverviewSection();
+  if (!dashboardElement || dashboardElement.style.display === 'none') {
+    return; // Don't update if dashboard is not visible
   }
-  
-  if (sections.components) {
-    updateComponentsSection();
-  }
-  
-  if (sections.initialization) {
-    updateInitializationSection();
-  }
-  
-  if (sections.loading) {
-    updateLoadingSection();
-  }
-  
-  if (sections.fallbacks) {
-    updateFallbacksSection();
-  }
-  
-  if (sections.registration) {
-    updateRegistrationValidationSection();
-  }
-  
-  if (sections.settings) {
-    updateSettingsSection();
-  }
-  
-  if (sections.errors) {
-    updateErrorsSection();
+
+  try {
+    // Update all active sections
+    if (dashboardElement.querySelector('#alejo-dashboard-overview')) {
+      updateOverviewSection();
+    }
+    
+    if (dashboardElement.querySelector('#alejo-dashboard-components')) {
+      updateComponentsSection();
+    }
+    
+    if (dashboardElement.querySelector('#alejo-dashboard-loading')) {
+      updateLoadingSection();
+    }
+    
+    if (dashboardElement.querySelector('#alejo-dashboard-fallbacks')) {
+      updateFallbacksSection();
+    }
+    
+    if (dashboardElement.querySelector('#alejo-dashboard-initialization')) {
+      updateInitializationSection();
+    }
+    
+    if (dashboardElement.querySelector('#alejo-dashboard-resources')) {
+      updateResourcesSection();
+    }
+    
+    if (dashboardElement.querySelector('#alejo-dashboard-voice')) {
+      updateVoiceSection(dashboardElement);
+    }
+    
+    if (dashboardElement.querySelector('#alejo-dashboard-errors')) {
+      updateErrorsSection();
+    }
+  } catch (err) {
+    console.error('Error updating dashboard:', err);
   }
 }
 
@@ -298,11 +308,13 @@ function updateOverviewSection() {
 /**
  * Update overview display with system status information
  * @param {HTMLElement} overviewSection - The overview section element
- * @param {Object} initStatus - Initialization status
+ * @param {Object} initState - Initialization sequence state
+ * @param {Object} healthMetrics - System health metrics
+ * @param {string} startupMode - Current startup mode (normal, safe, minimal)
  * @param {string} resourceMode - Current resource mode
  * @param {Object} resourceUsage - Resource usage information
  */
-function updateOverviewDisplay(overviewSection, initStatus, resourceMode, resourceUsage) {
+function updateOverviewDisplay(overviewSection, initState, healthMetrics, startupMode, resourceMode, resourceUsage) {
   // Determine system status
   let statusClass = 'status-normal';
   let statusText = 'Normal';
@@ -311,18 +323,22 @@ function updateOverviewDisplay(overviewSection, initStatus, resourceMode, resour
   // Check initialization status
   const initializationSuccessful = isInitializationSuccessful();
   
-  // Check for critical errors
-  const hasEssentialFailures = initStatus.failedComponents.some(comp => 
-    comp.isEssential || comp.accessibility
-  );
+  // Get key metrics from the new initialization system
+  const { phase, progress, isComplete } = initState;
+  const { 
+    essentialComponentsHealth, 
+    accessibilityComponentsHealth, 
+    nonEssentialComponentsHealth, 
+    overallHealth 
+  } = healthMetrics;
   
-  // Check for accessibility component failures
-  const hasAccessibilityFailures = initStatus.failedComponents.some(comp => 
-    comp.accessibility
-  );
+  // Check for critical errors and failures
+  const hasEssentialFailures = essentialComponentsHealth < 100;
+  const hasAccessibilityFailures = accessibilityComponentsHealth < 100;
+  const hasNonEssentialFailures = nonEssentialComponentsHealth < 100;
   
   // Check if initialization is still in progress
-  const isInitializing = initStatus.isInitializing;
+  const isInitializing = !isComplete;
   
   // Check resource status
   const highCpuUsage = resourceUsage && resourceUsage.cpu && resourceUsage.cpu >= 80;
@@ -345,25 +361,18 @@ function updateOverviewDisplay(overviewSection, initStatus, resourceMode, resour
   const effectiveResourceMode = userConfiguredMode || resourceMode;
   
   // Calculate accessibility status
-  const totalAccessibilityComponents = initStatus.accessibilityComponents?.length || 0;
-  const activeAccessibilityComponents = initStatus.accessibilityComponents?.filter(
-    comp => comp.status === 'initialized' || comp.status === 'fallback'
-  ).length || 0;
-  
-  const accessibilityPercentage = totalAccessibilityComponents > 0 ?
-    Math.round((activeAccessibilityComponents / totalAccessibilityComponents) * 100) : 100;
-  
+  const accessibilityPercentage = accessibilityComponentsHealth;
   const accessibilityStatus = hasAccessibilityFailures ? 'Degraded' : 
     (accessibilityPercentage === 100 ? 'Fully Available' : 'Partially Available');
   
   const accessibilityStatusClass = hasAccessibilityFailures ? 'status-error' : 
     (accessibilityPercentage === 100 ? 'status-normal' : 'status-warning');
     
-  // Determine overall status
+  // Determine overall status based on health metrics and startup mode
   if (isInitializing) {
     statusClass = 'status-info';
     statusText = 'Initializing';
-    statusDetails.push(`Initializing components (${initStatus.completedComponents.length}/${initStatus.completedComponents.length + initStatus.pendingComponents.length})`);
+    statusDetails.push(`${phase} phase (${Math.round(progress)}%)`);
   } else if (hasEssentialFailures) {
     statusClass = 'status-error';
     statusText = 'Critical Error';
@@ -376,10 +385,18 @@ function updateOverviewDisplay(overviewSection, initStatus, resourceMode, resour
     statusClass = 'status-error';
     statusText = 'Overheating';
     statusDetails.push('System temperature critical');
-  } else if (initStatus.failedComponents.length > 0) {
+  } else if (startupMode === 'safe') {
+    statusClass = 'status-warning';
+    statusText = 'Safe Mode';
+    statusDetails.push('Running with limited components');
+  } else if (startupMode === 'minimal') {
+    statusClass = 'status-warning';
+    statusText = 'Minimal Mode';
+    statusDetails.push('Running with essential components only');
+  } else if (hasNonEssentialFailures) {
     statusClass = 'status-warning';
     statusText = 'Degraded';
-    statusDetails.push(`${initStatus.failedComponents.length} components failed`);
+    statusDetails.push(`System health: ${overallHealth}%`);
   } else if (highCpuUsage || highMemoryUsage) {
     statusClass = 'status-warning';
     statusText = 'High Resource Usage';
@@ -393,10 +410,10 @@ function updateOverviewDisplay(overviewSection, initStatus, resourceMode, resour
     statusClass = 'status-warning';
     statusText = 'Limited Resources';
     statusDetails.push(`Running in ${effectiveResourceMode} mode`);
-  } else if (!initializationSuccessful) {
+  } else if (overallHealth < 100) {
     statusClass = 'status-warning';
-    statusText = 'Initialization Issues';
-    statusDetails.push('Some components failed to initialize');
+    statusText = 'Partial Health';
+    statusDetails.push(`System health: ${overallHealth}%`);
   } else {
     statusClass = 'status-normal';
     statusText = 'Normal';
@@ -946,189 +963,159 @@ function updateInitializationSection() {
   const initSection = dashboardElement.querySelector('#alejo-dashboard-initialization');
   if (!initSection) return;
   
-  // Get initialization status
-  const initStatus = getInitializationStatus();
-  const isInitializing = initStatus.isInitializing;
-  const initSuccessful = isInitializationSuccessful();
+  // Get initialization sequence state and health metrics
+  const initState = getInitializationSequenceState();
+  const healthMetrics = getInitializationHealth();
+  const startupMode = getStartupMode();
   
-  // Generate timeline visualization
-  const timelineHtml = generateTimelineVisualization();
-  const timelineStyles = getTimelineStyles();
-  
-  // Create initialization details
-  const completedCount = initStatus.completedComponents?.length || 0;
-  const failedCount = initStatus.failedComponents?.length || 0;
-  const pendingCount = initStatus.pendingComponents?.length || 0;
-  const totalCount = completedCount + failedCount + pendingCount;
-  
-  // Calculate overall progress
-  const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-  
-  // Determine status class
-  const statusClass = failedCount > 0 ? 'status-error' : 
-                     isInitializing ? 'status-info' : 
-                     initSuccessful ? 'status-normal' : 'status-warning';
+  // Extract data from initialization state
+  const { phase, progress, isComplete, startTime: initStartTime, endTime: initEndTime } = initState;
   
   // Format timing information
-  let timingInfo = '';
-  if (initStatus.startTime) {
-    const startTime = new Date(initStatus.startTime).toLocaleTimeString();
-    if (initStatus.endTime) {
-      const endTime = new Date(initStatus.endTime).toLocaleTimeString();
-      const duration = initStatus.endTime - initStatus.startTime;
-      timingInfo = `Started at ${startTime}, completed at ${endTime} (${duration}ms)`;
+  const startTime = initStartTime ? new Date(initStartTime).toLocaleTimeString() : 'N/A';
+  const endTime = initEndTime ? new Date(initEndTime).toLocaleTimeString() : 'In progress';
+  const duration = initStartTime && initEndTime ? `${initEndTime - initStartTime}ms` : 'In progress';
+  
+  // Calculate component health percentages
+  const overallHealth = healthMetrics.overallHealth;
+  const accessibilityHealth = healthMetrics.accessibilityComponentsHealth;
+  const essentialHealth = healthMetrics.essentialComponentsHealth;
+  
+  // Determine phase text and class
+  let phaseText = '';
+  let phaseClass = '';
+  
+  if (isComplete) {
+    if (overallHealth === 100) {
+      phaseText = 'Complete';
+      phaseClass = 'status-normal';
+    } else if (essentialHealth === 100) {
+      phaseText = 'Completed with non-essential issues';
+      phaseClass = 'status-warning';
     } else {
-      const elapsed = Date.now() - initStatus.startTime;
-      timingInfo = `Started at ${startTime}, running for ${elapsed}ms`;
+      phaseText = 'Completed with essential failures';
+      phaseClass = 'status-error';
     }
+  } else {
+    phaseText = `${phase} (${Math.round(progress)}%)`;
+    phaseClass = 'status-info';
   }
   
-  // Generate HTML
-  initSection.innerHTML = `
-    <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Initialization Timeline</h3>
-    
-    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-      <div>Status:</div>
-      <div class="${statusClass}">
-        ${isInitializing ? 'Initializing' : initSuccessful ? 'Complete' : 'Completed with issues'}
-      </div>
-    </div>
-    
-    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-      <div>Progress:</div>
-      <div>${completedCount}/${totalCount} components (${progress}%)</div>
-    </div>
-    ${createProgressBar(progress, statusClass)}
-    
-    <div style="font-size: 12px; margin: 8px 0; color: #666;">
-      ${timingInfo}
-    </div>
-    
-    <div style="display: flex; justify-content: space-between; margin: 12px 0; font-size: 12px;">
-      <div>
-        <div style="font-weight: 500;">Completed</div>
-        <div class="status-normal">${completedCount}</div>
-      </div>
-      <div>
-        <div style="font-weight: 500;">Failed</div>
-        <div class="status-error">${failedCount}</div>
-      </div>
-      <div>
-        <div style="font-weight: 500;">Pending</div>
-        <div class="status-info">${pendingCount}</div>
-      </div>
-    </div>
-    
-    <style>${timelineStyles}</style>
-    ${timelineHtml}
-    
-    <div style="margin-top: 12px;">
-      <button id="retry-initialization-btn" class="dashboard-button" ${!failedCount ? 'disabled' : ''}>
-        Retry Failed Components
-      </button>
-    </div>
-  `;
+  // Get startup mode display info
+  let modeInfo = '';
+  let modeClass = 'status-normal';
   
-  // Add event listener for retry button
-  const retryBtn = initSection.querySelector('#retry-initialization-btn');
-  retryBtn.addEventListener('click', () => {
-    retryBtn.textContent = 'Retrying...';
-    retryBtn.disabled = true;
-    
-    // This would typically call a function to retry failed components
-    // For now, we'll just update the UI after a delay
-    setTimeout(() => {
-      updateInitializationSection();
-    }, 1000);
-  });
-}
-
-/**
- * Update the registration validation section of the dashboard
- */
-function updateRegistrationValidationSection() {
-  const registrationSection = dashboardElement.querySelector('#alejo-dashboard-registration');
-  if (!registrationSection) return;
+  switch(startupMode) {
+    case 'normal':
+      modeInfo = 'Normal Mode (Full features)'; 
+      modeClass = 'status-normal';
+      break;
+    case 'safe':
+      modeInfo = 'Safe Mode (Limited features)';
+      modeClass = 'status-warning';
+      break;
+    case 'minimal':
+      modeInfo = 'Minimal Mode (Essential components only)';
+      modeClass = 'status-warning';
+      break;
+    default:
+      modeInfo = `${startupMode} Mode`;
+      modeClass = 'status-info';
+  }
   
-  // Show loading state
-  registrationSection.innerHTML = `
-    <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Component Registration</h3>
-    <div style="padding: 8px 0;">Loading registration data...</div>
-  `;
+  // Generate timeline visualization and styles
+  const timelineHtml = generateTimelineVisualization(initState);
+  const timelineStyles = getTimelineStyles();
   
-  // Generate registration report
-  generateRegistrationReport().then(report => {
-    const registrationRate = report.registrationRate;
-    const statusClass = registrationRate === 100 ? 'status-normal' : 
-                        registrationRate >= 80 ? 'status-warning' : 'status-error';
-    
-    // Create missing components list
-    const missingComponentsList = report.details.missing.length > 0 ?
-      `<div style="margin-top: 8px;">
-        <div style="font-weight: 500; margin-bottom: 4px;">Unregistered Components:</div>
-        <ul style="margin: 0; padding-left: 20px; font-size: 12px;">
-          ${report.details.missing.map(id => `<li>${id}</li>`).join('')}
-        </ul>
-      </div>` : '';
-    
-    registrationSection.innerHTML = `
-      <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Component Registration</h3>
-      
-      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-        <div>Registration Rate:</div>
-        <div class="${statusClass}">${report.registrationRate}%</div>
-      </div>
-      ${createProgressBar(report.registrationRate, statusClass)}
-      
-      <div style="margin-top: 12px; font-size: 12px;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-          <div>Total Components:</div>
-          <div>${report.totalComponents}</div>
+  // Build HTML for the section
+  const html = `
+    <div class="section-header" style="margin-bottom: 12px;">
+      <h3 style="font-size: 14px; margin: 0 0 8px 0; border-bottom: 1px solid #eee; padding-bottom: 8px;">
+        <span style="cursor: pointer;" class="section-toggle" data-section="initialization">
+          <span class="toggle-icon">▼</span> Initialization Sequence
+        </span>
+      </h3>
+    </div>
+    <div class="section-content" id="initialization-content" style="display: ${sections.initialization ? 'block' : 'none'};">
+      <div style="margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <div>Status:</div>
+          <div><span class="${phaseClass}">${phaseText}</span></div>
         </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-          <div>Registered:</div>
-          <div>${report.registeredCount}</div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <div>Startup Mode:</div>
+          <div><span class="${modeClass}">${modeInfo}</span></div>
         </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-          <div>Unregistered:</div>
-          <div>${report.missingCount}</div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <div>Start time:</div>
+          <div>${startTime}</div>
         </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-          <div>Accessibility Components:</div>
-          <div>${report.accessibilityCount}</div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <div>End time:</div>
+          <div>${endTime}</div>
         </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <div>Duration:</div>
+          <div>${duration}</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <div>Overall Health:</div>
+          <div>
+            ${createProgressBar(overallHealth, overallHealth === 100 ? 'status-normal' : 'status-warning')}
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <div>Accessibility:</div>
+          <div>
+            ${createProgressBar(accessibilityHealth, accessibilityHealth === 100 ? 'status-normal' : 'status-warning')}
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
           <div>Essential Components:</div>
-          <div>${report.essentialCount}</div>
+          <div>
+            ${createProgressBar(essentialHealth, essentialHealth === 100 ? 'status-normal' : 'status-error')}
+          </div>
         </div>
       </div>
-      
-      ${missingComponentsList}
       
       <div style="margin-top: 12px;">
-        <button id="validate-components-btn" class="dashboard-button">
-          Validate Components
+        <button class="dashboard-button" id="show-init-timeline" style="background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer;">
+          Show Detailed Timeline
         </button>
       </div>
-    `;
-    
-    // Add event listener for validate button
-    const validateBtn = registrationSection.querySelector('#validate-components-btn');
-    validateBtn.addEventListener('click', () => {
-      validateBtn.textContent = 'Validating...';
-      validateBtn.disabled = true;
       
-      setTimeout(() => {
-        updateRegistrationValidationSection();
-      }, 1000);
+      <style>${timelineStyles}</style>
+    </div>
+  `;
+  
+  // Update the section content
+  initSection.innerHTML = html;
+  
+  // Add event listeners
+  const showTimelineBtn = initSection.querySelector('#show-init-timeline');
+  if (showTimelineBtn) {
+    showTimelineBtn.addEventListener('click', () => {
+      showInitializationTimelineModal(initState);
     });
-  }).catch(error => {
-    console.error('Error generating registration report:', error);
-    registrationSection.innerHTML = `
-      <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Component Registration</h3>
-      <div class="status-error">Error loading registration data</div>
-    `;
-  });
+  }
+
+  // Add toggle functionality
+  const toggleBtn = initSection.querySelector('.section-toggle');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const sectionName = toggleBtn.getAttribute('data-section');
+      const contentEl = document.getElementById(`${sectionName}-content`);
+      const isVisible = contentEl.style.display !== 'none';
+      
+      // Update visibility
+      contentEl.style.display = isVisible ? 'none' : 'block';
+      sections[sectionName] = !isVisible;
+      
+      // Update toggle icon
+      const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+      toggleIcon.textContent = isVisible ? '\u25ba' : '\u25bc';
+    });
+  }
 }
 
 /**
@@ -1157,6 +1144,20 @@ function updateResourcesSection() {
     import('../../performance/resource-allocation-manager.js').then(module => {
       const resourceManager = module.getResourceAllocationManager();
       updateResourceDisplay(resourcesSection, resourceManager);
+      
+      // Add or update resource threshold configuration button
+      if (!resourcesSection.querySelector('.resource-threshold-button')) {
+        createThresholdConfigButton(resourcesSection.querySelector('.section-actions'));
+      }
+      
+      // Request resource threshold section update
+      import('../../performance/resource-threshold-config.js').then(configModule => {
+        if (configModule.requestThresholds) {
+          configModule.requestThresholds();
+        }
+      }).catch(err => {
+        console.error('Failed to import resource threshold config module:', err);
+      });
     }).catch(err => {
       console.error('Failed to import resource manager:', err);
       updateResourceDisplayFallback(resourcesSection);
@@ -1811,49 +1812,16 @@ function showErrorLogModal() {
         </tbody>
       </table>
     </div>
-    <div style="display: flex; justify-content: space-between;">
-      <button id="error-log-clear" style="padding: 8px 16px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">
-        Clear Log
-      </button>
-      <button id="error-log-close" style="padding: 8px 16px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
-        Close
-      </button>
-    </div>
   `;
-  
-  modal.appendChild(modalContent);
-  document.body.appendChild(modal);
-  
-  // Add event listeners
-  modal.querySelector('#error-log-close').addEventListener('click', () => {
-    document.body.removeChild(modal);
-  });
-  
-  modal.querySelector('#error-log-clear').addEventListener('click', () => {
-    if (confirm('Are you sure you want to clear the error log?')) {
-      try {
-        localStorage.removeItem('alejo_error_log');
-        document.body.removeChild(modal);
-        updateDashboard();
-      } catch (e) {
-        console.warn('Failed to clear error log:', e);
-      }
-    }
-  });
-}
 
-/**
- * Create a floating button to toggle the dashboard
- * 
- * @returns {HTMLElement} - The toggle button element
- */
-export function createDashboardToggle() {
-  let toggleButton = document.getElementById('alejo-dashboard-toggle');
-  
-  if (!toggleButton) {
-    toggleButton = document.createElement('button');
-    toggleButton.id = 'alejo-dashboard-toggle';
-    toggleButton.setAttribute('aria-label', 'Toggle system monitoring dashboard');
+  // Update the section content
+  initSection.innerHTML = html;
+
+  // Add event listeners
+  const showTimelineBtn = initSection.querySelector('#show-init-timeline');
+  if (showTimelineBtn) {
+    showTimelineBtn.addEventListener('click', () => {
+      showInitializationTimelineModal(initState);
     toggleButton.setAttribute('title', 'System Monitor');
     
     toggleButton.style.cssText = `
@@ -1900,7 +1868,19 @@ export function openMonitoringDashboard() {
  * Close the monitoring dashboard
  * Alias for hideDashboard for test compatibility
  */
-export function closeMonitoringDashboard() {
+/**
+ * Open the monitoring dashboard
+ * Alias for showDashboard for API consistency
+ */
+function openMonitoringDashboard() {
+  showDashboard();
+}
+
+/**
+ * Close the monitoring dashboard
+ * Alias for hideDashboard for API consistency
+ */
+function closeMonitoringDashboard() {
   hideDashboard();
 }
 
@@ -2034,13 +2014,116 @@ export function getAccessibilityStatus() {
   };
 }
 
+/**
+ * Initialize the monitoring dashboard
+ * @param {Object} options - Dashboard initialization options
+ * @param {boolean} [options.autoShow=false] - Whether to show dashboard after initialization
+ * @param {Object} [options.sections] - Dashboard sections to enable/disable
+ * @returns {Object} Dashboard instance
+ */
+function initDashboard(options = {}) {
+  // Create dashboard if it doesn't exist
+  if (!dashboardElement) {
+    createDashboardElement();
+  }
+  
+  // Initialize resource threshold section
+  initializeResourceThresholdSection()
+    .then(result => {
+      console.log('Resource threshold section initialized:', result);
+    })
+    .catch(error => {
+      console.error('Failed to initialize resource threshold section:', error);
+    });
+    
+  // Configure sections
+  if (options.sections) {
+    // Override default sections configuration
+    Object.assign(defaultSections, options.sections);
+  }
+  
+  // Set up update interval if not already running
+  if (!updateInterval) {
+    updateInterval = setInterval(updateDashboard, 2000); // Update every 2 seconds
+  }
+  
+  // Show dashboard if requested
+  if (options.autoShow) {
+    showDashboard();
+  }
+  
+  return {
+    show: showDashboard,
+    hide: hideDashboard,
+    toggle: toggleDashboard,
+    update: updateDashboard
+  };
+}
+
+/**
+ * Create the dashboard element
+ */
+function createDashboardElement() {
+  // Check if the dashboard already exists
+  if (document.getElementById(DASHBOARD_ID)) {
+    dashboardElement = document.getElementById(DASHBOARD_ID);
+    return;
+  }
+  
+  // Create container if it doesn't exist
+  let container = document.getElementById(DASHBOARD_CONTAINER_ID);
+  if (!container) {
+    container = document.createElement('div');
+    container.id = DASHBOARD_CONTAINER_ID;
+    document.body.appendChild(container);
+  }
+  
+  // Create dashboard
+  dashboardElement = document.createElement('div');
+  dashboardElement.id = DASHBOARD_ID;
+  dashboardElement.className = 'alejo-dashboard';
+  dashboardElement.setAttribute('role', 'dialog');
+  dashboardElement.setAttribute('aria-modal', 'true');
+  dashboardElement.setAttribute('aria-label', 'ALEJO System Monitoring Dashboard');
+  
+  // Add sections
+  dashboardElement.innerHTML = `
+    <div class="dashboard-header">
+      <h2>ALEJO System Monitoring</h2>
+      <div class="dashboard-controls">
+        <button id="dashboard-high-contrast" class="dashboard-button" aria-label="Toggle high contrast mode">High Contrast</button>
+        <button id="dashboard-close" class="dashboard-button" aria-label="Close dashboard">Close</button>
+      </div>
+    </div>
+    <div class="dashboard-content">
+      <section id="alejo-dashboard-overview" class="dashboard-section"></section>
+      <section id="alejo-dashboard-components" class="dashboard-section"></section>
+      <section id="alejo-dashboard-loading" class="dashboard-section"></section>
+      <section id="alejo-dashboard-initialization" class="dashboard-section"></section>
+      <section id="alejo-dashboard-resources" class="dashboard-section"></section>
+      <section id="alejo-dashboard-voice" class="dashboard-section"></section>
+      <section id="alejo-dashboard-fallbacks" class="dashboard-section"></section>
+      <section id="alejo-dashboard-errors" class="dashboard-section"></section>
+    </div>
+  `;
+  
+  // Add event listeners
+  dashboardElement.querySelector('#dashboard-close').addEventListener('click', hideDashboard);
+  dashboardElement.querySelector('#dashboard-high-contrast').addEventListener('click', toggleHighContrastMode);
+  
+  // Add to container
+  container.appendChild(dashboardElement);
+  
+  // Initial update
+  updateDashboard();
+}
+
 export default {
   init: initDashboard,
   show: showDashboard,
   hide: hideDashboard,
   toggle: toggleDashboard,
   update: updateDashboard,
-  createToggle: createDashboardToggle,
   openMonitoringDashboard,
   closeMonitoringDashboard,
   getDashboardState,
