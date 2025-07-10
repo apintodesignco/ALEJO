@@ -20,6 +20,32 @@ import { RESOURCE_MODES } from '../../performance/resource-allocation-manager.js
  * @param {Function} options.onReset - Callback when reset is requested
  * @returns {HTMLElement} The threshold configuration UI element
  */
+/**
+ * Helper function to announce changes to screen readers
+ * @param {string} message - Message to announce
+ * @private
+ */
+function _announceToScreenReader(message) {
+  const announcer = document.getElementById('threshold-ui-announcer');
+  
+  if (!announcer) {
+    const newAnnouncer = document.createElement('div');
+    newAnnouncer.id = 'threshold-ui-announcer';
+    newAnnouncer.setAttribute('aria-live', 'polite');
+    newAnnouncer.className = 'sr-only';
+    newAnnouncer.style.position = 'absolute';
+    newAnnouncer.style.height = '1px';
+    newAnnouncer.style.width = '1px';
+    newAnnouncer.style.overflow = 'hidden';
+    newAnnouncer.style.clip = 'rect(1px, 1px, 1px, 1px)';
+    document.body.appendChild(newAnnouncer);
+    setTimeout(() => { newAnnouncer.textContent = message; }, 100);
+  } else {
+    announcer.textContent = '';
+    setTimeout(() => { announcer.textContent = message; }, 100);
+  }
+}
+
 export function createResourceThresholdUI(options) {
   const {
     thresholds = DEFAULT_THRESHOLDS,
@@ -231,13 +257,13 @@ export function createResourceThresholdUI(options) {
         <button id="threshold-close" aria-label="Close configuration">✖</button>
       </h2>
       
-      <div class="tabs" role="tablist">
-        <div class="tab active" role="tab" aria-selected="true" tabindex="0" data-tab="cpu">CPU</div>
-        <div class="tab" role="tab" aria-selected="false" tabindex="-1" data-tab="memory">Memory</div>
-        <div class="tab" role="tab" aria-selected="false" tabindex="-1" data-tab="temperature">Temperature</div>
-        <div class="tab" role="tab" aria-selected="false" tabindex="-1" data-tab="disk">Disk</div>
-        <div class="tab" role="tab" aria-selected="false" tabindex="-1" data-tab="battery">Battery</div>
-        <div class="tab" role="tab" aria-selected="false" tabindex="-1" data-tab="preferences">Preferences</div>
+      <div class="tabs" role="tablist" aria-orientation="horizontal">
+        <div class="tab active" role="tab" aria-selected="true" tabindex="0" data-tab="cpu" aria-controls="cpu-tab" id="cpu-tab-button">CPU</div>
+        <div class="tab" role="tab" aria-selected="false" tabindex="-1" data-tab="memory" aria-controls="memory-tab" id="memory-tab-button">Memory</div>
+        <div class="tab" role="tab" aria-selected="false" tabindex="-1" data-tab="temperature" aria-controls="temperature-tab" id="temperature-tab-button">Temperature</div>
+        <div class="tab" role="tab" aria-selected="false" tabindex="-1" data-tab="disk" aria-controls="disk-tab" id="disk-tab-button">Disk</div>
+        <div class="tab" role="tab" aria-selected="false" tabindex="-1" data-tab="battery" aria-controls="battery-tab" id="battery-tab-button">Battery</div>
+        <div class="tab" role="tab" aria-selected="false" tabindex="-1" data-tab="preferences" aria-controls="preferences-tab" id="preferences-tab-button">Preferences</div>
       </div>
       
       <div id="cpu-tab" class="tab-content active" role="tabpanel">
@@ -307,11 +333,36 @@ export function createResourceThresholdUI(options) {
       tabContent.classList.add('active');
     });
     
-    // Keyboard navigation for tabs
+    // Enhanced keyboard navigation for tabs
     tab.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         tab.click();
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        const nextTab = tab.nextElementSibling;
+        if (nextTab && nextTab.classList.contains('tab')) {
+          nextTab.click();
+          nextTab.focus();
+        }
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prevTab = tab.previousElementSibling;
+        if (prevTab && prevTab.classList.contains('tab')) {
+          prevTab.click();
+          prevTab.focus();
+        }
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        const firstTab = container.querySelector('.tab');
+        firstTab.click();
+        firstTab.focus();
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        const tabs = container.querySelectorAll('.tab');
+        const lastTab = tabs[tabs.length - 1];
+        lastTab.click();
+        lastTab.focus();
       }
     });
   });
@@ -322,6 +373,16 @@ export function createResourceThresholdUI(options) {
     if (onReset) {
       onReset();
     }
+    // Add screen reader announcement
+    _announceToScreenReader('Thresholds reset to default values');
+  });
+  
+  // Add apply button functionality
+  const applyButton = container.querySelector('#threshold-apply');
+  applyButton.addEventListener('click', () => {
+    container.dispatchEvent(new CustomEvent('apply'));
+    // Add screen reader announcement
+    _announceToScreenReader('Threshold changes applied');
   });
   
   // Set up close button
@@ -397,6 +458,9 @@ function _populateCpuTab(container, thresholds, onUpdateThreshold) {
     if (parseInt(criticalSlider.value) < warning + 5) {
       criticalSlider.value = warning + 5;
       criticalValue.textContent = `${warning + 5}%`;
+      
+      // Announce change for accessibility
+      _announceToScreenReader(`Critical threshold automatically adjusted to ${warning + 5}%`);
     }
     
     if (onUpdateThreshold) {
@@ -484,6 +548,9 @@ function _populateMemoryTab(container, thresholds, onUpdateThreshold) {
     if (parseInt(criticalSlider.value) < warning + 5) {
       criticalSlider.value = warning + 5;
       criticalValue.textContent = `${warning + 5}%`;
+      
+      // Announce change for accessibility
+      _announceToScreenReader(`Critical threshold automatically adjusted to ${warning + 5}%`);
     }
     
     if (onUpdateThreshold) {
@@ -658,6 +725,9 @@ function _populateDiskTab(container, thresholds, onUpdateThreshold) {
     if (parseInt(criticalSlider.value) < warning + 5) {
       criticalSlider.value = warning + 5;
       criticalValue.textContent = `${warning + 5}%`;
+      
+      // Announce change for accessibility
+      _announceToScreenReader(`Critical threshold automatically adjusted to ${warning + 5}%`);
     }
     
     if (onUpdateThreshold) {

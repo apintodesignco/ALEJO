@@ -1,0 +1,378 @@
+/**
+ * Resource Dashboard Threshold Indicators Styles
+ * Provides visual representation of resource thresholds in the dashboard
+ */
+
+/* Gauge threshold indicators */
+.gauge-threshold {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  z-index: 5;
+}
+
+.gauge-threshold.warning {
+  background-color: var(--warning-color, #f1c21b);
+  border-right: 1px dashed var(--warning-color-dark, #c99c00);
+}
+
+.gauge-threshold.critical {
+  background-color: var(--critical-color, #da1e28);
+  border-right: 1px dashed var(--critical-color-dark, #a51920);
+}
+
+/* High-contrast mode */
+.high-contrast .gauge-threshold.warning {
+  background-color: #ffff00;
+  border-right: 2px solid #000000;
+}
+
+.high-contrast .gauge-threshold.critical {
+  background-color: #ff0000;
+  border-right: 2px solid #000000;
+}
+
+/* Gauge container enhancements */
+.gauge-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.gauge {
+  position: relative;
+  height: 12px;
+  background-color: var(--gauge-bg-color, #e0e0e0);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* Fill styles */
+.gauge-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.gauge-fill.status-normal {
+  background-color: var(--normal-color, #24a148);
+}
+
+.gauge-fill.status-warning {
+  background-color: var(--warning-color, #f1c21b);
+}
+
+.gauge-fill.status-critical {
+  background-color: var(--critical-color, #da1e28);
+}
+
+/* High-contrast mode */
+.high-contrast .gauge-fill.status-normal {
+  background-color: #00ff00;
+}
+
+.high-contrast .gauge-fill.status-warning {
+  background-color: #ffff00;
+}
+
+.high-contrast .gauge-fill.status-critical {
+  background-color: #ff0000;
+}
+
+/* Gauge labels */
+.gauge-label {
+  text-align: right;
+  font-weight: bold;
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+}
+
+/* Threshold summary display */
+.gauge-thresholds-summary {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  opacity: 0.8;
+  margin-top: 0.25rem;
+  color: var(--text-color-secondary, #555555);
+}
+
+.gauge-thresholds-summary .warning-threshold {
+  color: var(--warning-color-dark, #c99c00);
+}
+
+/* Error handling styles */
+.threshold-apply-error {
+  background-color: var(--error-bg-color, #fff1f1);
+  border: 1px solid var(--critical-color, #da1e28);
+  border-radius: 4px;
+  margin: 1rem 0;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  animation: errorFadeIn 0.3s ease-in-out;
+}
+
+.high-contrast .threshold-apply-error {
+  background-color: #000000;
+  border: 2px solid #ff0000;
+  color: #ffffff;
+}
+
+.error-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.error-icon {
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+.error-title {
+  flex: 1;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.error-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  color: var(--text-color-secondary, #555555);
+}
+
+.high-contrast .error-close {
+  color: #ffffff;
+  background: #444444;
+  border-radius: 50%;
+  padding: 0 6px;
+}
+
+.error-message {
+  padding: 0.5rem 0;
+  margin-bottom: 0.75rem;
+  color: var(--text-color, #333333);
+  font-size: 0.9rem;
+}
+
+.high-contrast .error-message {
+  color: #ffffff;
+}
+
+.error-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.error-actions button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.error-retry {
+  background-color: var(--primary-color, #0f62fe);
+  color: white;
+  border: none;
+}
+
+.error-recover {
+  background-color: transparent;
+  color: var(--primary-color, #0f62fe);
+  border: 1px solid var(--primary-color, #0f62fe);
+}
+
+.high-contrast .error-retry {
+  background-color: #ffffff;
+  color: #000000;
+  border: 2px solid #ffffff;
+  font-weight: bold;
+}
+
+.high-contrast .error-recover {
+  background-color: transparent;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+@keyframes errorFadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(-10px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+
+/* Recovery notification styles */
+.threshold-recovery-notification {
+  background-color: var(--info-bg-color, #edf5ff);
+  border: 1px solid var(--info-color, #0043ce);
+  border-radius: 4px;
+  margin: 1rem 0;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  animation: errorFadeIn 0.3s ease-in-out;
+}
+
+.high-contrast .threshold-recovery-notification {
+  background-color: #000000;
+  border: 2px solid #00ccff;
+  color: #ffffff;
+}
+
+.recovery-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.recovery-icon {
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+.recovery-title {
+  flex: 1;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.recovery-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  color: var(--text-color-secondary, #555555);
+}
+
+.high-contrast .recovery-close {
+  color: #ffffff;
+  background: #444444;
+  border-radius: 50%;
+  padding: 0 6px;
+}
+
+.recovery-message {
+  padding: 0.5rem 0;
+  margin-bottom: 0.75rem;
+  color: var(--text-color, #333333);
+  font-size: 0.9rem;
+}
+
+.high-contrast .recovery-message {
+  color: #ffffff;
+}
+
+.recovery-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.recovery-actions button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.recovery-restore {
+  background-color: var(--info-color, #0043ce);
+  color: white;
+  border: none;
+}
+
+.recovery-dismiss {
+  background-color: transparent;
+  color: var(--info-color, #0043ce);
+  border: 1px solid var(--info-color, #0043ce);
+}
+
+.high-contrast .recovery-restore {
+  background-color: #00ccff;
+  color: #000000;
+  border: 2px solid #00ccff;
+  font-weight: bold;
+}
+
+.high-contrast .recovery-dismiss {
+  background-color: transparent;
+  color: #00ccff;
+  border: 2px solid #00ccff;
+}
+
+.gauge-thresholds-summary .critical-threshold {
+  color: var(--critical-color-dark, #a51920);
+}
+
+/* High-contrast mode */
+.high-contrast .gauge-thresholds-summary {
+  font-weight: bold;
+}
+
+.high-contrast .gauge-thresholds-summary .warning-threshold {
+  color: #000000;
+  background-color: #ffff00;
+  padding: 0 4px;
+}
+
+.high-contrast .gauge-thresholds-summary .critical-threshold {
+  color: #ffffff;
+  background-color: #ff0000;
+  padding: 0 4px;
+}
+
+/* Custom thresholds indicator */
+.custom-thresholds .gauge::before {
+  content: "✏️";
+  position: absolute;
+  left: -20px;
+  top: -2px;
+  font-size: 14px;
+}
+
+/* Accessibility: reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .gauge-fill {
+    transition: none;
+  }
+}
+
+/* Large text mode */
+.large-text .gauge-thresholds-summary {
+  font-size: 0.85rem;
+}
+
+.large-text .gauge-label {
+  font-size: 1.1rem;
+}
+
+/* Custom threshold badge - indicates user-modified thresholds */
+.resource-dashboard .threshold-config-badge {
+  display: inline-block;
+  background-color: var(--accent-color, #0f62fe);
+  color: white;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.high-contrast .threshold-config-badge {
+  background-color: #ffffff;
+  color: #000000;
+  outline: 2px solid #000000;
+}

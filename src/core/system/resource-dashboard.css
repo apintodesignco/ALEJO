@@ -1,0 +1,438 @@
+/**
+ * Resource Dashboard Styles
+ * 
+ * Styles for the ALEJO system-wide resource monitoring dashboard.
+ * Designed with accessibility in mind, including high contrast mode and large text support.
+ */
+
+/* Dashboard Container */
+#alejo-resource-dashboard-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 400px;
+  max-width: 100%;
+  background-color: rgba(250, 250, 250, 0.95);
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* High contrast mode */
+#alejo-resource-dashboard-container.high-contrast {
+  background-color: #000;
+  box-shadow: -2px 0 10px rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-left: 2px solid #fff;
+}
+
+/* Dashboard */
+.alejo-dashboard.resource-dashboard {
+  padding: 1rem;
+  color: #333;
+}
+
+/* High contrast mode for dashboard content */
+.high-contrast .alejo-dashboard.resource-dashboard {
+  color: #fff;
+}
+
+/* Large text mode */
+.large-text .alejo-dashboard.resource-dashboard {
+  font-size: 120%;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.high-contrast .dashboard-header {
+  border-bottom-color: #fff;
+}
+
+.dashboard-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.dashboard-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.high-contrast .dashboard-subtitle {
+  color: #ccc;
+}
+
+/* Resource Mode Indicator */
+.resource-mode-indicator {
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.mode-normal {
+  background-color: #e6f7ff;
+  color: #0070c0;
+}
+
+.mode-high {
+  background-color: #fff2e6;
+  color: #ff6b00;
+}
+
+.mode-saving {
+  background-color: #e6ffee;
+  color: #00b050;
+}
+
+.mode-minimal {
+  background-color: #fff0f5;
+  color: #c000c0;
+}
+
+/* High contrast mode for resource mode indicators */
+.high-contrast .mode-normal {
+  background-color: #0070c0;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.high-contrast .mode-high {
+  background-color: #ff6b00;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.high-contrast .mode-saving {
+  background-color: #00b050;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.high-contrast .mode-minimal {
+  background-color: #c000c0;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+/* Resource Sections */
+.resource-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.high-contrast .resource-section {
+  background-color: #222;
+  border: 1px solid #fff;
+  box-shadow: none;
+}
+
+.resource-section h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* Resource Gauge */
+.gauge-container {
+  position: relative;
+  height: 20px;
+  background-color: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.high-contrast .gauge-container {
+  background-color: #444;
+  border: 1px solid #888;
+}
+
+.gauge-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+/* Reduced motion */
+.reduced-motion .gauge-fill {
+  transition: none;
+}
+
+.gauge-fill.normal {
+  background-color: #4caf50;
+}
+
+.gauge-fill.warning {
+  background-color: #ff9800;
+}
+
+.gauge-fill.critical {
+  background-color: #f44336;
+}
+
+/* High contrast mode for gauge fills */
+.high-contrast .gauge-fill.normal {
+  background-color: #00ff00;
+}
+
+.high-contrast .gauge-fill.warning {
+  background-color: #ffff00;
+}
+
+.high-contrast .gauge-fill.critical {
+  background-color: #ff0000;
+}
+
+.gauge-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #333;
+  text-shadow: 0 0 2px #fff;
+}
+
+.high-contrast .gauge-label {
+  color: #fff;
+  text-shadow: 0 0 2px #000;
+}
+
+/* Resource Details */
+.resource-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.high-contrast .resource-details {
+  color: #ccc;
+}
+
+/* Resource Alerts */
+.resource-alert {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.75rem;
+}
+
+.resource-alert.hidden {
+  display: none;
+}
+
+.resource-alert.warning {
+  background-color: #fff3e0;
+  border: 1px solid #ffcc80;
+}
+
+.resource-alert.critical {
+  background-color: #ffebee;
+  border: 1px solid #ef9a9a;
+}
+
+/* High contrast mode for alerts */
+.high-contrast .resource-alert.warning {
+  background-color: #663c00;
+  border: 1px solid #ff9800;
+  color: #fff;
+}
+
+.high-contrast .resource-alert.critical {
+  background-color: #660000;
+  border: 1px solid #f44336;
+  color: #fff;
+}
+
+.alert-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.alert-icon.warning {
+  background-color: #ff9800;
+}
+
+.alert-icon.critical {
+  background-color: #f44336;
+}
+
+.alert-message {
+  font-size: 0.85rem;
+}
+
+.alert-message strong {
+  font-weight: 600;
+}
+
+/* Dashboard Controls */
+.dashboard-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd;
+}
+
+.high-contrast .dashboard-controls {
+  border-top-color: #fff;
+}
+
+.dashboard-button {
+  padding: 0.5rem 1rem;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dashboard-button:hover {
+  background-color: #e0e0e0;
+}
+
+.dashboard-button:focus {
+  outline: 2px solid #0078d4;
+  outline-offset: 2px;
+}
+
+/* High contrast mode for buttons */
+.high-contrast .dashboard-button {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.high-contrast .dashboard-button:hover {
+  background-color: #333;
+}
+
+.high-contrast .dashboard-button:focus {
+  outline: 2px solid #fff;
+}
+
+.close-button {
+  background-color: #f9f9f9;
+}
+
+.help-button {
+  background-color: #e1f5fe;
+  color: #0288d1;
+}
+
+.high-contrast .help-button {
+  background-color: #0288d1;
+  color: #fff;
+}
+
+/* Help Modal */
+.alejo-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.high-contrast .alejo-modal {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.high-contrast .modal-content {
+  background-color: #000;
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+.help-content {
+  margin-bottom: 1.5rem;
+}
+
+.help-content h4 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.help-content ul {
+  margin-left: 1.5rem;
+  padding-left: 0;
+}
+
+.help-content li {
+  margin-bottom: 0.25rem;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  #alejo-resource-dashboard-container {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .resource-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tablet size */
+@media (min-width: 601px) and (max-width: 960px) {
+  #alejo-resource-dashboard-container {
+    width: 350px;
+  }
+}
+
+/* Accessibility focus styles */
+*:focus-visible {
+  outline: 3px solid #0078d4;
+  outline-offset: 2px;
+}
+
+.high-contrast *:focus-visible {
+  outline: 3px solid #fff;
+}

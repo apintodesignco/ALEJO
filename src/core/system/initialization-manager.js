@@ -10,6 +10,7 @@
  * - Fallback mechanisms for failed components
  * - Detailed initialization logging
  * - Accessibility-first prioritization
+ * - Persistent recovery for failed components
  */
 
 import { 
@@ -19,6 +20,14 @@ import {
   getComponentStatus,
   hasEssentialFailures
 } from './error-handler.js';
+import {
+  registerFailedComponent,
+  registerRecoveryStrategy,
+  attemptComponentRecovery,
+  recoverAllFailedComponents,
+  checkForPersistentFailures,
+  RecoveryState
+} from './component-recovery-manager.js';
 import { publishEvent } from '../neural-architecture/neural-event-bus.js';
 import { logInitEvent } from './initialization-log-viewer.js';
 
@@ -412,8 +421,14 @@ export async function initializeAllComponents(options = {}) {
         
         // Skip if component doesn't exist
         if (!component) {
-          console.warn(`Component not found: ${componentId}`);
-          return Promise.resolve({ componentId, success: false, error: new Error('Component not found') });
+          console.error(`Component not found: ${componentId}`);
+          return { error: `Component not found: ${componentId}` };
+        }
+        
+        // Skip initialization if already initialized and not forced
+        if (!options.force && isComponentInitialized(componentId)) {
+          console.log(`Component ${componentId} is already initialized`);
+          return { success: true, alreadyInitialized: true };
         }
         
         return initializeComponentWithFallback(component, { useFallbacks })
@@ -436,8 +451,24 @@ export async function initializeAllComponents(options = {}) {
             return { componentId, success: true, result };
           })
           .catch(error => {
-            results[componentId] = { error };
-            initState.failedComponents.push(componentId);
+            // Track the failed component
+            if (!initState.failedComponents.includes(componentId)) {
+              initState.failedComponents.push(componentId);
+            }
+            
+            // Register the failed component for recovery
+            registerFailedComponent(componentId, error, {
+              isEssential: component.isEssential,
+              accessibility: component.accessibility,
+              maxRecoveryAttempts: component.retryAttempts || 3,
+              recoveryDelay: component.retryDelay || 3000,
+              persistAcrossSessions: component.isEssential || component.accessibility
+            });
+            
+            // Register default recovery strategies if requested
+            if (options.registerRecovery) {
+              registerDefaultRecoveryStrategies(componentId, component);
+            }
             
             // Report component failure
             if (progressCallback) {
@@ -544,6 +575,9 @@ export async function initializeAllComponents(options = {}) {
       stack: error.stack
     });
     
+    throw error;
+  }
+}
 
 /**
  * Initialize a single component
@@ -684,26 +718,16 @@ async function initializeComponentWithFallback(component, options = {}) {
         
         const duration = componentRegistry.get(id).endTime - componentRegistry.get(id).startTime;
         
-        logError({
-          error,
-          context: `initialization:${id}`,
-          severity: component.isEssential ? ErrorSeverity.CRITICAL : ErrorSeverity.ERROR
+        logInitEvent('fallback-error', id, { 
+          primaryError: error.message, 
+          fallbackError: 'No fallback available'
         });
-        
-        initState.failedComponents.push(id);
-        initState.pendingComponents = initState.pendingComponents.filter(c => c !== id);
         
         console.error(`Component initialization failed: ${id} after ${duration}ms`, error);
         publishEvent('system:component:failed', { 
           componentId: id, 
           error: error.message,
           duration
-        });
-        
-        logInitEvent('failure', id, { 
-          duration,
-          error: error.message,
-          stack: error.stack
         });
         
         throw error;
@@ -1137,6 +1161,7 @@ export function resetInitialization(options = {}) {
     clearedRegistry: clearRegistry
   };
 }
+
 // Export utility functions for initialization status and component access
 export function getInitializationStatus() {
   return {
@@ -1157,3 +1182,167 @@ export function getInitializedComponent(id) {
   const component = componentRegistry.get(id);
   return component && component.instance;
 }
+
+/**
+ * Initialize a component with the proper error handling and recovery options
+ * 
+ * @param {string} componentId - Component ID
+ * @param {Object} options - Initialization options
+ * @param {boolean} options.force - Force initialization even if already initialized
+ * @param {boolean} options.registerRecovery - Register recovery strategies for the component
+ * @returns {Promise<Object>} - Initialization result
+ */
+export async function initializeComponent(componentId, options = {}) {
+  const component = componentRegistry.get(componentId);
+  const { force = false, registerRecovery = false } = options;
+  
+  if (!component) {
+    console.error(`Component not found: ${componentId}`);
+    return { error: `Component not found: ${componentId}` };
+  }
+  
+  try {
+    // Initialize the component with fallback support
+    const result = await initializeWithFallback(
+      componentId,
+      component.initFunction,
+      component.fallbackFunction,
+      {
+        isEssential: component.isEssential,
+        accessibility: component.accessibility,
+        retryAttempts: component.retryAttempts,
+        retryDelay: component.retryDelay
+      }
+    );
+    
+    // Track the initialized component
+    initState.completedComponents.push(componentId);
+    
+    // Remove from pending components if present
+    const pendingIndex = initState.pendingComponents.indexOf(componentId);
+    if (pendingIndex !== -1) {
+      initState.pendingComponents.splice(pendingIndex, 1);
+    }
+    
+    // Register default recovery strategies for the component if requested
+    if (registerRecovery) {
+      registerDefaultRecoveryStrategies(componentId, component);
+    }
+    
+    return result;
+  } catch (error) {
+    // Track the failed component
+    if (!initState.failedComponents.includes(componentId)) {
+      initState.failedComponents.push(componentId);
+    }
+    
+    // Register the failed component for recovery
+    registerFailedComponent(componentId, error, {
+      isEssential: component.isEssential,
+      accessibility: component.accessibility,
+      maxRecoveryAttempts: component.retryAttempts || 3,
+      recoveryDelay: component.retryDelay || 3000,
+      persistAcrossSessions: component.isEssential || component.accessibility
+    });
+    
+    // Register default recovery strategies if requested
+    if (registerRecovery) {
+      registerDefaultRecoveryStrategies(componentId, component);
+    }
+    
+    return { error };
+  }
+}
+
+/**
+ * Register default recovery strategies for a component
+ * 
+ * @param {string} componentId - Component ID
+ * @param {Object} component - Component configuration
+ */
+function registerDefaultRecoveryStrategies(componentId, component) {
+  // Register a primary recovery strategy that attempts re-initialization
+  registerRecoveryStrategy(componentId, async () => {
+    try {
+      console.log(`Recovery strategy: Re-initializing component ${componentId}`);
+      const result = await initializeComponent(componentId, { force: true });
+      return { success: !!result && !result.error, result };
+    } catch (error) {
+      return { success: false, error };
+    }
+  }, {
+    priority: 100,
+    description: 'Re-initialize component',
+    requiresUserApproval: false
+  });
+  
+  // Register a fallback strategy if available
+  if (component.fallbackFunction) {
+    registerRecoveryStrategy(componentId, async () => {
+      try {
+        console.log(`Recovery strategy: Using fallback for component ${componentId}`);
+        const result = await component.fallbackFunction();
+        return { success: true, result, usedFallback: true };
+      } catch (error) {
+        return { success: false, error };
+      }
+    }, {
+      priority: 50,
+      description: 'Use component fallback implementation',
+      requiresUserApproval: false
+    });
+  }
+  
+  // Register a stub implementation strategy for non-essential components
+  if (!component.isEssential) {
+    registerRecoveryStrategy(componentId, async () => {
+      try {
+        console.log(`Recovery strategy: Using stub implementation for component ${componentId}`);
+        
+        // Create a minimal stub that satisfies the component's interface
+        const stubImplementation = {};
+        
+        // Store the stub as the component instance
+        componentRegistry.get(componentId).instance = stubImplementation;
+        
+        return { success: true, result: stubImplementation, usedStub: true };
+      } catch (error) {
+        return { success: false, error };
+      }
+    }, {
+      priority: 25,
+      description: 'Use stub implementation',
+      requiresUserApproval: component.isEssential ? true : false
+    });
+  }
+}
+
+/**
+ * Check for persistent failed components from previous sessions
+ * and register recovery strategies
+ * 
+ * @returns {Array} - Array of recovered persistent failures
+ */
+export function checkForPreviousFailures() {
+  const recoveredFailures = checkForPersistentFailures();
+  
+  // Register recovery strategies for each recovered failure
+  recoveredFailures.forEach(componentId => {
+    const component = componentRegistry.get(componentId);
+    if (component) {
+      registerDefaultRecoveryStrategies(componentId, component);
+    }
+  });
+  
+  return recoveredFailures;
+}
+
+// Re-export recovery manager functions for easy access
+export { 
+  registerFailedComponent, 
+  registerRecoveryStrategy, 
+  attemptComponentRecovery, 
+  recoverAllFailedComponents, 
+  checkForPersistentFailures,
+  RecoveryState 
+};

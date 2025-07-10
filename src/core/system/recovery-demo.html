@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEJO Component Recovery System Demo</title>
+  <link rel="stylesheet" href="recovery-status-ui.css">
+  <style>
+    :root {
+      --alejo-primary-color: #007acc;
+      --alejo-primary-dark: #005a9e;
+      --alejo-primary-contrast: #ffffff;
+      
+      --alejo-secondary-color: #0098db;
+      --alejo-secondary-dark: #0076a8;
+      --alejo-secondary-contrast: #ffffff;
+      
+      --alejo-surface-color: #ffffff;
+      --alejo-card-bg: #f8f8f8;
+      --alejo-text-color: #333333;
+      --alejo-text-secondary: #666666;
+      
+      --alejo-border-color: #e0e0e0;
+      --alejo-button-bg: #f0f0f0;
+      --alejo-button-text: #333333;
+      --alejo-button-border: #cccccc;
+      --alejo-button-hover-bg: #e0e0e0;
+      
+      --alejo-success-color: #43a047;
+      --alejo-warning-color: #ff9800;
+      --alejo-error-color: #e53935;
+      --alejo-error-dark: #c62828;
+      --alejo-info-color: #2196f3;
+      
+      --alejo-focus-ring: rgba(0, 122, 204, 0.5);
+      --alejo-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      font-family: var(--alejo-font-family);
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+      color: var(--alejo-text-color);
+    }
+    
+    header {
+      max-width: 800px;
+      margin: 0 auto 30px;
+    }
+    
+    h1 {
+      color: var(--alejo-primary-color);
+      margin: 0;
+    }
+    
+    .header-subtitle {
+      color: var(--alejo-text-secondary);
+      font-size: 1.1rem;
+      margin-top: 8px;
+    }
+    
+    .demo-container {
+      background-color: var(--alejo-surface-color);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+    
+    .demo-description {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--alejo-border-color);
+    }
+    
+    .demo-description h2 {
+      margin-top: 0;
+      color: var(--alejo-primary-color);
+    }
+    
+    code {
+      background-color: #eaeaea;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-family: Consolas, Monaco, 'Andale Mono', monospace;
+      font-size: 0.9em;
+    }
+    
+    .instructions-list {
+      list-style-type: decimal;
+      padding-left: 20px;
+    }
+    
+    .instructions-list li {
+      margin-bottom: 10px;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --alejo-primary-color: #0098db;
+        --alejo-primary-dark: #007acc;
+        --alejo-primary-contrast: #ffffff;
+        
+        --alejo-secondary-color: #00b0ff;
+        --alejo-secondary-dark: #0091ea;
+        --alejo-secondary-contrast: #ffffff;
+        
+        --alejo-surface-color: #1e1e1e;
+        --alejo-card-bg: #2d2d2d;
+        --alejo-text-color: #e0e0e0;
+        --alejo-text-secondary: #a0a0a0;
+        
+        --alejo-border-color: #444444;
+        --alejo-button-bg: #3d3d3d;
+        --alejo-button-text: #e0e0e0;
+        --alejo-button-border: #555555;
+        --alejo-button-hover-bg: #4d4d4d;
+        
+        --alejo-success-color: #66bb6a;
+        --alejo-warning-color: #ffa726;
+        --alejo-error-color: #ef5350;
+        --alejo-error-dark: #e57373;
+        --alejo-info-color: #42a5f5;
+        
+        --alejo-focus-ring: rgba(0, 176, 255, 0.5);
+      }
+      
+      body {
+        background-color: #121212;
+      }
+      
+      code {
+        background-color: #333333;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ALEJO Component Recovery System Demo</h1>
+    <div class="header-subtitle">
+      A demonstration of the robust component recovery and fallback mechanisms
+    </div>
+  </header>
+  
+  <main class="demo-container">
+    <section class="demo-description">
+      <h2>About This Demo</h2>
+      <p>
+        This demo showcases ALEJO's component recovery system, which provides robust fallback mechanisms 
+        and persistent recovery attempts for failed system components.
+      </p>
+      <p>
+        The recovery system includes:
+      </p>
+      <ul>
+        <li>Registration of failed components with metadata (essential, accessibility, retry limits)</li>
+        <li>Persistent storage of failures across sessions via <code>localStorage</code></li>
+        <li>Registration of multiple recovery strategies per component with priority ordering</li>
+        <li>Automated recovery attempts with configurable delay and retry limits</li>
+        <li>User interface for monitoring and triggering recovery attempts</li>
+      </ul>
+      
+      <h3>Instructions</h3>
+      <ol class="instructions-list">
+        <li>Click <strong>Register Components</strong> to register the demo components</li>
+        <li>Click <strong>Initialize System</strong> to start initialization (some components will intentionally fail)</li>
+        <li>Click <strong>Toggle Recovery UI</strong> to show the recovery interface</li>
+        <li>Try both individual component recovery and <strong>Recover All</strong> options</li>
+        <li>Refresh the page and click <strong>Check Previous Failures</strong> to see persistent failures</li>
+        <li>Click <strong>Reset Demo</strong> to clear all persistent data and start fresh</li>
+      </ol>
+    </section>
+    
+    <section id="demo-content">
+      <!-- Demo will be inserted here by JavaScript -->
+    </section>
+  </main>
+  
+  <script type="module">
+    import { initializeRecoveryDemo } from './recovery-system-demo.js';
+    
+    // Set up a mock event bus for the demo
+    window.addEventListener('DOMContentLoaded', () => {
+      // Create a global event bus for the demo
+      window.eventBus = {
+        emit: (event, data) => {
+          const customEvent = new CustomEvent(event, { detail: data });
+          document.dispatchEvent(customEvent);
+        },
+        on: (event, callback) => {
+          document.addEventListener(event, callback);
+          return () => document.removeEventListener(event, callback);
+        }
+      };
+      
+      // Mock the accessibility announcement function
+      window.announceToScreenReader = (message) => {
+        console.log(`[Screen Reader]: ${message}`);
+      };
+      
+      // Initialize the recovery demo
+      const demoContainer = document.getElementById('demo-content');
+      initializeRecoveryDemo(demoContainer);
+    });
+  </script>
+</body>
+</html>

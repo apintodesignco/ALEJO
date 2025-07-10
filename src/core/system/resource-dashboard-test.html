@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEJO Resource Dashboard Test</title>
+    <link rel="stylesheet" href="resource-dashboard.css">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        main {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .card {
+            padding: 1.5rem;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 0.5rem 1rem;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        button.primary {
+            background-color: #0078d4;
+            color: white;
+            border-color: #0078d4;
+        }
+        
+        button.primary:hover {
+            background-color: #006bbe;
+        }
+        
+        .toolbar-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .resource-utilization-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #4caf50;
+        }
+        
+        .resource-utilization-indicator.warning {
+            background-color: #ff9800;
+        }
+        
+        .resource-utilization-indicator.critical {
+            background-color: #f44336;
+        }
+        
+        .test-panel {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        
+        .test-panel h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .results {
+            font-family: monospace;
+            padding: 1rem;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            overflow: auto;
+            max-height: 200px;
+            margin-top: 1rem;
+        }
+        
+        .accessibility-options {
+            margin-top: 1.5rem;
+        }
+        
+        .option-group {
+            margin-bottom: 1rem;
+        }
+        
+        .option-group label {
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header id="alejo-toolbar">
+        <h1>ALEJO Resource Dashboard Test</h1>
+    </header>
+    
+    <main>
+        <div class="card">
+            <h2>Resource Dashboard Controls</h2>
+            <div class="controls">
+                <button class="primary" id="show-dashboard">Show Dashboard</button>
+                <button id="hide-dashboard">Hide Dashboard</button>
+                <button id="toggle-dashboard">Toggle Dashboard</button>
+            </div>
+            
+            <div class="accessibility-options">
+                <h3>Accessibility Options</h3>
+                <div class="option-group">
+                    <label for="high-contrast">
+                        <input type="checkbox" id="high-contrast"> High Contrast Mode
+                    </label>
+                    
+                    <label for="large-text">
+                        <input type="checkbox" id="large-text"> Large Text
+                    </label>
+                    
+                    <label for="reduced-motion">
+                        <input type="checkbox" id="reduced-motion"> Reduced Motion
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Simulate Resource Usage</h2>
+            <p>Use these controls to simulate different resource usage scenarios.</p>
+            
+            <div class="controls">
+                <button id="simulate-normal">Normal Usage</button>
+                <button id="simulate-high">High Usage</button>
+                <button id="simulate-critical">Critical Usage</button>
+                <button id="simulate-low-battery">Low Battery</button>
+                <button id="simulate-high-temp">High Temperature</button>
+            </div>
+            
+            <div class="test-panel">
+                <h3>Resource Mode Test</h3>
+                <div class="controls">
+                    <button id="test-normal-mode">Set Normal Mode</button>
+                    <button id="test-high-mode">Set High Usage Mode</button>
+                    <button id="test-saving-mode">Set Resource Saving Mode</button>
+                    <button id="test-minimal-mode">Set Minimal Mode</button>
+                </div>
+                <div class="results" id="mode-results">
+                    Current mode: Normal
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        // Import dashboard modules
+        import { 
+            initializeResourceDashboard, 
+            showResourceDashboard, 
+            hideResourceDashboard, 
+            toggleResourceDashboard,
+            simulateResourceUsage,
+            getResourceDashboardState
+        } from './resource-dashboard.js';
+        
+        import { 
+            initializeResourceDashboardIntegration,
+            updateDashboardButtonState,
+            createResourceMonitorButton
+        } from './resource-dashboard-integration.js';
+        
+        // Mock the EventBus for testing purposes
+        if (!window.EventBus) {
+            window.EventBus = {
+                getInstance: () => ({
+                    on: (event, callback) => console.log(`Event listener added for: ${event}`),
+                    off: (event) => console.log(`Event listener removed for: ${event}`),
+                    emit: (event, data) => console.log(`Event emitted: ${event}`, data)
+                })
+            };
+        }
+
+        // Mock the Logger for testing purposes
+        if (!window.Logger) {
+            class Logger {
+                constructor(name) {
+                    this.name = name;
+                }
+                
+                info(message, ...args) {
+                    console.info(`[${this.name}] ${message}`, ...args);
+                }
+                
+                warn(message, ...args) {
+                    console.warn(`[${this.name}] ${message}`, ...args);
+                }
+                
+                error(message, ...args) {
+                    console.error(`[${this.name}] ${message}`, ...args);
+                }
+                
+                debug(message, ...args) {
+                    console.debug(`[${this.name}] ${message}`, ...args);
+                }
+            }
+            
+            window.Logger = Logger;
+        }
+        
+        // Mock the resource allocation manager for testing purposes
+        if (!window.resourceAllocationManager) {
+            window.resourceAllocationManager = {
+                registerComponent: async (id, config) => {
+                    console.log(`Component registered: ${id}`, config);
+                    return { id, token: `token-${id}` };
+                },
+                unregisterComponent: async (id, registration) => {
+                    console.log(`Component unregistered: ${id}`, registration);
+                    return true;
+                },
+                subscribeToResourceModeChanges: (callback) => {
+                    console.log('Subscribed to resource mode changes');
+                    window.resourceModeCallback = callback;
+                },
+                unsubscribeFromResourceModeChanges: (callback) => {
+                    console.log('Unsubscribed from resource mode changes');
+                    window.resourceModeCallback = null;
+                },
+                getResourceUsage: () => {
+                    // Return simulated resource usage
+                    return window.simulatedUsage || {
+                        cpu: { percentage: 25, cores: 4, activeProcesses: 10 },
+                        memory: { percentage: 40, total: 16384, used: 6553.6, free: 9830.4 },
+                        disk: { percentage: 65, total: 512000, used: 332800, free: 179200 },
+                        battery: { percentage: 80, charging: false, timeRemaining: 180 },
+                        temperature: { cpu: 45, gpu: 50, ambient: 25 }
+                    };
+                },
+                getResourceMode: () => {
+                    return window.currentResourceMode || 'NORMAL';
+                }
+            };
+            
+            // Add constants
+            window.resourceAllocationManager.RESOURCE_MODE = {
+                NORMAL: 'NORMAL',
+                HIGH: 'HIGH',
+                SAVING: 'SAVING',
+                MINIMAL: 'MINIMAL'
+            };
+            
+            window.resourceAllocationManager.COMPONENT_PRIORITY = {
+                CRITICAL: 100,
+                HIGH: 80,
+                MEDIUM_HIGH: 60,
+                MEDIUM: 50,
+                MEDIUM_LOW: 40,
+                LOW: 20
+            };
+            
+            // Expose for module imports
+            window.getResourceAllocationManager = () => window.resourceAllocationManager;
+        }
+        
+        // Mock the resource threshold config for testing purposes
+        if (!window.resourceThresholdConfig) {
+            window.resourceThresholdConfig = {
+                getThresholds: () => {
+                    return {
+                        cpu: { warning: 70, critical: 90 },
+                        memory: { warning: 80, critical: 95 },
+                        temperature: { warning: 75, critical: 90 },
+                        disk: { warning: 85, critical: 95 },
+                        battery: { warning: 20, critical: 10 }
+                    };
+                },
+                getUserThresholds: () => {
+                    return {
+                        cpu: { warning: 70, critical: 90 },
+                        memory: { warning: 80, critical: 95 },
+                        temperature: { warning: 75, critical: 90 },
+                        disk: { warning: 85, critical: 95 },
+                        battery: { warning: 20, critical: 10 }
+                    };
+                },
+                subscribeToThresholdChanges: (callback) => {
+                    console.log('Subscribed to threshold changes');
+                    window.thresholdChangeCallback = callback;
+                },
+                unsubscribeFromThresholdChanges: (callback) => {
+                    console.log('Unsubscribed from threshold changes');
+                    window.thresholdChangeCallback = null;
+                }
+            };
+            
+            // Expose for module imports
+            window.getResourceThresholdConfig = () => window.resourceThresholdConfig;
+        }
+
+        // Initialize dashboard when document is ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Initialize the dashboard
+                await initializeResourceDashboard({
+                    autoShow: false,
+                    container: document.body
+                });
+                
+                // Initialize the integration
+                await initializeResourceDashboardIntegration();
+                
+                // Set up event listeners
+                document.getElementById('show-dashboard').addEventListener('click', () => {
+                    showResourceDashboard();
+                });
+                
+                document.getElementById('hide-dashboard').addEventListener('click', () => {
+                    hideResourceDashboard();
+                });
+                
+                document.getElementById('toggle-dashboard').addEventListener('click', () => {
+                    toggleResourceDashboard();
+                });
+                
+                // Accessibility options
+                document.getElementById('high-contrast').addEventListener('change', (e) => {
+                    const dashboardContainer = document.getElementById('alejo-resource-dashboard-container');
+                    if (dashboardContainer) {
+                        if (e.target.checked) {
+                            dashboardContainer.classList.add('high-contrast');
+                        } else {
+                            dashboardContainer.classList.remove('high-contrast');
+                        }
+                    }
+                });
+                
+                document.getElementById('large-text').addEventListener('change', (e) => {
+                    const dashboardContainer = document.getElementById('alejo-resource-dashboard-container');
+                    if (dashboardContainer) {
+                        if (e.target.checked) {
+                            dashboardContainer.classList.add('large-text');
+                        } else {
+                            dashboardContainer.classList.remove('large-text');
+                        }
+                    }
+                });
+                
+                document.getElementById('reduced-motion').addEventListener('change', (e) => {
+                    const dashboardContainer = document.getElementById('alejo-resource-dashboard-container');
+                    if (dashboardContainer) {
+                        if (e.target.checked) {
+                            dashboardContainer.classList.add('reduced-motion');
+                        } else {
+                            dashboardContainer.classList.remove('reduced-motion');
+                        }
+                    }
+                });
+                
+                // Resource usage simulation
+                document.getElementById('simulate-normal').addEventListener('click', () => {
+                    window.simulatedUsage = {
+                        cpu: { percentage: 25, cores: 4, activeProcesses: 10 },
+                        memory: { percentage: 40, total: 16384, used: 6553.6, free: 9830.4 },
+                        disk: { percentage: 65, total: 512000, used: 332800, free: 179200 },
+                        battery: { percentage: 80, charging: false, timeRemaining: 180 },
+                        temperature: { cpu: 45, gpu: 50, ambient: 25 }
+                    };
+                    
+                    simulateResourceUsage(window.simulatedUsage);
+                });
+                
+                document.getElementById('simulate-high').addEventListener('click', () => {
+                    window.simulatedUsage = {
+                        cpu: { percentage: 85, cores: 4, activeProcesses: 20 },
+                        memory: { percentage: 88, total: 16384, used: 14417.92, free: 1966.08 },
+                        disk: { percentage: 85, total: 512000, used: 435200, free: 76800 },
+                        battery: { percentage: 60, charging: false, timeRemaining: 90 },
+                        temperature: { cpu: 72, gpu: 78, ambient: 28 }
+                    };
+                    
+                    simulateResourceUsage(window.simulatedUsage);
+                });
+                
+                document.getElementById('simulate-critical').addEventListener('click', () => {
+                    window.simulatedUsage = {
+                        cpu: { percentage: 95, cores: 4, activeProcesses: 30 },
+                        memory: { percentage: 96, total: 16384, used: 15729, free: 655 },
+                        disk: { percentage: 97, total: 512000, used: 496640, free: 15360 },
+                        battery: { percentage: 9, charging: false, timeRemaining: 10 },
+                        temperature: { cpu: 92, gpu: 95, ambient: 32 }
+                    };
+                    
+                    simulateResourceUsage(window.simulatedUsage);
+                });
+                
+                document.getElementById('simulate-low-battery').addEventListener('click', () => {
+                    window.simulatedUsage = {
+                        cpu: { percentage: 40, cores: 4, activeProcesses: 15 },
+                        memory: { percentage: 55, total: 16384, used: 9011.2, free: 7372.8 },
+                        disk: { percentage: 70, total: 512000, used: 358400, free: 153600 },
+                        battery: { percentage: 8, charging: false, timeRemaining: 10 },
+                        temperature: { cpu: 60, gpu: 65, ambient: 26 }
+                    };
+                    
+                    simulateResourceUsage(window.simulatedUsage);
+                });
+                
+                document.getElementById('simulate-high-temp').addEventListener('click', () => {
+                    window.simulatedUsage = {
+                        cpu: { percentage: 80, cores: 4, activeProcesses: 25 },
+                        memory: { percentage: 75, total: 16384, used: 12288, free: 4096 },
+                        disk: { percentage: 80, total: 512000, used: 409600, free: 102400 },
+                        battery: { percentage: 40, charging: false, timeRemaining: 60 },
+                        temperature: { cpu: 92, gpu: 94, ambient: 34 }
+                    };
+                    
+                    simulateResourceUsage(window.simulatedUsage);
+                });
+                
+                // Resource mode test
+                document.getElementById('test-normal-mode').addEventListener('click', () => {
+                    window.currentResourceMode = 'NORMAL';
+                    if (window.resourceModeCallback) {
+                        window.resourceModeCallback(window.currentResourceMode);
+                    }
+                    document.getElementById('mode-results').textContent = `Current mode: ${window.currentResourceMode}`;
+                });
+                
+                document.getElementById('test-high-mode').addEventListener('click', () => {
+                    window.currentResourceMode = 'HIGH';
+                    if (window.resourceModeCallback) {
+                        window.resourceModeCallback(window.currentResourceMode);
+                    }
+                    document.getElementById('mode-results').textContent = `Current mode: ${window.currentResourceMode}`;
+                });
+                
+                document.getElementById('test-saving-mode').addEventListener('click', () => {
+                    window.currentResourceMode = 'SAVING';
+                    if (window.resourceModeCallback) {
+                        window.resourceModeCallback(window.currentResourceMode);
+                    }
+                    document.getElementById('mode-results').textContent = `Current mode: ${window.currentResourceMode}`;
+                });
+                
+                document.getElementById('test-minimal-mode').addEventListener('click', () => {
+                    window.currentResourceMode = 'MINIMAL';
+                    if (window.resourceModeCallback) {
+                        window.resourceModeCallback(window.currentResourceMode);
+                    }
+                    document.getElementById('mode-results').textContent = `Current mode: ${window.currentResourceMode}`;
+                });
+                
+                // Show initial state
+                document.getElementById('mode-results').textContent = `Current mode: ${window.currentResourceMode || 'NORMAL'}`;
+                
+                console.log('Test page initialized successfully!');
+                
+            } catch (error) {
+                console.error('Error initializing dashboard test page:', error);
+            }
+        });
+    </script>
+</body>
+</html>
