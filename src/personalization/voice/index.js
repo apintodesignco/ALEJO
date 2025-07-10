@@ -364,8 +364,9 @@ export async function initialize(options = {}) {
     
     return {
       success: criticalComponentsHealthy,
-    results
-  };
+      results
+    };
+  }
 }
 
 /**

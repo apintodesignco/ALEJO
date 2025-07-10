@@ -31,6 +31,7 @@ import { registerWithResourceManager, unregisterFromResourceManager } from './pe
 import { addAuditEntry } from '../../core/audit-trail.js';
 import { getSystemResourceMode } from '../../performance/system-check.js';
 import { accessibilityAnnounce } from '../../core/accessibility.js';
+import * as NLU from '../text/natural-language-understanding.js';
 
 // Try to import advanced features if available
 let advancedFeatures;
@@ -620,6 +621,7 @@ export async function processCommand(command, options = {}) {
     bypassThrottling: false,
     retryAttempt: 0,
     collectMetrics: true,
+    useNLU: true,          // Default to using NLU for enhanced understanding
     ...options
   };
   
@@ -629,7 +631,8 @@ export async function processCommand(command, options = {}) {
     bypassSecurity, 
     bypassThrottling,
     retryAttempt,
-    collectMetrics
+    collectMetrics,
+    useNLU
   } = processingOptions;
   
   try {
@@ -736,20 +739,43 @@ export async function processCommand(command, options = {}) {
       }
     }
     
-    // Try to match command pattern
-    const match = findMatchingCommandPattern(command, context);
+    // Process with NLU if enabled, otherwise fall back to pattern matching
+    let match = null;
+    let nluResults = null;
+    let usedNLU = false;
+    
+    // Try NLU processing if enabled
+    if (useNLU) {
+      try {
+        nluResults = await processCommandWithNLU(command, context);
+        if (nluResults) {
+          match = findMatchingCommandWithNLU(nluResults);
+          usedNLU = !!match;
+        }
+      } catch (nluError) {
+        console.error('Error in NLU processing:', nluError);
+        // Fall back to pattern matching
+      }
+    }
+    
+    // Fall back to pattern matching if NLU didn't find a match
+    if (!match) {
+      match = findMatchingCommandPattern(command, context);
+    }
+    
+    // Sanitize command for logging to prevent sensitive data exposure
+    const sanitizedCommand = command.substring(0, 15) + (command.length > 15 ? '...' : '');
     
     if (!match) {
       // Log unrecognized commands for pattern learning
       EventBus.publish('voice:unrecognizedCommand', { command, context });
-      // Sanitize command for logging to prevent sensitive data exposure
-      const sanitizedCommand = command.substring(0, 15) + (command.length > 15 ? '...' : '');
       console.log(`No matching pattern found for command: ${sanitizedCommand}`);
       if (collectMetrics) updateMetrics(false, startTime);
       return {
         success: false,
         handled: false,
-        message: 'Command not recognized'
+        message: 'Command not recognized',
+        nluAttempted: usedNLU
       };
     }
     
@@ -780,7 +806,9 @@ export async function processCommand(command, options = {}) {
       const result = await handler(match.params, {
         command,
         context,
-        pattern: match.pattern
+        pattern: match.pattern,
+        nluResults: nluResults, // Pass NLU results to handler when available
+        matchedBy: match.matchedBy || 'pattern' // Indicate how the command was matched
       });
       
       // Announce result for accessibility if appropriate
@@ -795,7 +823,11 @@ export async function processCommand(command, options = {}) {
       EventBus.publish('voice:commandExecuted', {
         command: sanitizedCommand,
         context,
-        handler: match.pattern.handler
+        handler: match.pattern.handler,
+        usedNLU: !!usedNLU,
+        intent: nluResults?.intent?.name || null,
+        confidence: nluResults?.intent?.confidence || null,
+        matchedBy: match.matchedBy || 'pattern'
       });
       
       if (collectMetrics) updateMetrics(true, startTime);
@@ -805,6 +837,10 @@ export async function processCommand(command, options = {}) {
         handled: true,
         message: result.message || 'Command executed',
         executionTime: performance.now() - startTime,
+        usedNLU: !!usedNLU,
+        intent: nluResults?.intent?.name || null,
+        confidence: nluResults?.intent?.confidence || null,
+        matchedBy: match.matchedBy || 'pattern',
         ...result
       };
     } catch (error) {
@@ -1008,6 +1044,121 @@ export function clearCommandHistory() {
 }
 
 // --- Private helper functions ---
+
+/**
+ * Process a command using the Natural Language Understanding module
+ * @private
+ * @param {string} command - The command text to process
+ * @param {string} context - Current command context
+ * @returns {Promise<Object>} NLU analysis results
+ */
+async function processCommandWithNLU(command, context) {
+  try {
+    // Get NLU analysis of the command text
+    const nluOptions = {
+      extractEntities: true,
+      detectIntent: true,
+      analyzeSentiment: true,
+      extractKeyPhrases: true,
+      context: context
+    };
+    
+    // Check if NLU module is initialized
+    if (!NLU.isInitialized()) {
+      await NLU.initialize();
+    }
+    
+    // Process the command text with NLU
+    const results = await NLU.processText(command, nluOptions);
+    
+    // Log NLU processing results (debug level)
+    console.debug('NLU processing results:', {
+      intent: results.intent?.name,
+      confidence: results.intent?.confidence,
+      entities: results.entities?.map(e => e.type),
+      sentiment: results.sentiment?.label
+    });
+    
+    return results;
+  } catch (error) {
+    console.error('Error processing command with NLU:', error);
+    // Return null to fall back to pattern matching
+    return null;
+  }
+}
+
+/**
+ * Find a matching command based on NLU intent and entities
+ * @private
+ * @param {Object} nluResults - Results from NLU processing
+ * @returns {Object|null} Matching command if found
+ */
+function findMatchingCommandWithNLU(nluResults) {
+  // If NLU failed or didn't detect a clear intent, return null
+  if (!nluResults || !nluResults.intent || nluResults.intent.confidence < 0.7) {
+    return null;
+  }
+  
+  const { intent, entities } = nluResults;
+  
+  // Find command patterns that match the detected intent
+  const intentBasedMatches = Object.entries(commandPatterns)
+    .filter(([_, pattern]) => {
+      // Match by explicit intent mapping if available
+      if (pattern.intent && pattern.intent === intent.name) {
+        return true;
+      }
+      
+      // Match by function (e.g., navigation commands match navigation intent)
+      if (pattern.function && intent.name.includes(pattern.function)) {
+        return true;
+      }
+      
+      return false;
+    })
+    .map(([patternText, pattern]) => ({ patternText, pattern }));
+  
+  if (intentBasedMatches.length === 0) {
+    return null;
+  }
+  
+  // Extract entities as parameters
+  const params = {};
+  if (entities && entities.length > 0) {
+    entities.forEach(entity => {
+      params[entity.type] = entity.value;
+    });
+  }
+  
+  // Find the best match based on intent confidence and required entities
+  const bestMatch = intentBasedMatches
+    .filter(({ pattern }) => {
+      // If pattern requires specific entities, check if they exist
+      if (pattern.requiredEntities && pattern.requiredEntities.length > 0) {
+        return pattern.requiredEntities.every(reqEntity => {
+          return entities.some(entity => entity.type === reqEntity);
+        });
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      // Sort by specificity (more specific patterns first)
+      const specificityA = (a.pattern.requiredEntities?.length || 0);
+      const specificityB = (b.pattern.requiredEntities?.length || 0);
+      return specificityB - specificityA;
+    })[0]; // Take the first/best match
+  
+  if (!bestMatch) {
+    return null;
+  }
+  
+  return {
+    pattern: bestMatch.pattern,
+    params: params,
+    confidence: intent.confidence,
+    matchedBy: 'nlu'
+  };
+}
 
 /**
  * Register default command handlers

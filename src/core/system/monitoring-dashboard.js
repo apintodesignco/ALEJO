@@ -1822,35 +1822,37 @@ function showErrorLogModal() {
   if (showTimelineBtn) {
     showTimelineBtn.addEventListener('click', () => {
       showInitializationTimelineModal(initState);
-    toggleButton.setAttribute('title', 'System Monitor');
-    
-    toggleButton.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #1976d2;
-      color: white;
-      border: none;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      cursor: pointer;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    `;
-    
-    toggleButton.innerHTML = '📊';
-    
-    toggleButton.addEventListener('click', () => {
-      toggleDashboard();
     });
-    
-    document.body.appendChild(toggleButton);
   }
+
+  toggleButton.setAttribute('title', 'System Monitor');
+  
+  toggleButton.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #1976d2;
+    color: white;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    cursor: pointer;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  `;
+  
+  toggleButton.innerHTML = '📊';
+  
+  toggleButton.addEventListener('click', () => {
+    toggleDashboard();
+  });
+  
+  document.body.appendChild(toggleButton);
   
   return toggleButton;
 }
@@ -2128,5 +2130,5 @@ export default {
   closeMonitoringDashboard,
   getDashboardState,
   toggleHighContrastMode,
-  getAccessibilityStatus
+  getAccessibilityStatus,
 };
