@@ -447,6 +447,11 @@ To contribute to ALEJO:
 3. Make your changes
 4. Submit a pull request
 
+## Branch Structure
+
+- `main`: Core ALEJO assistant without disability features
+- `disability-features`: Full implementation including accessibility and disability support modules
+
 ## License
 
 This project is licensed under the MIT License with ALEJO-specific terms - see the [LICENSE.md](LICENSE.md) file for details.

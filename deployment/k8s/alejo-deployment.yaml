@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alejo-core
+  labels:
+    app: alejo
+    tier: ai
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: alejo
+  template:
+    metadata:
+      labels:
+        app: alejo
+    spec:
+      containers:
+      - name: alejo
+        image: alejo/ai-core:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            memory: "4Gi"
+            cpu: "2"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      nodeSelector:
+        accelerator: gpu
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alejo-service
+spec:
+  selector:
+    app: alejo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer

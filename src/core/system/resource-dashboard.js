@@ -15,9 +15,6 @@ import { getResourceThresholdConfig, DEFAULT_THRESHOLDS, THRESHOLD_STEPS } from 
 import { createResourceThresholdUI } from './resource-threshold-ui.js';
 import { addResourceThresholdSection, createThresholdConfigButton } from './resource-threshold-section.js';
 import { getAuditTrail } from '../../security/audit-trail.js';
-import { getAccessibilityStatus } from '../../personalization/accessibility/accessibility-status.js';
-import { announce } from '../../personalization/accessibility/screen-reader-announcements.js';
-import { isHighContrastMode } from '../../personalization/accessibility/high-contrast-mode.js';
 import { getRecoveryStatusSummary } from '../component-recovery-manager.js';
 import { initializeRecoveryStatusUI } from './recovery-status-ui.js';
 import componentHealthMonitor from './component-health-monitor.js';
@@ -69,11 +66,6 @@ const dashboardState = {
   eventBus: EventBus.getInstance(),
   logger: new Logger('ResourceDashboard'),
   auditTrail: new AuditTrail('resource-dashboard'),
-  accessibilitySettings: {
-    highContrast: false,
-    largeText: false,
-    reducedMotion: false
-  },
   alerts: [],
   recommendations: [],          // System recommendations based on resource usage
   currentResourceMode: 'normal',
@@ -149,9 +141,6 @@ export async function initializeResourceDashboard(options = {}) {
     // Setup update interval
     updateInterval = setInterval(updateDashboard, interval);
 
-    // Apply accessibility settings
-    applyAccessibilitySettings();
-    
     // Show dashboard if requested
     if (autoShow) {
       showResourceDashboard();
@@ -195,9 +184,6 @@ function setupEventListeners() {
   
   // Listen for resource update events
   dashboardState.eventBus.on('resources:update', handleResourceUpdate);
-  
-  // Listen for accessibility setting changes
-  dashboardState.eventBus.on('accessibility:preference-change', handleAccessibilityChange);
   
   // Listen for resource mode changes
   dashboardState.eventBus.on('resource-allocation:mode-change', handleResourceModeChange);
