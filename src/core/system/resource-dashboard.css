@@ -436,3 +436,108 @@
 .high-contrast *:focus-visible {
   outline: 3px solid #fff;
 }
+
+/* Recovery recommendation styles */
+.recommendation.recovery {
+  border-left: 4px solid #9c27b0;
+}
+
+.recommendation-icon.recovery-icon::before {
+  content: '🔄';
+  font-size: 1.2rem;
+}
+
+/* High contrast mode for recovery recommendations */
+.high-contrast .recommendation.recovery {
+  border-left-color: #e1bee7;
+}
+
+/* Resource mode-specific styles for recovery recommendations */
+.mode-minimal .recommendation.recovery .recommendation-message,
+.mode-conservative .recommendation.recovery .recommendation-message {
+  font-weight: 600;
+}
+
+.mode-minimal .recommendation.recovery.high,
+.mode-conservative .recommendation.recovery.high {
+  background-color: rgba(156, 39, 176, 0.15);
+}
+
+.mode-performance .recommendation.recovery {
+  animation: recovery-pulse 2s infinite alternate;
+}
+
+@keyframes recovery-pulse {
+  from {
+    background-color: transparent;
+  }
+  to {
+    background-color: rgba(156, 39, 176, 0.1);
+  }
+}
+
+/* Interactive recovery recommendations */
+.recommendation.recovery.interactive {
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.recommendation.recovery.interactive:hover {
+  background-color: rgba(156, 39, 176, 0.1);
+}
+
+.recommendation.recovery.interactive:active {
+  transform: scale(0.98);
+}
+
+/* Minimized dashboard state */
+#alejo-resource-dashboard-container.minimized {
+  width: 60px;
+  height: auto;
+  padding: 10px 0;
+  overflow: hidden;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  bottom: 20px;
+  top: auto;
+}
+
+#alejo-resource-dashboard-container.minimized .alejo-dashboard {
+  display: none;
+}
+
+/* Restore button for minimized state */
+.restore-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0;
+  margin: 0 auto;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.high-contrast .restore-button {
+  background-color: #000;
+  color: #fff;
+  border-color: #fff;
+}
+
+.restore-button:hover {
+  background-color: #f5f5f5;
+}
+
+.high-contrast .restore-button:hover {
+  background-color: #333;
+}
+
+.restore-button:focus {
+  outline: 2px solid #0078d4;
+  outline-offset: 2px;
+}

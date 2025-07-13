@@ -1,0 +1,377 @@
+/**
+ * ALEJO Recovery Status UI Stylesheet
+ * 
+ * This stylesheet provides adaptive styling for the recovery status UI
+ * based on current resource modes. It prioritizes accessibility,
+ * reduces visual complexity in resource-constrained modes,
+ * and enhances information display in performance mode.
+ */
+
+/* Base Container Styles */
+.alejo-recovery-status {
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 10px 0;
+  background-color: #f7f9fc;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  max-width: 800px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Header Styles */
+.recovery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #e0e5eb;
+  padding-bottom: 10px;
+}
+
+.recovery-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.recovery-controls {
+  display: flex;
+  gap: 10px;
+}
+
+/* Component List Styles */
+.failed-components-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.component-item {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  background-color: white;
+  border-left: 4px solid #cbd5e0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.component-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.component-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.component-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.component-details {
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin-bottom: 12px;
+}
+
+.component-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Resource Mode Message */
+.resource-mode-message {
+  padding: 10px;
+  background-color: #edf2f7;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  color: #4a5568;
+  border-left: 3px solid #63b3ed;
+}
+
+/* Empty State */
+.no-failed-components {
+  padding: 20px;
+  text-align: center;
+  color: #718096;
+  font-style: italic;
+}
+
+/* Badges */
+.component-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.badge-essential {
+  background-color: #feebc8;
+  color: #c05621;
+}
+
+.badge-accessibility {
+  background-color: #e9d8fd;
+  color: #6b46c1;
+}
+
+.badge-priority-high {
+  background-color: #fed7d7;
+  color: #c53030;
+}
+
+.badge-priority-medium {
+  background-color: #fefcbf;
+  color: #975a16;
+}
+
+.badge-priority-low {
+  background-color: #c6f6d5;
+  color: #2f855a;
+}
+
+/* Recovery Buttons */
+.recover-button {
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.recover-button:hover {
+  background-color: #3182ce;
+}
+
+.recover-all-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background-color: #2b6cb0;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.recover-all-button:hover {
+  background-color: #1a56db;
+}
+
+.recover-button:focus, .recover-all-button:focus {
+  outline: 2px solid #63b3ed;
+  outline-offset: 2px;
+}
+
+.recover-button:disabled, .recover-all-button:disabled {
+  background-color: #cbd5e0;
+  cursor: not-allowed;
+}
+
+/* Spinner for loading states */
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Recovery results */
+.recovery-result {
+  padding: 8px;
+  margin-top: 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.result-success {
+  background-color: #c6f6d5;
+  color: #2f855a;
+}
+
+.result-failure {
+  background-color: #fed7d7;
+  color: #c53030;
+}
+
+.result-partial {
+  background-color: #fefcbf;
+  color: #975a16;
+}
+
+/* Resource Mode Specific Styles */
+
+/* Minimal Mode - Maximum resource conservation */
+.resource-mode-minimal {
+  padding: 10px;
+  max-width: 600px;
+}
+
+.resource-mode-minimal .component-item {
+  padding: 8px;
+  margin-bottom: 8px;
+  box-shadow: none;
+}
+
+.resource-mode-minimal .component-details {
+  display: none;
+}
+
+.resource-mode-minimal .recovery-result {
+  font-size: 0.8rem;
+  padding: 4px;
+}
+
+/* Show component details only for accessibility components in minimal mode */
+.resource-mode-minimal .component-item[data-accessibility="true"] .component-details {
+  display: block;
+}
+
+.resource-mode-minimal .component-badge:not(.badge-accessibility):not(.badge-essential) {
+  display: none;
+}
+
+/* Conservative Mode - Reduced visual complexity */
+.resource-mode-conservative {
+  max-width: 700px;
+}
+
+.resource-mode-conservative .component-details {
+  max-height: 60px;
+  overflow-y: auto;
+}
+
+.resource-mode-conservative .recovery-result {
+  max-height: 40px;
+  overflow-y: auto;
+}
+
+/* Normal Mode - Standard styling (default) */
+.resource-mode-normal {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+/* Performance Mode - Enhanced visuals and details */
+.resource-mode-performance {
+  padding: 20px;
+}
+
+.resource-mode-performance .component-item {
+  padding: 15px;
+  transition: transform 0.2s;
+}
+
+.resource-mode-performance .component-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.resource-mode-performance .component-details {
+  line-height: 1.5;
+}
+
+/* Accessibility Enhancements */
+@media (prefers-reduced-motion: reduce) {
+  .alejo-recovery-status * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .alejo-recovery-status {
+    background-color: white;
+    border: 2px solid #000;
+  }
+  
+  .component-item {
+    border: 1px solid #000;
+  }
+  
+  .recover-button, .recover-all-button {
+    background-color: #000;
+    color: #fff;
+    border: 2px solid #000;
+  }
+}
+
+/* Simplified UI class for minimal mode */
+.simplified-ui .component-item {
+  border-left-width: 8px; /* Make status indicators more prominent */
+}
+
+.simplified-ui .component-header {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.simplified-ui .component-actions {
+  margin-top: 8px;
+}
+
+/* High contrast adaptations */
+.high-contrast-mode .alejo-recovery-status {
+  background-color: #000;
+  color: #fff;
+}
+
+.high-contrast-mode .component-item {
+  background-color: #222;
+  border: 1px solid #fff;
+}
+
+.high-contrast-mode .recover-button, 
+.high-contrast-mode .recover-all-button {
+  background-color: #fff;
+  color: #000;
+  border: 2px solid #fff;
+}
+
+/* Focus indicators for keyboard navigation */
+.alejo-recovery-status *:focus {
+  outline: 3px solid #4299e1;
+  outline-offset: 2px;
+}
+
+/* Error state styling */
+.component-error {
+  border-left-color: #e53e3e;
+  background-color: #fff5f5;
+}
+
+.component-recovering {
+  border-left-color: #ecc94b;
+  background-color: #fffff0;
+}
+
+.component-recovered {
+  border-left-color: #48bb78;
+  background-color: #f0fff4;
+}

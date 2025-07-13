@@ -1,0 +1,331 @@
+/**
+ * Resource Dashboard Trends & Recommendations Stylesheet
+ * @file resource-dashboard-trends.css
+ * @description Styles for resource trend visualizations and recommendations
+ * @module styles/resource-dashboard-trends
+ * @author ALEJO Development Team
+ * @copyright 2025 ALEJO Project
+ * @license MIT
+ */
+
+/* Trends Container */
+.trends-container {
+  margin: 15px 0;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: var(--section-bg);
+  transition: all 0.3s ease;
+}
+
+.trends-container.hidden {
+  display: none;
+}
+
+.section-header {
+  font-size: 16px;
+  margin: 0 0 10px 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--header-color);
+}
+
+.trend-section {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--border-light);
+}
+
+.trend-section:last-child {
+  border-bottom: none;
+  margin-bottom: 5px;
+}
+
+.trend-title {
+  font-size: 14px;
+  margin: 0 0 8px 0;
+  color: var(--text-color);
+}
+
+.trend-visualization {
+  height: 50px;
+  width: 100%;
+  position: relative;
+  background-color: var(--gauge-bg);
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resource-trend-chart {
+  width: 100%;
+  height: 50px;
+}
+
+/* Trend line styles */
+.trend-line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.trend-line.increasing {
+  stroke: var(--warning-color);
+}
+
+.trend-line.decreasing {
+  stroke: var(--success-color);
+}
+
+.trend-line.stable {
+  stroke: var(--normal-color);
+}
+
+/* Trend indicators */
+.trend-indicator {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--section-bg);
+}
+
+.trend-indicator.increasing {
+  color: var(--warning-color);
+}
+
+.trend-indicator.decreasing {
+  color: var(--success-color);
+}
+
+.trend-indicator.stable {
+  color: var(--normal-color);
+}
+
+.no-trend-data {
+  color: var(--text-light);
+  font-style: italic;
+  font-size: 12px;
+  text-align: center;
+  width: 100%;
+}
+
+/* Button styles */
+.trend-toggle-button, .recommendations-toggle-button {
+  background-color: var(--button-bg);
+  border: 1px solid var(--border-color);
+  color: var(--button-text);
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 5px;
+  transition: all 0.2s ease;
+}
+
+.trend-toggle-button:hover, .recommendations-toggle-button:hover {
+  background-color: var(--button-hover-bg);
+}
+
+.trend-toggle-button:focus, .recommendations-toggle-button:focus {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
+}
+
+/* Recommendations container */
+.recommendations-container {
+  margin: 15px 0;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: var(--section-bg);
+  transition: all 0.3s ease;
+}
+
+.recommendations-container.hidden {
+  display: none;
+}
+
+.recommendations-header {
+  font-size: 16px;
+  margin: 0 0 10px 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--header-color);
+}
+
+.recommendations-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recommendation {
+  display: flex;
+  align-items: flex-start;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-left: 3px solid var(--border-color);
+  background-color: var(--item-bg);
+  border-radius: 0 4px 4px 0;
+}
+
+/* Priority-based styling */
+.recommendation.critical {
+  border-left-color: var(--critical-color);
+  background-color: var(--critical-bg);
+}
+
+.recommendation.high {
+  border-left-color: var(--warning-color);
+  background-color: var(--warning-bg);
+}
+
+.recommendation.medium {
+  border-left-color: var(--caution-color);
+  background-color: var(--caution-bg);
+}
+
+.recommendation.low {
+  border-left-color: var(--normal-color);
+  background-color: var(--normal-bg);
+}
+
+.recommendation-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.cpu-icon {
+  background-image: url('../assets/icons/cpu.svg');
+}
+
+.memory-icon {
+  background-image: url('../assets/icons/memory.svg');
+}
+
+.temperature-icon {
+  background-image: url('../assets/icons/temperature.svg');
+}
+
+.disk-icon {
+  background-image: url('../assets/icons/disk.svg');
+}
+
+.battery-icon {
+  background-image: url('../assets/icons/battery.svg');
+}
+
+.system-icon {
+  background-image: url('../assets/icons/system.svg');
+}
+
+.recommendation-content {
+  flex: 1;
+}
+
+.recommendation-message {
+  font-weight: bold;
+  margin-bottom: 3px;
+  color: var(--text-color);
+}
+
+.recommendation-action {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.no-recommendations {
+  font-style: italic;
+  color: var(--text-light);
+  padding: 10px;
+  text-align: center;
+}
+
+.recommendations-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin: 5px 0;
+}
+
+/* Adaptive styles based on resource mode */
+.alejo-resource-dashboard.resource-mode-minimal .trends-container,
+.alejo-resource-dashboard.resource-mode-minimal .recommendations-container {
+  padding: 5px;
+}
+
+.alejo-resource-dashboard.resource-mode-minimal .trend-visualization {
+  height: 30px;
+}
+
+.alejo-resource-dashboard.resource-mode-minimal .resource-trend-chart {
+  height: 30px;
+}
+
+.alejo-resource-dashboard.resource-mode-minimal .trend-indicator {
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+}
+
+/* Accessibility enhancements */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* High contrast mode adjustments */
+.high-contrast .trend-line.increasing {
+  stroke: #ff0000;
+  stroke-width: 3;
+}
+
+.high-contrast .trend-line.decreasing {
+  stroke: #00ff00;
+  stroke-width: 3;
+}
+
+.high-contrast .trend-line.stable {
+  stroke: #ffffff;
+  stroke-width: 3;
+}
+
+.high-contrast .recommendation {
+  border-left-width: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .trends-container, .recommendations-container {
+    margin: 10px 0;
+    padding: 8px;
+  }
+  
+  .trend-section {
+    margin-bottom: 10px;
+  }
+  
+  .recommendation {
+    padding: 6px;
+    margin-bottom: 6px;
+  }
+}

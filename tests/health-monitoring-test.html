@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEJO Health Monitoring Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        header {
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #333;
+        }
+        .test-container {
+            display: flex;
+            gap: 20px;
+        }
+        .test-panel {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #3367d6;
+        }
+        .status-selector {
+            margin-bottom: 15px;
+        }
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .component-status {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .healthy {
+            background-color: #e6f4ea;
+            border-left: 4px solid #34a853;
+        }
+        .degraded {
+            background-color: #fef7e0;
+            border-left: 4px solid #fbbc04;
+        }
+        .error {
+            background-color: #fce8e6;
+            border-left: 4px solid #ea4335;
+        }
+        .unknown {
+            background-color: #f1f3f4;
+            border-left: 4px solid #9aa0a6;
+        }
+        #dashboard-container {
+            min-height: 400px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .log-container {
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .log-info {
+            color: #1a73e8;
+        }
+        .log-warn {
+            color: #f9ab00;
+        }
+        .log-error {
+            color: #d93025;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ALEJO Health Monitoring Test</h1>
+        <p>This page allows you to test the health monitoring system integration.</p>
+    </header>
+
+    <div class="test-container">
+        <div class="test-panel">
+            <h2>Test Controls</h2>
+            
+            <div class="controls">
+                <button id="init-btn">Initialize Health Monitor</button>
+                <button id="check-btn" disabled>Run Health Check</button>
+                <button id="cleanup-btn" disabled>Cleanup</button>
+            </div>
+            
+            <h3>Component Status Simulation</h3>
+            
+            <div class="status-selector">
+                <label for="voice-status">Voice System:</label>
+                <select id="voice-status">
+                    <option value="healthy">Healthy</option>
+                    <option value="degraded">Degraded</option>
+                    <option value="error">Error</option>
+                </select>
+            </div>
+            
+            <div class="status-selector">
+                <label for="face-status">Face Recognition:</label>
+                <select id="face-status">
+                    <option value="healthy">Healthy</option>
+                    <option value="degraded">Degraded</option>
+                    <option value="error">Error</option>
+                </select>
+            </div>
+            
+            <div class="status-selector">
+                <label for="memory-status">Memory System:</label>
+                <select id="memory-status">
+                    <option value="healthy">Healthy</option>
+                    <option value="degraded">Degraded</option>
+                    <option value="error">Error</option>
+                </select>
+            </div>
+            
+            <div class="status-selector">
+                <label for="reasoning-status">Reasoning Engine:</label>
+                <select id="reasoning-status">
+                    <option value="healthy">Healthy</option>
+                    <option value="degraded">Degraded</option>
+                    <option value="error">Error</option>
+                </select>
+            </div>
+            
+            <button id="update-status-btn" disabled>Update Component Status</button>
+        </div>
+        
+        <div class="test-panel">
+            <h2>System Health Status</h2>
+            
+            <div id="system-status" class="component-status unknown">
+                <h3>Overall System: <span id="overall-status">Unknown</span></h3>
+                <p id="system-details">No health check performed yet.</p>
+            </div>
+            
+            <h3>Component Status</h3>
+            
+            <div id="component-statuses">
+                <div id="voice-component" class="component-status unknown">
+                    <h4>Voice System: <span class="component-status-value">Unknown</span></h4>
+                    <p class="component-details">Not checked</p>
+                </div>
+                
+                <div id="face-component" class="component-status unknown">
+                    <h4>Face Recognition: <span class="component-status-value">Unknown</span></h4>
+                    <p class="component-details">Not checked</p>
+                </div>
+                
+                <div id="memory-component" class="component-status unknown">
+                    <h4>Memory System: <span class="component-status-value">Unknown</span></h4>
+                    <p class="component-details">Not checked</p>
+                </div>
+                
+                <div id="reasoning-component" class="component-status unknown">
+                    <h4>Reasoning Engine: <span class="component-status-value">Unknown</span></h4>
+                    <p class="component-details">Not checked</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <h2>Health Dashboard Preview</h2>
+    <div id="dashboard-container">
+        <!-- The resource dashboard with health status will be rendered here -->
+    </div>
+    
+    <h2>Test Log</h2>
+    <div class="log-container" id="test-log">
+        <!-- Log entries will appear here -->
+    </div>
+    
+    <script type="module">
+        import { 
+            runAllTests, 
+            testHealthMonitorInitialization,
+            testComponentCheckerRegistration,
+            testManualHealthCheck,
+            mockHealthChecks
+        } from './health-monitoring-test.js';
+        
+        import componentHealthMonitor from '../src/core/system/component-health-monitor.js';
+        import { createHealthStatusSection, updateHealthStatusFromMonitor } from '../src/core/system/health-status-ui.js';
+        import '../src/styles/health-status-ui.css';
+        
+        // UI elements
+        const initBtn = document.getElementById('init-btn');
+        const checkBtn = document.getElementById('check-btn');
+        const cleanupBtn = document.getElementById('cleanup-btn');
+        const updateStatusBtn = document.getElementById('update-status-btn');
+        const systemStatus = document.getElementById('system-status');
+        const overallStatusText = document.getElementById('overall-status');
+        const systemDetails = document.getElementById('system-details');
+        const dashboardContainer = document.getElementById('dashboard-container');
+        const testLog = document.getElementById('test-log');
+        
+        // Component status selectors
+        const voiceStatusSelect = document.getElementById('voice-status');
+        const faceStatusSelect = document.getElementById('face-status');
+        const memoryStatusSelect = document.getElementById('memory-status');
+        const reasoningStatusSelect = document.getElementById('reasoning-status');
+        
+        // Log function
+        function log(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            testLog.appendChild(entry);
+            testLog.scrollTop = testLog.scrollHeight;
+        }
+        
+        // Initialize health monitor
+        initBtn.addEventListener('click', async () => {
+            try {
+                log('Initializing health monitor...');
+                
+                const initResult = await componentHealthMonitor.initialize({
+                    autoCheckInterval: 60000, // 1 minute for testing
+                    checkTimeout: 5000,      // 5 seconds timeout
+                    criticalComponents: ['voiceSystem', 'faceRecognition', 'memorySystem', 'reasoningEngine']
+                });
+                
+                if (initResult) {
+                    log('Health monitor initialized successfully');
+                    initBtn.disabled = true;
+                    checkBtn.disabled = false;
+                    cleanupBtn.disabled = false;
+                    updateStatusBtn.disabled = false;
+                    
+                    // Register mock component checkers
+                    registerMockComponentCheckers();
+                    
+                    // Create health status section in dashboard
+                    const healthSection = createHealthStatusSection();
+                    dashboardContainer.innerHTML = '';
+                    dashboardContainer.appendChild(healthSection);
+                    
+                    // Update UI with initial health status
+                    updateHealthStatusFromMonitor();
+                } else {
+                    log('Failed to initialize health monitor', 'error');
+                }
+            } catch (error) {
+                log(`Error initializing health monitor: ${error.message}`, 'error');
+            }
+        });
+        
+        // Register mock component checkers
+        function registerMockComponentCheckers() {
+            // Register mock health checks based on dropdown selections
+            componentHealthMonitor.registerComponentChecker(
+                'voiceSystem',
+                () => mockHealthChecks.voiceSystem(voiceStatusSelect.value),
+                true // Critical component
+            );
+            
+            componentHealthMonitor.registerComponentChecker(
+                'faceRecognition',
+                () => mockHealthChecks.faceRecognition(faceStatusSelect.value),
+                true // Critical component
+            );
+            
+            componentHealthMonitor.registerComponentChecker(
+                'memorySystem',
+                () => mockHealthChecks.memorySystem(memoryStatusSelect.value),
+                true // Critical component
+            );
+            
+            componentHealthMonitor.registerComponentChecker(
+                'reasoningEngine',
+                () => mockHealthChecks.reasoningEngine(reasoningStatusSelect.value),
+                true // Critical component
+            );
+            
+            log('Registered mock component checkers');
+        }
+        
+        // Run health check
+        checkBtn.addEventListener('click', async () => {
+            try {
+                log('Running health check...');
+                
+                const healthStatus = await componentHealthMonitor.performSystemHealthCheck();
+                
+                log(`Health check completed with overall status: ${healthStatus.status}`);
+                
+                // Update system status display
+                updateSystemStatusDisplay(healthStatus);
+                
+                // Update component status display
+                updateComponentStatusDisplay(healthStatus);
+                
+                // Update health status section in dashboard
+                updateHealthStatusFromMonitor();
+            } catch (error) {
+                log(`Error running health check: ${error.message}`, 'error');
+            }
+        });
+        
+        // Update component status based on dropdown selections
+        updateStatusBtn.addEventListener('click', () => {
+            try {
+                log('Updating component status simulation...');
+                
+                // Re-register mock component checkers with new status values
+                registerMockComponentCheckers();
+                
+                log('Component status simulation updated, run a health check to see changes');
+            } catch (error) {
+                log(`Error updating component status: ${error.message}`, 'error');
+            }
+        });
+        
+        // Cleanup
+        cleanupBtn.addEventListener('click', () => {
+            try {
+                log('Cleaning up health monitor...');
+                
+                componentHealthMonitor.cleanup();
+                
+                log('Health monitor cleaned up');
+                initBtn.disabled = false;
+                checkBtn.disabled = true;
+                cleanupBtn.disabled = true;
+                updateStatusBtn.disabled = true;
+                
+                // Reset status displays
+                systemStatus.className = 'component-status unknown';
+                overallStatusText.textContent = 'Unknown';
+                systemDetails.textContent = 'Health monitor cleaned up.';
+                
+                document.querySelectorAll('.component-status-value').forEach(el => {
+                    el.textContent = 'Unknown';
+                });
+                
+                document.querySelectorAll('.component-details').forEach(el => {
+                    el.textContent = 'Not checked';
+                });
+                
+                document.querySelectorAll('#component-statuses .component-status').forEach(el => {
+                    el.className = 'component-status unknown';
+                });
+                
+                // Clear dashboard
+                dashboardContainer.innerHTML = '<p>Health monitor is not active.</p>';
+            } catch (error) {
+                log(`Error cleaning up health monitor: ${error.message}`, 'error');
+            }
+        });
+        
+        // Update system status display
+        function updateSystemStatusDisplay(healthStatus) {
+            const status = healthStatus.status || 'unknown';
+            
+            systemStatus.className = `component-status ${status}`;
+            overallStatusText.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            
+            let details = '';
+            
+            if (healthStatus.components) {
+                const componentCount = Object.keys(healthStatus.components).length;
+                const healthyCount = Object.values(healthStatus.components)
+                    .filter(c => c.status === 'healthy').length;
+                const degradedCount = Object.values(healthStatus.components)
+                    .filter(c => c.status === 'degraded').length;
+                const errorCount = Object.values(healthStatus.components)
+                    .filter(c => c.status === 'error').length;
+                
+                details = `${healthyCount}/${componentCount} components healthy, ${degradedCount} degraded, ${errorCount} error`;
+            }
+            
+            systemDetails.textContent = details || 'No details available';
+        }
+        
+        // Update component status display
+        function updateComponentStatusDisplay(healthStatus) {
+            if (!healthStatus.components) return;
+            
+            const components = {
+                'voiceSystem': document.getElementById('voice-component'),
+                'faceRecognition': document.getElementById('face-component'),
+                'memorySystem': document.getElementById('memory-component'),
+                'reasoningEngine': document.getElementById('reasoning-component')
+            };
+            
+            for (const [componentId, element] of Object.entries(components)) {
+                const componentData = healthStatus.components[componentId];
+                if (!componentData) continue;
+                
+                const statusValue = element.querySelector('.component-status-value');
+                const details = element.querySelector('.component-details');
+                
+                element.className = `component-status ${componentData.status || 'unknown'}`;
+                statusValue.textContent = componentData.status.charAt(0).toUpperCase() + componentData.status.slice(1);
+                
+                let detailsText = '';
+                if (componentData.details) {
+                    if (componentData.details.error) {
+                        detailsText = `Error: ${componentData.details.error}`;
+                    } else if (componentData.details.warning) {
+                        detailsText = `Warning: ${componentData.details.warning}`;
+                    } else {
+                        detailsText = JSON.stringify(componentData.details).slice(0, 100);
+                        if (detailsText.length === 100) detailsText += '...';
+                    }
+                }
+                
+                details.textContent = detailsText || 'No details available';
+            }
+        }
+        
+        // Initialize the page
+        log('Test page loaded');
+    </script>
+</body>
+</html>

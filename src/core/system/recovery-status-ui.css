@@ -98,6 +98,123 @@
   color: var(--alejo-warning-contrast, #333333);
 }
 
+.alejo-badge-priority {
+  background-color: var(--alejo-info-color, #2196f3);
+  color: var(--alejo-info-contrast, #ffffff);
+}
+
+/* Resource Mode Indicator */
+.alejo-resource-mode-indicator {
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+  font-weight: 600;
+}
+
+.alejo-resource-mode-indicator.minimal {
+  background-color: var(--alejo-error-color, #e53935);
+  color: var(--alejo-error-contrast, #ffffff);
+}
+
+.alejo-resource-mode-indicator.conservative {
+  background-color: var(--alejo-warning-color, #ffc107);
+  color: var(--alejo-warning-contrast, #333333);
+}
+
+.alejo-resource-mode-indicator.normal {
+  background-color: var(--alejo-success-color, #4caf50);
+  color: var(--alejo-success-contrast, #ffffff);
+}
+
+.alejo-resource-mode-indicator.performance {
+  background-color: var(--alejo-info-color, #2196f3);
+  color: var(--alejo-info-contrast, #ffffff);
+}
+
+/* Recovery Status Component */
+.alejo-recovery-status-title {
+  display: flex;
+  align-items: center;
+}
+
+/* Priority Styling */
+.alejo-recovery-status-item.priority-high {
+  border-left: 4px solid var(--alejo-warning-color, #ffc107);
+}
+
+.alejo-recovery-status-item.priority-medium {
+  border-left: 4px solid var(--alejo-error-color, #e53935);
+}
+
+.alejo-recovery-status-item.priority-low {
+  border-left: 4px solid var(--alejo-info-color, #2196f3);
+}
+
+/* Resource-mode specific styling */
+.alejo-recovery-status.resource-mode-minimal {
+  width: 300px; /* Smaller UI in minimal mode */
+  transition: width 0.3s ease;
+}
+
+.alejo-recovery-status.resource-mode-conservative {
+  width: 350px;
+  transition: width 0.3s ease;
+}
+
+.alejo-recovery-status.resource-mode-minimal .alejo-recovery-status-item {
+  padding: 8px; /* More compact in minimal mode */
+}
+
+.alejo-recovery-status.resource-mode-minimal .alejo-recovery-status-item-header h3 {
+  font-size: 0.9rem; /* Smaller font in minimal mode */
+}
+
+.alejo-recovery-status-item-recovery-result .alejo-recovery-status-success {
+  color: var(--alejo-success-color, #4caf50);
+}
+
+.alejo-recovery-status-item-recovery-result .alejo-recovery-status-failure,
+.alejo-recovery-status-item-recovery-result .alejo-recovery-status-terminal_failure {
+  color: var(--alejo-error-color, #e53935);
+}
+
+.alejo-recovery-status-item-recovery-result .alejo-recovery-status-in_progress {
+  color: var(--alejo-info-color, #2196f3);
+}
+
+.alejo-recovery-status-item-recovery-result .alejo-recovery-status-pending {
+  color: var(--alejo-text-secondary, #666666);
+}
+
+.alejo-recovery-status-item-recovery-result .alejo-recovery-status-blocked {
+  color: var(--alejo-warning-color, #ffc107);
+}
+
+.alejo-recovery-result-detail {
+  margin-top: 5px;
+  font-size: 0.85rem;
+  color: var(--alejo-text-secondary, #666666);
+  padding: 5px;
+  background-color: var(--alejo-surface-secondary, #f0f0f0);
+  border-radius: 3px;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+/* Resource explanation message */
+.alejo-recovery-resource-message {
+  margin-top: 16px;
+  padding: 8px 12px;
+  background-color: var(--alejo-surface-secondary, #f0f0f0);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: var(--alejo-text-secondary, #666666);
+  border-left: 3px solid var(--alejo-info-color, #2196f3);
+}
+
 .alejo-recovery-status-item-details {
   display: flex;
   flex-direction: column;
