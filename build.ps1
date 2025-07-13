@@ -1,10 +1,13 @@
 Write-Host 'Building ALEJO production bundle...'
 
+# Install dependencies
+npm install
+
 # Transpile JavaScript
-babel src -d dist
+node_modules\.bin\babel src -d dist
 
 # Bundle with Webpack
-webpack --config webpack.config.prod.js
+node_modules\.bin\webpack --config webpack.config.prod.js
 
 # Copy assets
 Copy-Item -Path public -Destination dist/public -Recurse
