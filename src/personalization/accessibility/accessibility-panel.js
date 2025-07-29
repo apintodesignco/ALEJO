@@ -264,6 +264,7 @@ class AccessibilityPanel {
     highContrastToggle.type = 'checkbox';
     highContrastToggle.id = 'alejo-high-contrast';
     highContrastToggle.name = 'highContrast';
+    highContrastToggle.addEventListener('change', () => this._onHighContrastToggle());
     
     const themeLabel = document.createElement('label');
     themeLabel.htmlFor = 'alejo-contrast-theme';
@@ -272,6 +273,7 @@ class AccessibilityPanel {
     const themeSelect = document.createElement('select');
     themeSelect.id = 'alejo-contrast-theme';
     themeSelect.name = 'contrastTheme';
+    themeSelect.addEventListener('change', () => this._onContrastThemeChange());
     
     const themes = [
       { value: 'light', text: 'Light' },
@@ -725,6 +727,18 @@ class AccessibilityPanel {
     focusToggle.checked = settings.highlightFocus;
   }
   
+  _onHighContrastToggle() {
+    const isChecked = document.getElementById('alejo-high-contrast').checked;
+    this.visualAdaptations.updateSetting('highContrast', isChecked);
+    this._saveSetting('highContrast', isChecked);
+  }
+
+  _onContrastThemeChange() {
+    const theme = document.getElementById('alejo-contrast-theme').value;
+    this.visualAdaptations.updateSetting('contrastTheme', theme);
+    this._saveSetting('contrastTheme', theme);
+  }
+  
   /**
    * Show the accessibility panel
    */
@@ -802,8 +816,241 @@ class AccessibilityPanel {
   }
 }
 
+// Add ARIA attributes for screen reader support
+const screenReaderSupport = {
+  init: function() {
+    this.addAriaAttributes();
+    this.setupLiveRegion();
+    this.enableKeyboardNavigation();
+  },
+  
+  addAriaAttributes: function() {
+    const panel = document.getElementById('alejo-accessibility-panel');
+    if (panel) {
+      panel.setAttribute('role', 'region');
+      panel.setAttribute('aria-labelledby', 'alejo-accessibility-panel-title');
+    }
+  },
+  
+  setupLiveRegion: function() {
+    const liveRegion = document.createElement('div');
+    liveRegion.setAttribute('aria-live', 'polite');
+    liveRegion.setAttribute('aria-atomic', 'true');
+    liveRegion.style.position = 'absolute';
+    liveRegion.style.width = '1px';
+    liveRegion.style.height = '1px';
+    liveRegion.style.overflow = 'hidden';
+    liveRegion.style.clip = 'rect(1px, 1px, 1px, 1px)';
+    document.body.appendChild(liveRegion);
+    this.liveRegion = liveRegion;
+  },
+  
+  announce: function(message) {
+    if (this.liveRegion) {
+      this.liveRegion.textContent = message;
+    }
+  },
+  
+  enableKeyboardNavigation: function() {
+    const panel = document.getElementById('alejo-accessibility-panel');
+    if (panel) {
+      panel.addEventListener('keydown', (e) => {
+        // Handle tab and arrow keys for navigation
+        if (e.key === 'Tab') {
+          // Ensure focus stays within the panel
+          const focusableElements = panel.querySelectorAll('button, input, select');
+          if (focusableElements.length === 0) return;
+          
+          const firstElement = focusableElements[0];
+          const lastElement = focusableElements[focusableElements.length - 1];
+          
+          if (e.shiftKey) {
+            if (document.activeElement === firstElement) {
+              lastElement.focus();
+              e.preventDefault();
+            }
+          } else {
+            if (document.activeElement === lastElement) {
+              firstElement.focus();
+              e.preventDefault();
+            }
+          }
+        }
+      });
+    }
+  }
+};
+
+// Initialize screen reader support when the panel is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  screenReaderSupport.init();
+});
+
 // Create singleton instance
 const instance = AccessibilityPanel.getInstance();
 
 export { instance as AccessibilityPanel };
 export default instance;
+
+class AccessibilityPanel {
+  constructor() {
+    this.panelElement = document.getElementById('alejo-accessibility-panel');
+    this.initComplete = false;
+    this.currentSettings = {
+      screenReader: true,
+      highContrast: false,
+      fontSize: 'medium',
+      keyboardNavigation: true
+    };
+  }
+
+  init() {
+    if (this.initComplete) return;
+    
+    // Create panel UI
+    this.createPanelStructure();
+    
+    // Load saved settings
+    this.loadSettings();
+    
+    // Apply initial settings
+    this.applySettings();
+    
+    // Set up event listeners
+    this.setupEventListeners();
+    
+    this.initComplete = true;
+    console.log('Accessibility panel initialized');
+  }
+
+  createPanelStructure() {
+    this.panelElement.innerHTML = `
+      <div class="panel-header">
+        <h2 id="alejo-accessibility-panel-title">Accessibility Settings</h2>
+      </div>
+      <div class="panel-content">
+        <div class="setting">
+          <label>
+            <input type="checkbox" id="screen-reader-toggle">
+            Screen Reader Support
+          </label>
+        </div>
+        <div class="setting">
+          <label>
+            <input type="checkbox" id="high-contrast-toggle">
+            High Contrast Mode
+          </label>
+        </div>
+        <div class="setting">
+          <label>Font Size:</label>
+          <select id="font-size-select">
+            <option value="small">Small</option>
+            <option value="medium" selected>Medium</option>
+            <option value="large">Large</option>
+            <option value="x-large">Extra Large</option>
+          </select>
+        </div>
+        <div class="setting">
+          <label>
+            <input type="checkbox" id="keyboard-nav-toggle">
+            Enhanced Keyboard Navigation
+          </label>
+        </div>
+      </div>
+    `;
+  }
+
+  loadSettings() {
+    const savedSettings = localStorage.getItem('alejoAccessibilitySettings');
+    if (savedSettings) {
+      this.currentSettings = JSON.parse(savedSettings);
+    }
+  }
+
+  saveSettings() {
+    localStorage.setItem(
+      'alejoAccessibilitySettings', 
+      JSON.stringify(this.currentSettings)
+    );
+  }
+
+  applySettings() {
+    // Apply screen reader settings
+    document.getElementById('screen-reader-toggle').checked = 
+      this.currentSettings.screenReader;
+      
+    // Apply high contrast mode
+    document.getElementById('high-contrast-toggle').checked = 
+      this.currentSettings.highContrast;
+    if (this.currentSettings.highContrast) {
+      enableHighContrastMode();
+    }
+    
+    // Apply font size
+    document.getElementById('font-size-select').value = 
+      this.currentSettings.fontSize;
+    applyFontSize(this.currentSettings.fontSize);
+    
+    // Apply keyboard navigation
+    document.getElementById('keyboard-nav-toggle').checked = 
+      this.currentSettings.keyboardNavigation;
+    if (this.currentSettings.keyboardNavigation) {
+      enableKeyboardNavigation();
+    }
+  }
+
+  setupEventListeners() {
+    document.getElementById('screen-reader-toggle')
+      .addEventListener('change', (e) => {
+        this.currentSettings.screenReader = e.target.checked;
+        this.saveSettings();
+        if (e.target.checked) {
+          initScreenReaderSupport();
+        }
+      });
+
+    document.getElementById('high-contrast-toggle')
+      .addEventListener('change', (e) => {
+        this.currentSettings.highContrast = e.target.checked;
+        this.saveSettings();
+        if (e.target.checked) {
+          enableHighContrastMode();
+        } else {
+          disableHighContrastMode();
+        }
+      });
+
+    document.getElementById('font-size-select')
+      .addEventListener('change', (e) => {
+        this.currentSettings.fontSize = e.target.value;
+        this.saveSettings();
+        applyFontSize(e.target.value);
+      });
+
+    document.getElementById('keyboard-nav-toggle')
+      .addEventListener('change', (e) => {
+        this.currentSettings.keyboardNavigation = e.target.checked;
+        this.saveSettings();
+        if (e.target.checked) {
+          enableKeyboardNavigation();
+        }
+      });
+  }
+
+  show() {
+    this.panelElement.style.display = 'block';
+    this.init();
+  }
+
+  hide() {
+    this.panelElement.style.display = 'none';
+  }
+
+  toggle() {
+    if (this.panelElement.style.display === 'block') {
+      this.hide();
+    } else {
+      this.show();
+    }
+  }
+}

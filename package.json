@@ -62,7 +62,7 @@
     "jsdom": "^24.0.0",
     "three": "^0.159.0",
     "tone": "^14.8.40",
-    "@mediapipe/hands": "^0.5.1675460977",
+    "@mediapipe/hands": "^0.4.1646424915",
     "@playwright/test": "^1.44.0",
     "@axe-core/puppeteer": "^4.8.1",
     "@babel/core": "^7.22.5",

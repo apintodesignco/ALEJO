@@ -77,6 +77,27 @@ const dashboardState = {
   trendUpdateInterval: 10000    // Only update trends every 10 seconds
 };
 
+const DEFAULT_THRESHOLDS = {
+  CPU: 80, // %
+  Memory: 75, // %
+  Temperature: 70 // °C
+};
+
+export function setResourceThresholds(thresholds) {
+  // Merge user thresholds with defaults
+  dashboardState.thresholds = {...DEFAULT_THRESHOLDS, ...thresholds};
+  
+  // Add safety caps
+  if (dashboardState.thresholds.Temperature > 85) {
+    console.warn('Temperature threshold set too high! Capped at 85°C for safety');
+    dashboardState.thresholds.Temperature = 85;
+  }
+}
+
+export function getCurrentThresholds() {
+  return dashboardState.thresholds;
+}
+
 /**
  * Initialize the resource dashboard
  * @param {Object} options - Dashboard initialization options
@@ -255,6 +276,15 @@ function updateResourceRecommendations(resourceUsage, currentMode) {
   }
   
   // ... rest of the function remains the same ...
+}
+
+// ... rest of the code remains the same ...
+
+function checkTemperatureSafety() {
+  if (dashboardState.resources.temperature.current > dashboardState.thresholds.Temperature) {
+    triggerCoolDownProtocol();
+    notifyUser('System overheating! Entering safety mode');
+  }
 }
 
 // ... rest of the code remains the same ...

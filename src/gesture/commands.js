@@ -13,15 +13,7 @@ let lastCommandTime = 0;
 let currentContext = 'default';
 const COMMAND_COOLDOWN = 500; // ms between commands to prevent accidental triggers
 
-// Gestures
-const GESTURES = {
-  OPEN_HAND: 'open_hand',
-  CLOSED_FIST: 'closed_fist',
-  POINTING: 'pointing',
-  VICTORY: 'victory',
-  THUMBS_UP: 'thumbs_up',
-  WAVE: 'wave'
-};
+import { GESTURES } from './constants.js';
 
 /**
  * Register gesture commands and set up event listeners

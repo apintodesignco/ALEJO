@@ -16,14 +16,7 @@ let processingInterval = 100; // milliseconds between processing frames
 let gestureBuffer = []; // Buffer for gesture smoothing
 
 // Gesture definitions
-const GESTURES = {
-  OPEN_HAND: 'open_hand',
-  CLOSED_FIST: 'closed_fist',
-  POINTING: 'pointing',
-  VICTORY: 'victory',
-  THUMBS_UP: 'thumbs_up',
-  WAVE: 'wave'
-};
+import { GESTURES } from './constants.js';
 
 /**
  * Set up gesture recognition with the provided hands model

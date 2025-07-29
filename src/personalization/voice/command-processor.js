@@ -180,6 +180,8 @@ let metrics = {
   avgProcessingTime: 0,
   commandsByCategory: {},
   errorRates: {},
+  totalProcessingTime: 0,
+  lastResetTimestamp: Date.now(),
   lastUpdate: Date.now()
 };
 
@@ -524,6 +526,8 @@ export async function shutdown(options = {}) {
       avgProcessingTime: 0,
       commandsByCategory: {},
       errorRates: {},
+      totalProcessingTime: 0,
+      lastResetTimestamp: Date.now(),
       lastUpdate: Date.now()
     };
     
@@ -589,6 +593,367 @@ metrics = {
   lastResetTimestamp: Date.now(),
   lastUpdate: Date.now()
 };
+
+/**
+ * Process a voice command with enhanced production features
+ * @param {string} command - The command text to process
+ * @param {Object} [options] - Processing options
+ * @param {string} [options.context] - Command context (default: current context)
+ * @param {boolean} [options.bypassSecurity=false] - Whether to bypass security checks
+ * @param {boolean} [options.bypassThrottling=false] - Whether to bypass throttling (for critical commands)
+ * @param {number} [options.retryAttempt=0] - Current retry attempt (for internal use)
+ * @param {boolean} [options.collectMetrics=true] - Whether to collect performance metrics
+ * @returns {Promise<Object>} Processing result
+ */
+export async function processCommand(command, options = {}) {
+  // Start timing for performance metrics
+  const startTime = performance.now();
+  
+  // Basic validation
+  if (!isInitialized) {
+    throw new Error('Voice command processor not initialized');
+  }
+  
+  if (!command || typeof command !== 'string') {
+    throw new Error('Invalid command: must be a non-empty string');
+  }
+  
+  // Set processing options with defaults
+  const processingOptions = {
+    context: currentContext,
+    bypassSecurity: false,
+    bypassThrottling: false,
+    retryAttempt: 0,
+    collectMetrics: true,
+    useNLU: true,          // Default to using NLU for enhanced understanding
+    ...options
+  };
+  
+  // Extract options for cleaner code
+  const { 
+    context, 
+    bypassSecurity, 
+    bypassThrottling,
+    retryAttempt,
+    collectMetrics,
+    useNLU
+  } = processingOptions;
+  
+  try {
+    // Add to history for context and learning
+    addToCommandHistory(command, context);
+    
+    // Track command in metrics
+    if (collectMetrics) {
+      metrics.totalCommands++;
+    }
+    
+    // Check command throttling to prevent resource exhaustion
+    if (commandThrottling.enabled && !bypassThrottling) {
+      const now = Date.now();
+      // Clean up old timestamps (older than 60 seconds)
+      commandThrottling.commandTimestamps = commandThrottling.commandTimestamps.filter(
+        timestamp => now - timestamp < 60000
+      );
+      
+      // Check if we've exceeded the rate limit
+      if (commandThrottling.commandTimestamps.length >= commandThrottling.maxCommandsPerMinute) {
+        // Find matching command to see if it's critical
+        const tempMatch = findMatchingCommandPattern(command, context);
+        const isCritical = tempMatch?.pattern?.importance === 'critical';
+        
+        // Allow critical commands to bypass throttling if configured
+        if (!(commandThrottling.criticalCommandsExempt && isCritical)) {
+          // Log throttling for audit
+          addAuditEntry('voice:command:throttled', { 
+            command: command.substring(0, 20) + (command.length > 20 ? '...' : ''), 
+            context 
+          });
+          
+          // Make accessibility announcement for throttling
+          if (accessibilityMode) {
+            accessibilityAnnounce({
+              message: 'Command rate limit reached. Please wait before trying again.',
+              priority: 'medium'
+            });
+          }
+          
+          if (collectMetrics) updateMetrics(false, startTime);
+          
+          return {
+            success: false,
+            handled: true,
+            message: 'Command rate limit exceeded. Please wait before trying again.',
+            throttled: true,
+            retryAfter: Math.ceil((60000 - (now - commandThrottling.commandTimestamps[0])) / 1000)
+          };
+        }
+      }
+      
+      // Add current timestamp to throttling record
+      commandThrottling.commandTimestamps.push(now);
+    }
+    
+    // Security check
+    if (!bypassSecurity) {
+      try {
+        const securityCheck = await checkCommandSecurity(command);
+        if (!securityCheck.allowed) {
+          // Log security block in audit trail
+          addAuditEntry('voice:command:blocked', { 
+            reason: securityCheck.reason,
+            command: command.substring(0, 20) + (command.length > 20 ? '...' : ''), 
+            context 
+          });
+          
+          // Announce security block for accessibility
+          if (accessibilityMode) {
+            accessibilityAnnounce({
+              message: 'Command blocked for security reasons.',
+              priority: 'high'
+            });
+          }
+          
+          if (collectMetrics) updateMetrics(false, startTime);
+          console.warn(`Command blocked by security policy: ${securityCheck.reason}`);
+          
+          EventBus.publish('security:commandBlocked', {
+            reason: securityCheck.reason,
+            context
+          });
+          
+          return {
+            success: false,
+            handled: true,
+            message: 'Command blocked by security policy',
+            reason: securityCheck.reason
+          };
+        }
+      } catch (securityError) {
+        console.error('Security check failed:', securityError);
+        // If security service is temporarily down, fail closed (secure default)
+        if (collectMetrics) updateMetrics(false, startTime);
+        
+        return {
+          success: false,
+          handled: true,
+          message: 'Unable to verify command security, please try again later',
+          error: 'Security service unavailable'
+        };
+      }
+    }
+    
+    // Process with NLU if enabled, otherwise fall back to pattern matching
+    let match = null;
+    let nluResults = null;
+    let usedNLU = false;
+    
+    // Try NLU processing if enabled
+    if (useNLU) {
+      try {
+        nluResults = await processCommandWithNLU(command, context);
+        if (nluResults) {
+          match = findMatchingCommandWithNLU(nluResults);
+          usedNLU = !!match;
+        }
+      } catch (nluError) {
+        console.error('Error in NLU processing:', nluError);
+        // Fall back to pattern matching
+      }
+    }
+    
+    // Fall back to pattern matching if NLU didn't find a match
+    if (!match) {
+      match = findMatchingCommandPattern(command, context);
+    }
+    
+    // Sanitize command for logging to prevent sensitive data exposure
+    const sanitizedCommand = command.substring(0, 15) + (command.length > 15 ? '...' : '');
+    
+    if (!match) {
+      // Log unrecognized commands for pattern learning
+      EventBus.publish('voice:unrecognizedCommand', { command, context });
+      console.log(`No matching pattern found for command: ${sanitizedCommand}`);
+      if (collectMetrics) updateMetrics(false, startTime);
+      return {
+        success: false,
+        handled: false,
+        message: 'Command not recognized',
+        nluAttempted: usedNLU
+      };
+    }
+    
+    // Handle confirmation if required
+    if (match.pattern.requiresConfirmation && !options.confirmed) {
+      if (collectMetrics) updateMetrics(true, startTime); // This is a successful flow, just requires confirmation
+      return {
+        success: false,
+        handled: true,
+        requiresConfirmation: true,
+        message: `Confirmation required for: ${command}`,
+        pattern: match.pattern,
+        params: match.params,
+        command
+      };
+    }
+    
+    // Execute the matched command with retry logic for transient errors
+    try {
+      const handler = commandHandlers[match.pattern.handler];
+      if (!handler) {
+        throw new Error(`Handler not found: ${match.pattern.handler}`);
+      }
+      
+      // Mark critical commands to bypass throttling on retry
+      const isCritical = match.pattern.importance === 'critical';
+      
+      const result = await handler(match.params, {
+        command,
+        context,
+        pattern: match.pattern,
+        nluResults: nluResults, // Pass NLU results to handler when available
+        matchedBy: match.matchedBy || 'pattern' // Indicate how the command was matched
+      });
+      
+      // Announce result for accessibility if appropriate
+      if (result.announce) {
+        EventBus.publish('accessibility:announce', {
+          message: result.message || 'Command executed',
+          priority: isCritical ? 'high' : 'medium'
+        });
+      }
+      
+      // Publish successful command execution event
+      EventBus.publish('voice:commandExecuted', {
+        command: sanitizedCommand,
+        context,
+        handler: match.pattern.handler,
+        usedNLU: !!usedNLU,
+        intent: nluResults?.intent?.name || null,
+        confidence: nluResults?.intent?.confidence || null,
+        matchedBy: match.matchedBy || 'pattern'
+      });
+      
+      if (collectMetrics) updateMetrics(true, startTime);
+      
+      return {
+        success: true,
+        handled: true,
+        message: result.message || 'Command executed',
+        executionTime: performance.now() - startTime,
+        usedNLU: !!usedNLU,
+        intent: nluResults?.intent?.name || null,
+        confidence: nluResults?.intent?.confidence || null,
+        matchedBy: match.matchedBy || 'pattern',
+        ...result
+      };
+    } catch (error) {
+      console.error(`Error executing command handler (attempt ${retryAttempt + 1}/${maxRetries + 1}):`, error);
+      
+      // Retry logic for transient errors
+      if (retryAttempt < maxRetries && isTransientError(error)) {
+        console.log(`Retrying command (attempt ${retryAttempt + 1}/${maxRetries})...`);
+        
+        // Exponential backoff
+        const backoffMs = Math.min(100 * Math.pow(2, retryAttempt), 2000);
+        await new Promise(resolve => setTimeout(resolve, backoffMs));
+        
+        // Retry with incremented attempt counter and bypass throttling if critical
+        return processCommand(command, {
+          ...options,
+          retryAttempt: retryAttempt + 1,
+          bypassThrottling: isCritical && commandThrottling.criticalCommandsExempt
+        });
+      }
+      
+      // Publish command failure event
+      EventBus.publish('voice:commandFailed', {
+        command: sanitizedCommand,
+        error: error.message,
+        context
+      });
+      
+      if (collectMetrics) updateMetrics(false, startTime);
+      
+      return {
+        success: false,
+        handled: true,
+        error: error.message,
+        message: 'Error executing command',
+        executionTime: performance.now() - startTime
+      };
+    }
+  } catch (unexpectedError) {
+    // Catch-all for unexpected errors
+    console.error('Unexpected error in command processing:', unexpectedError);
+    if (collectMetrics) updateMetrics(false, startTime);
+    
+    // Report fatal errors to monitoring system
+    EventBus.publish('monitoring:error', {
+      component: 'VoiceCommandProcessor',
+      error: unexpectedError,
+      severity: 'high'
+    });
+    
+    return {
+      success: false,
+      handled: false,
+      error: 'Unexpected error occurred',
+      message: 'Unable to process command due to system error',
+      executionTime: performance.now() - startTime
+    };
+  }
+}
+
+// Add retry logic and command throttling
+async function processCommandWithRetry(command, maxRetries = 3) {
+  let attempts = 0;
+  while (attempts < maxRetries) {
+    try {
+      return await processCommand(command);
+    } catch (error) {
+      console.warn(`Command failed (attempt ${attempts+1}):`, error);
+      attempts++;
+      
+      // Wait before retrying
+      if (attempts < maxRetries) {
+        const waitTime = Math.pow(2, attempts) * 100; // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+      }
+    }
+  }
+  throw new Error(`Command failed after ${maxRetries} attempts`);
+}
+
+// Command throttling system
+const commandQueue = [];
+let isProcessing = false;
+
+function enqueueCommand(command) {
+  commandQueue.push(command);
+  if (!isProcessing) {
+    processQueue();
+  }
+}
+
+async function processQueue() {
+  if (commandQueue.length === 0) {
+    isProcessing = false;
+    return;
+  }
+  
+  isProcessing = true;
+  const command = commandQueue.shift();
+  
+  try {
+    await processCommandWithRetry(command);
+  } catch (error) {
+    console.error('Command processing failed:', error);
+  }
+  
+  // Process next command after a short delay
+  setTimeout(processQueue, 100);
+}
 
 /**
  * Process a voice command with enhanced production features
@@ -1404,7 +1769,7 @@ function addToCommandHistory(command, context) {
   });
   
   // Limit history length
-  if (commandHistory.length > MAX_HISTORY_LENGTH) {
+  if (commandHistory.length > MAX_HISTORY_SIZE) {
     commandHistory.pop();
   }
 }

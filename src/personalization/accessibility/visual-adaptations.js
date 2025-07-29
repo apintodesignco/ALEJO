@@ -535,10 +535,80 @@ class VisualAdaptationsManager {
         this._updateCustomStyles('high-contrast-level', css);
       }
       
+      this._applyHighContrastStyles();
+      
       return true;
     } catch (error) {
       this.logger.error('Failed to apply high contrast mode', error);
       return false;
+    }
+  }
+
+  /**
+   * Apply high contrast styles based on current theme
+   * @private
+   */
+  _applyHighContrastStyles() {
+    let css = '';
+    
+    switch (this.settings.contrastTheme) {
+      case 'light':
+        css = `
+          :root {
+            --alejo-bg: #ffffff;
+            --alejo-text: #000000;
+            --alejo-primary: #0066cc;
+            --alejo-border: #000000;
+          }
+        `;
+        break;
+      case 'dark':
+        css = `
+          :root {
+            --alejo-bg: #000000;
+            --alejo-text: #ffffff;
+            --alejo-primary: #4da6ff;
+            --alejo-border: #ffffff;
+          }
+        `;
+        break;
+      case 'black-on-white':
+        css = `
+          :root {
+            --alejo-bg: #ffffff;
+            --alejo-text: #000000;
+            --alejo-primary: #000000;
+            --alejo-border: #000000;
+          }
+        `;
+        break;
+      case 'yellow-on-black':
+        css = `
+          :root {
+            --alejo-bg: #000000;
+            --alejo-text: #ffff00;
+            --alejo-primary: #ffff00;
+            --alejo-border: #ffff00;
+          }
+        `;
+        break;
+      default:
+        css = '';
+    }
+    
+    // Add or update the high contrast style element
+    let styleElement = document.getElementById('alejo-high-contrast-styles');
+    if (!styleElement) {
+      styleElement = document.createElement('style');
+      styleElement.id = 'alejo-high-contrast-styles';
+      document.head.appendChild(styleElement);
+    }
+    styleElement.textContent = css;
+    
+    if (this.settings.highContrast) {
+      document.documentElement.setAttribute('data-alejo-high-contrast', this.settings.contrastTheme);
+    } else {
+      document.documentElement.removeAttribute('data-alejo-high-contrast');
     }
   }
 
@@ -698,86 +768,37 @@ class VisualAdaptationsManager {
   }
 
   /**
-   * Update a specific adaptation setting
-   * @param {string} setting - Setting name
-   * @param {any} value - Setting value
-   * @param {boolean} apply - Whether to apply the change immediately
-   * @returns {Promise<boolean>} Success status
+   * Update a setting and apply the changes
+   * @param {string} key - The setting key
+   * @param {*} value - The new value
    */
-  async updateSetting(setting, value, apply = true) {
-    if (!(setting in this.settings)) {
-      return false;
+  updateSetting(key, value) {
+    if (this.settings[key] === value) return;
+    
+    this.settings[key] = value;
+    
+    switch (key) {
+      case 'highContrast':
+        this._applyHighContrast();
+        break;
+      case 'contrastTheme':
+        if (this.settings.highContrast) {
+          this._applyHighContrast();
+        }
+        break;
+      // Add other settings as needed
     }
     
-    this.settings[setting] = value;
-    this.userOverrides[setting] = true;
-    
-    if (apply) {
-      switch (setting) {
-        case 'fontSize':
-        case 'lineSpacing':
-        case 'letterSpacing':
-        case 'fontFamily':
-        case 'boldText':
-          await this._applyFontScaling();
-          break;
-          
-        case 'highContrast':
-        case 'contrastTheme':
-        case 'contrastLevel':
-          await this._applyHighContrast();
-          break;
-          
-        case 'colorBlindnessMode':
-        case 'colorBlindnessIntensity':
-          await this._applyColorBlindnessMode();
-          break;
-          
-        case 'reduceMotion':
-        case 'reduceTransparency':
-          this._applyReducedMotion();
-          break;
-          
-        case 'increaseCursorSize':
-        case 'highlightFocus':
-        case 'increaseSpacing':
-          this._applyAdditionalAdaptations();
-          break;
-          
-        default:
-          break;
-      }
-    }
-    
-    this.eventBus.publish('accessibility:visual-adaptations:updated', {
-      type: setting,
-      value: value
-    });
-    
-    return true;
+    this._saveSettings();
   }
 
   /**
-   * Reset all settings to defaults
-   * @param {boolean} apply - Whether to apply changes immediately
-   * @returns {Promise<boolean>} Success status
+   * Save current settings to storage
+   * @private
    */
-  async resetToDefaults(apply = true) {
-    this.settings = { ...DEFAULT_SETTINGS };
-    this.userOverrides = {};
-    
-    // Update with OS settings
-    await this._detectOsAccessibilitySettings();
-    
-    if (apply) {
-      await this.applyAllAdaptations();
-    }
-    
-    this.eventBus.publish('accessibility:visual-adaptations:reset', {
-      settings: { ...this.settings }
-    });
-    
-    return true;
+  _saveSettings() {
+    // Save to localStorage for now
+    localStorage.setItem('alejo-visual-adaptations', JSON.stringify(this.settings));
   }
 
   /**
@@ -839,6 +860,47 @@ class VisualAdaptationsManager {
     }
     
     this.initialized = false;
+  }
+}
+
+// High contrast mode implementation
+export function enableHighContrastMode() {
+  document.documentElement.style.setProperty('--text-color', '#FFFFFF');
+  document.documentElement.style.setProperty('--background-color', '#000000');
+  document.documentElement.style.setProperty('--primary-color', '#FFFF00');
+  document.documentElement.style.setProperty('--secondary-color', '#FFA500');
+  document.documentElement.style.setProperty('--border-color', '#FFFFFF');
+  
+  // Add high-contrast class to body
+  document.body.classList.add('high-contrast');
+  
+  // Announce the change
+  if (window.accessibilityAnnouncements) {
+    window.accessibilityAnnouncements.announce('High contrast mode enabled');
+  }
+}
+
+export function disableHighContrastMode() {
+  document.documentElement.style.removeProperty('--text-color');
+  document.documentElement.style.removeProperty('--background-color');
+  document.documentElement.style.removeProperty('--primary-color');
+  document.documentElement.style.removeProperty('--secondary-color');
+  document.documentElement.style.removeProperty('--border-color');
+  
+  // Remove high-contrast class
+  document.body.classList.remove('high-contrast');
+  
+  // Announce the change
+  if (window.accessibilityAnnouncements) {
+    window.accessibilityAnnouncements.announce('High contrast mode disabled');
+  }
+}
+
+export function toggleHighContrastMode() {
+  if (document.body.classList.contains('high-contrast')) {
+    disableHighContrastMode();
+  } else {
+    enableHighContrastMode();
   }
 }
 

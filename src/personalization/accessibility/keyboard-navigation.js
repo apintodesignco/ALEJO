@@ -149,6 +149,11 @@ class KeyboardNavigationManager {
       }
     }
 
+    // Handle arrow keys for complex widgets
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+      this._handleArrowKeys(event);
+    }
+
     // Handle global shortcuts
     this._handleShortcut(event);
 
@@ -310,6 +315,50 @@ class KeyboardNavigationManager {
     } else if (!event.shiftKey && activeElement === lastFocusable) {
       event.preventDefault();
       firstFocusable.focus();
+    }
+  }
+
+  /**
+   * Handle arrow key navigation for complex widgets
+   * @param {KeyboardEvent} event - Keyboard event
+   * @private
+   */
+  _handleArrowKeys(event) {
+    const activeElement = document.activeElement;
+    if (!activeElement) return;
+
+    // Handle dropdown navigation
+    if (activeElement.getAttribute('role') === 'option') {
+      event.preventDefault();
+      const options = Array.from(activeElement.parentNode.children);
+      const currentIndex = options.indexOf(activeElement);
+      
+      if (event.key === 'ArrowDown') {
+        const nextIndex = (currentIndex + 1) % options.length;
+        options[nextIndex].focus();
+      } else if (event.key === 'ArrowUp') {
+        const prevIndex = (currentIndex - 1 + options.length) % options.length;
+        options[prevIndex].focus();
+      }
+    }
+    
+    // Handle slider navigation
+    if (activeElement.getAttribute('role') === 'slider') {
+      event.preventDefault();
+      const step = parseFloat(activeElement.getAttribute('aria-valuestep') || 1);
+      const min = parseFloat(activeElement.getAttribute('aria-valuemin') || 0);
+      const max = parseFloat(activeElement.getAttribute('aria-valuemax') || 100);
+      let value = parseFloat(activeElement.getAttribute('aria-valuenow') || min);
+      
+      if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        value = Math.min(value + step, max);
+      } else if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+        value = Math.max(value - step, min);
+      }
+      
+      activeElement.setAttribute('aria-valuenow', value);
+      activeElement.value = value;
+      activeElement.dispatchEvent(new Event('input', { bubbles: true }));
     }
   }
 

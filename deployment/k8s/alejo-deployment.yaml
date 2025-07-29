@@ -24,6 +24,7 @@ spec:
           limits:
             memory: "4Gi"
             cpu: "2"
+            nvidia.com/gpu: 1 # Request 1 GPU
         livenessProbe:
           httpGet:
             path: /healthz

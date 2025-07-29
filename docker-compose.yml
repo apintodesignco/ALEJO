@@ -141,6 +141,18 @@ services:
       retries: 3
       start_period: 5s
 
+  alejo:
+    image: ghcr.io/apintodesignco/alejo:prod
+    ports:
+      - "3000:3000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
 volumes:
   redis_data:
   emotional_data:
