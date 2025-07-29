@@ -1,9 +1,0 @@
-# ALEJO AI Security Policy
-Contact: mailto:security@alejoai.com
-Contact: https://alejoai.com/security/report
-Expires: 2026-07-03T00:00:00.000Z
-Encryption: https://alejoai.com/keys/pgp-key.txt
-Preferred-Languages: en, es
-Canonical: https://alejoai.com/.well-known/security.txt
-Policy: https://alejoai.com/security/policy
-Hiring: https://alejoai.com/careers/security

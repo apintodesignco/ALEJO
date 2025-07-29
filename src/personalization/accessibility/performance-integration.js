@@ -1,7 +1,7 @@
 /**
- * @file performance-integration-refactored.js
+ * @file performance-integration.js
  * @description Integrates the Accessibility system with the Resource Allocation Manager using the standardized helper
- * @module personalization/accessibility/performance-integration-refactored
+ * @module personalization/accessibility/performance-integration
  * @author ALEJO Development Team
  * @copyright 2025 ALEJO Project
  * @license MIT
