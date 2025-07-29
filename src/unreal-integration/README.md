@@ -9,7 +9,7 @@ The integration consists of two main components:
 1. **Node.js Bridge Server**: Exposes ALEJO's functionality via a WebSocket API
 2. **Unreal Engine Plugin**: Connects to the bridge server and provides Blueprint-accessible functionality
 
-```
+```text
 ┌──────────────┐      ┌────────────────┐      ┌────────────────┐
 │              │      │                │      │                │
 │  ALEJO Core  │<─────│  Node.js API   │<─────│  Unreal Engine │

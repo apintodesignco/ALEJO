@@ -83,7 +83,7 @@ EventBus.subscribe('monitoring:componentStatus', (componentData) => {
 
 To add a health check for a new component:
 
-1. **Create a health check module** 
+1. **Create a health check module**
    - Place in the appropriate subsystem directory
    - Export health check functions
    - Use dynamic imports to avoid circular dependencies

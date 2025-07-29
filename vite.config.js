@@ -1,7 +1,6 @@
 // vite.config.js
-import { defineConfig } from 'vite';
+import { defineConfig, splitVendorChunkPlugin } from 'vite';
 import legacy from '@vitejs/plugin-legacy';
-import { splitVendorChunkPlugin } from 'vite';
 import { resolve } from 'path';
 import { securityHeaders } from './src/security/vite-security-headers.js';
 

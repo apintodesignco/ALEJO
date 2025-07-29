@@ -6,26 +6,9 @@
 - Minimum 3 worker nodes (8 vCPU, 32GB RAM each)
 - NVMe storage for AI models
 
-## Node.js Requirements
+## Node.js Environment
 
-ALEJO requires Node.js v20+ and npm v10+.
-
-**Installation Steps**:
-
-1. Download installer from [nodejs.org](https://nodejs.org)
-
-2. Run installer with default settings
-
-3. Check "Add to PATH" option
-
-4. Reboot after installation
-
-5. Verify with:
-
-   ```powershell
-   node --version
-   npm --version
-   ```
+The ALEJO Docker containers are built using Node.js v20+ and npm v10+. If you are building the images manually, ensure your build environment has a compatible version.
 
 ## Security Compliance
 
@@ -34,30 +17,6 @@ ALEJO requires Node.js v20+ and npm v10+.
 2. Maintain ISO 27001 certification
 
 3. Automate vulnerability scanning in CI/CD
-
-## Theme Park Integration
-
-### Disney
-
-- API key management
-
-- Ride control permissions
-
-- Guest data encryption
-
-### Universal Studios
-
-- Virtual queue configuration
-
-- Character interaction scheduling
-
-## Tesla Factory
-
-- ROS bridge configuration
-
-- Safety system calibration
-
-- Assembly line mapping
 
 ## GPU Resource Monitoring
 

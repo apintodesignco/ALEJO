@@ -1,0 +1,3 @@
+@echo off
+echo Building ALEJO for production...
+npx --no-install vite build --config vite.config.js

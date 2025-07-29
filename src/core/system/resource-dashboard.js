@@ -80,7 +80,8 @@ const dashboardState = {
 const DEFAULT_THRESHOLDS = {
   CPU: 80, // %
   Memory: 75, // %
-  Temperature: 70 // °C
+  Temperature: 70, // °C
+  GPU: 75 // %
 };
 
 export function setResourceThresholds(thresholds) {
@@ -96,6 +97,95 @@ export function setResourceThresholds(thresholds) {
 
 export function getCurrentThresholds() {
   return dashboardState.thresholds;
+}
+
+/**
+ * Main update loop for the dashboard.
+ * Fetches latest data, updates UI, and runs safety checks.
+ */
+async function updateDashboard() {
+  if (!isVisible) return;
+
+  try {
+    const usage = await resourceManager.getCurrentResourceUsage();
+    
+    // Update dashboard state
+    dashboardState.resources.cpu.current = usage.cpu;
+    dashboardState.resources.memory.current = usage.memory;
+    dashboardState.resources.temperature.current = usage.temperature;
+    dashboardState.resources.disk.current = usage.disk;
+    dashboardState.resources.battery.current = usage.battery.level;
+    dashboardState.resources.battery.charging = usage.battery.charging;
+    dashboardState.resources.gpu.current = usage.gpu;
+
+    // Update UI elements (assuming updateResourceSection exists)
+    updateResourceSection('cpu', usage.cpu);
+    updateResourceSection('memory', usage.memory);
+    updateResourceSection('temperature', usage.temperature);
+    updateResourceSection('disk', usage.disk);
+    updateResourceSection('battery', usage.battery.level, usage.battery.charging);
+    updateResourceSection('gpu', usage.gpu);
+
+    // Run safety checks
+    checkTemperatureSafety();
+    checkGpuSafety();
+
+  } catch (error) {
+    logger.error('Failed to update resource dashboard', error);
+  }
+}
+
+/**
+ * Checks if the system temperature exceeds the safety threshold.
+ */
+function checkTemperatureSafety() {
+  const { temperature } = dashboardState.resources;
+  const threshold = dashboardState.thresholds.Temperature;
+
+  if (temperature.current > threshold) {
+    const message = `Critical temperature detected: ${temperature.current}°C. Threshold is ${threshold}°C.`;
+    logger.warn(message);
+    notifyUser('High Temperature Alert', message);
+    triggerCoolDownProtocol('temperature');
+  }
+}
+
+/**
+ * Checks if the GPU usage exceeds the safety threshold.
+ */
+function checkGpuSafety() {
+    const { gpu } = dashboardState.resources;
+    const threshold = dashboardState.thresholds.GPU;
+
+    if (gpu.current > threshold) {
+        const message = `High GPU load detected: ${gpu.current}%. Threshold is ${threshold}%.`;
+        logger.warn(message);
+        notifyUser('High GPU Load Alert', message);
+        triggerCoolDownProtocol('gpu');
+    }
+}
+
+/**
+ * Triggers a cooldown protocol for a specific resource.
+ * @param {string} resourceName - The name of the resource triggering the cooldown.
+ */
+function triggerCoolDownProtocol(resourceName) {
+  logger.info(`Cooldown protocol triggered for ${resourceName}.`);
+  eventBus.emit('system:cooldown_triggered', { resource: resourceName });
+  const recommendationsContainer = document.getElementById(RECOMMENDATIONS_ID);
+  if (recommendationsContainer) {
+      recommendationsContainer.innerHTML = `<div class="alert alert-danger">High ${resourceName} usage. Consider closing some applications.</div>`;
+  }
+}
+
+/**
+ * Notifies the user about a system event.
+ * @param {string} title - The title of the notification.
+ * @param {string} message - The body of the notification.
+ */
+function notifyUser(title, message) {
+  logger.info(`Notifying user: ${title} - ${message}`);
+  eventBus.emit('system:notification', { title, message });
 }
 
 /**
@@ -191,12 +281,187 @@ export async function initializeResourceDashboard(options = {}) {
   }
 }
 
-// ... rest of the code remains the same ...
+/**
+ * Registers health checkers for critical system components with the health monitor.
+ */
+function registerComponentHealthCheckers() {
+  if (!healthMonitorInitialized) return;
+
+  const componentsToRegister = [
+    'voiceSystem',
+    'gestureSystem',
+    'faceRecognition',
+    'memorySystem',
+    'reasoningEngine'
+  ];
+
+  componentsToRegister.forEach(componentName => {
+    componentHealthMonitor.registerCheck(componentName, async () => {
+      // Placeholder check: In a real implementation, this would query the component's status.
+      // For now, we'll assume the component is healthy if the event bus is available.
+      const isHealthy = !!eventBus;
+      return {
+        ok: isHealthy,
+        message: isHealthy ? 'Component is responsive.' : 'Component did not respond.',
+        timestamp: Date.now()
+      };
+    });
+  });
+
+  logger.info('Registered health checkers for critical components.');
+}
 
 /**
- * Add resource monitoring sections to the dashboard
- * @param {HTMLElement} dashboard - Dashboard element
+ * Shows the resource dashboard.
  */
+export function showResourceDashboard() {
+  if (!dashboardElement) return;
+  dashboardElement.style.display = 'block';
+  isVisible = true;
+  dashboardState.isVisible = true;
+  logger.info('Resource dashboard shown.');
+}
+
+/**
+ * Hides the resource dashboard.
+ */
+export function hideResourceDashboard() {
+  if (!dashboardElement) return;
+  dashboardElement.style.display = 'none';
+  isVisible = false;
+  dashboardState.isVisible = false;
+  logger.info('Resource dashboard hidden.');
+}
+
+/**
+ * Toggles the visibility of the resource dashboard.
+ */
+export function toggleResourceDashboard() {
+  if (isVisible) {
+    hideResourceDashboard();
+  } else {
+    showResourceDashboard();
+  }
+}
+
+/**
+ * Sets up event listeners for the dashboard.
+ */
+function setupEventListeners() {
+    // Example: Toggle dashboard with a key combination (e.g., Ctrl + Alt + R)
+    document.addEventListener('keydown', (event) => {
+        if (event.ctrlKey && event.altKey && event.key === 'r') {
+            toggleResourceDashboard();
+        }
+    });
+
+    eventBus.on('system:recovery_started', () => {
+        if (dashboardState.minimizeDuringRecovery) {
+            hideResourceDashboard();
+        }
+    });
+
+    eventBus.on('system:recovery_completed', () => {
+        showResourceDashboard();
+    });
+}
+
+/**
+ * Creates the main dashboard DOM element.
+ * @returns {HTMLElement} The main dashboard element.
+ */
+function createDashboardElement() {
+  const dashboard = document.createElement('div');
+  dashboard.id = DASHBOARD_ID;
+  dashboard.className = 'alejo-resource-dashboard';
+  dashboard.setAttribute('role', 'region');
+  dashboard.setAttribute('aria-label', 'ALEJO System Resource Dashboard');
+
+  const header = document.createElement('h2');
+  header.textContent = 'System Health';
+  dashboard.appendChild(header);
+
+  // Add resource sections
+  addResourceSections(dashboard);
+
+  // Add recommendations section
+  const recommendations = document.createElement('div');
+  recommendations.id = RECOMMENDATIONS_ID;
+  recommendations.className = 'resource-recommendations';
+  dashboard.appendChild(recommendations);
+
+  return dashboard;
+}
+
+/**
+ * Creates a DOM element for a single resource section.
+ * @param {string} resourceName - The name of the resource (e.g., 'cpu').
+ * @param {string} label - The display label for the section.
+ * @returns {HTMLElement} The created resource section element.
+ */
+function createResourceSection(resourceName, label) {
+  const section = document.createElement('div');
+  section.id = `resource-dashboard-${resourceName}`;
+  section.className = 'resource-section';
+  section.setAttribute('role', 'listitem');
+
+  const labelEl = document.createElement('span');
+  labelEl.className = 'resource-label';
+  labelEl.textContent = label;
+
+  const barContainer = document.createElement('div');
+  barContainer.className = 'resource-bar-container';
+
+  const barEl = document.createElement('div');
+  barEl.className = 'resource-bar';
+  barEl.style.width = '0%';
+
+  const valueEl = document.createElement('span');
+  valueEl.className = 'resource-value';
+  valueEl.textContent = '...';
+
+  barContainer.appendChild(barEl);
+  section.appendChild(labelEl);
+  section.appendChild(barContainer);
+  section.appendChild(valueEl);
+
+  return section;
+}
+
+/**
+ * Updates a single resource section in the UI.
+ * @param {string} resourceName - The name of the resource.
+ * @param {number} value - The current value of the resource.
+ * @param {boolean} [charging] - Optional charging status for battery.
+ */
+function updateResourceSection(resourceName, value, charging) {
+  const section = document.getElementById(`resource-dashboard-${resourceName}`);
+  if (!section) return;
+
+  const barEl = section.querySelector('.resource-bar');
+  const valueEl = section.querySelector('.resource-value');
+
+  let displayValue = `${Math.round(value)}%`;
+  if (resourceName === 'temperature') {
+    displayValue = `${Math.round(value)}°C`;
+  } else if (resourceName === 'battery') {
+    displayValue = `${Math.round(value)}%`;
+    if (charging) {
+        displayValue += ' (Charging)';
+    }
+  }
+
+  valueEl.textContent = displayValue;
+  barEl.style.width = `${value}%`;
+
+  const threshold = dashboardState.thresholds[resourceName.toUpperCase()];
+  if (threshold && value > threshold) {
+    section.classList.add('warning');
+  } else {
+    section.classList.remove('warning');
+  }
+}
+
 function addResourceSections(dashboard) {
   const resourcesContainer = document.createElement('div');
   resourcesContainer.className = 'resources-container';
@@ -284,6 +549,13 @@ function checkTemperatureSafety() {
   if (dashboardState.resources.temperature.current > dashboardState.thresholds.Temperature) {
     triggerCoolDownProtocol();
     notifyUser('System overheating! Entering safety mode');
+  }
+}
+
+function checkGpuSafety() {
+  if (dashboardState.resources.gpu.current > dashboardState.thresholds.GPU) {
+    triggerCoolDownProtocol('gpu');
+    notifyUser('High GPU load detected! Throttling GPU-intensive tasks.');
   }
 }
 

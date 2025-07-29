@@ -109,14 +109,14 @@ docker-compose up
 # Deploy only the gesture WebSocket service
 
 docker-compose up gesture_websocket
-```text
+```
 
 ### Accessing the Gesture Interface
 
 Once deployed, access the gesture interface at:
 
-- Local development: [<http://localhost:8000/gestures](http://localhost:8000/gesture>s)
-- Docker deployment: [<http://localhost:8000/gestures](http://localhost:8000/gesture>s)
+- Local development: [http://localhost:8000/gestures](http://localhost:8000/gestures)
+- Docker deployment: [http://localhost:8000/gestures](http://localhost:8000/gestures)
 
 ### Configuration
 
@@ -126,7 +126,7 @@ The gesture system can be configured through environment variables in your `.env
 ALEJO_GESTURE_ENABLED=true
 ALEJO_WEBSOCKET_PORT=8765
 ALEJO_ACCESSIBILITY_LEVEL=enhanced  # basic, standard, or enhanced
-```text
+```
 
 ## End-to-End Flow
 

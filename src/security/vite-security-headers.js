@@ -145,7 +145,7 @@ export function generateNetlifyHeaders(options = {}) {
   X-XSS-Protection: ${config.xXssProtection}
   Referrer-Policy: ${config.referrerPolicy}
   Permissions-Policy: ${config.permissionsPolicy}
-`;
+*/`;
 }
 
 /**

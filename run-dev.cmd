@@ -1,0 +1,3 @@
+@echo off
+echo Starting ALEJO development server...
+npx --no-install vite --config vite.config.js

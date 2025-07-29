@@ -24,7 +24,7 @@ ALEJO handles two primary types of voice interaction:
 
 #### Architecture Overview
 
-```
+```text
 [Game Input] → [ALEJO Subsystem] → [WebSocket] → [Node.js Bridge] → [Voice Processing] → [WebSocket] → [ALEJO Subsystem] → [Game Response]
 ```
 
@@ -126,7 +126,7 @@ For Blueprint-only projects, you can create a Blueprint class based on `UALEJOAc
 2. Override the `Event On Voice Processing Result` function
 3. Create a custom event for starting voice command mode
 
-```
+```text
 // Blueprint event graph example pseudocode:
 
 // In Event Construct

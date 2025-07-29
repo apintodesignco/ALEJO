@@ -27,7 +27,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "vite --open",
+    "dev": "node dev-server.js",
+    "dev:vite": "vite --open",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .js --max-warnings 0 alejo/interaction/gesture_arpeggiator/static/js",

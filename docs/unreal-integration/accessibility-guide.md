@@ -5,6 +5,7 @@ This guide provides detailed instructions for implementing accessibility feature
 ## Core Accessibility Principles
 
 ALEJO follows these accessibility principles:
+
 - **Perceivable**: Information must be presentable to all users
 - **Operable**: Interface elements must be navigable by all users
 - **Understandable**: Information and operation must be comprehensible
@@ -19,9 +20,9 @@ The `UALEJOAccessibleWidget` class is the foundation for accessible UMG widgets:
 1. Create a new Blueprint Widget that inherits from `UALEJOAccessibleWidget`
 2. Override the key event functions:
 
-```
+```cpp
 - NativeConstruct()
-- NativeDestruct() 
+- NativeDestruct()
 - OnConnectionStatusChanged(bool bIsConnected)
 - OnTextProcessingResult(const FString& Result)
 - OnVoiceProcessingResult(const FString& Result)
@@ -329,18 +330,23 @@ void UAccessibleDialog::NativeConstruct()
 ## Common Pitfalls and Solutions
 
 ### Problem: Screen reader doesn't announce dynamic content
+
 **Solution**: Use `AnnounceToScreenReader` for all dynamic updates
 
 ### Problem: Keyboard focus gets trapped in a widget
+
 **Solution**: Implement proper focus management with `SetUserFocus` and `FocusWidget`
 
 ### Problem: Font scaling breaks layouts
+
 **Solution**: Use auto-sizing containers and min/max constraints instead of fixed sizes
 
 ### Problem: Animations cause discomfort for some users
+
 **Solution**: Implement `ApplyReducedMotionSettings` and provide static alternatives
 
 ### Problem: Color scheme isn't accessible for color blind users
+
 **Solution**: Use `GetColorBlindFriendlyPalette` and don't rely solely on color for information
 
 ## Resources

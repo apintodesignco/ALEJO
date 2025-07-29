@@ -60,7 +60,7 @@ The ALEJO gesture system enables intuitive, hands-free interaction through a Web
 
 2. Access the gesture demo interface at:
 
-   <http://localhost:8000/gestures>
+   [http://localhost:8000/gestures](http://localhost:8000/gestures)
 
 3. Configure gesture settings in your environment file:
 
@@ -112,27 +112,27 @@ We've included a comprehensive testing suite for the gesture system to ensure it
 
 Access the various ALEJO services at these URLs:
 
-- Main UI: <http://localhost:8000/ui>
-- Gesture Interface: <http://localhost:8000/gestures>
-- Brain Service API: <http://localhost:8000>
-- Emotional Intelligence API: <http://localhost:8001>
-- Memory Service API: <http://localhost:8002>
-- Command Processor API: <http://localhost:8003>
-- Gesture WebSocket: <ws://localhost:8765>
+- Main UI: [http://localhost:8000/ui](http://localhost:8000/ui)
+- Gesture Interface: [http://localhost:8000/gestures](http://localhost:8000/gestures)
+- Brain Service API: [http://localhost:8000](http://localhost:8000)
+- Emotional Intelligence API: [http://localhost:8001](http://localhost:8001)
+- Memory Service API: [http://localhost:8002](http://localhost:8002)
+- Command Processor API: [http://localhost:8003](http://localhost:8003)
+- Gesture WebSocket: [ws://localhost:8765](ws://localhost:8765)
 
 ## Health Checks
 
 Both services expose health endpoints:
 
-- Brain Service: <http://localhost:8000/health>
-- Emotional Intelligence Service: <http://localhost:8001/health>
+- Brain Service: [http://localhost:8000/health](http://localhost:8000/health)
+- Emotional Intelligence Service: [http://localhost:8001/health](http://localhost:8001/health)
 
 ## Metrics
 
 Monitor service performance at:
 
-- Brain Service: <http://localhost:8000/metrics>
-- Emotional Intelligence Service: <http://localhost:8001/metrics>
+- Brain Service: [http://localhost:8000/metrics](http://localhost:8000/metrics)
+- Emotional Intelligence Service: [http://localhost:8001/metrics](http://localhost:8001/metrics)
 
 ## Container Structure
 

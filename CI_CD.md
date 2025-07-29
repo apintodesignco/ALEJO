@@ -65,7 +65,6 @@ This document describes the Continuous Integration and Continuous Deployment (CI
 
 ## Required Secrets
 
-- `OPENAI_API_KEY`: OpenAI API key
 - `DOCKERHUB_USERNAME`: Docker Hub username
 - `DOCKERHUB_TOKEN`: Docker Hub access token
 - `AWS_ACCESS_KEY_ID`: AWS access key

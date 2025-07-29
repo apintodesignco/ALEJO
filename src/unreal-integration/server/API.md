@@ -16,13 +16,14 @@ This integration follows ALEJO's core principles:
 
 ### Status Check
 
-```
+```text
 GET /status
 ```
 
 Returns the current status of the ALEJO bridge server.
 
 **Response:**
+
 ```json
 {
   "status": "online",

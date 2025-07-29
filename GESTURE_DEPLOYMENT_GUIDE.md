@@ -14,7 +14,7 @@ The simplest way to deploy the complete ALEJO system with gesture support is usi
 
 # Clone the repository
 
-git clone <https://github.com/apintodesignco/ALEJO.git>
+git clone https://github.com/apintodesignco/ALEJO.git
 cd ALEJO
 
 # Start the entire system
@@ -24,7 +24,7 @@ docker-compose up -d
 # Or start only the gesture-related services
 
 docker-compose up -d redis brain gesture_websocket
-```text
+```
 
 ### 2. Standalone Deployment
 
@@ -34,7 +34,7 @@ For development or testing, you can run the gesture system standalone:
 
 # Clone the repository
 
-git clone <https://github.com/apintodesignco/ALEJO.git>
+git clone https://github.com/apintodesignco/ALEJO.git
 cd ALEJO
 
 # Install dependencies
@@ -44,7 +44,7 @@ pip install -r requirements.txt
 # Run the gesture system
 
 python start_gesture_system.py
-```text
+```
 
 ### 3. Production Deployment
 
@@ -61,7 +61,7 @@ cp .env.example .env
 # Start the system with production settings
 
 ALEJO_ENV=production docker-compose up -d
-```text
+```
 
 ## Configuration
 
@@ -109,12 +109,12 @@ gesture_websocket:
       condition: service_healthy
   command: ["python", "-m", "alejo.handlers.gesture_websocket_handler"]
   healthcheck:
-    test: ["CMD", "curl", "-f", "<http://localhost:8765/health"]>
+    test: ["CMD", "curl", "-f", "http://localhost:8765/health"]
     interval: 30s
     timeout: 10s
     retries: 3
     start_period: 5s
-```text
+```
 
 ## Deployment Validation
 
@@ -123,37 +123,31 @@ gesture_websocket:
 We provide a comprehensive validation script to ensure your deployment is working correctly:
 
 ```bash
-
 # Validate the default deployment
-
 python validate_gesture_deployment.py
 
 # Validate a custom deployment
-
-python validate_gesture_deployment.py --ws-url=ws://your-host:8765 --web-url=<http://your-host:8000> --redis-url=redis://your-host:6379/0
-```text
+python validate_gesture_deployment.py --ws-url=ws://your-host:8765 --web-url=http://your-host:8000 --redis-url=redis://your-host:6379/0
+```
 
 ### 2. Docker Deployment Testing
 
 For Docker-based deployments, use the Docker-specific test script:
 
 ```bash
-
 # Test the Docker deployment
-
 python test_gesture_docker.py
 
 # Test with custom endpoints
-
-python test_gesture_docker.py --ws-url=ws://your-host:8765 --health-url=<http://your-host:8765/health>
-```text
+python test_gesture_docker.py --ws-url=ws://your-host:8765 --health-url=http://your-host:8765/health
+```
 
 ### 3. Manual Validation
 
 To manually validate your deployment:
 
-1. Access the gesture interface at `<http://your-host:8000/gestures`>
-2. Check that the WebSocket server is running: `curl <http://your-host:8765/health`>
+1. Access the gesture interface at [http://your-host:8000/gestures](http://your-host:8000/gestures)
+2. Check that the WebSocket server is running: `curl http://your-host:8765/health`
 3. Test basic gesture recognition in the browser
 4. Verify that accessibility features are working
 
@@ -177,8 +171,8 @@ docker-compose logs gesture_websocket
 
 # Verify the port is accessible
 
-curl <http://localhost:8765/health>
-```text
+curl http://localhost:8765/health
+```
 
 #### Redis Connection Issues
 
@@ -197,7 +191,7 @@ docker-compose logs redis
 # Test Redis connection
 
 redis-cli -h localhost ping
-```text
+```
 
 #### Static File Access Problems
 
@@ -211,8 +205,8 @@ ls -la alejo/static/js/gesture-controller.js
 
 # Verify the web server is serving static files
 
-curl <http://localhost:8000/static/js/gesture-controller.js>
-```text
+curl http://localhost:8000/static/js/gesture-controller.js
+```
 
 ## Security Considerations
 
@@ -237,21 +231,21 @@ server {
 
     # Web interface
     location / {
-        proxy_pass <http://localhost:8000;>
+        proxy_pass http://localhost:8000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
 
     # WebSocket endpoint
     location /ws/ {
-        proxy_pass <http://localhost:8765;>
+        proxy_pass http://localhost:8765;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;
     }
 }
-```text
+```
 
 ## Monitoring and Logging
 
@@ -268,7 +262,7 @@ docker-compose logs -f gesture_websocket
 # Export logs to a file
 
 docker-compose logs gesture_websocket > gesture_logs.txt
-```text
+```
 
 ### Health Monitoring
 
@@ -278,12 +272,12 @@ Set up health checks to monitor the gesture system:
 
 # Check the health endpoint
 
-curl <http://localhost:8765/health>
+curl http://localhost:8765/health
 
 # Set up a cron job for monitoring
 
-echo "*/5 * * * * curl -s <http://localhost:8765/health> > /dev/null || send-alert.sh" | crontab -
-```text
+echo "*/5 * * * * curl -s http://localhost:8765/health > /dev/null || send-alert.sh" | crontab -
+```
 
 ## Scaling
 
@@ -300,7 +294,7 @@ docker-compose up -d --scale gesture_websocket=3
 
 # Example HAProxy configuration in haproxy.cfg
 
-```text
+```
 
 ## Conclusion
 

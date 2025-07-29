@@ -56,6 +56,7 @@ bool FALEJOScreenReaderTest::RunTest(const FString& Parameters)
 4. Test dynamic content updates and verify they're announced
 
 **Testing checklist:**
+
 - [ ] Static text is properly announced
 - [ ] Buttons and interactive elements announce their purpose
 - [ ] State changes (enabled/disabled, expanded/collapsed) are announced
@@ -103,6 +104,7 @@ bool FALEJOContrastTest::RunTest(const FString& Parameters)
 3. Test different color combinations
 
 **Testing checklist:**
+
 - [ ] Text has at least 4.5:1 contrast ratio against background
 - [ ] Interactive elements are clearly distinguishable
 - [ ] Focus indicators are visible
@@ -151,6 +153,7 @@ bool FALEJOFontScalingTest::RunTest(const FString& Parameters)
 3. Navigate through all UI screens
 
 **Testing checklist:**
+
 - [ ] Text remains readable at all scaling levels
 - [ ] Layout adapts to larger text without clipping
 - [ ] Interactive elements scale appropriately
@@ -206,6 +209,7 @@ bool FALEJOColorBlindTest::RunTest(const FString& Parameters)
 2. Check all UI elements and game visuals
 
 **Testing checklist:**
+
 - [ ] Information conveyed by color is also available through text or iconography
 - [ ] Interactive elements remain distinguishable
 - [ ] Status indicators remain clear
@@ -267,6 +271,7 @@ bool FALEJOKeyboardTest::RunTest(const FString& Parameters)
 3. Test all voice shortcuts
 
 **Testing checklist:**
+
 - [ ] All interactive elements can be reached via keyboard
 - [ ] Focus indicator is clearly visible
 - [ ] Tab order is logical and follows visual layout
@@ -315,6 +320,7 @@ bool FALEJOReducedMotionTest::RunTest(const FString& Parameters)
 2. Navigate through UI and game screens with animations
 
 **Testing checklist:**
+
 - [ ] UI animations are slowed or disabled
 - [ ] No flashing or rapid visual changes
 - [ ] Transitions are smooth and gradual
@@ -374,6 +380,7 @@ bool FALEJOVoiceAccessibilityTest::RunTest(const FString& Parameters)
 3. Test with different voice patterns (speaking speed, pitch, accent)
 
 **Testing checklist:**
+
 - [ ] Voice commands are recognized accurately
 - [ ] Visual feedback indicates voice processing status
 - [ ] Commands work consistently across different users
@@ -441,6 +448,7 @@ bool FALEJOSettingsPersistenceTest::RunTest(const FString& Parameters)
 3. Verify settings are preserved
 
 **Testing checklist:**
+
 - [ ] All accessibility settings persist between sessions
 - [ ] Settings UI correctly reflects current state
 - [ ] Changing settings has immediate effect
